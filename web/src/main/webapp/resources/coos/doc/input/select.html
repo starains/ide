@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8" />
+<title>COOS UI DOC</title>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<script type="text/javascript" src="doc.main.js"></script>
+
+</head>
+<body>
+	<div id="page-body-content">
+		<script class="coos-format-code-example" type="text/html">
+------html start-------
+<div class="coos-form coos-bd pd-20 coos-form-01" >
+	<input name="name" input-skin="1" label="下拉框" class="coos-input coos-input-select" />
+	<select class="coos-option-cache">
+		<option value="">请选择</option>
+		<option value="1">选项一</option>
+		<option value="2">选项二</option>
+		<option value="3">选项三</option>
+		<option value="4">选项四</option>
+		<option value="5">选项五</option>
+		<option value="6">选项六</option>
+		<option value="7">选项七</option>
+		<option value="8">选项八</option>
+		<option value="9">选项九</option>
+		<option value="10">选项十</option>
+		<option value="11">选项十一</option>
+		<option value="12">选项十二</option>
+	</select>
+	<input name="name" input-skin="1" label="多选" class="coos-input coos-input-multi-select" />
+	<select class="coos-option-cache">
+		<option value="">请选择</option>
+		<option value="1">选项一</option>
+		<option value="2">选项二</option>
+		<option value="3">选项三</option>
+		<option value="4">选项四</option>
+		<option value="5">选项五</option>
+		<option value="6">选项六</option>
+		<option value="7">选项七</option>
+		<option value="8">选项八</option>
+		<option value="9">选项九</option>
+		<option value="10">选项十</option>
+		<option value="11">选项十一</option>
+		<option value="12">选项十二</option>
+	</select>
+	<input name="select_1" input-skin="1" label="省/直辖市" class="coos-input coos-input-multi-select" />
+	<select class="coos-option-cache">
+		<option value="">请选择</option>
+		<option value="jiangsu">江苏</option>
+		<option value="beijing">北京</option>
+		<option value="shanghai">上海</option>
+	</select>
+	<input name="select_2" input-skin="1" label="市/区" relation='[name="select_1"]' class="coos-input coos-input-multi-select" />
+	<select class="coos-option-cache">
+		<option value="">请选择</option>
+		<option value="nanjing" relation-value="jiangsu">南京</option>
+		<option value="lianyungang" relation-value="jiangsu">连云港</option>
+		<option value="suzhou" relation-value="jiangsu">苏州</option>
+		<option value="beijingyiqu" relation-value="beijing">北京一区</option>
+		<option value="beijingerqu" relation-value="beijing">北京二区</option>
+		<option value="beijingsanqu" relation-value="beijing">北京三区</option>
+		<option value="shanghaiyiqu" relation-value="shanghai">上海一区</option>
+		<option value="shanghaierqu" relation-value="shanghai">上海二区</option>
+		<option value="shanghaisanqu" relation-value="shanghai">上海三区</option>
+	</select>
+	<input name="select_3" input-skin="1" label="区/县" relation='[name="select_2"]' class="coos-input coos-input-multi-select" />
+	<select class="coos-option-cache">
+		<option value="">请选择</option>
+		<option value="yuhua" relation-value="nanjing">雨花</option>
+		<option value="jianye" relation-value="nanjing">建邺</option>
+		<option value="xixia" relation-value="nanjing">西霞</option>
+		<option value="suzhouyiqu" relation-value="suzhou">苏州一区</option>
+		<option value="suzhouerqu" relation-value="suzhou">苏州二区</option>
+		<option value="suzhousanqu" relation-value="suzhou">苏州三区</option>
+	</select>
+</div>
+------js start-------
+//这里要传入输入框的容器
+coos.input.init($('.coos-form-01'));
+        </script>
+	</div>
+</body>
+</html>

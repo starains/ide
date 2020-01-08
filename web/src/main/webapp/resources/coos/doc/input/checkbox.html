@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8" />
+<title>COOS UI DOC</title>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<script type="text/javascript" src="doc.main.js"></script>
+
+</head>
+<body>
+	<div id="page-body-content">
+		<script class="coos-format-code-example" type="text/html">
+------html start-------
+<div class="coos-form coos-bd pd-20 coos-form-01" >
+	<input name="name" input-skin="1" label="复选框" class="coos-input coos-input-checkbox" />
+	<select class="coos-option-cache">
+		<option value="1">选项一</option>
+		<option value="2">选项二</option>
+		<option value="3">选项三</option>
+		<option value="4">选项四</option>
+		<option value="5">选项五</option>
+		<option value="6">选项六</option>
+		<option value="7">选项七</option>
+	</select>
+	<input name="name" input-skin="1" label="复选标签" class="coos-input coos-input-checkbox-tag" />
+	<select class="coos-option-cache">
+		<option value="1">选项一</option>
+		<option value="2">选项二</option>
+		<option value="3">选项三</option>
+		<option value="4">选项四</option>
+		<option value="5">选项五</option>
+		<option value="6">选项六</option>
+		<option value="7">选项七</option>
+		<option value="8">选项八</option>
+	</select>
+</div>
+------js start-------
+//这里要传入输入框的容器
+coos.input.init($('.coos-form-01'));
+		</script>
+	</div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+package #||$package||#;
+
+
+import com.teamide.db.bean.SqlParam;
+
+import com.teamide.dao.IDao;
+import com.teamide.param.DataParam;
+import com.teamide.jexl.JexlTool;
+
+/**
+ * SQL Dao
+ * #||$comment||#
+ */
+
+@javax.annotation.Resource(name="#||$name||#")
+public class #||$classname||# {
+	
+	public $result_classname invoke(DataParam data) {
+		$result_classname result = new $result_classname();
+		
+		SqlParam param = buildSqlParam(data);
+		
+		
+		return result;
+	}
+	
+	/**
+	 * 组合SQL
+	 */
+	public SqlParam buildSqlParam(DataParam data) {
+		
+		Map<String, Object> param = new HashMap<String, Object>();
+		StringBuffer sql = new StringBuffer();
+		#|forStart|($list, $one)
+		#|ifStart|($one.condition == null)
+		sql.append("#||$one.sql||#");
+		|ifEnd|#
+		#|ifStart|($one.condition != null)
+		if(#||$one.condition||#){
+			sql.append("#||$one.sql||#");
+		}
+		|ifEnd|#
+		|forEnd|#
+		
+		SqlParam sqlParam = new SqlParam(sql.toString(), param);
+		return sqlParam;
+	}
+}

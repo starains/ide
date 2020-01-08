@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8" />
+<title>COOS UI DOC</title>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<script type="text/javascript" src="doc.main.js"></script>
+
+</head>
+<body>
+	<div id="page-body-content">
+		<div input-skin="1">
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-frame').removeClass('coos-input-xs coos-input-sm coos-input-md coos-input-lg');">还原</div>
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-frame').removeClass('coos-input-xs coos-input-sm coos-input-md coos-input-lg').addClass('coos-input-xs');">设置XS尺寸</div>
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-frame').removeClass('coos-input-xs coos-input-sm coos-input-md coos-input-lg').addClass('coos-input-sm');">设置SM尺寸</div>
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-frame').removeClass('coos-input-xs coos-input-sm coos-input-md coos-input-lg').addClass('coos-input-md');">设置MD尺寸</div>
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-frame').removeClass('coos-input-xs coos-input-sm coos-input-md coos-input-lg').addClass('coos-input-lg');">设置LG尺寸</div>
+		</div>
+		<script class="coos-format-code-example" type="text/html">
+------html start-------
+<div class="coos-form coos-bd pd-20 coos-form-01" >
+	<input name="name" input-skin class="coos-input " />
+	<input name="name" input-skin label="输入框" class="coos-input " />
+	<input name="name" required="1" auto-validate="1" validate-rule="#{value}>10" input-skin label="输入框" info="这是提示说明信息" class="coos-input " />
+	<input name="name" required="required" readonly="readonly" input-skin label="输入框" info="这是提示说明信息" class="coos-input " />
+	<input name="name" input-skin input-size="4" label="输入框" info="这是提示说明信息" class="coos-input " />
+	<input name="name" input-skin="1" class="coos-input " />
+	<input name="name" input-skin="1" label="输入框" class="coos-input " />
+	<input name="name" required="1" input-skin="1" label="输入框" info="这是提示说明信息" class="coos-input " />
+	<input name="name" required="1" input-skin="1" input-size="4" label="输入框" info="这是提示说明信息" class="coos-input " />
+	
+</div>
+------js start-------
+//这里要传入输入框的容器
+coos.input.init($('.coos-form-01'));
+		</script>
+	</div>
+</body>
+</html>

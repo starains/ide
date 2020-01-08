@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8" />
+<title>COOS UI DOC</title>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<script type="text/javascript" src="doc.main.js"></script>
+</head>
+<body>
+	<div id="page-body-content">
+		<div class="coos-form coos-input-sm">
+			<h3 class="pd-10">调色预览区域</h3>
+			<div class="color-view pd-10"></div>
+
+			<input name="main-color" input-skin="0" label="调色板，设置主色" info="色调格式#000000" class="coos-input coos-input-color " />
+			<script type="text/javascript">
+				$('[name="main-color"]').change(function() {
+					var main = $(this).val();
+					var color = coos.color({
+						main : main
+					});
+					var $view = $('.color-view');
+					$view.empty();
+					$(color.getColors()).each(function(index, value) {
+						var $one = $('<div class="col-4 pd-10 ">' + value + '</div>');
+						$one.css('background-color', value);
+						var textColor = color.getContrastText(value);
+						$one.css('color', textColor);
+						$view.append($one);
+					});
+				});
+				$('[name="main-color"]').val('#4CAF50').change();
+			</script>
+		</div>
+		<script class="coos-format-code-example" type="text/html">
+------html start-------
+<div class="pd-20">
+	<div class="col-6 pd-10 coos-bg-black">.coos-white</div>
+	<div class="col-6 pd-10 coos-bg-white">.coos-bg-white</div>
+	<div class="col-6 pd-10 coos-black ">.coos-black</div>
+	<div class="col-6 pd-10 coos-bg-black">.coos-bg-black</div>
+	<div class="col-6 pd-10 coos-red ">.coos-red</div>
+	<div class="col-6 pd-10 coos-bg-red">.coos-bg-red</div>
+	<div class="col-6 pd-10 coos-pink ">.coos-pink</div>
+	<div class="col-6 pd-10 coos-bg-pink">.coos-bg-pink</div>
+	<div class="col-6 pd-10 coos-purple ">.coos-purple</div>
+	<div class="col-6 pd-10 coos-bg-purple">.coos-bg-purple</div>
+	<div class="col-6 pd-10 coos-deep-purple ">.coos-deep-purple</div>
+	<div class="col-6 pd-10 coos-bg-deep-purple">.coos-bg-deep-purple</div>
+	<div class="col-6 pd-10 coos-indigo ">.coos-indigo</div>
+	<div class="col-6 pd-10 coos-bg-indigo">.coos-bg-indigo</div>
+	<div class="col-6 pd-10 coos-blue ">.coos-blue</div>
+	<div class="col-6 pd-10 coos-bg-blue">.coos-bg-blue</div>
+	<div class="col-6 pd-10 coos-light-blue ">.coos-light-blue</div>
+	<div class="col-6 pd-10 coos-bg-light-blue">.coos-bg-light-blue</div>
+	<div class="col-6 pd-10 coos-cyan ">.coos-cyan</div>
+	<div class="col-6 pd-10 coos-bg-cyan">.coos-bg-cyan</div>
+	<div class="col-6 pd-10 coos-teal ">.coos-teal</div>
+	<div class="col-6 pd-10 coos-bg-teal">.coos-bg-teal</div>
+	<div class="col-6 pd-10 coos-green ">.coos-green</div>
+	<div class="col-6 pd-10 coos-bg-green">.coos-bg-green</div>
+	<div class="col-6 pd-10 coos-light-green ">.coos-light-green</div>
+	<div class="col-6 pd-10 coos-bg-light-green">.coos-bg-light-green</div>
+	<div class="col-6 pd-10 coos-lime ">.coos-lime</div>
+	<div class="col-6 pd-10 coos-bg-lime">.coos-bg-lime</div>
+	<div class="col-6 pd-10 coos-yellow ">.coos-yellow</div>
+	<div class="col-6 pd-10 coos-bg-yellow">.coos-bg-yellow</div>
+	<div class="col-6 pd-10 coos-amber ">.coos-amber</div>
+	<div class="col-6 pd-10 coos-bg-amber">.coos-bg-amber</div>
+	<div class="col-6 pd-10 coos-orange ">.coos-orange</div>
+	<div class="col-6 pd-10 coos-bg-orange">.coos-bg-orange</div>
+	<div class="col-6 pd-10 coos-deep-orange ">.coos-deep-orange</div>
+	<div class="col-6 pd-10 coos-bg-deep-orange">.coos-bg-deep-orange</div>
+	<div class="col-6 pd-10 coos-brown ">.coos-brown</div>
+	<div class="col-6 pd-10 coos-bg-brown">.coos-bg-brown</div>
+	<div class="col-6 pd-10 coos-grey ">.coos-grey</div>
+	<div class="col-6 pd-10 coos-bg-grey">.coos-bg-grey</div>
+	<div class="col-6 pd-10 coos-blue-grey ">.coos-blue-grey</div>
+	<div class="col-6 pd-10 coos-bg-blue-grey">.coos-bg-blue-grey</div>
+</div>
+		</script>
+	</div>
+</body>
+</html>

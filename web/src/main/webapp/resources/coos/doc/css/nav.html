@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8" />
+<title>COOS UI DOC</title>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<script type="text/javascript" src="doc.main.js"></script>
+</head>
+<body>
+	<div id="page-body-content">
+		<div input-skin="1">
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-nav-view').removeClass('coos-nav-xs coos-nav-sm coos-nav-md coos-nav-lg');">还原</div>
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-nav-view').removeClass('coos-nav-xs coos-nav-sm coos-nav-md coos-nav-lg').addClass('coos-nav-xs');">设置XS尺寸</div>
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-nav-view').removeClass('coos-nav-xs coos-nav-sm coos-nav-md coos-nav-lg').addClass('coos-nav-sm');">设置SM尺寸</div>
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-nav-view').removeClass('coos-nav-xs coos-nav-sm coos-nav-md coos-nav-lg').addClass('coos-nav-md');">设置MD尺寸</div>
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-nav-view').removeClass('coos-nav-xs coos-nav-sm coos-nav-md coos-nav-lg').addClass('coos-nav-lg');">设置LG尺寸</div>
+		</div>
+		<div input-skin="1">
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-nav-view').removeClass('coos-nav-full');">还原</div>
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-nav-view').removeClass('coos-nav-full').addClass('coos-nav-full');">设置撑满</div>
+		</div>
+		<div input-skin="1">
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-nav-view').removeClass('coos-nav-bd');">还原</div>
+			<div class="coos-btn coos-green " onClick="javascript:$('.coos-nav-view').removeClass('coos-nav-bd').addClass('coos-nav-bd');">设置边框</div>
+		</div>
+		<script class="coos-format-code-example" type="text/html">
+------html start-------
+<div class=" coos-row">
+	<ul class="coos-nav mgt-10 coos-nav-view">
+		<li><a>导航</a></li>
+		<li><a><input /></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+		<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+		<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png">文案</a></li>
+		<li class="coos-active"><a><img class="coos-format-image " path="/resources/coos/images/coos.png"><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+	</ul>
+	<ul class="coos-nav mgt-10 coos-nav-view">
+		<li><a>导航</a></li>
+		<li><a><input /></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+		<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+		<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png">文案</a></li>
+		<li class="coos-active"><a><img class="coos-format-image " path="/resources/coos/images/coos.png"><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+	</ul>
+	<ul class="coos-nav coos-orange mgt-10 coos-nav-view">
+		<li><a>导航</a></li>
+		<li><a><input /></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+		<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+		<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png">文案</a></li>
+		<li class="coos-active"><a><img class="coos-format-image " path="/resources/coos/images/coos.png"><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+	</ul>
+	<ul class="coos-nav coos-active-orange mgt-10 coos-nav-view">
+		<li><a>导航</a></li>
+		<li><a><input /></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+		<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+		<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png">文案</a></li>
+		<li class="coos-active"><a><img class="coos-format-image " path="/resources/coos/images/coos.png"><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+	</ul>
+	<ul class="coos-nav coos-active-bg-orange mgt-10 coos-nav-view">
+		<li><a>导航</a></li>
+		<li><a><input /></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+		<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+		<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png">文案</a></li>
+		<li class="coos-active"><a><img class="coos-format-image " path="/resources/coos/images/coos.png"><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+	</ul>
+	<ul class="coos-nav coos-bg-orange mgt-10 coos-nav-view">
+		<li><a>导航</a></li>
+		<li><a>导航</a></li>
+		<li><a>导航</a></li>
+		<li><a>导航</a></li>
+	</ul>
+	<ul class="coos-nav coos-bg-orange mgt-10 coos-nav-view">
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+	</ul>
+	<ul class="coos-nav coos-bg-orange mgt-10 coos-nav-view">
+		<li><a>导航</a></li>
+		<li><a><input /></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+		<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+		<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png">文案</a></li>
+		<li class="coos-active"><a><img class="coos-format-image " path="/resources/coos/images/coos.png"><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+	</ul>
+	<ul class="coos-nav coos-bg-orange mgt-10 coos-nav-view">
+		<li><a><h2>导航</h2></a></li>
+		<li><a><input /></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i><h3>导航</h3></a></li>
+		<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+		<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png"><h3>导航</h3></a></li>
+		<li class="coos-active"><a><img class="coos-format-image " path="/resources/coos/images/coos.png"><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+	</ul>
+	<ul class="coos-nav coos-nav-vertical coos-bg-orange mgt-10 coos-nav-view">
+		<li><a>导航</a></li>
+		<li><a><input /></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i></a></li>
+		<li><a><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+		<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+		<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png">文案</a></li>
+	</ul>
+	<ul class="coos-nav coos-bg-orange mgt-10 coos-nav-view">
+		<li><a>导航</a></li>
+		<li><a><input /></a></li>
+		<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+		<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png">文案</a></li>
+		<li class="coos-active">
+			<a><i class="coos-icon coos-icon-sync "></i>同步<i class="coos-caret"></i></a>
+			<ul class="">
+				<li><a>导航</a></li>
+				<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+				<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png">文案</a></li>
+				<li><a><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+				<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png"><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+			</ul>
+		</li>
+		<li><a>
+				<img class="coos-format-image " path="/resources/coos/images/coos.png"><i class="coos-icon coos-icon-sync "></i>同步
+				<i class="coos-caret"></i>
+			</a>
+			<ul class="">
+				<li><a>导航</a></li>
+				<li><a><img class="coos-format-image" path="/resources/coos/images/coos.png"></a></li>
+				<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png">文案</a></li>
+				<li><a><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+				<li><a><img class="coos-format-image " path="/resources/coos/images/coos.png"><i class="coos-icon coos-icon-sync "></i>同步</a></li>
+			</ul>
+		</li>
+	</ul>
+</div>
+		</script>
+	</div>
+</body>
+</html>
