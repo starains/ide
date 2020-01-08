@@ -54,7 +54,6 @@
 	</build>
 	<modules>
 		<module>base</module>
-		<module>main</module>
 		<module>terminal</module>
 		<module>deployer</module>
 		<module>starter</module>
