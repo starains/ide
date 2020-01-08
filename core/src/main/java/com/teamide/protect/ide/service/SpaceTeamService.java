@@ -7,8 +7,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceTeamBean;
-import com.teamide.ide.client.Client;
 import com.teamide.ide.service.ISpaceTeamService;
 import com.teamide.ide.service.impl.BaseService;
 import com.teamide.protect.ide.handler.SpaceHandler;
@@ -17,7 +17,7 @@ import com.teamide.protect.ide.handler.SpaceHandler;
 public class SpaceTeamService extends BaseService<SpaceTeamBean> implements ISpaceTeamService {
 
 	@Override
-	public SpaceTeamBean insert(Client client, SpaceTeamBean t) throws Exception {
+	public SpaceTeamBean insert(ClientSession client, SpaceTeamBean t) throws Exception {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("spaceid", t.getSpaceid());
@@ -36,7 +36,7 @@ public class SpaceTeamService extends BaseService<SpaceTeamBean> implements ISpa
 	}
 
 	@Override
-	public SpaceTeamBean update(Client client, SpaceTeamBean t) throws Exception {
+	public SpaceTeamBean update(ClientSession client, SpaceTeamBean t) throws Exception {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("spaceid", t.getSpaceid());
@@ -59,7 +59,7 @@ public class SpaceTeamService extends BaseService<SpaceTeamBean> implements ISpa
 	}
 
 	@Override
-	public SpaceTeamBean delete(Client client, SpaceTeamBean t) throws Exception {
+	public SpaceTeamBean delete(ClientSession client, SpaceTeamBean t) throws Exception {
 		SpaceHandler.remove(t.getSpaceid());
 		return super.delete(client, t);
 	}

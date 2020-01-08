@@ -9,8 +9,8 @@ import java.util.Properties;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.IOUtil;
 import com.teamide.util.StringUtil;
+import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceRepositoryOptionBean;
-import com.teamide.ide.client.Client;
 import com.teamide.protect.ide.enums.OptionType;
 import com.teamide.protect.ide.processor.repository.RepositoryLog;
 import com.teamide.protect.ide.service.SpaceRepositoryOptionService;
@@ -29,8 +29,8 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 
 	public static final String DEFAULT_BRANCH = "master";
 
-	public RepositoryProcessorParam(Client client, String spaceid, String branch) {
-		super(client, spaceid);
+	public RepositoryProcessorParam(ClientSession session, String spaceid, String branch) {
+		super(session, spaceid);
 
 		if (StringUtil.isEmpty(branch)) {
 			branch = DEFAULT_BRANCH;
@@ -139,7 +139,7 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 	public void deleteOption(String path, String name, OptionType type) throws Exception {
 
 		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-		List<SpaceRepositoryOptionBean> options = service.query(getClient(), getSpace(), branch, path, name, type);
+		List<SpaceRepositoryOptionBean> options = service.query(getSession(), getSpace(), branch, path, name, type);
 		for (SpaceRepositoryOptionBean option : options) {
 			service.delete(option.getId());
 		}
@@ -171,7 +171,7 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 
 	public List<SpaceRepositoryOptionBean> queryOptions(String path, String name, OptionType type) throws Exception {
 		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-		return service.query(getClient(), getSpace(), branch, path, name, type);
+		return service.query(getSession(), getSpace(), branch, path, name, type);
 	}
 
 	public JSONObject saveOption(String path, String name, OptionType type, JSONObject json) throws Exception {
@@ -189,8 +189,8 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		if (option == null) {
 			option = new SpaceRepositoryOptionBean();
 		}
-		if (getClient() != null && getClient().getUser() != null) {
-			option.setUserid(getClient().getUser().getId());
+		if (getSession() != null && getSession().getUser() != null) {
+			option.setUserid(getSession().getUser().getId());
 		}
 		option.setName(name);
 		option.setPath(path);
@@ -200,9 +200,9 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		option.setBranch(branch);
 
 		if (StringUtil.isEmpty(option.getId())) {
-			service.insert(getClient(), option);
+			service.insert(getSession(), option);
 		} else {
-			service.update(getClient(), option);
+			service.update(getSession(), option);
 		}
 		return json;
 	}

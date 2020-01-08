@@ -46,13 +46,13 @@ public class RepositoryCreate extends RepositoryBase {
 				if (src.exists()) {
 					FileUtils.copyDirectory(src, branchFolder);
 					SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-					List<SpaceRepositoryOptionBean> options = service.query(this.param.getClient(),
+					List<SpaceRepositoryOptionBean> options = service.query(this.param.getSession(),
 							this.param.getSpace(), null, null, null, null);
 
 					for (SpaceRepositoryOptionBean option : options) {
 						option.setBranch(copybranch);
 						option.setId(null);
-						service.save(this.param.getClient(), option);
+						service.save(this.param.getSession(), option);
 					}
 				}
 			} catch (Exception e) {

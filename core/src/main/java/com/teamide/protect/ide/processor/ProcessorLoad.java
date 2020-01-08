@@ -2,14 +2,14 @@ package com.teamide.protect.ide.processor;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
+import com.teamide.client.ClientSession;
+import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.bean.UserPreferenceBean;
-import com.teamide.ide.client.Client;
 import com.teamide.ide.configure.IDEOptions;
 import com.teamide.ide.service.IConfigureService;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.ide.service.IUserService;
-import com.teamide.protect.ide.engine.EngineSession;
 import com.teamide.protect.ide.handler.SpaceHandler;
 import com.teamide.protect.ide.handler.UserHandler;
 import com.teamide.protect.ide.processor.enums.ModelType;
@@ -22,25 +22,25 @@ import com.teamide.protect.ide.service.SpaceTeamService;
 import com.teamide.protect.ide.service.UserPreferenceService;
 import com.teamide.protect.ide.service.UserService;
 
-public class ProcessorData extends ProcessorBase {
+public class ProcessorLoad extends ProcessorBase {
 
-	public ProcessorData(EngineSession session, ProcessorParam param) {
-		super(session, param);
+	public ProcessorLoad(ProcessorParam param) {
+		super(param);
 	}
 
-	public void onData(String messageID, String model, JSONObject data) throws Exception {
-		ModelType modelType = ModelType.get(model);
-		onData(messageID, modelType, data);
+	public Object onLoad(String type, JSONObject data) throws Exception {
+		ModelType modelType = ModelType.get(type);
+		return onLoad(modelType, data);
 	}
 
-	public void onData(String messageID, ModelType modelType, JSONObject data) throws Exception {
+	public Object onLoad(ModelType modelType, JSONObject data) throws Exception {
 		if (modelType == null) {
-			return;
+			return null;
 		}
 		Object value = null;
 		int pageindex = data.getIntValue("pageindex");
 		int pagesize = data.getIntValue("pagesize");
-		Client client = this.param.getClient();
+		ClientSession session = this.param.getSession();
 		JSONObject param = new JSONObject();
 		switch (modelType) {
 		case ONE:
@@ -66,16 +66,16 @@ public class ProcessorData extends ProcessorBase {
 			JSONObject out = new JSONObject();
 			out.put("LOGIN_USER", null);
 			out.put("isManager", false);
-			out.put("roles", client.getRoles());
-			if (client.getUser() != null) {
-				JSONObject USER = UserHandler.getFormat(client.getUser());
+			out.put("roles", session.getCache("roles"));
+			if (session.getUser() != null) {
+				JSONObject USER = UserHandler.getFormat((UserBean) session.getCache("user"));
 				out.put("LOGIN_USER", USER);
-				out.put("isManager", client.isManager());
-				out.put("roles", client.getRoles());
+				out.put("isManager", session.getCache("isManager"));
+				out.put("roles", session.getCache("roles"));
 
 				JSONObject preference = new JSONObject();
 				UserPreferenceService service = new UserPreferenceService();
-				UserPreferenceBean one = service.get(client.getUser().getId());
+				UserPreferenceBean one = service.get(session.getUser().getId());
 				if (one != null && !StringUtil.isEmpty(one.getOption())) {
 					preference = JSONObject.parseObject(one.getOption());
 				}
@@ -100,12 +100,12 @@ public class ProcessorData extends ProcessorBase {
 			break;
 		case MASTER_SPACES:
 			ISpaceService spaceService = new SpaceService();
-			value = spaceService.queryMasters(client, pageindex, pagesize);
+			value = spaceService.queryMasters(session, pageindex, pagesize);
 			break;
 		case SEARCH_SPACES:
 			spaceService = new SpaceService();
 			String searchText = data.getString("searchText");
-			value = spaceService.querySearch(client, searchText, pageindex, pagesize);
+			value = spaceService.querySearch(session, searchText, pageindex, pagesize);
 			break;
 		case SEARCH_USERS:
 			IUserService userService = new UserService();
@@ -115,10 +115,9 @@ public class ProcessorData extends ProcessorBase {
 		case USERS:
 			userService = new UserService();
 			value = userService.queryPage(param, pageindex, pagesize);
-			break;
 
 		}
-		outData(messageID, modelType.getValue(), value);
+		return value;
 	}
 
 }

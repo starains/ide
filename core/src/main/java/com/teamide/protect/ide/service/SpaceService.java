@@ -11,13 +11,13 @@ import javax.annotation.Resource;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.PageResultBean;
+import com.teamide.client.ClientSession;
 import com.teamide.db.bean.PageSqlParam;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.SpaceStarBean;
 import com.teamide.ide.bean.SpaceTeamBean;
 import com.teamide.ide.bean.UserBean;
-import com.teamide.ide.client.Client;
 import com.teamide.ide.enums.SpacePermission;
 import com.teamide.ide.enums.SpaceTeamType;
 import com.teamide.ide.enums.SpaceType;
@@ -30,26 +30,26 @@ import com.teamide.protect.ide.handler.SpaceHandler;
 public class SpaceService extends BaseService<SpaceBean> implements ISpaceService {
 
 	@Override
-	public SpaceBean save(Client client, SpaceBean space) throws Exception {
+	public SpaceBean save(ClientSession session, SpaceBean space) throws Exception {
 		if (find(space, null)) {
-			return update(client, space);
+			return update(session, space);
 		}
-		return insert(client, space);
+		return insert(session, space);
 
 	}
 
 	@Override
-	public SpaceBean insert(Client client, SpaceBean space) throws Exception {
+	public SpaceBean insert(ClientSession session, SpaceBean space) throws Exception {
 		validateName(space);
-		space = super.insert(client, space);
-		if (client != null && client.isLogin()) {
+		space = super.insert(session, space);
+		if (session != null && session.isLogin()) {
 			SpaceTeamBean spaceTeam = new SpaceTeamBean();
 			spaceTeam.setPermission(SpacePermission.MASTER.getValue());
-			spaceTeam.setRecordid(client.getUser().getId());
+			spaceTeam.setRecordid(session.getUser().getId());
 			spaceTeam.setSpaceid(space.getId());
 			spaceTeam.setType(SpaceTeamType.USERS.getValue());
 			BaseService<SpaceTeamBean> spaceTeamService = new BaseService<SpaceTeamBean>();
-			spaceTeamService.insert(client, spaceTeam);
+			spaceTeamService.insert(session, spaceTeam);
 
 		}
 		return SpaceHandler.get(space.getId());
@@ -81,11 +81,11 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 	}
 
 	@Override
-	public SpaceBean update(Client client, SpaceBean space) throws Exception {
+	public SpaceBean update(ClientSession session, SpaceBean space) throws Exception {
 
 		validateName(space);
 		SpaceHandler.remove(space.getId());
-		super.update(client, space);
+		super.update(session, space);
 		return SpaceHandler.get(space.getId());
 	}
 
@@ -133,16 +133,16 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 	}
 
 	@Override
-	public PageResultBean<Map<String, Object>> queryVisibles(Client client, String parentid, int pageindex,
+	public PageResultBean<Map<String, Object>> queryVisibles(ClientSession session, String parentid, int pageindex,
 			int pagesize) throws Exception {
 		Map<String, Object> param = new HashMap<String, Object>();
 		String space_tablename = IDEFactory.getRealtablename(SpaceBean.class, param);
 		String space_team_tablename = IDEFactory.getRealtablename(SpaceTeamBean.class, param);
-		if (client == null || StringUtil.isEmpty(space_tablename) || StringUtil.isEmpty(space_team_tablename)) {
+		if (session == null || StringUtil.isEmpty(space_tablename) || StringUtil.isEmpty(space_team_tablename)) {
 			return null;
 		}
-		if (client.isLogin()) {
-			param.put("recordid", client.getUser().getId());
+		if (session.isLogin()) {
+			param.put("recordid", session.getUser().getId());
 		}
 		String whereSql = " WHERE 1=1 ";
 		if (!StringUtil.isEmpty(parentid)) {
@@ -184,24 +184,24 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		sqlParam.setPagesize(pagesize);
 
 		PageResultBean<Map<String, Object>> page = queryPageResult(sqlParam);
-		foramt(client, page.getValue());
+		foramt(session, page.getValue());
 		return page;
 	}
 
 	@Override
-	public PageResultBean<Map<String, Object>> queryMasters(Client client, int pageindex, int pagesize)
+	public PageResultBean<Map<String, Object>> queryMasters(ClientSession session, int pageindex, int pagesize)
 			throws Exception {
 		Map<String, Object> param = new HashMap<String, Object>();
 		String space_tablename = IDEFactory.getRealtablename(SpaceBean.class, param);
 		String space_team_tablename = IDEFactory.getRealtablename(SpaceTeamBean.class, param);
-		if (client == null || StringUtil.isEmpty(space_tablename) || StringUtil.isEmpty(space_team_tablename)) {
+		if (session == null || StringUtil.isEmpty(space_tablename) || StringUtil.isEmpty(space_team_tablename)) {
 			return null;
 		}
-		if (!client.isLogin()) {
+		if (!session.isLogin()) {
 			return null;
 		}
-		param.put("recordid", client.getUser().getId());
-		param.put("userspaceid", client.getUser().getSpaceid());
+		param.put("recordid", session.getUser().getId());
+		param.put("userspaceid", session.getCache("user", UserBean.class).getSpaceid());
 
 		String whereSql = " WHERE 1=1 ";
 
@@ -220,13 +220,13 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		sqlParam.setPagesize(pagesize);
 
 		PageResultBean<Map<String, Object>> page = queryPageResult(sqlParam);
-		foramt(client, page.getValue());
+		foramt(session, page.getValue());
 		return page;
 	}
 
 	@Override
-	public PageResultBean<Map<String, Object>> queryStars(Client client, String userid, int pageindex, int pagesize)
-			throws Exception {
+	public PageResultBean<Map<String, Object>> queryStars(ClientSession session, String userid, int pageindex,
+			int pagesize) throws Exception {
 		if (StringUtil.isEmpty(userid)) {
 			return null;
 		}
@@ -234,10 +234,10 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		Map<String, Object> param = new HashMap<String, Object>();
 		String space_tablename = IDEFactory.getRealtablename(SpaceBean.class, param);
 		String space_star_tablename = IDEFactory.getRealtablename(SpaceStarBean.class, param);
-		if (client == null || StringUtil.isEmpty(space_tablename) || StringUtil.isEmpty(space_star_tablename)) {
+		if (session == null || StringUtil.isEmpty(space_tablename) || StringUtil.isEmpty(space_star_tablename)) {
 			return null;
 		}
-		if (!client.isLogin()) {
+		if (!session.isLogin()) {
 			return null;
 		}
 		param.put("userid", userid);
@@ -257,14 +257,14 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		sqlParam.setPagesize(pagesize);
 
 		PageResultBean<Map<String, Object>> page = queryPageResult(sqlParam);
-		foramt(client, page.getValue());
+		foramt(session, page.getValue());
 		return page;
 	}
 
 	@Override
-	public PageResultBean<Map<String, Object>> querySearch(Client client, String searchText, int pageindex,
+	public PageResultBean<Map<String, Object>> querySearch(ClientSession session, String searchText, int pageindex,
 			int pagesize) throws Exception {
-		if (client == null || StringUtil.isEmpty(searchText)) {
+		if (session == null || StringUtil.isEmpty(searchText)) {
 			return null;
 		}
 
@@ -273,7 +273,7 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		param.put("likeSearchText", "%" + searchText + "%");
 		String space_tablename = IDEFactory.getRealtablename(SpaceBean.class, param);
 		String space_team_tablename = IDEFactory.getRealtablename(SpaceTeamBean.class, param);
-		if (client == null || StringUtil.isEmpty(space_tablename) || StringUtil.isEmpty(space_team_tablename)) {
+		if (session == null || StringUtil.isEmpty(space_tablename) || StringUtil.isEmpty(space_team_tablename)) {
 			return null;
 		}
 		String whereSql = " WHERE 1=1 ";
@@ -288,14 +288,14 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		sqlParam.setPagesize(pagesize);
 
 		PageResultBean<Map<String, Object>> page = queryPageResult(sqlParam);
-		foramt(client, page.getValue());
+		foramt(session, page.getValue());
 		return page;
 	}
 
 	@Override
-	public PageResultBean<Map<String, Object>> queryJoins(Client client, String spaceid, int pageindex, int pagesize)
-			throws Exception {
-		if (client == null || StringUtil.isEmpty(spaceid)) {
+	public PageResultBean<Map<String, Object>> queryJoins(ClientSession session, String spaceid, int pageindex,
+			int pagesize) throws Exception {
+		if (session == null || StringUtil.isEmpty(spaceid)) {
 			return null;
 		}
 
@@ -325,7 +325,7 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		param.put("recordid", recordid);
 		String space_tablename = IDEFactory.getRealtablename(SpaceBean.class, param);
 		String space_team_tablename = IDEFactory.getRealtablename(SpaceTeamBean.class, param);
-		if (client == null || StringUtil.isEmpty(space_tablename) || StringUtil.isEmpty(space_team_tablename)) {
+		if (session == null || StringUtil.isEmpty(space_tablename) || StringUtil.isEmpty(space_team_tablename)) {
 			return null;
 		}
 		String whereSql = " WHERE 1=1 ";
@@ -342,25 +342,25 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		sqlParam.setPagesize(pagesize);
 
 		PageResultBean<Map<String, Object>> page = queryPageResult(sqlParam);
-		foramt(client, page.getValue());
+		foramt(session, page.getValue());
 		return page;
 	}
 
-	public void foramt(Client client, List<Map<String, Object>> spaces) throws Exception {
+	public void foramt(ClientSession session, List<Map<String, Object>> spaces) throws Exception {
 		if (spaces == null) {
 			return;
 		}
 		for (Map<String, Object> one : spaces) {
 			SpaceBean space = SpaceHandler.get(String.valueOf(one.get("id")));
 			JSONObject json = SpaceHandler.getFormat(space.getId());
-			SpacePermission permission = SpaceHandler.getPermission(space, client);
+			SpacePermission permission = SpaceHandler.getPermission(space, session);
 			json.put("permission", permission);
 
 			json.put("login_user_star", false);
-			if (client.getUser() != null) {
+			if (session.getUser() != null) {
 				Map<String, Object> param = new HashMap<String, Object>();
 				param.put("spaceid", space.getId());
-				param.put("userid", client.getUser().getId());
+				param.put("userid", session.getUser().getId());
 
 				int count = queryCount(SpaceStarBean.class, param);
 				if (count > 0) {
@@ -373,7 +373,7 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 	}
 
 	@Override
-	public List<JSONObject> queryParents(Client client, String spaceid) throws Exception {
+	public List<JSONObject> queryParents(ClientSession session, String spaceid) throws Exception {
 		List<JSONObject> parents = new ArrayList<JSONObject>();
 		if (StringUtil.isEmpty(spaceid)) {
 			return parents;
@@ -416,11 +416,11 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 	}
 
 	@Override
-	public SpaceBean delete(Client client, SpaceBean t) throws Exception {
+	public SpaceBean delete(ClientSession session, SpaceBean t) throws Exception {
 		if (t != null) {
 			SpaceHandler.remove(t.getId());
 		}
-		return super.delete(client, t);
+		return super.delete(session, t);
 	}
 
 	@Override

@@ -6,14 +6,14 @@ import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.FileUtil;
-import com.teamide.ide.client.Client;
+import com.teamide.client.ClientSession;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.enums.TerminalEvent;
 
 public class Starter extends StarterParam {
 
-	public Starter(Client client, String token) {
-		super(client, token);
+	public Starter(ClientSession session, String token) {
+		super(session, token);
 	}
 
 	public void onChange(File folder) throws Exception {

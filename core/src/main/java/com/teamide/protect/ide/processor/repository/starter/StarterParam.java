@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
+import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.EnvironmentBean;
-import com.teamide.ide.client.Client;
 import com.teamide.protect.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.protect.ide.processor.repository.starter.StarterProcess;
 import com.teamide.protect.ide.processor.repository.starter.java.JavaInternalStarterProcess;
@@ -53,7 +53,7 @@ public class StarterParam {
 
 	public final StarterProcess starterProcess;
 
-	public StarterParam(Client client, String token) {
+	public StarterParam(ClientSession session, String token) {
 		this.token = token;
 		this.starterFolder = StarterHandler.getStarterFolder(token);
 		this.starterServerFolder = new File(this.starterFolder, "server");
@@ -79,7 +79,7 @@ public class StarterParam {
 			String branch = starterJSON.getString("branch");
 			String path = starterJSON.getString("path");
 			if (!StringUtil.isEmpty(spaceid)) {
-				param = new RepositoryProcessorParam(client, spaceid, branch);
+				param = new RepositoryProcessorParam(session, spaceid, branch);
 				projectFolder = new File(param.getSourceFolder(), path);
 			}
 		}

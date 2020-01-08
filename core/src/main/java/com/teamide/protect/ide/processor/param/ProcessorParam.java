@@ -1,17 +1,17 @@
 package com.teamide.protect.ide.processor.param;
 
-import com.teamide.ide.client.Client;
+import com.teamide.client.ClientSession;
 
 public class ProcessorParam {
 
-	private final Client client;
+	private final ClientSession session;
 
-	public ProcessorParam(Client client) {
-		this.client = client;
+	public ProcessorParam(ClientSession session) {
+		this.session = session;
 	}
 
-	public Client getClient() {
-		return client;
+	public ClientSession getSession() {
+		return session;
 	}
 
 }

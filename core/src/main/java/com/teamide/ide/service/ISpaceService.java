@@ -5,8 +5,8 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.PageResultBean;
+import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceBean;
-import com.teamide.ide.client.Client;
 import com.teamide.ide.enums.SpaceType;
 
 public interface ISpaceService extends IBaseService<SpaceBean> {
@@ -17,21 +17,21 @@ public interface ISpaceService extends IBaseService<SpaceBean> {
 
 	public List<SpaceBean> getChilds(String id) throws Exception;
 
-	public List<JSONObject> queryParents(Client client, String spaceid) throws Exception;
+	public List<JSONObject> queryParents(ClientSession session, String spaceid) throws Exception;
 
-	public PageResultBean<Map<String, Object>> queryJoins(Client client, String spaceid, int pageindex, int pagesize)
-			throws Exception;
-
-	public PageResultBean<Map<String, Object>> queryVisibles(Client client, String parentid, int pageindex,
+	public PageResultBean<Map<String, Object>> queryJoins(ClientSession session, String spaceid, int pageindex,
 			int pagesize) throws Exception;
 
-	public PageResultBean<Map<String, Object>> queryStars(Client client, String userid, int pageindex, int pagesize)
+	public PageResultBean<Map<String, Object>> queryVisibles(ClientSession session, String parentid, int pageindex,
+			int pagesize) throws Exception;
+
+	public PageResultBean<Map<String, Object>> queryStars(ClientSession session, String userid, int pageindex,
+			int pagesize) throws Exception;
+
+	public PageResultBean<Map<String, Object>> queryMasters(ClientSession session, int pageindex, int pagesize)
 			throws Exception;
 
-	public PageResultBean<Map<String, Object>> queryMasters(Client client, int pageindex, int pagesize)
-			throws Exception;
-
-	public PageResultBean<Map<String, Object>> querySearch(Client client, String searchText, int pageindex,
+	public PageResultBean<Map<String, Object>> querySearch(ClientSession session, String searchText, int pageindex,
 			int pagesize) throws Exception;
 
 	public boolean isRepositorys(SpaceBean space);

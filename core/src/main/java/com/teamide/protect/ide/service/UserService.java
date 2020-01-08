@@ -8,12 +8,12 @@ import javax.annotation.Resource;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.PageResultBean;
+import com.teamide.client.ClientSession;
 import com.teamide.db.bean.PageSqlParam;
 import com.teamide.util.IDGenerateUtil;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.UserBean;
-import com.teamide.ide.client.Client;
 import com.teamide.ide.enums.PublicType;
 import com.teamide.ide.enums.SpaceType;
 import com.teamide.ide.factory.IDEFactory;
@@ -32,7 +32,7 @@ public class UserService extends BaseService<UserBean> implements IUserService {
 	}
 
 	@Override
-	public UserBean save(Client client, UserBean user) throws Exception {
+	public UserBean save(ClientSession session, UserBean user) throws Exception {
 
 		if (user == null) {
 			return null;
@@ -97,12 +97,12 @@ public class UserService extends BaseService<UserBean> implements IUserService {
 			space.setName(user.getLoginname());
 			space.setPublictype(PublicType.OPEN.getValue());
 			space.setType(SpaceType.USERS.getValue());
-			space = new SpaceService().insert(client, space);
+			space = new SpaceService().insert(session, space);
 
 			user.setSpaceid(space.getId());
-			user = super.insert(client, user);
+			user = super.insert(session, user);
 		} else {
-			user = super.update(client, user);
+			user = super.update(session, user);
 		}
 
 		return user;

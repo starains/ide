@@ -66,6 +66,7 @@
                 websocket.onclose = function (e) {
                     source.websocket.opening = false;
                     source.websocket.opened = false;
+                    return;
                     source.server.status().then((res) => {
                         if (res) {
                             reconnectCount++;

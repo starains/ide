@@ -6,10 +6,6 @@ public enum ProcessorType {
 
 	VALIDATE("VALIDATE", "Validate"),
 
-	DATA("DATA", "数据"),
-
-	MESSAGE("MESSAGE", "信息"),
-
 	INSTALL("INSTALL", "安装"),
 
 	RESTART("RESTART", "重启"),

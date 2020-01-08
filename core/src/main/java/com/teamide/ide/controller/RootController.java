@@ -25,6 +25,8 @@ public class RootController extends HttpServlet {
 
 	DataController dataController = new DataController();
 
+	WorkspaceController workspaceController = new WorkspaceController();
+
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -51,8 +53,14 @@ public class RootController extends HttpServlet {
 				resourcesController.handle(path, request, response);
 			} else if (path.startsWith("/api/data/")) {
 				dataController.handle(path, request, response);
+			} else if (path.startsWith("/api/workspace/")) {
+				workspaceController.handle(path, request, response);
 			} else {
-				System.out.println(path);
+				if ("GET".equalsIgnoreCase(request.getMethod())) {
+					resourcesController.handle("/html/index.html", request, response);
+				} else {
+
+				}
 			}
 		} catch (Exception e) {
 			Status status = new Status();

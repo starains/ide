@@ -65,8 +65,8 @@ public class RepositoryLoad extends RepositoryBase {
 		String userid = null;
 		String spaceid = param.getSpaceid();
 		String branch = param.getBranch();
-		if (param.getClient().getUser() != null) {
-			userid = param.getClient().getUser().getId();
+		if (param.getSession().getUser() != null) {
+			userid = param.getSession().getUser().getId();
 		}
 		result.put("opens", spaceRepositoryOpenService.queryOpens(userid, spaceid, branch));
 		return result;

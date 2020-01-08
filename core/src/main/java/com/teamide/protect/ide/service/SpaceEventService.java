@@ -3,10 +3,10 @@ package com.teamide.protect.ide.service;
 import javax.annotation.Resource;
 
 import com.teamide.bean.PageResultBean;
+import com.teamide.client.ClientSession;
 import com.teamide.db.bean.PageSqlParam;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.SpaceEventBean;
-import com.teamide.ide.client.Client;
 import com.teamide.ide.enums.WorkspaceControl;
 import com.teamide.ide.service.ISpaceEventService;
 import com.teamide.ide.service.impl.BaseService;
@@ -15,7 +15,7 @@ import com.teamide.ide.service.impl.BaseService;
 public class SpaceEventService extends BaseService<SpaceEventBean> implements ISpaceEventService {
 
 	@Override
-	public SpaceEventBean append(Client client, WorkspaceControl control, String name, SpaceBean space)
+	public SpaceEventBean append(ClientSession client, WorkspaceControl control, String name, SpaceBean space)
 			throws Exception {
 		// TODO Auto-generated method stub
 		return null;

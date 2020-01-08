@@ -8,8 +8,8 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.service.impl.TService;
 import com.teamide.util.StringUtil;
+import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.BaseBean;
-import com.teamide.ide.client.Client;
 import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.service.IBaseService;
 
@@ -25,33 +25,33 @@ public class BaseService<T> extends TService<T> implements IBaseService<T> {
 		super(IDEFactory.getService().getDao().getDataSourceFactory());
 	}
 
-	public T save(Client client, T t) throws Exception {
+	public T save(ClientSession session, T t) throws Exception {
 		if (find(t, null)) {
-			return update(client, t);
+			return update(session, t);
 		}
-		return insert(client, t);
+		return insert(session, t);
 	}
 
-	public T insert(Client client, T t) throws Exception {
+	public T insert(ClientSession session, T t) throws Exception {
 		if (t != null && t instanceof BaseBean) {
 			BaseBean base = (BaseBean) t;
 			base.setCreatetime(PURE_DATETIME_FORMAT.format(new Date()));
-			if (client != null && client.getUser() != null) {
-				base.setCreateuserid(client.getUser().getId());
+			if (session != null && session.getUser() != null) {
+				base.setCreateuserid(session.getUser().getId());
 			}
 		}
 		return super.insert(t);
 	}
 
-	public T update(Client client, T t) throws Exception {
+	public T update(ClientSession session, T t) throws Exception {
 		if (t != null && t instanceof BaseBean) {
 			BaseBean base = (BaseBean) t;
 			if (StringUtil.isEmpty(base.getId())) {
 				throw new Exception("编号丢失！");
 			}
 			base.setUpdatetime(PURE_DATETIME_FORMAT.format(new Date()));
-			if (client != null && client.getUser() != null) {
-				base.setUpdateuserid(client.getUser().getId());
+			if (session != null && session.getUser() != null) {
+				base.setUpdateuserid(session.getUser().getId());
 			}
 		}
 		return super.update(t);
@@ -72,7 +72,7 @@ public class BaseService<T> extends TService<T> implements IBaseService<T> {
 	}
 
 	@Override
-	public T delete(Client client, T t) throws Exception {
+	public T delete(ClientSession session, T t) throws Exception {
 		if (t == null) {
 			return t;
 		}

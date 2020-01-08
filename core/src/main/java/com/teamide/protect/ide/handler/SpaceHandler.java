@@ -9,9 +9,10 @@ import java.util.Set;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
+import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.SpaceTeamBean;
-import com.teamide.ide.client.Client;
+import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.enums.PublicType;
 import com.teamide.ide.enums.SpacePermission;
 import com.teamide.ide.enums.SpaceTeamType;
@@ -145,19 +146,19 @@ public class SpaceHandler {
 		return result;
 	}
 
-	public static SpacePermission getPermission(String spaceid, Client client) {
-		return getPermission(get(spaceid), client);
+	public static SpacePermission getPermission(String spaceid, ClientSession session) {
+		return getPermission(get(spaceid), session);
 	}
 
-	public static SpacePermission getPermission(SpaceBean space, Client client) {
+	public static SpacePermission getPermission(SpaceBean space, ClientSession session) {
 		if (space == null) {
 			return null;
 		}
 		SpacePermission permission = null;
-		if (client != null && client.isLogin()) {
-			String userid = client.getUser().getId();
+		if (session != null && session.isLogin()) {
+			String userid = session.getUser().getId();
 			if (isUsers(space)) {
-				if (space.getId().equalsIgnoreCase(client.getUser().getSpaceid())) {
+				if (space.getId().equalsIgnoreCase(session.getCache("user", UserBean.class).getSpaceid())) {
 					return SpacePermission.MASTER;
 				}
 			}
@@ -179,7 +180,7 @@ public class SpaceHandler {
 			if (!StringUtil.isEmpty(space.getParentid()) && !space.getParentid().equals(space.getId())) {
 				SpaceBean parent = get(space.getParentid());
 				if (parent != null) {
-					permission = getPermission(parent, client);
+					permission = getPermission(parent, session);
 				}
 			}
 		}

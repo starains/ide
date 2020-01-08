@@ -89,9 +89,8 @@ public class IDEConf {
 		try {
 
 			br = new BufferedReader(new FileReader(conf));
-
-			while (br.readLine() != null) {
-				String line = br.readLine().trim();
+			String line = null;
+			while ((line = br.readLine()) != null) {
 				if (line.length() == 0) {
 					continue;
 				}

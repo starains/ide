@@ -8,8 +8,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.teamide.util.StringUtil;
+import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceStarBean;
-import com.teamide.ide.client.Client;
 import com.teamide.ide.service.ISpaceStarService;
 import com.teamide.ide.service.impl.BaseService;
 
@@ -17,7 +17,7 @@ import com.teamide.ide.service.impl.BaseService;
 public class SpaceStarService extends BaseService<SpaceStarBean> implements ISpaceStarService {
 
 	@Override
-	public SpaceStarBean insert(Client client, SpaceStarBean t) throws Exception {
+	public SpaceStarBean insert(ClientSession session, SpaceStarBean t) throws Exception {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("spaceid", t.getSpaceid());
@@ -28,12 +28,12 @@ public class SpaceStarService extends BaseService<SpaceStarBean> implements ISpa
 			throw new Exception("该仓库已收藏！");
 		}
 
-		SpaceStarBean res = super.insert(client, t);
+		SpaceStarBean res = super.insert(session, t);
 		return res;
 	}
 
 	@Override
-	public SpaceStarBean update(Client client, SpaceStarBean t) throws Exception {
+	public SpaceStarBean update(ClientSession session, SpaceStarBean t) throws Exception {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("spaceid", t.getSpaceid());
@@ -48,12 +48,12 @@ public class SpaceStarService extends BaseService<SpaceStarBean> implements ISpa
 			}
 		}
 
-		SpaceStarBean res = super.update(client, t);
+		SpaceStarBean res = super.update(session, t);
 		return res;
 	}
 
 	@Override
-	public SpaceStarBean delete(Client client, SpaceStarBean t) throws Exception {
+	public SpaceStarBean delete(ClientSession session, SpaceStarBean t) throws Exception {
 		if (t != null) {
 			if (StringUtil.isEmpty(t.getId())) {
 				if (!StringUtil.isEmpty(t.getSpaceid()) && !StringUtil.isEmpty(t.getUserid())) {
@@ -64,7 +64,7 @@ public class SpaceStarService extends BaseService<SpaceStarBean> implements ISpa
 					List<SpaceStarBean> list = queryList(param);
 					if (list != null && list.size() > 0) {
 						for (SpaceStarBean one : list) {
-							this.delete(client, one);
+							this.delete(session, one);
 						}
 						return list.get(0);
 					}
@@ -72,7 +72,7 @@ public class SpaceStarService extends BaseService<SpaceStarBean> implements ISpa
 				return null;
 			}
 		}
-		return super.delete(client, t);
+		return super.delete(session, t);
 	}
 
 	@Override

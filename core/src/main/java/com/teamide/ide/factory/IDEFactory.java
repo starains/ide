@@ -10,7 +10,6 @@ import com.teamide.service.IService;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.configure.IDEOptions;
-import com.teamide.ide.engine.Engine;
 
 public class IDEFactory {
 
@@ -59,24 +58,24 @@ public class IDEFactory {
 		return null;
 	}
 
-	static Engine engine = null;
-
-	static Object lock = new Object();
-
-	public static Engine getEngine() {
-		if (engine != null) {
-			return engine;
-		}
-		synchronized (lock) {
-			if (engine != null) {
-				return engine;
-			}
-			try {
-				engine = new com.teamide.protect.ide.engine.Engine();
-			} catch (Exception e) {
-			}
-			return engine;
-		}
-	}
+	// static Engine engine = null;
+	//
+	// static Object lock = new Object();
+	//
+	// public static Engine getEngine() {
+	// if (engine != null) {
+	// return engine;
+	// }
+	// synchronized (lock) {
+	// if (engine != null) {
+	// return engine;
+	// }
+	// try {
+	// engine = new com.teamide.protect.ide.engine.Engine();
+	// } catch (Exception e) {
+	// }
+	// return engine;
+	// }
+	// }
 
 }

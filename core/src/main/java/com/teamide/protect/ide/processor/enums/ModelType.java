@@ -6,9 +6,9 @@ public enum ModelType {
 
 	ONE("ONE", "单个数据", ModelDataType.ONE),
 
-	INSTALLED("INSTALLED", "是否安装", ModelDataType.ONE),
-
 	SESSION("SESSION", "会话", ModelDataType.ONE),
+
+	INSTALLED("INSTALLED", "是否安装", ModelDataType.ONE),
 
 	CONFIGURE("CONFIGURE", "配置", ModelDataType.ONE),
 

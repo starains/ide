@@ -5,16 +5,17 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.teamide.util.StringUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.RoleBean;
 import com.teamide.ide.bean.UserBean;
-import com.teamide.ide.client.Client;
 import com.teamide.ide.service.ILoginService;
 
 @Resource
 public class LoginService implements ILoginService {
 
 	@Override
-	public UserBean doLogin(Client client, String loginname, String password) throws Exception {
+	public UserBean doLogin(ClientSession session, String loginname, String password) throws Exception {
 
 		if (StringUtil.isEmpty(loginname)) {
 			throw new Exception("登录名称不能为空.");
@@ -29,11 +30,14 @@ public class LoginService implements ILoginService {
 		if (user == null) {
 			throw new Exception("用户名或密码错误！");
 		}
-		if (client != null) {
-			client.doLogin(user);
+		if (session != null) {
+			JSONObject userJSON = (JSONObject) JSONObject.toJSON(user);
+
+			session.doLogin(userJSON.toJavaObject(com.teamide.bean.UserBean.class));
 
 			List<RoleBean> roles = new RoleService().queryUserVisibleRoles(user.getId());
-			client.setRoles(roles);
+			session.setCache("user", user);
+			session.setCache("roles", roles);
 
 		}
 		return user;

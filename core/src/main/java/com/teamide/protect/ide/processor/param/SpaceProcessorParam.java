@@ -3,8 +3,8 @@ package com.teamide.protect.ide.processor.param;
 import java.io.File;
 
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceBean;
-import com.teamide.ide.client.Client;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.protect.ide.handler.SpaceHandler;
 
@@ -18,8 +18,8 @@ public class SpaceProcessorParam extends ProcessorParam {
 
 	private final File spaceFolder;
 
-	public SpaceProcessorParam(Client client, String spaceid) {
-		super(client);
+	public SpaceProcessorParam(ClientSession session, String spaceid) {
+		super(session);
 		this.spaceid = spaceid;
 		this.space = SpaceHandler.get(spaceid);
 		this.formatSpace = SpaceHandler.getFormat(spaceid);

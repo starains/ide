@@ -1,6 +1,5 @@
 package com.teamide.protect.ide.processor;
 
-import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,9 +12,7 @@ import com.teamide.ide.bean.RunnerClientBean;
 import com.teamide.ide.bean.RunnerServerBean;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceRepositoryOpenBean;
-import com.teamide.protect.ide.engine.EngineSession;
 import com.teamide.protect.ide.enums.OptionType;
-import com.teamide.protect.ide.processor.enums.MessageLevel;
 import com.teamide.protect.ide.processor.enums.RepositoryModelType;
 import com.teamide.protect.ide.processor.enums.RepositoryProcessorType;
 import com.teamide.protect.ide.processor.param.RepositoryProcessorParam;
@@ -28,7 +25,6 @@ import com.teamide.protect.ide.processor.repository.RepositoryLog;
 import com.teamide.protect.ide.processor.repository.RepositoryMaven;
 import com.teamide.protect.ide.processor.repository.RepositoryRunner;
 import com.teamide.protect.ide.processor.repository.RepositoryStarter;
-import com.teamide.protect.ide.processor.repository.project.FileBean;
 import com.teamide.protect.ide.processor.repository.project.ProjectAppLoader;
 import com.teamide.protect.ide.processor.repository.project.ProjectLoader;
 import com.teamide.protect.ide.processor.repository.starter.StarterHandler;
@@ -39,16 +35,22 @@ import com.teamide.protect.ide.service.SpaceRepositoryOpenService;
 public class RepositoryProcessor extends SpaceProcessor {
 	protected final RepositoryProcessorParam param;
 
-	public RepositoryProcessor(EngineSession session, RepositoryProcessorParam param) {
-		super(session, param);
+	public RepositoryProcessor(RepositoryProcessorParam param) {
+		super(param);
 		this.param = param;
 	}
 
-	protected void process(String messageID, String type, JSONObject data) throws Exception {
+	public Object onDo(String type, JSONObject data) throws Exception {
 		RepositoryProcessorType processorType = RepositoryProcessorType.get(type);
 		if (processorType == null) {
-			super.process(messageID, type, data);
-			return;
+			return super.onDo(type, data);
+		}
+		return onDo(processorType, data);
+	}
+
+	protected Object onDo(RepositoryProcessorType processorType, JSONObject data) throws Exception {
+		if (processorType == null) {
+			return null;
 		}
 		SpaceEventBean spaceEventBean = new SpaceEventBean();
 		spaceEventBean.setType(processorType.getValue());
@@ -70,7 +72,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			String parentPath = data.getString("parentPath");
 			String name = data.getString("name");
 			boolean isFile = data.getBooleanValue("isFile");
-			File folder = new RepositoryFile(param).create(parentPath, name, isFile);
+			new RepositoryFile(param).create(parentPath, name, isFile);
 
 			// changeFolder(folder);
 
@@ -84,7 +86,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 		case FILE_MOVE:
 			String path = data.getString("path");
 			String to = data.getString("to");
-			folder = new RepositoryFile(param).move(path, to);
+			new RepositoryFile(param).move(path, to);
 
 			spaceEventBean.set("path", path);
 			spaceEventBean.set("to", to);
@@ -96,7 +98,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			break;
 		case FILE_DELETE:
 			path = data.getString("path");
-			folder = new RepositoryFile(param).delete(path);
+			new RepositoryFile(param).delete(path);
 
 			// changeFolder(folder);
 
@@ -110,9 +112,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 		case FILE_PASTE:
 			path = data.getString("path");
 			String source = data.getString("source");
-			folder = new RepositoryFile(param).paste(path, source);
-
-			changeFolder(folder);
+			new RepositoryFile(param).paste(path, source);
 
 			spaceEventBean.set("path", path);
 			appendEvent(spaceEventBean);
@@ -124,8 +124,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			String content = data.getString("content");
 			new RepositoryFile(param).save(path, content);
 
-			changeFile(param.getFile(path));
-
 			spaceEventBean.set("path", path);
 			appendEvent(spaceEventBean);
 
@@ -134,7 +132,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 		case FILE_RENAME:
 			path = data.getString("path");
 			name = data.getString("name");
-			folder = new RepositoryFile(param).rename(path, name);
+			new RepositoryFile(param).rename(path, name);
 
 			// changeFolder(folder);
 
@@ -155,7 +153,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			if (!StringUtil.isEmpty(path)) {
 				Map<String, Object> p = new HashMap<String, Object>();
 				p.put("spaceid", param.getSpaceid());
-				p.put("userid", param.getClient().getUser().getId());
+				p.put("userid", param.getSession().getUser().getId());
 				p.put("path", path);
 				p.put("branch", param.getBranch());
 				SpaceRepositoryOpenService spaceRepositoryOpenService = new SpaceRepositoryOpenService();
@@ -164,16 +162,16 @@ public class RepositoryProcessor extends SpaceProcessor {
 					SpaceRepositoryOpenBean spaceRepositoryOpenBean = new SpaceRepositoryOpenBean();
 					spaceRepositoryOpenBean.setSpaceid(param.getSpaceid());
 					spaceRepositoryOpenBean.setPath(path);
-					spaceRepositoryOpenBean.setUserid(param.getClient().getUser().getId());
+					spaceRepositoryOpenBean.setUserid(param.getSession().getUser().getId());
 					spaceRepositoryOpenBean.setOpentime(new Date().getTime());
 					spaceRepositoryOpenBean.setBranch(param.getBranch());
-					spaceRepositoryOpenService.insert(param.getClient(), spaceRepositoryOpenBean);
+					spaceRepositoryOpenService.insert(param.getSession(), spaceRepositoryOpenBean);
 				} else {
 					for (SpaceRepositoryOpenBean one : list) {
 						SpaceRepositoryOpenBean up = new SpaceRepositoryOpenBean();
 						up.setId(one.getId());
 						up.setOpentime(new Date().getTime());
-						spaceRepositoryOpenService.update(param.getClient(), up);
+						spaceRepositoryOpenService.update(param.getSession(), up);
 					}
 				}
 			}
@@ -185,7 +183,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			path = data.getString("path");
 			Map<String, Object> p = new HashMap<String, Object>();
 			p.put("spaceid", param.getSpaceid());
-			p.put("userid", param.getClient().getUser().getId());
+			p.put("userid", param.getSession().getUser().getId());
 			p.put("path", path);
 
 			SpaceRepositoryOpenService spaceRepositoryOpenService = new SpaceRepositoryOpenService();
@@ -298,25 +296,17 @@ public class RepositoryProcessor extends SpaceProcessor {
 			gitRemoteName = data.getString("gitRemoteName");
 			String gitRemoteBranch = data.getString("gitRemoteBranch");
 
-			outRepositoryStatus("Git pull [" + gitRemoteName + "] [" + gitRemoteBranch + "] ...");
-
-			try {
-				certificate = data.getJSONObject("certificate");
-				username = null;
-				password = null;
-				if (certificate != null) {
-					username = certificate.getString("username");
-					password = certificate.getString("password");
-				}
-				new RepositoryGit(param).pull(gitRemoteName, gitRemoteBranch, username, password);
-
-				spaceEventBean.set(data);
-				appendEvent(spaceEventBean);
-
-				onData(null, RepositoryModelType.REPOSITORY.getValue(), new JSONObject());
-			} finally {
-				outRepositoryStatus(null);
+			certificate = data.getJSONObject("certificate");
+			username = null;
+			password = null;
+			if (certificate != null) {
+				username = certificate.getString("username");
+				password = certificate.getString("password");
 			}
+			new RepositoryGit(param).pull(gitRemoteName, gitRemoteBranch, username, password);
+
+			spaceEventBean.set(data);
+			appendEvent(spaceEventBean);
 
 			break;
 		case GIT_REVERT:
@@ -340,35 +330,29 @@ public class RepositoryProcessor extends SpaceProcessor {
 			String branchName = data.getString("branchName");
 			gitRemoteBranch = data.getString("gitRemoteBranch");
 
-			outRepositoryStatus("Git push [" + gitRemoteName + "] [" + gitRemoteBranch + "] ...");
+			repositoryGit = new RepositoryGit(param);
 
-			try {
-				repositoryGit = new RepositoryGit(param);
+			String message = data.getString("message");
 
-				String message = data.getString("message");
+			paths = data.getJSONArray("paths");
+			repositoryGit.add(paths);
 
-				paths = data.getJSONArray("paths");
-				repositoryGit.add(paths);
+			repositoryGit.commit(message);
 
-				repositoryGit.commit(message);
-
-				certificate = data.getJSONObject("certificate");
-				username = null;
-				password = null;
-				if (certificate != null) {
-					username = certificate.getString("username");
-					password = certificate.getString("password");
-				}
-
-				new RepositoryGit(param).push(gitRemoteName, branchName, gitRemoteBranch, username, password);
-
-				spaceEventBean.set(data);
-				appendEvent(spaceEventBean);
-
-				reloadGit();
-			} finally {
-				outRepositoryStatus(null);
+			certificate = data.getJSONObject("certificate");
+			username = null;
+			password = null;
+			if (certificate != null) {
+				username = certificate.getString("username");
+				password = certificate.getString("password");
 			}
+
+			new RepositoryGit(param).push(gitRemoteName, branchName, gitRemoteBranch, username, password);
+
+			spaceEventBean.set(data);
+			appendEvent(spaceEventBean);
+
+			reloadGit();
 
 			break;
 		case GIT_INDEX_ADD:
@@ -396,7 +380,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("remote", gitRemoteName);
 			appendEvent(spaceEventBean);
 
-			process(messageID, RepositoryProcessorType.GIT_PULL.getValue(), data);
 			break;
 		case GIT_REMOTE_REMOVE:
 			gitRemoteName = data.getString("gitRemoteName");
@@ -419,7 +402,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 
-			process(messageID, RepositoryProcessorType.GIT_PULL.getValue(), data);
 			break;
 		case SET_STARTER_OPTION:
 			path = data.getString("path");
@@ -431,9 +413,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("option", option);
 			appendEvent(spaceEventBean);
 
-			outMessage(MessageLevel.SUCCESS, "保存成功.");
-
-			onData(null, RepositoryModelType.STARTER_OPTIONS.getValue(), data);
 			break;
 		case DELETE_STARTER_OPTION:
 			path = data.getString("path");
@@ -445,9 +424,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("option", option);
 			appendEvent(spaceEventBean);
 
-			outMessage(MessageLevel.SUCCESS, "删除成功.");
-
-			onData(null, RepositoryModelType.STARTER_OPTIONS.getValue(), data);
 			break;
 		case STARTER_START:
 			String token = data.getString("token");
@@ -465,7 +441,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("token", token);
 			appendEvent(spaceEventBean);
 
-			onData(null, RepositoryModelType.STARTERS.getValue(), data);
 			break;
 		case STARTER_STOP:
 			token = data.getString("token");
@@ -490,7 +465,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("token", token);
 			appendEvent(spaceEventBean);
 
-			onData(null, RepositoryModelType.STARTERS.getValue(), data);
 			break;
 		case STARTER_LOG_CLEAN:
 			token = data.getString("token");
@@ -586,10 +560,10 @@ public class RepositoryProcessor extends SpaceProcessor {
 			break;
 		case RUNNER_SERVER_SAVE:
 			RunnerServerBean runnerServerBean = data.toJavaObject(RunnerServerBean.class);
-			if (param.getClient().getUser() != null) {
-				runnerServerBean.setUserid(param.getClient().getUser().getId());
+			if (param.getSession().getUser() != null) {
+				runnerServerBean.setUserid(param.getSession().getUser().getId());
 			}
-			value = new RunnerServerService().save(param.getClient(), runnerServerBean);
+			value = new RunnerServerService().save(param.getSession(), runnerServerBean);
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
@@ -605,10 +579,10 @@ public class RepositoryProcessor extends SpaceProcessor {
 			break;
 		case RUNNER_CLIENT_SAVE:
 			RunnerClientBean runnerClientBean = data.toJavaObject(RunnerClientBean.class);
-			if (param.getClient().getUser() != null) {
-				runnerClientBean.setUserid(param.getClient().getUser().getId());
+			if (param.getSession().getUser() != null) {
+				runnerClientBean.setUserid(param.getSession().getUser().getId());
 			}
-			value = new RunnerClientService().save(param.getClient(), runnerClientBean);
+			value = new RunnerClientService().save(param.getSession(), runnerClientBean);
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
@@ -622,9 +596,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("option", option);
 			appendEvent(spaceEventBean);
 
-			outMessage(MessageLevel.SUCCESS, "保存成功.");
-
-			onData(null, RepositoryModelType.PROJECT.getValue(), data);
 			break;
 
 		case APP_DELETE_OPTION:
@@ -634,9 +605,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("path", path);
 			appendEvent(spaceEventBean);
 
-			outMessage(MessageLevel.SUCCESS, "删除成功.");
-
-			onData(null, RepositoryModelType.PROJECT.getValue(), data);
 			break;
 		case APP_GENERATE_SOURCE_CODE:
 			path = data.getString("path");
@@ -646,44 +614,30 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("path", path);
 			appendEvent(spaceEventBean);
 
-			outMessage(MessageLevel.SUCCESS, "生成成功.");
-
-			onData(null, RepositoryModelType.PROJECT.getValue(), data);
-
 			break;
 		}
 
-		out(messageID, processorType.getValue(), value);
+		return value;
 
-	}
-
-	public void changeFolder(File folder) throws Exception {
-		JSONObject data = new JSONObject();
-		JSONObject message = createDataMessage(RepositoryModelType.FILE.getValue(), data);
-		outByThisSpaceBranch(message);
-	}
-
-	public void changeFile(File file) throws Exception {
-
-		String path = this.param.getPath(file);
-		FileBean fileBean = new ProjectLoader(param).readFile(path);
-
-		JSONObject message = createDataMessage(RepositoryModelType.FILE.getValue(), fileBean);
-
-		outByThisSpaceBranch(message);
 	}
 
 	public void reloadGit() throws Exception {
 
-		onData(null, RepositoryModelType.GIT.getValue(), new JSONObject());
 	}
 
-	public void onData(String messageID, String model, JSONObject data) throws Exception {
-		RepositoryModelType modelType = RepositoryModelType.get(model);
+	public Object onLoad(String type, JSONObject data) throws Exception {
+		RepositoryModelType modelType = RepositoryModelType.get(type);
 		if (modelType == null) {
-			super.onData(messageID, model, data);
-			return;
+			return super.onLoad(type, data);
 		}
+		return onLoad(modelType, data);
+	}
+
+	public Object onLoad(RepositoryModelType modelType, JSONObject data) throws Exception {
+		if (modelType == null) {
+			return null;
+		}
+
 		Object value = null;
 		switch (modelType) {
 		case REPOSITORY_STATUS:
@@ -773,7 +727,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 		case RUNNER_SERVERS:
 
 			Map<String, Object> p = new HashMap<String, Object>();
-			p.put("userid", this.param.getClient().getUser().getId());
+			p.put("userid", this.param.getSession().getUser().getId());
 
 			RunnerServerService runnerServerService = new RunnerServerService();
 
@@ -782,7 +736,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 		case RUNNER_CLIENTS:
 
 			p = new HashMap<String, Object>();
-			p.put("userid", this.param.getClient().getUser().getId());
+			p.put("userid", this.param.getSession().getUser().getId());
 
 			RunnerClientService runnerClientService = new RunnerClientService();
 
@@ -818,11 +772,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			break;
 
 		}
-		outData(messageID, modelType.getValue(), value);
+		return value;
 	}
 
-	public void outRepositoryStatus(String message) {
-
-		outData(null, RepositoryModelType.REPOSITORY_STATUS.getValue(), message);
-	}
 }

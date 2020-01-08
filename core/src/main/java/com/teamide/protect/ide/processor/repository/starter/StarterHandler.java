@@ -9,7 +9,7 @@ import org.apache.commons.io.FileUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.FileUtil;
 import com.teamide.util.IDGenerateUtil;
-import com.teamide.ide.client.Client;
+import com.teamide.client.ClientSession;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.protect.ide.enums.OptionType;
 import com.teamide.protect.ide.processor.param.RepositoryProcessorParam;
@@ -82,7 +82,7 @@ public class StarterHandler {
 	}
 
 	public static Starter getStarter(RepositoryProcessorParam param, String token) throws Exception {
-		Starter starter = getStarter(param.getClient(), token);
+		Starter starter = getStarter(param.getSession(), token);
 		return starter;
 	}
 
@@ -131,7 +131,7 @@ public class StarterHandler {
 				String content = new String(FileUtil.read(starterJSONFile));
 				JSONObject json = JSONObject.parseObject(content);
 				String token = json.getString("token");
-				starter = getStarter(param.getClient(), token);
+				starter = getStarter(param.getSession(), token);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -160,11 +160,11 @@ public class StarterHandler {
 
 		FileUtil.write(json.toJSONString().getBytes(), getStarterJSONFile(token));
 
-		return getStarter(param.getClient(), token);
+		return getStarter(param.getSession(), token);
 	}
 
-	public static Starter getStarter(Client client, String token) {
-		Starter starter = new Starter(client, token);
+	public static Starter getStarter(ClientSession session, String token) {
+		Starter starter = new Starter(session, token);
 		if (starter.param == null) {
 			return null;
 		}

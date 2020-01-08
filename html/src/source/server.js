@@ -36,6 +36,50 @@
 
             });
         },
+        load(type, data) {
+            return new Promise((resolve, reject) => {
+                data = data || {};
+                type = type || '';
+                let url = _SERVER_URL + '/api/load';
+                url += '?type=' + type;
+                url += '&token=' + source.token;
+                $.ajax({
+                    url: url,
+                    data: JSON.stringify(data),
+                    type: "post",
+                    beforeSend: function () { },
+                    success: function (status) {
+                        resolve && resolve(status);
+                    },
+                    complete: function (XMLHttpRequest, textStatus) { },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    }
+                });
+
+            });
+        },
+        do(type, data) {
+            return new Promise((resolve, reject) => {
+                data = data || {};
+                type = type || '';
+                let url = _SERVER_URL + '/api/do';
+                url += '?type=' + type;
+                url += '&token=' + source.token;
+                $.ajax({
+                    url: url,
+                    data: JSON.stringify(data),
+                    type: "post",
+                    beforeSend: function () { },
+                    success: function (status) {
+                        resolve && resolve(status);
+                    },
+                    complete: function (XMLHttpRequest, textStatus) { },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    }
+                });
+
+            });
+        },
         restart() {
             return new Promise((resolve, reject) => {
                 window.setTimeout(function () {
