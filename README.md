@@ -30,5 +30,5 @@ TeamIDE是团队在线开发工具，用户可以在线编辑、运行项目，�
 
 **后台启动**
 
-` nohup java -Dfile.encoding=UTF-8 -jar $TEAMIDE_HOME/ide.jar >$TEAMIDE_HOME/logs/main.log 2>&1 & echo $! > $TEAMIDE_HOME/ide.pid`
+` nohup java -Dfile.encoding=UTF-8 -jar $TEAMIDE_HOME/ide.jar >$TEAMIDE_HOME/logs/start.log 2>&1 & echo $! > $TEAMIDE_HOME/ide.pid`
 

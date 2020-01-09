@@ -2,36 +2,20 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.teamide</groupId>
-	<artifactId>ide</artifactId>
 	<version>0.0.1</version>
-	<packaging>pom</packaging>
+	<artifactId>terminal.base</artifactId>
 	<properties>
 	</properties>
 	<dependencies>
+
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>5.5.0</version>
+		</dependency>
+
 	</dependencies>
 	<build>
-		<resources>
-			<resource>
-				<directory>${project.basedir}/src/main/webapp</directory>
-				<targetPath>${project.build.outputDirectory}/META-INF/resources/</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory>src/main/java</directory>
-				<includes>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -52,11 +36,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<modules>
-		<module>server</module>
-		<module>terminal</module>
-		<module>base</module>
-		<module>core</module>
-		<module>web</module>
-	</modules>
 </project>

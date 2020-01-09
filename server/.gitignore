@@ -2,9 +2,6 @@
 .metadata/
 .settings/
 .myeclipse/
-
-release/
-
 .externalToolBuilders/
 tmp/
 *.tmp

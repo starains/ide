@@ -1,21 +1,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.teamide</groupId>
-	<artifactId>ide.web</artifactId>
-	<version>0.0.1</version>
+	<parent>
+		<groupId>com.teamide</groupId>
+		<artifactId>server</artifactId>
+		<version>0.0.1</version>
+	</parent>
+	<artifactId>tomcat-7.0.94</artifactId>
 	<properties>
-		<release.root>../release/${project.version}</release.root>
-		<fileupload.version>1.3.3</fileupload.version>
-		<tomcat.version>8.5.41</tomcat.version>
+		<release.root>../../release/${project.version}</release.root>
+		<tomcat.version>7.0.94</tomcat.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.teamide</groupId>
-			<artifactId>ide.core</artifactId>
+			<artifactId>server.main</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
@@ -39,98 +40,32 @@
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-logging-juli</artifactId>
-			<version>8.5.2</version>
+			<version>${tomcat.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-logging-log4j</artifactId>
-			<version>8.5.2</version>
+			<version>${tomcat.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.7</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-access</artifactId>
-			<version>1.1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.1.7</version>
-		</dependency>
-
 	</dependencies>
 	<build>
-		<finalName>ide</finalName>
-		<resources>
-			<resource>
-				<directory>${project.basedir}/src/main/webapp</directory>
-				<targetPath>${project.build.outputDirectory}/META-INF/resources/</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory>src/main/java</directory>
-				<includes>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<!-- 忽略测试 -->
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<appendAssemblyId>false</appendAssemblyId>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<!-- 此处指定main方法入口的class -->
-							<mainClass>com.teamide.ide.IDEMain</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
+				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>make-assembly</id>
+						<id>copy-dependencies</id>
 						<phase>package</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>copy-dependencies</goal>
 						</goals>
+						<configuration>
+							<outputDirectory>${release.root}/plugins/server/${project.artifactId}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -146,7 +81,7 @@
 						</goals>
 						<configuration>
 							<encoding>UTF-8</encoding>
-							<outputDirectory>${release.root}/</outputDirectory>
+							<outputDirectory>${release.root}/plugins/server/${project.artifactId}/lib</outputDirectory>
 							<resources>
 								<resource>
 									<directory>target</directory>
@@ -165,10 +100,10 @@
 						</goals>
 						<configuration>
 							<encoding>UTF-8</encoding>
-							<outputDirectory>${release.root}/bin</outputDirectory>
+							<outputDirectory>${release.root}/plugins/server/${project.artifactId}/conf</outputDirectory>
 							<resources>
 								<resource>
-									<directory>bin</directory>
+									<directory>conf</directory>
 								</resource>
 							</resources>
 						</configuration>

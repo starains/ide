@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.teamide</groupId>
-	<artifactId>ide</artifactId>
+	<artifactId>server</artifactId>
 	<version>0.0.1</version>
 	<packaging>pom</packaging>
 	<properties>
@@ -53,10 +53,9 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>server</module>
-		<module>terminal</module>
-		<module>base</module>
-		<module>core</module>
-		<module>web</module>
+		<module>main</module>
+		<module>tomcat-7.0.94</module>
+		<module>tomcat-8.0.53</module>
+		<module>tomcat-8.5.41</module>
 	</modules>
 </project>
