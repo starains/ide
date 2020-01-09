@@ -211,20 +211,25 @@ export default {
       data.configure = this.configure.form;
 
       source.do("INSTALL", data).then(res => {
-        if (res) {
+        res = res || {};
+        if (res.errcode == 0) {
+          coos.success("安装成功，即将刷新页面！");
           window.setTimeout(() => {
             window.location.reload();
           }, 500);
         } else {
+          coos.error(res.errmsg);
           this.show = "database";
         }
       });
     },
     init() {
       source.load("JDBC", {}).then(res => {
-        if (res && Object.keys(res).length > 0) {
+        res = res || {};
+        let jdbc = res.value || {};
+        if (jdbc && Object.keys(jdbc).length > 0) {
           for (let key in this.database.form) {
-            this.database.form[key] = res[key];
+            this.database.form[key] = jdbc[key];
           }
         }
       });

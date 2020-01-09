@@ -11,7 +11,6 @@ import SpaceCreate from '@/views/space/Create'
 import JoinIndex from '@/views/join/Index'
 import StarIndex from '@/views/star/Index'
 
-import UpgradeIndex from '@/views/upgrade/Index'
 import ConfigureIndex from '@/views/configure/Index'
 import EnvironmentIndex from '@/views/environment/Index'
 
@@ -40,11 +39,6 @@ export default new Router({
       path: '/environment',
       name: 'EnvironmentIndex',
       component: EnvironmentIndex
-    },
-    {
-      path: '/upgrade',
-      name: 'UpgradeIndex',
-      component: UpgradeIndex
     },
     {
       path: '/space/create',

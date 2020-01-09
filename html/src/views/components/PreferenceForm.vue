@@ -72,9 +72,17 @@ export default {
 
           this.hideForm();
 
-          source.do("PREFERENCE", { id: source.LOGIN_USER.id, option: option });
-          Object.assign(source.preference, option);
-          source.changePreference();
+          source
+            .do("PREFERENCE", { id: source.LOGIN_USER.id, option: option })
+            .then(res => {
+              if (res.errcode == 0) {
+                coos.success("修改成功！");
+                Object.assign(source.preference, option);
+                source.changePreference();
+              } else {
+                coos.error(res.errmsg);
+              }
+            });
           this.resolve && this.resolve(option);
         } else {
           return false;

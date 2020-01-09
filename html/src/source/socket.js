@@ -18,7 +18,7 @@
         websocket.close(3000, "强制关闭");
     }
     source.websocket = {
-        opened: false,
+        opened: true,
         opening: false,
         sendText(message) {
 

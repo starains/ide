@@ -10,8 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.teamide.bean.Status;
 import com.teamide.exception.BaseException;
+import com.teamide.ide.controller.handler.DataHandler;
+import com.teamide.ide.controller.handler.ResourcesHandler;
+import com.teamide.ide.controller.handler.WorkspaceHandler;
 import com.teamide.util.RequestUtil;
 import com.teamide.util.ResponseUtil;
+import com.teamide.util.StringUtil;
 
 @WebServlet(value = "/*")
 public class RootController extends HttpServlet {
@@ -21,11 +25,11 @@ public class RootController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 4357127201255115763L;
 
-	ResourcesController resourcesController = new ResourcesController();
+	ResourcesHandler resourcesController = new ResourcesHandler();
 
-	DataController dataController = new DataController();
+	DataHandler dataController = new DataHandler();
 
-	WorkspaceController workspaceController = new WorkspaceController();
+	WorkspaceHandler workspaceController = new WorkspaceHandler();
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -41,8 +45,18 @@ public class RootController extends HttpServlet {
 
 	public void handle(String path, HttpServletRequest request, HttpServletResponse response) {
 		try {
-
-			if (path.startsWith("/resources/")
+			if (StringUtil.isEmpty(request.getPathInfo())) {
+				String contextPath = request.getContextPath();
+				if (!contextPath.startsWith("/")) {
+					contextPath = "/" + contextPath;
+				}
+				if (!contextPath.endsWith("/")) {
+					contextPath += "/";
+				}
+				response.sendRedirect(contextPath);
+				return;
+			}
+			if (path.startsWith("/resources/") || path.startsWith("/html/")
 
 					|| path.endsWith(".js")
 
@@ -63,14 +77,15 @@ public class RootController extends HttpServlet {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			Status status = new Status();
 			if (e instanceof BaseException) {
 				BaseException baseException = (BaseException) e;
 				status.setErrcode(baseException.getErrcode());
-				status.setErrcode(baseException.getErrmsg());
+				status.setErrmsg(baseException.getErrmsg());
 			} else {
 				status.setErrcode(-1);
-				status.setErrcode(e.getMessage());
+				status.setErrmsg(e.getMessage());
 			}
 			ResponseUtil.outJSON(response, status);
 		}

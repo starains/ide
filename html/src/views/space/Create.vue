@@ -167,14 +167,22 @@ export default {
       this.$refs[form].validate(valid => {
         if (valid) {
           if (this.form.id) {
-            source.do("SPACE_UPDATE", this.form).then(result => {
-              //tool.success("修改成功！");
-              this.$router.go(-1);
+            source.do("SPACE_UPDATE", this.form).then(res => {
+              if (res.errcode == 0) {
+                tool.success("修改成功！");
+                this.$router.go(-1);
+              } else {
+                tool.error(res.errmsg);
+              }
             });
           } else {
             source.do("SPACE_CREATE", this.form).then(result => {
-              //tool.success("新增成功！");
-              this.$router.go(-1);
+              if (res.errcode == 0) {
+                tool.success("新增成功！");
+                this.$router.go(-1);
+              } else {
+                tool.error(res.errmsg);
+              }
             });
           }
         } else {
@@ -191,7 +199,6 @@ export default {
 
     let data = { pagesize: 1000 };
     source.load("MASTER_SPACES", data).then(result => {
-      console.log(result);
       this.master_spaces = result.value || [];
       this.typeChange();
     });

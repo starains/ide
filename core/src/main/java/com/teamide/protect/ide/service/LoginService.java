@@ -38,6 +38,12 @@ public class LoginService implements ILoginService {
 			List<RoleBean> roles = new RoleService().queryUserVisibleRoles(user.getId());
 			session.setCache("user", user);
 			session.setCache("roles", roles);
+			session.setCache("isManager", false);
+			for (RoleBean role : roles) {
+				if (role.isForsuper()) {
+					session.setCache("isManager", true);
+				}
+			}
 
 		}
 		return user;

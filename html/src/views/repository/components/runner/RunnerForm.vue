@@ -129,6 +129,7 @@ export default {
   },
   methods: {
     showForm(data) {
+      this.loadRunnerServers();
       data = data || {};
       this.form.files.splice(0, this.form.files.length);
       this.form.files.push({ sourcepath: "", targetpath: "" });
@@ -246,9 +247,7 @@ export default {
       });
     }
   },
-  mounted() {
-    this.loadRunnerServers();
-  },
+  mounted() {},
   beforeCreate() {}
 };
 </script>

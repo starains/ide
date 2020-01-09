@@ -97,8 +97,13 @@ export default {
       coos
         .confirm("确定删除该成员？")
         .then(() => {
-          source.do("SPACE_TEAM_DELETE", { id: team.id }).then(result => {
-            that.loadSpaceTeams(1);
+          source.do("SPACE_TEAM_DELETE", { id: team.id }).then(res => {
+            if (res.errcode == 0) {
+              coos.success("删除成功！");
+              that.loadSpaceTeams(1);
+            } else {
+              coos.error(res.errmsg);
+            }
           });
         })
         .catch(() => {});

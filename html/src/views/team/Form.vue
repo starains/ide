@@ -49,7 +49,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
 export default {
   name: "TeamForm",
   data() {
@@ -88,29 +87,28 @@ export default {
         if (valid) {
           this.form.spaceid = this.source.spaceid;
           if (this.form.id) {
-            source.do("SPACE_TEAM_UPDATE", this.form).then(result => {
-              this.$router.go(-1);
+            source.do("SPACE_TEAM_UPDATE", this.form).then(res => {
+              if (res.errcode == 0) {
+                coos.success("修改成功！");
+                this.$router.go(-1);
+              } else {
+                coos.error(res.errmsg);
+              }
             });
           } else {
-            source.do("SPACE_TEAM_INSERT", this.form).then(result => {
-              this.$router.go(-1);
+            source.do("SPACE_TEAM_INSERT", this.form).then(res => {
+              if (res.errcode == 0) {
+                coos.success("新增成功！");
+                this.$router.go(-1);
+              } else {
+                coos.error(res.errmsg);
+              }
             });
           }
         } else {
           coos.error("请正确填写表单！");
           return false;
         }
-      });
-    },
-    loadTeams() {
-      let data = {};
-      data.spaceid = source.spaceid;
-      tool.service.space.team.queryList(data).then(result => {
-        let teams = result.value || [];
-        teams.forEach(one => {
-          this.teams.push(one);
-          this.itemrecordids.push(one.recordid);
-        });
       });
     },
     loadSpaceTeams(pageindex) {
@@ -144,7 +142,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.form{
+.form {
   overflow: hidden;
 }
 </style>

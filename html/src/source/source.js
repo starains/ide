@@ -1,13 +1,21 @@
 
 
 (function () {
+
+    source.loadSession = function () {
+
+        source.load("SESSION").then(res => {
+        });
+    };
     source.ready = function () {
         return new Promise((resolve, reject) => {
-            if (source.websocket.opened) {
+            if (source.readyed) {
                 resolve && resolve();
             } else {
                 source.server.session().then(() => {
-                    source.websocket.open().then(resolve);
+                    source.readyed = true;
+                    source.loadSession();
+                    resolve && resolve();
                 });
             }
         });
@@ -19,6 +27,18 @@
         window.setTimeout(() => {
             source.validate();
         }, 1000 * 10);
+    };
+    source.doLogout = function () {
+        source.do('LOGOUT').then(res => {
+            if (res.errcode == 0) {
+                coos.info("退出成功！");
+                window.setTimeout(() => {
+                    source.loadSession();
+                }, 300);
+            } else {
+                coos.error(res.errmsg);
+            }
+        });
     };
 })();
 export default source;

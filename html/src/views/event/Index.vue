@@ -212,14 +212,6 @@ export default {
         this.totalpages = result.totalpages || 0;
         let list = result.value || [];
         list.forEach(one => {
-          one.datetime = coos.formatDate(one.createtime);
-          one.date = one.datetime.split(" ")[0];
-          let data = {};
-          if (!coos.isEmpty(one.data)) {
-            data = JSON.parse(one.data);
-          }
-          one.data = data;
-          one.user = { name: "展示" };
           let dateOne = null;
           this.list.forEach(dateOne_ => {
             if (dateOne_.date == one.date) {
@@ -231,17 +223,6 @@ export default {
             this.list.push(dateOne);
           }
           dateOne.list.push(one);
-          let index = dateOne.list.indexOf(one);
-          source.get("USER", one.createuserid).then(res => {
-            if (res) {
-              if (index >= 0) {
-                let new_one = Object.assign({}, one);
-                new_one.user = res;
-                dateOne.list.splice(index, 1, new_one);
-              }
-              // Object.assign(one.user, res);
-            }
-          });
         });
         this.loading = false;
       });

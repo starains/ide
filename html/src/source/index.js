@@ -11,8 +11,6 @@ import screen from "@/source/screen";
 
 import data from "@/source/data";
 
-import message from "@/source/message";
-
 import repository from "@/source/repository/index";
 
 import source_ from "@/source/source";

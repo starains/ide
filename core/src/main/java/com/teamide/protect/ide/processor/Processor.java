@@ -84,20 +84,26 @@ public class Processor extends ProcessorLoad {
 			ConfigureBean configure = data.toJavaObject(ConfigureBean.class);
 			configure.setId("0");
 			configureService.update(this.param.getSession(), configure);
+
+			break;
 		case ENVIRONMENT_CREATE:
 			IEnvironmentService environmentService = new EnvironmentService();
 			EnvironmentBean environment = data.toJavaObject(EnvironmentBean.class);
 			environmentService.insert(this.param.getSession(), environment);
 
+			break;
 		case ENVIRONMENT_DELETE:
 			environmentService = new EnvironmentService();
 			environment = environmentService.get(data.getString("id"));
 			environmentService.delete(this.param.getSession(), environment);
 
+			break;
 		case ENVIRONMENT_UPDATE:
 			environmentService = new EnvironmentService();
 			environment = data.toJavaObject(EnvironmentBean.class);
 			environmentService.update(this.param.getSession(), environment);
+
+			break;
 		}
 
 		return null;

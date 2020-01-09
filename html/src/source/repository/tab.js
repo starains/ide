@@ -2,6 +2,27 @@ source.repository.tabs = [];
 source.repository.activeTab = null;
 
 (function () {
+    source.changeTab = function () {
+        let tab = source.getTab(source.repository.activeTab);
+        if (tab == null) {
+            return;
+        }
+        if (tab.$editor == null) {
+            tab.$editor = $('<div class="repository-tab-editor"/>');
+            $(".repository-tab-editor-box")
+                .append(tab.$editor);
+        }
+        $(".repository-tab-editor.show")
+            .each(function (index, $editor) {
+                if ($editor != tab.$editor[0]) {
+                    $($editor).removeClass("show");
+                }
+            });
+        tab.$editor.addClass("show");
+        if (tab.editor == null) {
+            source.createTabEditor(tab);
+        }
+    };
 
     source.buildFileEditor = function (file_date) {
         if (file_date == null) {
@@ -131,6 +152,7 @@ source.repository.activeTab = null;
         return -1;
     };
     source.closeOtherTab = function (name) {
+        let index = source.getTabIndex(name);
         let tab = source.getTab(name);
         let tabs = [];
         source.repository.tabs.forEach((one, i) => {
@@ -141,9 +163,11 @@ source.repository.activeTab = null;
                 source.removeTab(one);
             }
         });
+        source.openTabByIndex(index);
     };
     source.closeRightTab = function (name) {
         let index = source.getTabIndex(name);
+        let activeIndex = source.getTabIndex(source.repository.activeTab);
         let tabs = [];
         source.repository.tabs.forEach((one, i) => {
             tabs.push(one);
@@ -154,9 +178,13 @@ source.repository.activeTab = null;
                 source.removeTab(one);
             }
         }
+        if (activeIndex > index) {
+            source.openTabByIndex(source.repository.tabs.length - 1);
+        }
     };
     source.closeLeftTab = function (name) {
         let index = source.getTabIndex(name);
+        let activeIndex = source.getTabIndex(source.repository.activeTab);
         let tabs = [];
         source.repository.tabs.forEach((one, i) => {
             tabs.push(one);
@@ -166,6 +194,9 @@ source.repository.activeTab = null;
             if (one != null) {
                 source.removeTab(one);
             }
+        }
+        if (activeIndex < index) {
+            source.openTabByIndex(0);
         }
     };
     source.closeAllTab = function (name) {

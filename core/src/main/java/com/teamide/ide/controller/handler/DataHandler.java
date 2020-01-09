@@ -1,11 +1,7 @@
-package com.teamide.ide.controller;
+package com.teamide.ide.controller.handler;
 
 import java.io.File;
-import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,20 +43,7 @@ import com.teamide.util.RequestUtil;
 import com.teamide.util.ResponseUtil;
 import com.teamide.util.StringUtil;
 
-@WebServlet(value = "/api/data/*")
-public class DataController extends HttpServlet {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7322388753372157693L;
-
-	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String servletpath = RequestUtil.getServletpath(request);
-		handle(servletpath, request, response);
-	}
+public class DataHandler {
 
 	public void handle(String path, HttpServletRequest request, HttpServletResponse response) {
 		if (path.endsWith("/toText")) {

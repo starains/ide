@@ -1,13 +1,11 @@
-package com.teamide.ide.controller;
+package com.teamide.ide.controller.handler;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,24 +15,11 @@ import com.teamide.util.RequestUtil;
 import com.teamide.util.ResponseUtil;
 import com.teamide.util.StringUtil;
 
-@WebServlet(urlPatterns = "/resources/*")
-public class ResourcesController extends HttpServlet {
+public class ResourcesHandler {
 
 	private static Boolean hasUI;
 
 	private static final long VERSION = System.currentTimeMillis();
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3396659912892849105L;
-
-	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String servletpath = RequestUtil.getServletpath(request);
-		handle(servletpath, request, response);
-	}
 
 	public void handle(String path, HttpServletRequest request, HttpServletResponse response) {
 
@@ -165,15 +150,25 @@ public class ResourcesController extends HttpServlet {
 			if (stream != null) {
 				try {
 
-					String content = IOUtil.readString(stream);
 					if (path.endsWith(".js")) {
-						ResponseUtil.outJS(response, content);
+						ResponseUtil.outJS(response, IOUtil.readString(stream));
 					} else if (path.endsWith(".css")) {
-						ResponseUtil.outCSS(response, content);
+						ResponseUtil.outCSS(response, IOUtil.readString(stream));
 					} else if (path.endsWith(".html")) {
-						ResponseUtil.outHTML(response, content);
+						ResponseUtil.outHTML(response, IOUtil.readString(stream));
 					} else {
-						ResponseUtil.out(response, content);
+
+						OutputStream outputStream = null;
+						response.setCharacterEncoding("UTF-8");
+						try {
+							outputStream = response.getOutputStream();
+							outputStream.write(IOUtil.read(stream));
+							outputStream.flush();
+						} catch (Exception e) {
+							e.printStackTrace();
+						} finally {
+							IOUtil.close(outputStream);
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

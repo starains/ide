@@ -8,7 +8,9 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.service.impl.TService;
 import com.teamide.util.StringUtil;
+import com.teamide.bean.PageResultBean;
 import com.teamide.client.ClientSession;
+import com.teamide.db.bean.PageSqlParam;
 import com.teamide.ide.bean.BaseBean;
 import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.service.IBaseService;
@@ -23,6 +25,25 @@ public class BaseService<T> extends TService<T> implements IBaseService<T> {
 	public BaseService() {
 
 		super(IDEFactory.getService().getDao().getDataSourceFactory());
+	}
+
+	@Override
+	public PageResultBean<T> queryPage(Map<String, Object> param, int pageindex, int pagesize) throws Exception {
+		String tablename = IDEFactory.getRealtablename(getTClass(), param);
+		if (StringUtil.isEmpty(tablename)) {
+			return null;
+		}
+
+		String whereSql = getWhereSql(getTClass(), param);
+
+		String sql = "SELECT *  FROM " + tablename + "  " + whereSql;
+		String countSql = "SELECT count(1) FROM " + tablename + "  " + whereSql;
+
+		PageSqlParam sqlParam = new PageSqlParam(sql, countSql, param);
+		sqlParam.setPageindex(pageindex);
+		sqlParam.setPagesize(pagesize);
+
+		return queryPageResult(getTClass(), sqlParam);
 	}
 
 	public T save(ClientSession session, T t) throws Exception {

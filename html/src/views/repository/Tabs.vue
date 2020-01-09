@@ -37,27 +37,7 @@ export default {
   beforeMount() {},
   watch: {
     "repository.activeTab": function(activeTab) {
-      let tab = source.getTab(activeTab);
-      if (tab == null) {
-        return;
-      }
-      if (tab.$editor == null) {
-        tab.$editor = $('<div class="repository-tab-editor"/>');
-        $(this.$el)
-          .find(".repository-tab-editor-box")
-          .append(tab.$editor);
-      }
-      $(this.$el)
-        .find(".repository-tab-editor.show")
-        .each(function(index, $editor) {
-          if ($editor != tab.$editor[0]) {
-            $($editor).removeClass("show");
-          }
-        });
-      tab.$editor.addClass("show");
-      if (tab.editor == null) {
-        source.createTabEditor(tab);
-      }
+      source.changeTab(activeTab);
     }
   },
   methods: {

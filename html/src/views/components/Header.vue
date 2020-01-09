@@ -33,9 +33,6 @@
             <li class>
               <router-link to="/environment">环境配置</router-link>
             </li>
-            <li class>
-              <router-link to="/upgrade">检测更新</router-link>
-            </li>
           </ul>
         </li>
       </ul>
@@ -77,7 +74,7 @@ export default {
   watch: {},
   methods: {
     doLogout() {
-      source.do("LOGOUT", {});
+      source.doLogout();
     }
   },
   computed: {},

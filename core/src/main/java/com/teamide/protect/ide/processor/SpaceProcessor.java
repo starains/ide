@@ -2,7 +2,6 @@ package com.teamide.protect.ide.processor;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
-import com.teamide.db.bean.PageSqlParam;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceStarBean;
@@ -186,9 +185,11 @@ public class SpaceProcessor extends Processor {
 		case JOIN_SPACES:
 			spaceService = new SpaceService();
 			value = spaceService.queryJoins(session, this.param.getSpaceid(), pageindex, pagesize);
+			break;
 		case VISIBLE_SPACES:
 			spaceService = new SpaceService();
 			value = spaceService.queryVisibles(session, this.param.getSpaceid(), pageindex, pagesize);
+			break;
 		case STAR_SPACES:
 			if (this.param.getSpace() != null) {
 				if (SpaceHandler.isUsers(this.param.getSpace())) {
@@ -204,18 +205,14 @@ public class SpaceProcessor extends Processor {
 		case SPACE_EVENTS:
 			ISpaceEventService spaceEventService = new SpaceEventService();
 			param.put("spaceid", this.param.getSpaceid());
-			PageSqlParam pageSqlParam = new PageSqlParam(null, null, param);
-			pageSqlParam.setPageindex(pageindex);
-			pageSqlParam.setPagesize(pagesize);
-			value = spaceEventService.queryPage(pageSqlParam);
+			value = spaceEventService.queryPage(param, pageindex, pagesize);
+			break;
 		case SPACE_TEAMS:
 			ISpaceTeamService spaceTeamService = new SpaceTeamService();
 			param.put("spaceid", this.param.getSpaceid());
-			pageSqlParam = new PageSqlParam(null, null, param);
-			pageSqlParam.setPageindex(pageindex);
-			pageSqlParam.setPagesize(pagesize);
-			value = spaceTeamService.queryPage(pageSqlParam);
+			value = spaceTeamService.queryPage(param, pageindex, pagesize);
 
+			break;
 		}
 		return value;
 	}

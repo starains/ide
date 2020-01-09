@@ -45,36 +45,38 @@
                 let list = LOADONE_LOADING[key];
                 delete LOADONE_LOADING[key];
                 list.forEach(one => {
-                    one && one(res);
+                    one && one(res.value);
                 })
             });
         });
     };
-    source.load = function (model, data) {
+    source.do = function (type, data) {
+        return source.server.do(type, data);
+    };
+    source.load = function (type, data) {
         data = data || {};
-        data.model = model;
-        model = source.getModel(model);
+        let model = source.getModel(type);
 
         if (model && model.type == 'PAGE') {
             if (coos.isEmpty(data.pageindex)) {
-                if (source.data[data.model]) {
-                    data.pageindex = Number(source.data[data.model].pageindex) + 1;
+                if (source.data[type]) {
+                    data.pageindex = Number(source.data[type].pageindex) + 1;
                 }
             }
             if (coos.isEmpty(data.pagesize)) {
-                if (source.data[data.model]) {
-                    data.pagesize = Number(source.data[data.model].pagesize);
+                if (source.data[type]) {
+                    data.pagesize = Number(source.data[type].pagesize);
                 }
             }
         }
-        return source.do('DATA', data);
+        return source.server.load(type, data);
     };
 
 
-    source.onData = function (data) {
-        data = data || {};
-        let value = data.value;
-        if (data.model == 'SESSION') {
+    source.onData = function (type, status) {
+        status = status || {};
+        let value = status.value;
+        if (type == 'SESSION') {
             value = value || {};
             source.LOGIN_USER = value.LOGIN_USER;
             source.isLogin = source.LOGIN_USER != null;
@@ -93,18 +95,18 @@
             }
             source.initPreferenceStyle();
             return;
-        } else if (data.model == 'CONFIGURE') {
+        } else if (type == 'CONFIGURE') {
             value = value || {};
             Object.assign(source.CONFIGURE, value);
             return;
-        } else if (data.model == 'UPGRADE_DOWNLOAD') {
+        } else if (type == 'UPGRADE_DOWNLOAD') {
             value = value || {};
             Object.assign(source.UPGRADE_DOWNLOAD, value);
             return;
-        } else if (data.model == 'UPGRADE_STATUS') {
+        } else if (type == 'UPGRADE_STATUS') {
             source.UPGRADE_STATUS = value;
             return;
-        } else if (data.model == 'SPACE') {
+        } else if (type == 'SPACE') {
             if (value != null) {
                 value.levels = null;
             }
@@ -122,40 +124,40 @@
                 source.load('BRANCHS');
             }
             return;
-        } else if (data.model == 'REPOSITORY') {
+        } else if (type == 'REPOSITORY') {
             source.onLoadRepository(value);
             return;
-        } else if (data.model == 'PROJECT') {
+        } else if (type == 'PROJECT') {
             source.onLoadProject(value);
             return;
-        } else if (data.model == 'APP') {
+        } else if (type == 'APP') {
             source.onApp(value);
             return;
-        } else if (data.model == 'FILE') {
+        } else if (type == 'FILE') {
             source.onLoadFile(value);
             return;
-        } else if (data.model == 'FILES') {
+        } else if (type == 'FILES') {
             source.onLoadFiles(value);
             return;
-        } else if (data.model == 'GIT') {
+        } else if (type == 'GIT') {
             source.onLoadGit(value);
             return;
-        } else if (data.model == 'STARTER_OPTIONS') {
+        } else if (type == 'STARTER_OPTIONS') {
             source.onStarterOptions(value);
             return;
-        } else if (data.model == 'STARTERS') {
+        } else if (type == 'STARTERS') {
             source.onStarters(value);
             return;
-        } else if (data.model == 'STARTER_LOG') {
+        } else if (type == 'STARTER_LOG') {
             source.onStarterLog(value);
             return;
-        } else if (data.model == 'STARTER_STATUS') {
+        } else if (type == 'STARTER_STATUS') {
             source.onStarterStatus(value);
             return;
-        } else if (data.model == 'RUNNER_OPTIONS') {
+        } else if (type == 'RUNNER_OPTIONS') {
             source.onRunnerOptions(value);
             return;
-        } else if (data.model == 'PARENTS') {
+        } else if (type == 'PARENTS') {
             value = value || [];
             value.push(source.space);
             value.forEach((one, index) => {
@@ -164,11 +166,11 @@
                 }
             });
 
-        } else if (data.model == 'REPOSITORY_STATUS') {
+        } else if (type == 'REPOSITORY_STATUS') {
             source.onRepositoryStatus(value);
-        } else if (data.model == 'SPACE_TEAMS') {
-            if (value.value) {
-                value.value.forEach(one => {
+        } else if (type == 'SPACE_TEAMS') {
+            if (status.value) {
+                status.value.forEach(one => {
                     one.data = null;
                     if (one.type == "USERS") {
                         source.get("USER", one.recordid).then(res => {
@@ -177,39 +179,53 @@
                     }
                 });
             }
-        } else if (data.model == 'SPACE_EVENTS') {
-            if (value.value) {
-                value.value.forEach(one => {
+        } else if (type == 'SPACE_EVENTS') {
+            if (status.value) {
+                status.value.forEach(one => {
+                    one.user = null;
+                    one.datetime = coos.formatDate(one.createtime);
+                    one.date = one.datetime.split(" ")[0];
+                    let data = {};
+                    if (!coos.isEmpty(one.data)) {
+                        data = JSON.parse(one.data);
+                    }
+                    one.data = data;
+                    one.user = null;
 
+                    source.get("USER", one.createuserid).then(res => {
+                        if (res) {
+                            one.user = { name: res.name };
+                        }
+                    });
                 });
             }
         }
-        let model = source.getModel(data.model);
+        let model = source.getModel(type);
         if (model == null) {
             return;
         }
         if (model.type == 'ONE') {
-            if (source.data[data.model] == null) {
-                source.data[data.model] = value;
+            if (source.data[type] == null) {
+                source.data[type] = value;
             } else {
                 if (coos.isObject(value)) {
-                    Object.assign(source.data[data.model], value);
+                    Object.assign(source.data[type], value);
                 } else {
-                    source.data[data.model] = value;
+                    source.data[type] = value;
                 }
             }
         } else if (model.type == 'LIST') {
-            if (source.data[data.model] == null) {
-                source.data[data.model] = [];
+            if (source.data[type] == null) {
+                source.data[type] = [];
             }
-            source.data[data.model].splice(0, source.data[data.model].length);
+            source.data[type].splice(0, source.data[type].length);
             value = value || [];
             value.forEach(one => {
-                source.data[data.model].push(one);
+                source.data[type].push(one);
             });
         } else if (model.type == 'PAGE') {
-            if (source.data[data.model] == null) {
-                source.data[data.model] = {
+            if (source.data[type] == null) {
+                source.data[type] = {
                     pageindex: 1,
                     totalpages: 0,
                     totalcount: 0,
@@ -221,53 +237,26 @@
                     list: []
                 };
             }
-            value = value || {};
-            source.data[data.model].pageindex = value.pageindex;
-            source.data[data.model].totalpages = value.totalpages;
-            source.data[data.model].totalcount = value.totalcount;
-            source.data[data.model].pagesize = value.pagesize;
-            source.data[data.model].uppage = value.uppage;
-            source.data[data.model].nextpage = value.nextpage;
-            source.data[data.model].hasNext = value.pageindex < value.totalpages;
-            source.data[data.model].value.splice(0, source.data[data.model].value.length);
-            if (value.pageindex == 1) {
-                source.data[data.model].list.splice(0, source.data[data.model].list.length);
+            source.data[type].pageindex = status.pageindex;
+            source.data[type].totalpages = status.totalpages;
+            source.data[type].totalcount = status.totalcount;
+            source.data[type].pagesize = status.pagesize;
+            source.data[type].uppage = status.uppage;
+            source.data[type].nextpage = status.nextpage;
+            source.data[type].hasNext = status.pageindex < status.totalpages;
+            source.data[type].value.splice(0, source.data[type].value.length);
+            if (status.pageindex == 1) {
+                source.data[type].list.splice(0, source.data[type].list.length);
             }
 
-            value.value = value.value || [];
-            value.value.forEach(one => {
-                source.data[data.model].value.push(one);
-                source.data[data.model].list.push(one);
+            status.value = status.value || [];
+            status.value.forEach(one => {
+                source.data[type].value.push(one);
+                source.data[type].list.push(one);
             });
         }
 
     };
-
-    source.onLogin = function (data) {
-        coos.success("登录成功.");
-        try {
-            if (window.localStorage) {
-                if (coos.isTrue(data.rememberpassword)) {
-                    localStorage.setItem("loginname", data.loginname);
-                    localStorage.setItem("password", data.password);
-                    localStorage.setItem("rememberpassword", "true");
-                } else {
-                    localStorage.removeItem("loginname");
-                    localStorage.removeItem("password");
-                    localStorage.removeItem("rememberpassword");
-                }
-            }
-        } catch (e) { }
-        window.setTimeout(() => {
-            source.load('SESSION');
-        }, 300);
-    }
-    source.onLogout = function () {
-        coos.info("退出成功！");
-        window.setTimeout(() => {
-            source.load('SESSION');
-        }, 300);
-    }
 
 })();
 

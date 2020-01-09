@@ -137,9 +137,23 @@ export default {
           this.hideForm();
 
           if (coos.isEmpty(data.id)) {
-            source.do("ENVIRONMENT_CREATE", data);
+            source.do("ENVIRONMENT_CREATE", data).then(res => {
+              if (res.errcode == 0) {
+                coos.success("新增成功！");
+                source.load("ENVIRONMENTS", {});
+              } else {
+                coos.error(res.errmsg);
+              }
+            });
           } else {
-            source.do("ENVIRONMENT_UPDATE", data);
+            source.do("ENVIRONMENT_UPDATE", data).then(res => {
+              if (res.errcode == 0) {
+                coos.success("修改成功！");
+                source.load("ENVIRONMENTS", {});
+              } else {
+                coos.error(res.errmsg);
+              }
+            });
           }
         } else {
           return false;
@@ -161,7 +175,14 @@ export default {
       coos
         .confirm("确定删除该记录？")
         .then(res => {
-          source.do("ENVIRONMENT_DELETE", { id: data.id });
+          source.do("ENVIRONMENT_DELETE", { id: data.id }).then(res => {
+            if (res.errcode == 0) {
+              coos.success("删除成功！");
+              source.load("ENVIRONMENTS", {});
+            } else {
+              coos.error(res.errmsg);
+            }
+          });
         })
         .catch(() => {});
     },

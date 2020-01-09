@@ -72,7 +72,29 @@ export default {
       this.$refs["login-form"].validate(valid => {
         if (valid) {
           let data = this.form;
-          source.do("LOGIN", data);
+          source.server.do("LOGIN", data).then(res => {
+            if (res.errcode == 0) {
+              coos.success("登录成功.");
+              try {
+                if (window.localStorage) {
+                  if (coos.isTrue(data.rememberpassword)) {
+                    localStorage.setItem("loginname", data.loginname);
+                    localStorage.setItem("password", data.password);
+                    localStorage.setItem("rememberpassword", "true");
+                  } else {
+                    localStorage.removeItem("loginname");
+                    localStorage.removeItem("password");
+                    localStorage.removeItem("rememberpassword");
+                  }
+                }
+              } catch (e) {}
+              window.setTimeout(() => {
+                source.loadSession();
+              }, 300);
+            } else {
+              coos.error(res.errmsg);
+            }
+          });
         } else {
           return false;
         }

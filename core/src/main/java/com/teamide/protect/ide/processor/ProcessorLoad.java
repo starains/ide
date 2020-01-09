@@ -116,6 +116,7 @@ public class ProcessorLoad extends ProcessorBase {
 			userService = new UserService();
 			value = userService.queryPage(param, pageindex, pagesize);
 
+			break;
 		}
 		return value;
 	}

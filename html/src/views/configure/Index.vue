@@ -44,7 +44,14 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           let data = this.form;
-          source.do("CONFIGURE_UPDATE", data);
+          source.do("CONFIGURE_UPDATE", data).then(res => {
+            if (res.errcode == 0) {
+              coos.success("修改成功！");
+              source.load("CONFIGURE", {});
+            } else {
+              coos.error(res.errmsg);
+            }
+          });
         } else {
           return false;
         }
