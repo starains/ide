@@ -72,9 +72,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-import http from "@/common/js/service";
-
 export default {
   components: {},
   props: ["repository"],
@@ -220,10 +217,14 @@ export default {
             oMenu.menus.push({
               text: "删除配置",
               onClick() {
-                source.do("DELETE_STARTER_OPTION", {
-                  path: data.path,
-                  option: option
-                });
+                source
+                  .do("DELETE_STARTER_OPTION", {
+                    path: data.path,
+                    option: option
+                  })
+                  .then(res => {
+                    source.load("STARTER_OPTIONS");
+                  });
               }
             });
           }
@@ -270,10 +271,14 @@ export default {
             oMenu.menus.push({
               text: "删除配置",
               onClick() {
-                source.do("DELETE_RUNNER_OPTION", {
-                  path: data.path,
-                  option: option
-                });
+                source
+                  .do("DELETE_RUNNER_OPTION", {
+                    path: data.path,
+                    option: option
+                  })
+                  .then(res => {
+                    source.load("RUNNER_OPTIONS");
+                  });
               }
             });
           }
@@ -435,7 +440,11 @@ export default {
             to: to
           })
           .then(res => {
-            if (res == 0) {
+            if (res.errcode == 0) {
+              coos.success("移动成功！");
+              source.loadGitStatus();
+            } else {
+              coos.error(res.errmsg);
             }
           });
       }
@@ -479,9 +488,13 @@ export default {
           path: file.path
         })
         .then(res => {
-          if (res == 0) {
+          if (res.errcode == 0) {
+            coos.success("删除成功！");
             let index = file.parent.files.indexOf(file);
             file.parent.files.splice(index, 1);
+            source.loadGitStatus();
+          } else {
+            coos.error(res.errmsg);
           }
         });
     },
@@ -549,13 +562,17 @@ export default {
 
         source.updateFileName(file, new_name);
         source.do("FILE_CREATE", date).then(res => {
-          if (res == 0) {
+          if (res.errcode == 0) {
+            delete file.isNew;
             file.toRename = false;
             this.toRename = false;
 
             if (file.parent) {
               source.sortFolderFiles(file.parent);
             }
+            source.loadGitStatus();
+          } else {
+            coos.error(res.errmsg);
           }
         });
       } else {
@@ -566,13 +583,16 @@ export default {
 
         source.updateFileName(file, new_name);
         source.do("FILE_RENAME", date).then(res => {
-          if (res == 0) {
+          if (res.errcode == 0) {
             file.toRename = false;
             this.toRename = false;
 
             if (file.parent) {
               source.sortFolderFiles(file.parent);
             }
+            source.loadGitStatus();
+          } else {
+            coos.error(res.errmsg);
           }
         });
       }

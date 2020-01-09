@@ -85,9 +85,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-import http from "@/common/js/service";
-
 import RunnerServerForm from "@/views/repository/components/runner/RunnerServerForm";
 
 export default {

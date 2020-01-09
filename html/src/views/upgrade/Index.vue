@@ -19,9 +19,10 @@
         </template>
         <template v-else-if="source.UPGRADE_STATUS=='DOWNLOADING'">
           <div class="text-center font-lg pd-30 color-orange">
-            系统更新文件下载中...<!-- （
+            系统更新文件下载中...
+            <!-- （
             <span>{{source.UPGRADE_DOWNLOAD.downloaded_count}}</span> /
-            <span>{{source.UPGRADE_DOWNLOAD.count}}</span>） -->
+            <span>{{source.UPGRADE_DOWNLOAD.count}}</span>）-->
           </div>
         </template>
         <template v-else-if="source.UPGRADE_STATUS=='DOWNLOADED'">
@@ -40,7 +41,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
 export default {
   name: "UpgradeIndex",
   data() {

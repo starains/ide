@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
 export default {
   name: "EnvironmentIndex",
   data() {

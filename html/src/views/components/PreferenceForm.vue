@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-
 export default {
   components: {},
   data() {

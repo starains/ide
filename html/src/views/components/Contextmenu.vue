@@ -11,9 +11,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-import http from "@/common/js/service";
-
 import ContextmenuMenus from "@/views/components/ContextmenuMenus";
 export default {
   components: { ContextmenuMenus },

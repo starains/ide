@@ -30,9 +30,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-import http from "@/common/js/service";
-
 import Project from "@/views/repository/Project";
 import Tabs from "@/views/repository/Tabs";
 import Starter from "@/views/repository/Starter";

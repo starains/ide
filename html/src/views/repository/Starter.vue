@@ -103,9 +103,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-import http from "@/common/js/service";
-
 export default {
   components: {},
   props: ["repository"],

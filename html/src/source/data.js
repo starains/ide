@@ -142,6 +142,9 @@
         } else if (type == 'GIT') {
             source.onLoadGit(value);
             return;
+        } else if (type == 'GIT_WORK_STATUS') {
+            source.onLoadGitWorkStatus(value);
+            return;
         } else if (type == 'STARTER_OPTIONS') {
             source.onStarterOptions(value);
             return;

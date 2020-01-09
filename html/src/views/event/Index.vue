@@ -174,7 +174,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
 export default {
   name: "JoinIndex",
   data() {

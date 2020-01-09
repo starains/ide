@@ -168,8 +168,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-
 export default {
   components: {},
   data() {
@@ -316,7 +314,9 @@ export default {
           let data = { path: this.path, option: option };
           this.hideForm();
 
-          source.do("SET_STARTER_OPTION", data);
+          source.do("SET_STARTER_OPTION", data).then(res => {
+            source.load("STARTER_OPTIONS");
+          });
           this.resolve && this.resolve(data);
         } else {
           return false;

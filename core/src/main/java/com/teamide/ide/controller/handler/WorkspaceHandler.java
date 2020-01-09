@@ -56,7 +56,7 @@ public class WorkspaceHandler {
 		ClientSession client = ClientHandler.getSession(request);
 		WorkspaceProcessor workspaceProcessor = new WorkspaceProcessor(client, token);
 		Object result = null;
-		logger.info("workspace work [" + work + "] type [" + type + "]");
+		// logger.info("workspace work [" + work + "] type [" + type + "]");
 
 		if (work.equals("do")) {
 			result = workspaceProcessor.onDo(type, data);

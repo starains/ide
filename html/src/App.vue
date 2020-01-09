@@ -51,8 +51,6 @@ import Toolbar from "@/views/components/Toolbar";
 import PreferenceForm from "@/views/components/PreferenceForm";
 import Rpository from "@/views/repository/Index";
 
-import tool from "@/common/js";
-
 export default {
   name: "App",
   components: {

@@ -100,7 +100,7 @@ public class StarterHandler {
 
 	public static List<Starter> getStarters(RepositoryProcessorParam param) throws Exception {
 
-		File starterFolder = getWorkspaceStarterFolder();
+		File starterFolder = getWorkspacesStarterFolder();
 
 		List<Starter> starters = new ArrayList<Starter>();
 		if (starterFolder.exists() && starterFolder.isDirectory()) {
@@ -171,12 +171,12 @@ public class StarterHandler {
 		return starter;
 	}
 
-	public static File getWorkspaceStarterFolder() {
-		return new File(IDEConstant.WORKSPACE_STARTER_FOLDER);
+	public static File getWorkspacesStarterFolder() {
+		return new File(IDEConstant.WORKSPACES_STARTER_FOLDER);
 	}
 
 	public static File getStarterFolder(String token) {
-		return new File(getWorkspaceStarterFolder(), token);
+		return new File(getWorkspacesStarterFolder(), token);
 	}
 
 	public static File getStarterLogFolder(String token) {

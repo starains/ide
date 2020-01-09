@@ -123,7 +123,12 @@ public class Starter extends StarterParam {
 			StarterHandler.getStarterLog(token).error(e.getMessage());
 			writeStatus("INSTALL_SHELL_ERROR");
 		}
-		writeEvent(TerminalEvent.START.getValue());
+		if (starterJarFile != null && starterJarFile.exists()) {
+			writeEvent(TerminalEvent.START.getValue());
+		} else {
+			StarterHandler.getStarterLog(token).error("starter jar does not exist.");
+			writeStatus("DESTROYED");
+		}
 
 	}
 
@@ -163,14 +168,16 @@ public class Starter extends StarterParam {
 			if (starterJarFile.exists()) {
 				starterJarFile.delete();
 			}
-			File jar = new File(IDEConstant.TOOL_STARTER_JAR);
+			File jar = new File(IDEConstant.PLUGIN_STARTER_JAR);
 			if (jar != null && jar.exists()) {
 				FileUtils.copyFile(jar, starterJarFile);
+				writeStatus("STARTING_STARTER");
+				startStarter();
+				writeStatus("STARTED_STARTER");
+			} else {
+				StarterHandler.getStarterLog(token).error("plugin starter.jar does not exist.");
 			}
 
-			writeStatus("STARTING_STARTER");
-			startStarter();
-			writeStatus("STARTED_STARTER");
 			StarterHandler.getStarterLog(token).info("install starter end...");
 		}
 	}

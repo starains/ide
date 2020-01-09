@@ -84,8 +84,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-
 export default {
   components: {},
   data() {
@@ -328,7 +326,13 @@ export default {
 
           source.gitCertificateForm.show().then(certificate => {
             data.certificate = certificate;
-            source.do("GIT_PUSH", data);
+            source.do("GIT_PUSH", data).then(res => {
+              if (res.errcode == 0) {
+                source.loadGitWorkStatus();
+              } else {
+                coos.error(res.errmsg);
+              }
+            });
           });
 
           this.resolve && this.resolve(data);

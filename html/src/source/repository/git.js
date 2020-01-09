@@ -102,6 +102,38 @@ source.repository.navs.push(git_branche_nav);
         source.refreshProjectsFileStatus();
     };
 
+    source.onLoadGitWorkStatus = function (value) {
+        value = value || {};
+        let message = '';
+        if (value.status == 'PUSHING') {
+            message = 'Git推送中...';
+        } else if (value.status == 'PULLING') {
+            message = 'Git拉取中...';
+        } else if (value.status == 'CHECKOUTING') {
+            message = 'Git检出中...';
+        } else {
+            if (value.status == 'PUSHED') {
+                coos.success('Git推送成功！');
+            } else if (value.status == 'PULLED') {
+                coos.success('Git拉取成功！');
+            } else if (value.status == 'CHECKOUTED') {
+                coos.success('Git检出成功！');
+            } else if (!coos.isEmpty(value.message)) {
+                coos.error(value.message);
+            }
+        }
+        if (!coos.isEmpty(message)) {
+            source.repository.loading = true;
+            source.repository.loading_msg = message;
+
+            window.setTimeout(() => {
+                source.loadGitWorkStatus();
+            }, 100);
+        } else {
+            source.repository.loading = false;
+            source.repository.loading_msg = '';
+        }
+    };
 
     source.formatHeadBranchName = function (branch) {
         var name = branch.name.substring("refs/heads/".length);
@@ -120,13 +152,27 @@ source.repository.navs.push(git_branche_nav);
         return branch.name.startsWith("refs/remotes/" + remoteName + "/");
     };
 
+    source.loadGitStatus = function () {
+        source.load('GIT');
+    };
+
+    source.loadGitWorkStatus = function () {
+        source.load('GIT_WORK_STATUS');
+    };
+
     source.gitPull = function () {
         let data = {};
         data.gitRemoteName = source.repository.git.option.gitRemoteName;
         data.gitRemoteBranch = source.repository.git.option.gitRemoteBranch;
         source.gitCertificateForm.show().then(certificate => {
             data.certificate = certificate;
-            source.do("GIT_PULL", data);
+            source.do("GIT_PULL", data).then(res => {
+                if (res.errcode == 0) {
+                    source.loadGitWorkStatus();
+                } else {
+                    coos.error(res.errmsg);
+                }
+            });
         });
     };
 
@@ -146,7 +192,20 @@ source.repository.navs.push(git_branche_nav);
             var data = {};
             data.paths = paths;
 
-            source.do("GIT_REVERT", data);
+            source.do("GIT_REVERT", data).then(res => {
+                if (res.errcode == 0) {
+                    coos.success("还原成功！");
+                    let project = source.getProjectByPath(value.path);
+                    if (project == null) {
+                        return;
+                    }
+                    source.reloadProject(project);
+
+                    source.loadGitStatus();
+                } else {
+                    coos.error(res.errmsg);
+                }
+            });
         }, () => { });
     }
 })();

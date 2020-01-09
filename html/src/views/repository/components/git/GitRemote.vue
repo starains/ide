@@ -29,8 +29,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-
 export default {
   components: {},
   data() {
@@ -121,7 +119,13 @@ export default {
               )
               .then(
                 res => {
-                  source.do("GIT_REMOTE_ADD", data);
+                  source.do("GIT_REMOTE_ADD", data).then(res => {
+                    if (res.errcode == 0) {
+                      source.loadGitWorkStatus();
+                    } else {
+                      coos.error(res.errmsg);
+                    }
+                  });
                   this.resolve && this.resolve(data);
                 },
                 () => {}

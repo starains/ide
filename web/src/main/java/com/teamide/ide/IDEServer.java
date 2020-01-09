@@ -67,7 +67,7 @@ public class IDEServer implements Runnable {
 			tomcat.setHostname(server.getHostname());// 设置主机名
 		}
 
-		File TOMCAT_FOLDER = new File(IDEConstant.WORKSPACE_TOMCAT_FOLDER);
+		File TOMCAT_FOLDER = new File(IDEConstant.WORKSPACES_TOMCAT_FOLDER);
 
 		tomcat.setBaseDir(TOMCAT_FOLDER.toURI().getPath());// tomcat存储自身信息的目录，比如日志等信息，根目录
 		tomcat.setPort(Integer.valueOf(server.getPort()));

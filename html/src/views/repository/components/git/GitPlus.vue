@@ -49,8 +49,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-
 export default {
   components: {},
   data() {
@@ -205,7 +203,14 @@ export default {
           });
 
           data.paths = paths;
-          source.do("GIT_INDEX_ADD", data);
+          source.do("GIT_INDEX_ADD", data).then(res => {
+            if (res.errcode == 0) {
+              coos.success("提交成功，您可以推送到Git远程仓库！");
+              source.loadGitStatus();
+            } else {
+              coos.error(res.errmsg);
+            }
+          });
 
           this.resolve && this.resolve(data);
         } else {

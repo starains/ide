@@ -21,7 +21,6 @@
   </div>
 </template>
 <script>
-import tool from "@/common/js";
 import SpaceList from "@/views/components/SpaceList";
 export default {
   name: "JoinIndex",

@@ -107,7 +107,7 @@ source.repository.file_data_map = {};
         file.isRoot = file.root;
         file.isMaven = file.maven;
 
-        if (parent) {
+        if (parent && !file.isNew) {
             if (parent.path == '') {
                 file.path = file.name;
             } else {
@@ -205,6 +205,7 @@ source.repository.file_data_map = {};
         source.do('FILE_SAVE', { path: path, content: content }).then(() => {
             let tab = source.getTab(path);
             tab.changed = false;
+            source.loadGitStatus();
         });
     };
 

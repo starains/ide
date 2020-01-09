@@ -64,8 +64,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-
 export default {
   name: "SpaceForm",
   data() {
@@ -169,24 +167,24 @@ export default {
           if (this.form.id) {
             source.do("SPACE_UPDATE", this.form).then(res => {
               if (res.errcode == 0) {
-                tool.success("修改成功！");
+                coos.success("修改成功！");
                 this.$router.go(-1);
               } else {
-                tool.error(res.errmsg);
+                coos.error(res.errmsg);
               }
             });
           } else {
             source.do("SPACE_CREATE", this.form).then(result => {
               if (res.errcode == 0) {
-                tool.success("新增成功！");
+                coos.success("新增成功！");
                 this.$router.go(-1);
               } else {
-                tool.error(res.errmsg);
+                coos.error(res.errmsg);
               }
             });
           }
         } else {
-          tool.error("请正确填写表单！");
+          coos.error("请正确填写表单！");
           return false;
         }
       });

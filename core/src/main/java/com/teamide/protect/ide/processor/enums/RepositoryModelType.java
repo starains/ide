@@ -26,6 +26,8 @@ public enum RepositoryModelType {
 
 	GIT_STATUS("GIT_STATUS", "库", ModelDataType.ONE),
 
+	GIT_WORK_STATUS("GIT_WORK_STATUS", "Git工作状态", ModelDataType.ONE),
+
 	STARTER_OPTIONS("STARTER_OPTIONS", "库", ModelDataType.ONE),
 
 	STARTERS("STARTERS", "库", ModelDataType.ONE),

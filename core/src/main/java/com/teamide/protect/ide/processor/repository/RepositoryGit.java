@@ -1,6 +1,8 @@
 package com.teamide.protect.ide.processor.repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.dircache.DirCache;
@@ -14,11 +16,16 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
+import com.teamide.protect.ide.enums.GitWorkStatus;
 import com.teamide.protect.ide.enums.OptionType;
 import com.teamide.protect.ide.git.JGitWorker;
 import com.teamide.protect.ide.processor.param.RepositoryProcessorParam;
 
 public class RepositoryGit extends RepositoryBase {
+
+	public static Map<String, GitWorkStatus> WORK_STATUS_CACHE = new HashMap<String, GitWorkStatus>();
+
+	public static Map<String, String> WORK_MESSAGE_CACHE = new HashMap<String, String>();
 
 	public RepositoryGit(RepositoryProcessorParam param) {
 
@@ -27,6 +34,40 @@ public class RepositoryGit extends RepositoryBase {
 	}
 
 	private final JGitWorker worker;
+
+	public String getKey() {
+		return this.param.getSpaceid() + "-" + this.param.getBranch();
+	}
+
+	public GitWorkStatus getGitWorkStatus() {
+		return WORK_STATUS_CACHE.get(getKey());
+	}
+
+	public void setGitWorkStatus(GitWorkStatus gitWorkStatus) {
+		WORK_STATUS_CACHE.put(getKey(), gitWorkStatus);
+	}
+
+	public String getGitWorkMessage() {
+		return WORK_MESSAGE_CACHE.get(getKey());
+	}
+
+	public void setGitWorkMessage(String message) {
+		WORK_MESSAGE_CACHE.put(getKey(), message);
+	}
+
+	public void checkWorkStatus() throws Exception {
+		if (getGitWorkStatus() != null) {
+			if (getGitWorkStatus() == GitWorkStatus.CHECKOUTING) {
+				throw new Exception("git检出中，请稍后再试...");
+			}
+			if (getGitWorkStatus() == GitWorkStatus.PULLING) {
+				throw new Exception("git拉取中，请稍后再试...");
+			}
+			if (getGitWorkStatus() == GitWorkStatus.PUSHING) {
+				throw new Exception("git推送中，请稍后再试...");
+			}
+		}
+	}
 
 	public JSONObject loadCertificateOption() throws Exception {
 
@@ -409,7 +450,23 @@ public class RepositoryGit extends RepositoryBase {
 		}
 		result.put("findGit", true);
 
-		worker.pull(remote, remoteBranchName, getCredentialsProvider(username, password));
+		checkWorkStatus();
+		setGitWorkStatus(GitWorkStatus.PULLING);
+		new Thread() {
+
+			@Override
+			public void run() {
+				try {
+					worker.pull(remote, remoteBranchName, getCredentialsProvider(username, password));
+					setGitWorkStatus(GitWorkStatus.PULLED);
+					setGitWorkMessage(null);
+				} catch (Exception e) {
+					setGitWorkStatus(GitWorkStatus.PULLERR);
+					setGitWorkMessage(e.getMessage());
+				}
+			}
+
+		}.start();
 
 		return result;
 	}
@@ -425,7 +482,24 @@ public class RepositoryGit extends RepositoryBase {
 		}
 		result.put("findGit", true);
 
-		worker.push(remote, branchName, remoteBranchName, getCredentialsProvider(username, password));
+		checkWorkStatus();
+		setGitWorkStatus(GitWorkStatus.PUSHING);
+		new Thread() {
+
+			@Override
+			public void run() {
+				try {
+					worker.push(remote, branchName, remoteBranchName, getCredentialsProvider(username, password));
+					setGitWorkStatus(GitWorkStatus.PUSHED);
+					setGitWorkMessage(null);
+				} catch (Exception e) {
+					setGitWorkStatus(GitWorkStatus.PUSHERR);
+					setGitWorkMessage(e.getMessage());
+				}
+			}
+
+		}.start();
+
 		return result;
 	}
 

@@ -74,14 +74,11 @@ public class RepositoryProcessor extends SpaceProcessor {
 			boolean isFile = data.getBooleanValue("isFile");
 			new RepositoryFile(param).create(parentPath, name, isFile);
 
-			// changeFolder(folder);
-
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 
 			value = 0;
 
-			reloadGit();
 			break;
 		case FILE_MOVE:
 			String path = data.getString("path");
@@ -94,20 +91,16 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 			value = 0;
 
-			reloadGit();
 			break;
 		case FILE_DELETE:
 			path = data.getString("path");
 			new RepositoryFile(param).delete(path);
-
-			// changeFolder(folder);
 
 			spaceEventBean.set("path", path);
 			appendEvent(spaceEventBean);
 
 			value = 0;
 
-			reloadGit();
 			break;
 		case FILE_PASTE:
 			path = data.getString("path");
@@ -117,7 +110,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("path", path);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case FILE_SAVE:
 			path = data.getString("path");
@@ -127,14 +119,11 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("path", path);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case FILE_RENAME:
 			path = data.getString("path");
 			name = data.getString("name");
 			new RepositoryFile(param).rename(path, name);
-
-			// changeFolder(folder);
 
 			spaceEventBean.set("path", path);
 			spaceEventBean.set("name", name);
@@ -142,7 +131,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 			value = 0;
 
-			reloadGit();
 			break;
 		case FILE_DOWNLOAD:
 			path = data.getString("path");
@@ -234,7 +222,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("startpoint", startPoint);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case GIT_BRANCH_DELETE:
 			gitBranchName = data.getString("gitBranchName");
@@ -243,7 +230,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("branch", gitBranchName);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case GIT_BRANCH_RENAME:
 			String oldGitBranchName = data.getString("oldGitBranchName");
@@ -254,7 +240,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("newbranch", newGitBranchName);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case GIT_CHECKOUT:
 			String gitBranch = data.getString("gitBranch");
@@ -264,7 +249,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case GIT_CLONE:
 			String url = data.getString("url");
@@ -282,14 +266,12 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case GIT_INIT:
 			value = new RepositoryGit(param).init();
 
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case GIT_PULL:
 
@@ -303,6 +285,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 				username = certificate.getString("username");
 				password = certificate.getString("password");
 			}
+
 			new RepositoryGit(param).pull(gitRemoteName, gitRemoteBranch, username, password);
 
 			spaceEventBean.set(data);
@@ -323,7 +306,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("paths", paths);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case GIT_PUSH:
 			gitRemoteName = data.getString("gitRemoteName");
@@ -352,8 +334,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
-
 			break;
 		case GIT_INDEX_ADD:
 			repositoryGit = new RepositoryGit(param);
@@ -365,11 +345,9 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case GIT_INDEX_REMOVE:
 
-			reloadGit();
 			break;
 		case GIT_REMOTE_ADD:
 			gitRemoteName = data.getString("gitRemoteName");
@@ -380,6 +358,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("remote", gitRemoteName);
 			appendEvent(spaceEventBean);
 
+			onDo(RepositoryProcessorType.GIT_PULL.getValue(), data);
 			break;
 		case GIT_REMOTE_REMOVE:
 			gitRemoteName = data.getString("gitRemoteName");
@@ -388,7 +367,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("remote", gitRemoteName);
 			appendEvent(spaceEventBean);
 
-			reloadGit();
 			break;
 		case GIT_REMOTE_SETURL:
 			gitRemoteName = data.getString("gitRemoteName");
@@ -621,10 +599,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 	}
 
-	public void reloadGit() throws Exception {
-
-	}
-
 	public Object onLoad(String type, JSONObject data) throws Exception {
 		RepositoryModelType modelType = RepositoryModelType.get(type);
 		if (modelType == null) {
@@ -690,6 +664,12 @@ public class RepositoryProcessor extends SpaceProcessor {
 			path = data.getString("path");
 			value = new RepositoryGit(param).status(path);
 			break;
+		case GIT_WORK_STATUS:
+			JSONObject res = new JSONObject();
+			res.put("status", new RepositoryGit(param).getGitWorkStatus());
+			res.put("message", new RepositoryGit(param).getGitWorkMessage());
+			value = res;
+			break;
 		case STARTER_OPTIONS:
 			path = data.getString("path");
 			value = param.getOptions(path, OptionType.STARTER);
@@ -708,7 +688,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			if (StringUtil.isNotEmpty(data.getString("lastIndex"))) {
 				lastIndex = data.getIntValue("lastIndex");
 			}
-			JSONObject res = null;
+			res = null;
 			if (!StringUtil.isEmpty(token) && !token.equals("0")) {
 
 				RepositoryLog repositoryLog = StarterHandler.getStarterLog(token);

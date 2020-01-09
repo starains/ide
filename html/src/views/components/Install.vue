@@ -101,7 +101,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
 import store from "@/store";
 
 export default {

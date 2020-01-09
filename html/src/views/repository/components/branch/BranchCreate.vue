@@ -26,8 +26,6 @@
 </template>
 
 <script>
-import tool from "@/common/js";
-
 export default {
   components: {},
   data() {
@@ -92,7 +90,12 @@ export default {
 
           this.hideForm();
           source.do("BRANCH_CREATE", data).then(res => {
-            app.toBranch(data.branch);
+            if (res.errcode == 0) {
+              coos.success("版本创建成功！");
+              app.toBranch(data.branch);
+            } else {
+              coos.error(res.errmsg);
+            }
           });
           this.resolve && this.resolve(data);
         } else {
