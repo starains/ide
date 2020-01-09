@@ -113,7 +113,9 @@ public class MavenUtil {
 			}
 			return false;
 		}
-		System.setProperty("maven.home", maven_home);
+		if (StringUtil.isNotEmpty(maven_home)) {
+			System.setProperty("maven.home", maven_home);
+		}
 
 		InvocationRequest request = new DefaultInvocationRequest();
 		request.setBaseDirectory(root);
