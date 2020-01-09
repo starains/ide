@@ -53,12 +53,25 @@ public class WorkspaceHandler {
 			throw new Exception("token is null.");
 		}
 
-		ClientSession client = ClientHandler.getSession(request);
-		WorkspaceProcessor workspaceProcessor = new WorkspaceProcessor(client, token);
+		ClientSession session = ClientHandler.getSession(request);
+		WorkspaceProcessor workspaceProcessor = new WorkspaceProcessor(session, token);
 		Object result = null;
 		// logger.info("workspace work [" + work + "] type [" + type + "]");
 
 		if (work.equals("do")) {
+
+			if (type.equalsIgnoreCase("LOGIN") || type.equalsIgnoreCase("LOGOUT")
+
+					|| type.equalsIgnoreCase("INSTALL") || type.equalsIgnoreCase("VALIDATE")
+
+					|| type.equalsIgnoreCase("REGISTER")) {
+
+			} else {
+				if (session.getUser() == null) {
+					throw new Exception("登录信息丢失，请先登录！");
+				}
+			}
+
 			result = workspaceProcessor.onDo(type, data);
 		} else if (work.equals("load")) {
 			result = workspaceProcessor.onLoad(type, data);

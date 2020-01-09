@@ -202,10 +202,15 @@ source.repository.file_data_map = {};
         source.load('FILE', { path: path });
     };
     source.saveFile = function (path, content) {
-        source.do('FILE_SAVE', { path: path, content: content }).then(() => {
-            let tab = source.getTab(path);
-            tab.changed = false;
-            source.loadGitStatus();
+        source.do('FILE_SAVE', { path: path, content: content }).then((res) => {
+            if (res.errcode == 0) {
+                coos.success('保存成功！');
+                let tab = source.getTab(path);
+                tab.changed = false;
+                source.loadGitStatus();
+            } else {
+                coos.error(res.errmsg);
+            }
         });
     };
 
