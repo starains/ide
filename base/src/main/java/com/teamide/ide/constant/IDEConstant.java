@@ -12,9 +12,9 @@ public class IDEConstant {
 
 	public static final String CONF_FOLDER = HOME + "conf/";
 
-	public static final String SERVER_FOLDER = HOME + "server/";
-
 	public static final String PLUGINS_FOLDER = HOME + "plugins/";
+
+	public static final String PLUGINS_SERVER_FOLDER = PLUGINS_FOLDER + "server/";
 
 	public static final String PLUGIN_DEPLOYER_FOLDER = PLUGINS_FOLDER + "deployer/";
 

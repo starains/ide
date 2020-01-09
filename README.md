@@ -24,3 +24,9 @@ java -jar ide.jar
 java -jar ide.jar 
     --TEAMIDE_HOME=/data/ide      //不配置环境变量则需要指定目录
     --port=8080                   //可以指定启动端口
+
+
+**后台启动**
+
+nohup java -Dfile.encoding=UTF-8 -jar $TEAMIDE_HOME/ide.jar >$TEAMIDE_HOME/logs/main.log 2>&1 & echo $! > $TEAMIDE_HOME/ide.pid
+

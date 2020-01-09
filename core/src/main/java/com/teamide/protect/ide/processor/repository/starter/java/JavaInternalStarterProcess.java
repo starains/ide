@@ -53,7 +53,7 @@ public class JavaInternalStarterProcess extends JavaStarterProcess {
 		envps.put("SERVER_APP", app);
 		shell.setEnvps(envps);
 
-		shell.setMain("com.coospro.ServerMain");
+		shell.setMain("com.teamide.server.ServerMain");
 
 		return shell.getShellString();
 	}
@@ -73,7 +73,7 @@ public class JavaInternalStarterProcess extends JavaStarterProcess {
 	@Override
 	public File getServer() throws Exception {
 
-		File tomcat_folder = new File(IDEConstant.SERVER_FOLDER, param.option.getInternaltomcat());
+		File tomcat_folder = new File(IDEConstant.PLUGINS_SERVER_FOLDER, param.option.getInternaltomcat());
 		if (!tomcat_folder.exists()) {
 			throw new Exception(param.option.getInternaltomcat() + " is not defind");
 		}
