@@ -53,23 +53,46 @@ public class SpaceProcessor extends Processor {
 		case SPACE_CREATE:
 			SpaceService spaceService = new SpaceService();
 			SpaceBean space = data.toJavaObject(SpaceBean.class);
-			value = spaceService.insert(param.getSession(), space);
+			space = spaceService.insert(param.getSession(), space);
+
+			value = SpaceHandler.getFormat(space.getId());
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 
 			break;
+		case SPACE_RENAME:
+			spaceService = new SpaceService();
+			String id = data.getString("id");
+			String name = data.getString("name");
+			spaceService.rename(param.getSession(), id, name);
+
+			value = SpaceHandler.getFormat(id);
+			break;
 		case SPACE_UPDATE:
 			spaceService = new SpaceService();
-			space = data.toJavaObject(SpaceBean.class);
-			value = spaceService.update(param.getSession(), space);
+			id = data.getString("id");
+			String type = data.getString("type");
+			String comment = data.getString("comment");
+			space = new SpaceBean();
+			space.setId(id);
+			space.setType(type);
+			space.setComment(comment);
+			spaceService.update(param.getSession(), space);
+
+			value = SpaceHandler.getFormat(id);
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 
 			break;
 		case SPACE_DELETE:
-			value = data.toJavaObject(SpaceBean.class);
+			id = data.getString("id");
+			space = new SpaceBean();
+			space.setId(id);
+
+			spaceService = new SpaceService();
+			spaceService.delete(param.getSession(), space);
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);

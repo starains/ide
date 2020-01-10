@@ -1,7 +1,13 @@
 package com.teamide.ide.factory;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import javax.websocket.Session;
+
+import com.teamide.client.ClientSession;
 import com.teamide.db.DataSourceFactory;
 import com.teamide.db.TableUtil;
 import com.teamide.db.bean.Database;
@@ -12,6 +18,53 @@ import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.configure.IDEOptions;
 
 public class IDEFactory {
+
+	static final Map<String, ClientSession> TOKEN_SESSION_CACHE = new HashMap<String, ClientSession>();
+
+	static final Map<String, Session> TOKEN_WEBSOCKET_SESSION_CACHE = new HashMap<String, Session>();
+
+	public static ClientSession getClientSession(String token) {
+		return TOKEN_SESSION_CACHE.get(token);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Set<String> getClientTokens(ClientSession clientSession) {
+		Set<String> tokens = new HashSet<String>();
+		if (clientSession.get("tokens") != null) {
+			tokens = (Set<String>) clientSession.get("tokens");
+		}
+		clientSession.set("tokens", tokens);
+		return tokens;
+	}
+
+	public static void setClientSession(String token, ClientSession clientSession) {
+		TOKEN_SESSION_CACHE.put(token, clientSession);
+
+		Set<String> tokens = IDEFactory.getClientTokens(clientSession);
+		tokens.add(token);
+	}
+
+	public static void removeClientSession(String token) {
+		ClientSession clientSession = getClientSession(token);
+		if (clientSession != null) {
+			Set<String> tokens = IDEFactory.getClientTokens(clientSession);
+			tokens.remove(token);
+		}
+		TOKEN_SESSION_CACHE.remove(token);
+
+	}
+
+	public static Session getWebsocketSession(String token) {
+		return TOKEN_WEBSOCKET_SESSION_CACHE.get(token);
+	}
+
+	public static void setWebsocketSession(String token, Session session) {
+		TOKEN_WEBSOCKET_SESSION_CACHE.put(token, session);
+	}
+
+	public static void removeWebsocketSession(String token) {
+		TOKEN_WEBSOCKET_SESSION_CACHE.remove(token);
+	}
 
 	public static String getDefaultPassword() {
 

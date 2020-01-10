@@ -12,6 +12,7 @@ import com.teamide.bean.Status;
 import com.teamide.exception.BaseException;
 import com.teamide.ide.controller.handler.DataHandler;
 import com.teamide.ide.controller.handler.ResourcesHandler;
+import com.teamide.ide.controller.handler.ResourcesMergeHandler;
 import com.teamide.ide.controller.handler.WorkspaceHandler;
 import com.teamide.util.RequestUtil;
 import com.teamide.util.ResponseUtil;
@@ -26,6 +27,8 @@ public class RootController extends HttpServlet {
 	private static final long serialVersionUID = 4357127201255115763L;
 
 	ResourcesHandler resourcesController = new ResourcesHandler();
+
+	ResourcesMergeHandler resourcesMergeHandler = new ResourcesMergeHandler();
 
 	DataHandler dataController = new DataHandler();
 
@@ -63,10 +66,15 @@ public class RootController extends HttpServlet {
 					|| path.endsWith(".css")
 
 					|| path.endsWith(".html")) {
-
-				resourcesController.handle(path, request, response);
+				if (path.startsWith("/resources/coos/merge/")) {
+					resourcesMergeHandler.handle(path, request, response);
+				} else {
+					resourcesController.handle(path, request, response);
+				}
 			} else if (path.startsWith("/api/data/")) {
 				dataController.handle(path, request, response);
+			} else if (path.startsWith("/api/validate")) {
+				ResponseUtil.outJSON(response, Status.SUCCESS());
 			} else if (path.startsWith("/api/workspace/")) {
 				workspaceController.handle(path, request, response);
 			} else {

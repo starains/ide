@@ -21,6 +21,7 @@ import com.teamide.app.enums.SqlType;
 import com.teamide.app.enums.ValueType;
 import com.teamide.app.util.ModelFileUtil;
 import com.teamide.bean.Status;
+import com.teamide.client.ClientHandler;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.enums.EnvironmentType;
@@ -28,6 +29,7 @@ import com.teamide.ide.enums.PublicType;
 import com.teamide.ide.enums.SpacePermission;
 import com.teamide.ide.enums.SpaceTeamType;
 import com.teamide.ide.enums.SpaceType;
+import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.filter.IDEFilter;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.ISpaceService;
@@ -94,6 +96,8 @@ public class DataHandler {
 		json.put("token", IDGenerateUtil.generateShort());
 		String token = TokenUtil.getToken(json);
 		data.put("token", token);
+
+		IDEFactory.setClientSession(token, ClientHandler.getSession(request));
 
 		status.setValue(data);
 		ResponseUtil.outJSON(response, status);

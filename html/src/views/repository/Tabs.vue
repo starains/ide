@@ -35,6 +35,10 @@ export default {
   watch: {
     "repository.activeTab": function(activeTab) {
       source.changeTab(activeTab);
+      let tab = source.getTab(activeTab);
+      if (tab != null) {
+        source.do("FILE_OPEN", { path: tab.path });
+      }
     }
   },
   methods: {

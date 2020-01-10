@@ -52,6 +52,7 @@ source.repository.projects = [];
         } if (value.projects) {
             value.projects.forEach(one => {
                 source.formatFile(one);
+
                 one.isProject = true;
                 one.loading = true;
                 if (one.root) {

@@ -1,6 +1,6 @@
 package com.teamide.ide.controller.handler;
 
-import java.io.IOException;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.teamide.util.IOUtil;
-import com.teamide.util.PropertyUtil;
 import com.teamide.util.RequestUtil;
 import com.teamide.util.ResponseUtil;
 import com.teamide.util.StringUtil;
@@ -24,14 +23,11 @@ public class ResourcesHandler {
 	public void handle(String path, HttpServletRequest request, HttpServletResponse response) {
 
 		if (hasUI == null) {
-			try {
-				if (PropertyUtil.get("coos.ui.properties") != null) {
-					hasUI = true;
-				} else {
-					hasUI = false;
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			File file = new File("ui/coos.ui.properties");
+			if (file.exists()) {
+				hasUI = true;
+			} else {
+				hasUI = false;
 			}
 		}
 

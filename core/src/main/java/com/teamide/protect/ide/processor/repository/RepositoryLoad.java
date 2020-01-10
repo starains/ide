@@ -6,6 +6,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.protect.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.protect.ide.processor.repository.project.ProjectAppLoader;
 import com.teamide.protect.ide.processor.repository.project.ProjectBean;
 import com.teamide.protect.ide.processor.repository.project.ProjectLoader;
 import com.teamide.protect.ide.service.SpaceRepositoryOpenService;
@@ -50,6 +51,12 @@ public class RepositoryLoad extends RepositoryBase {
 
 		ProjectLoader projectLoader = new ProjectLoader(param);
 		List<ProjectBean> projects = projectLoader.getProjects();
+
+		ProjectAppLoader appLoader = new ProjectAppLoader(param);
+		for (ProjectBean project : projects) {
+			project.setApp(appLoader.loadApp(project.getPath()));
+		}
+
 		result.put("projects", projects);
 		result.put("branch", this.param.getBranch());
 		// JSONObject runner = (JSONObject)

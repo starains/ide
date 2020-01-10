@@ -20,6 +20,17 @@ public class SpaceBean extends BaseBean {
 	@Column(name = "publictype")
 	private String publictype;
 
+	@Column(name = "comment", length = 5000)
+	private String comment;
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
 	public String getPublictype() {
 		return publictype;
 	}

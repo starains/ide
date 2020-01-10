@@ -1,5 +1,6 @@
 package com.teamide.protect.ide.service;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+
+import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -25,6 +28,7 @@ import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.ide.service.impl.BaseService;
 import com.teamide.protect.ide.handler.SpaceHandler;
+import com.teamide.protect.ide.processor.param.SpaceProcessorParam;
 
 @Resource
 public class SpaceService extends BaseService<SpaceBean> implements ISpaceService {
@@ -51,6 +55,10 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 			BaseService<SpaceTeamBean> spaceTeamService = new BaseService<SpaceTeamBean>();
 			spaceTeamService.insert(session, spaceTeam);
 
+		}
+		SpaceProcessorParam param = new SpaceProcessorParam(session, space.getId());
+		if (!param.getSpaceFolder().exists()) {
+			param.getSpaceFolder().mkdirs();
 		}
 		return SpaceHandler.get(space.getId());
 	}
@@ -82,8 +90,9 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 
 	@Override
 	public SpaceBean update(ClientSession session, SpaceBean space) throws Exception {
-
-		validateName(space);
+		if (StringUtil.isNotEmpty(space.getName())) {
+			validateName(space);
+		}
 		SpaceHandler.remove(space.getId());
 		super.update(session, space);
 		return SpaceHandler.get(space.getId());
@@ -416,11 +425,50 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 	}
 
 	@Override
-	public SpaceBean delete(ClientSession session, SpaceBean t) throws Exception {
-		if (t != null) {
-			SpaceHandler.remove(t.getId());
+	public SpaceBean delete(ClientSession session, SpaceBean space) throws Exception {
+		if (space == null || StringUtil.isEmpty(space.getId())) {
+			throw new Exception("空间数据不存在！");
 		}
-		return super.delete(session, t);
+
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("id", space.getId());
+		String space_tablename = IDEFactory.getRealtablename(SpaceBean.class, param);
+		String countSql = "SELECT COUNT(1) FROM " + space_tablename + "  WHERE parentid=:id ";
+
+		if (queryCount(countSql, param) > 0) {
+			throw new Exception("该空间目录下包含其它空间数据，请先删除其它空间！");
+		}
+
+		SpaceProcessorParam processorParam = new SpaceProcessorParam(session, space.getId());
+		if (processorParam.getSpace() == null) {
+			throw new Exception("空间数据不存在！");
+		}
+
+		if (processorParam.getSpaceFolder().exists()) {
+			FileUtils.deleteDirectory(processorParam.getSpaceFolder());
+		}
+
+		if (space != null) {
+			SpaceHandler.remove(space.getId());
+		}
+		return super.delete(session, space);
+	}
+
+	public void rename(ClientSession session, String spaceid, String name) throws Exception {
+		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceid);
+		if (param.getSpace() == null) {
+			throw new Exception("空间数据不存在！");
+		}
+		File parentFolder = param.getSpaceFolder().getParentFile();
+		if (new File(parentFolder, name).exists()) {
+			throw new Exception("名称【" + name + "】已存在！");
+		}
+
+		FileUtils.moveDirectory(param.getSpaceFolder(), new File(parentFolder, name));
+		SpaceBean space = new SpaceBean();
+		space.setId(spaceid);
+		space.setName(name);
+		this.update(session, space);
 	}
 
 	@Override

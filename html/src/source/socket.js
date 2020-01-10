@@ -18,7 +18,7 @@
         websocket.close(3000, "强制关闭");
     }
     source.websocket = {
-        opened: true,
+        opened: false,
         opening: false,
         sendText(message) {
 
@@ -38,7 +38,7 @@
                 source.websocket.opening = true;
 
                 if (reconnectCount > 0) {
-                    source.screen.error('断线重连中，请稍后...')
+                    //source.screen.error('断线重连中，请稍后...')
                 }
                 if ('WebSocket' in window) {
                     let url = window._SERVER_URL.replace('http', 'ws') + '/websocket/' + source.token;
@@ -59,14 +59,13 @@
                     }
                     reconnectCount = 0;
                     source.validate();
-                    source.load('SESSION');
+                    //source.load('SESSION');
                     call_opened();
 
                 }
                 websocket.onclose = function (e) {
                     source.websocket.opening = false;
                     source.websocket.opened = false;
-                    return;
                     source.server.status().then((res) => {
                         if (res) {
                             reconnectCount++;
@@ -82,9 +81,10 @@
                 }
                 websocket.onmessage = function (event) {
                     let message = event.data;
-                    message = JSON.parse(message);
-                    let messageID = message.messageID;
-                    source.on(messageID, message, event);
+                    if (message == '-1') {
+                        coos.info('会话信息丢失，将刷新浏览器！');
+                        // location.reload();
+                    }
                 }
             });
         }

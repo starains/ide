@@ -8,6 +8,8 @@ public enum SpaceProcessorType {
 
 	SPACE_UPDATE("SPACE_UPDATE", "空间修改"),
 
+	SPACE_RENAME("SPACE_RENAME", "空间重命名"),
+
 	SPACE_DELETE("SPACE_DELETE", "空间删除"),
 
 	SPACE_TEAM_INSERT("SPACE_TEAM_INSERT", "新增团队"),

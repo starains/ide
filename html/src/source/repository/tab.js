@@ -72,6 +72,10 @@ source.repository.activeTab = null;
                         if (file_date.path.startsWith(path + '/')) {
                             model = m;
                         }
+                    } else {
+                        if (file_date.path == (path)) {
+                            model = m;
+                        }
                     }
                 });
             }

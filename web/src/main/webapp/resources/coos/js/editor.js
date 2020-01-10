@@ -1401,8 +1401,8 @@ window.app = app;
 			"label-width" : " ",
 			"before-html" : '<h4 class="color-orange">请填写JSON格式数据作为参数</h4>',
 			items : [ {
-				label : "参数",
-				name : "body",
+				label : "数据",
+				name : "data",
 				type : "textarea"
 			}, {
 				label : "结果",
@@ -2811,8 +2811,8 @@ window.app = app;
 			"label-width" : " ",
 			"before-html" : '<h4 class="color-orange">请填写JSON格式数据作为参数</h4>',
 			items : [ {
-				label : "参数",
-				name : "body",
+				label : "数据",
+				name : "data",
 				type : "textarea"
 			}, {
 				label : "结果",

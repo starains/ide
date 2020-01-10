@@ -101,11 +101,11 @@
         },
         wait() {
             return new Promise((resolve, reject) => {
-                source.screen.error('服务器连接异常，重连中，请稍后...');
+                // source.screen.error('服务器连接异常，重连中，请稍后...');
                 source.server.status().then((res) => {
                     if (res) {
                         wait_check_count = 0;
-                        source.screen.success('服务器连接成功！');
+                        // source.screen.success('服务器连接成功！');
                         window.setTimeout(function () {
                             source.screen.remove();
                             resolve && resolve();
@@ -123,7 +123,7 @@
                             second = 30;
                         }
                         if (wait_check_count >= 20) {
-                            source.screen.error('服务器连接异常，请联系管理员！');
+                            // source.screen.error('服务器连接异常，请联系管理员！');
                             return;
                         }
                         window.setTimeout(function () {

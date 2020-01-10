@@ -2,6 +2,10 @@ package com.teamide.ide;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.servlet.ServletException;
 
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
@@ -16,11 +20,14 @@ import org.apache.catalina.core.ThreadLocalLeakPreventionListener;
 import org.apache.catalina.mbeans.GlobalResourcesLifecycleListener;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.startup.Tomcat.FixContextListener;
+import org.apache.tomcat.websocket.server.WsSci;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.constant.IDEConf.Server;
 import com.teamide.ide.controller.RootController;
+import com.teamide.ide.listener.SessionListener;
+import com.teamide.ide.websocket.WebSocketServer;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.util.StringUtil;
 
@@ -108,6 +115,9 @@ public class IDEServer implements Runnable {
 
 				if (event.getType().equals(Lifecycle.CONFIGURE_START_EVENT)) {
 					context.getResources().setCachingAllowed(false);
+
+					context.getServletContext().addListener(new SessionListener());
+
 					URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
 					// System.out.println(location.getProtocol());
 					// System.out.println(location);
@@ -116,6 +126,15 @@ public class IDEServer implements Runnable {
 
 					context.getServletContext().addServlet(rootClass.getName(), RootController.class);
 					context.addServletMappingDecoded("/*", rootClass.getName());
+
+					Set<Class<?>> clazzes = new HashSet<Class<?>>();
+					clazzes.add(WebSocketServer.class);
+					try {
+						new WsSci().onStartup(clazzes, context.getServletContext());
+					} catch (ServletException e) {
+						e.printStackTrace();
+					}
+
 				}
 			}
 		});
