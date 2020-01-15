@@ -2,6 +2,8 @@ package com.teamide.protect.ide.processor.repository.generater;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -15,8 +17,9 @@ import com.teamide.util.IOUtil;
 import com.teamide.util.ResourceUtil;
 import com.teamide.util.StringUtil;
 import com.teamide.protect.ide.processor.param.RepositoryProcessorParam;
-import com.teamide.protect.ide.processor.repository.generater.template.TemplateResolver;
 import com.teamide.protect.ide.processor.repository.project.AppBean;
+import com.teamide.template.TemplateResolver;
+import com.teamide.template.context.TemplateContext;
 
 public abstract class CodeGenerater extends Generater {
 
@@ -83,8 +86,21 @@ public abstract class CodeGenerater extends Generater {
 		init();
 		String template = getTemplate();
 		InputStream templateStream = ResourceUtil.load(template);
-		TemplateResolver templateResolver = new TemplateResolver(data, IOUtil.readString(templateStream));
-		return templateResolver.build();
+
+		StringReader reader = new StringReader(IOUtil.readString(templateStream));
+		TemplateResolver resolver = new TemplateResolver(reader);
+		TemplateContext context = resolver.resolve();
+		StringWriter writer = new StringWriter();
+		try {
+			context.write(writer, data);
+		} catch (Exception e) {
+			if (bean != null) {
+				throw new Exception(bean.getName() + " build error," + e.getMessage());
+			} else {
+				throw new Exception(template + " build error," + e.getMessage());
+			}
+		}
+		return writer.toString();
 	}
 
 	public abstract void buildData();

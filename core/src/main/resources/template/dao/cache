@@ -1,16 +1,16 @@
-package #||$package||#;
+package #{$package};
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.jexl.JexlTool;
 
 /**
- * Dao
- * #||$comment||#
+ * Cache Dao
+ * #{$comment}
  */
 
-@javax.annotation.Resource(name="#||$name||#")
-public class #||$classname||# {
+@javax.annotation.Resource(name="#{$name}")
+public class #{$classname} {
 	
 	public $result_classname invoke(DataParam data) {
 		$result_classname result = new $result_classname();

@@ -1,4 +1,4 @@
-package #||$package||#;
+package #{$package};
 
 import java.util.List;
 import java.util.ArrayList;
@@ -8,23 +8,23 @@ import com.teamide.util.StringUtil;
 
 /**
  * 数据字典
- * #||$comment||#
+ * #{$comment}
  */
-public class #||$classname||# extends OptionBean {
+public class #{$classname} extends OptionBean {
 
-	private static final List<#||$classname||#> options = new ArrayList<#||$classname||#>();
+	private static final List<#{$classname}> options = new ArrayList<#{$classname}>();
 
 	static {
-		#|forStart|($options, $one)
-		add("#||$one.value||#", "#||$one.text||#", "#||$one.parent||#", "#||$one.image||#", "#||$one.color||#");
-		|forEnd|#
+		#forStart($options, $one)#
+		add("#{$one.value}", "#{$one.text}", "#{$one.parent}", "#{$one.image}", "#{$one.color}");
+		#forEnd#
 	}
 
 	/**
 	 * 添加字典项
 	 */
-	public static #||$classname||# add(String value, String text, String parent, String image, String color) {
-		#||$classname||# option = new #||$classname||#();
+	public static #{$classname} add(String value, String text, String parent, String image, String color) {
+		#{$classname} option = new #{$classname}();
 		option.setValue(value);
 		option.setText(text);
 		option.setParent(parent);
@@ -38,15 +38,15 @@ public class #||$classname||# extends OptionBean {
 	/**
 	 * 获取所有字典项
 	 */
-	public static List<#||$classname||#> getOptions() {
+	public static List<#{$classname}> getOptions() {
 		return options;
 	}
 	
 	/**
 	 * 查询字典项
 	 */
-	public static #||$classname||# getOption(String value) {
-		for(#||$classname||# option : options) {
+	public static #{$classname} getOption(String value) {
+		for(#{$classname} option : options) {
 			if(StringUtil.isEmpty(value) && StringUtil.isEmpty(option.getValue())){
 				return option;
 			}
@@ -61,7 +61,7 @@ public class #||$classname||# extends OptionBean {
 	 * 查询值对应的文案
 	 */
 	public static String getText(String value) {
-		#||$classname||# option = getOption(value);
+		#{$classname} option = getOption(value);
 		if(null != option){
 			return option.getText();
 		}

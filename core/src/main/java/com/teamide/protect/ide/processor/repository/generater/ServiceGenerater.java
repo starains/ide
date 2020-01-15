@@ -38,6 +38,7 @@ public class ServiceGenerater extends CodeGenerater {
 	@Override
 	public void buildData() {
 		JSONArray $processs = new JSONArray();
+		JSONArray $propertys = new JSONArray();
 		ServiceProcess start = null;
 		List<ServiceProcess> processs = service.getProcesss();
 		for (ServiceProcess process : processs) {
@@ -46,9 +47,13 @@ public class ServiceGenerater extends CodeGenerater {
 				break;
 			}
 		}
+		data.put("$start", null);
+		data.put("$end", null);
 		appendProcess($processs, start);
 		data.put("$processs", $processs);
+		data.put("$propertys", $propertys);
 		data.put("$service", JSON.toJSON(service));
+
 	}
 
 	public void appendProcess(JSONArray $processs, ServiceProcess process) {
