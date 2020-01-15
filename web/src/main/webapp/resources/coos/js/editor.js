@@ -705,7 +705,8 @@ window.app = app;
 			smartIndent : true, //智能缩进
 			indentUnit : 4, // 智能缩进单位为4个空格长度
 			indentWithTabs : true, // 使用制表符进行智能缩进
-			lineWrapping : true, //
+			styleActiveLine : true, // 当前行背景高亮
+			lineWrapping : false, //
 			// 在行槽中添加行号显示器、折叠器、语法检测器`
 			gutters : [ "CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers" ],
 			foldGutter : true, // 启用行槽中的代码折叠

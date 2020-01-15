@@ -73,7 +73,9 @@ public class ResourcesHandler {
 			js.add("resources/plugins/codemirror/addon/hint/sql-hint.js");
 			js.add("resources/plugins/codemirror/addon/hint/xml-hint.js");
 			js.add("resources/plugins/codemirror/addon/comment/comment.js");
-
+			js.add("resources/plugins/codemirror/addon/mode/overlay.js");
+			js.add("resources/plugins/codemirror/addon/mode/simple.js");
+			js.add("resources/plugins/codemirror/addon/selection/selection-pointer.js");
 			// mode
 			js.add("resources/plugins/codemirror/mode/css/css.js");
 			js.add("resources/plugins/codemirror/mode/javascript/javascript.js");
