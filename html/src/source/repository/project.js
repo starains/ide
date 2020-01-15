@@ -91,7 +91,7 @@ source.repository.navs = [
     source.reloadProject = function (project) {
 
         project.loading = true;
-        source.load('PROJECT', { path: project.path });
+        return source.load('PROJECT', { path: project.path });
     };
 })();
 
