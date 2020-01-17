@@ -47,7 +47,7 @@ public class DictionaryGenerater extends CodeGenerater {
 
 	@Override
 	public String getTemplate() throws Exception {
-		return "template/dictionary";
+		return "template/java/dictionary";
 	}
 
 }

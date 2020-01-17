@@ -34,7 +34,7 @@ public class FactoryGenerater extends CodeGenerater {
 
 	@Override
 	public String getTemplate() throws Exception {
-		return "template/factory";
+		return "template/java/factory";
 	}
 
 }

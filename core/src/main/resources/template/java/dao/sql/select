@@ -1,0 +1,113 @@
+package #{$package};
+
+
+import com.teamide.db.bean.SqlParam;
+
+import com.teamide.dao.IDao;
+import com.teamide.param.DataParam;
+import com.teamide.jexl.JexlTool;
+import com.teamide.util.ObjectUtil;
+import com.teamide.util.StringUtil;
+
+/**
+ * SQL Dao
+ * #{$comment}
+ */
+
+@javax.annotation.Resource(name="#{$name}")
+public class #{$classname} {
+	
+	/**
+	 * 执行
+	 */
+	public PageResultBean<Map<String, Object>> invoke(JSONObject data) {
+		
+		Dao dao = AppFactory.getDao();
+		
+		PageSqlParam param = buildSqlParam(data);
+		
+		return dao.queryPage(param);
+	}
+	
+	/**
+	 * 组合SQL
+	 */
+	public PageSqlParam buildSqlParam(JSONObject data) {
+		// 用于暂存字段取到的值
+		Object value = null;
+		// SQL执行用到的参数，SQL中使用“:key”作占位符
+		Map<String, Object> param = new HashMap<String, Object>();
+		// SQL语句
+		StringBuffer sql = new StringBuffer();
+		// 统计语句
+		StringBuffer countSql = new StringBuffer();
+		// 条件
+		StringBuffer whereSql = new StringBuffer("WHERE 1=1 ");
+		#forStart($list, $one)#
+		#ifStart($one.condition == null)#
+		#ifStart($one.sql != null)#
+		sql.append("#{$one.sql}");
+		#ifEnd#
+		#ifStart($one.countSql != null)#
+		countSql.append("#{$one.countSql}");
+		#ifEnd#
+		#ifStart($one.whereSql != null)#
+		whereSql.append("#{$one.whereSql}");
+		#ifEnd#
+		#ifStart($one.$param != null)#
+		#ifStart($one.$param.value != null)#
+		param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.value}", data));
+		#ifEnd#
+		#ifStart($one.$param.value == null)#
+		#ifStart($one.$param.defaultvalue == null)#
+		param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.key}", data));
+		#ifEnd#
+		#ifStart($one.$param.defaultvalue != null)#
+		value = JexlTool.invoke("#{$one.$param.key}", data);
+		if(StringUtil.isEmptyIfStr(value)){
+			value = JexlTool.invoke("#{$one.$param.defaultvalue}", data);
+		}
+		#ifEnd#
+		#ifEnd#
+		#ifEnd#
+		#ifEnd#
+		#ifStart($one.condition != null)#
+		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
+			#ifStart($one.sql != null)#
+			sql.append("#{$one.sql}");
+			#ifEnd#
+			#ifStart($one.countSql != null)#
+			countSql.append("#{$one.countSql}");
+			#ifEnd#
+			#ifStart($one.whereSql != null)#
+			whereSql.append("#{$one.whereSql}");
+			#ifEnd#
+			#ifStart($one.$param != null)#
+			#ifStart($one.$param.value != null)#
+			param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.value}", data));
+			#ifEnd#
+			#ifStart($one.$param.value == null)#
+			#ifStart($one.$param.defaultvalue == null)#
+			param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.key}", data));
+			#ifEnd#
+			#ifStart($one.$param.defaultvalue != null)#
+			value = JexlTool.invoke("#{$one.$param.key}", data);
+			if(StringUtil.isEmptyIfStr(value)){
+				value = JexlTool.invoke("#{$one.$param.defaultvalue}", data);
+			}
+			#ifEnd#
+			#ifEnd#
+			#ifEnd#
+		}
+		#ifEnd#
+		#forEnd#
+		sql.append(whereSql);
+		countSql.append(whereSql);
+		PageSqlParam sqlParam = new PageSqlParam(sql.toString(), countSql.toString(), param);
+		int pagesize = data.getData().getIntValue("_pagesize");
+		int pageindex = data.getData().getIntValue("_pageindex");
+		sqlParam.setPagesize(pagesize);
+		sqlParam.setPageindex(pageindex);
+		return sqlParam;
+	}
+}

@@ -148,7 +148,7 @@ public class ServiceGenerater extends CodeGenerater {
 
 	@Override
 	public String getTemplate() throws Exception {
-		return "template/service";
+		return "template/java/service";
 	}
 
 }
