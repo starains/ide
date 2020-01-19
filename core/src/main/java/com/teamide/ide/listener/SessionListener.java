@@ -1,5 +1,6 @@
 package com.teamide.ide.listener;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.annotation.WebListener;
@@ -22,7 +23,11 @@ public class SessionListener implements HttpSessionListener {
 		if (event.getSession() != null) {
 			ClientSession clientSession = ClientHandler.getSession(event.getSession());
 			Set<?> tokens = IDEFactory.getClientTokens(clientSession);
+			Set<String> ts = new HashSet<String>();
 			for (Object token : tokens) {
+				ts.add(String.valueOf(token));
+			}
+			for (Object token : ts) {
 				IDEFactory.removeClientSession(String.valueOf(token));
 				IDEFactory.removeWebsocketSession(String.valueOf(token));
 			}

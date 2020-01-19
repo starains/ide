@@ -10,7 +10,7 @@ import com.teamide.bean.ResultBean;
 import com.teamide.bean.Status;
 import com.teamide.client.ClientHandler;
 import com.teamide.client.ClientSession;
-import com.teamide.protect.ide.processor.WorkspaceProcessor;
+import com.teamide.ide.protect.processor.WorkspaceProcessor;
 import com.teamide.util.LogUtil;
 import com.teamide.util.RequestUtil;
 import com.teamide.util.ResponseUtil;

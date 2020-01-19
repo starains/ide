@@ -4,36 +4,52 @@ import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.jexl.JexlTool;
 
+#forStart($propertys, $property)#
+import #{$property.$package}.#{$property.$classname};
+#forEnd#
 /**
  * Service
  * #{$comment}
  */
 
-@javax.annotation.Resource(name="#{$name}")
+@javax.annotation.Resource(name="#{$propertyname}")
 public class #{$classname} {
 	
 	#forStart($propertys, $property)#
 	//#{$property.$comment}
+	@javax.annotation.Resource(name="#{$property.$name}")
 	#{$property.$classname} #{$property.$name} = new #{$property.$classname}();
 	#forEnd#
 		
 	/**
 	 * 执行服务
 	 */
-	public $result_classname invoke(DataParam data) {
-		JSONObject result = new JSONObject();
+	public #{$result_classname} invoke(JSONObject data) {
+		if(data == null) {
+			data = new JSONObject();
+		}
+		JSONObject invokeCache = new JSONObject();
+		
 		#ifStart($start != null)#
-		#{$start.name}(data, result);
+		#{$start.name}(data, invokeCache);
 		#ifEnd#
+		
+		#ifStart($result_name != null)#
+		#{$result_classname} result = (#{$result_classname}) invokeCache.get("#{$result_name}");
+		#ifEnd#
+		#ifStart($result_name == null)#
+		#{$result_classname} result = invokeCache;
+		#ifEnd#
+		
 		return result;
 	}
-	
 	#forStart($processs, $one)#
+	
 	/**
 	 * #{$one.name}
 	 * 说明：#{$one.text}
 	 */
-	private void #{$one.name}(DataParam data, JSONObject result) {
+	private void #{$one.name}(JSONObject data, JSONObject invokeCache) {
 		#ifStart($one.type == 'DECISION' && $one.$conditions != null)#
 		#forStart($one.$conditions, $condition)#
 		if(#{$condition.condition}){
@@ -45,12 +61,12 @@ public class #{$classname} {
 		#ifStart($one.$dao != null)#
 		//#{$one.$dao.$comment}
 		#{$one.$dao.$result_classname} daoResult = #{$one.$dao.$propertyname}.invoke(data);
-		result.put("$#{$one.name}", daoResult);
+		invokeCache.put("$#{$one.name}", daoResult);
 		#ifEnd#
 		#ifStart($one.$service != null)#
 		//#{$one.$service.$comment}
 		#{$one.$service.$result_classname} serviceResult = #{$one.$service.$propertyname}.invoke(data);
-		result.put("$#{$one.name}", serviceResult);
+		invokeCache.put("$#{$one.name}", serviceResult);
 		#ifEnd#
 		#ifStart($one.type != 'DECISION' && $one.$next != null)#
 		//#{$one.$next.text}

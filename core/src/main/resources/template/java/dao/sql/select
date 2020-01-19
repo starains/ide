@@ -1,7 +1,12 @@
 package #{$package};
 
-
+	#ifStart($sqlType == 'SELECT_ONE')#
+import com.teamide.db.bean.PageSqlParam;
+import com.teamide.bean.PageResultBean;
+#ifEnd#
+	#ifStart($sqlType != 'SELECT_ONE')#
 import com.teamide.db.bean.SqlParam;
+#ifEnd#
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
@@ -10,104 +15,176 @@ import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
 
 /**
- * SQL Dao
+ * SQL Dao 查询
  * #{$comment}
  */
 
-@javax.annotation.Resource(name="#{$name}")
+@javax.annotation.Resource(name="#{$propertyname}")
 public class #{$classname} {
 	
 	/**
 	 * 执行
 	 */
+	#ifStart($sqlType == 'SELECT_ONE')#
+	public Map<String, Object> invoke(JSONObject data) {
+	#ifEnd#
+	#ifStart($sqlType == 'SELECT_LIST')#
+	public List<Map<String, Object>> invoke(JSONObject data) {
+	#ifEnd#
+	#ifStart($sqlType == 'SELECT_PAGE')#
 	public PageResultBean<Map<String, Object>> invoke(JSONObject data) {
+	#ifEnd#
 		
 		Dao dao = AppFactory.getDao();
 		
-		PageSqlParam param = buildSqlParam(data);
-		
-		return dao.queryPage(param);
+		// 组合SQL Param
+		#ifStart($sqlType == 'SELECT_ONE')#
+		SqlParam sqlParam = buildSqlParam(data);
+		return dao.queryOne(sqlParam);
+		#ifEnd#
+		#ifStart($sqlType == 'SELECT_LIST')#
+		SqlParam sqlParam = buildSqlParam(data);
+		return dao.queryList(sqlParam);
+		#ifEnd#
+		#ifStart($sqlType == 'SELECT_PAGE')#
+		PageSqlParam pageSqlParam = buildSqlParam(data);
+		return dao.queryPage(pageSqlParam);
+		#ifEnd#
 	}
 	
 	/**
 	 * 组合SQL
 	 */
+	#ifStart($sqlType == 'SELECT_PAGE')#
 	public PageSqlParam buildSqlParam(JSONObject data) {
+	#ifEnd#
+	#ifStart($sqlType != 'SELECT_PAGE')#
+	public SqlParam buildSqlParam(JSONObject data) {
+	#ifEnd#
 		// 用于暂存字段取到的值
 		Object value = null;
 		// SQL执行用到的参数，SQL中使用“:key”作占位符
 		Map<String, Object> param = new HashMap<String, Object>();
+		
 		// SQL语句
 		StringBuffer sql = new StringBuffer();
-		// 统计语句
-		StringBuffer countSql = new StringBuffer();
-		// 条件
-		StringBuffer whereSql = new StringBuffer("WHERE 1=1 ");
-		#forStart($list, $one)#
+		// 组合查询语句
+	#forStart($whereBefore, $one)#
 		#ifStart($one.condition == null)#
-		#ifStart($one.sql != null)#
+			#ifStart($one.sql != null)#
 		sql.append("#{$one.sql}");
-		#ifEnd#
-		#ifStart($one.countSql != null)#
-		countSql.append("#{$one.countSql}");
-		#ifEnd#
-		#ifStart($one.whereSql != null)#
-		whereSql.append("#{$one.whereSql}");
-		#ifEnd#
-		#ifStart($one.$param != null)#
-		#ifStart($one.$param.value != null)#
-		param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.value}", data));
-		#ifEnd#
-		#ifStart($one.$param.value == null)#
-		#ifStart($one.$param.defaultvalue == null)#
-		param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.key}", data));
-		#ifEnd#
-		#ifStart($one.$param.defaultvalue != null)#
-		value = JexlTool.invoke("#{$one.$param.key}", data);
-		if(StringUtil.isEmptyIfStr(value)){
-			value = JexlTool.invoke("#{$one.$param.defaultvalue}", data);
-		}
-		#ifEnd#
-		#ifEnd#
-		#ifEnd#
+			#ifEnd#
 		#ifEnd#
 		#ifStart($one.condition != null)#
 		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
 			#ifStart($one.sql != null)#
 			sql.append("#{$one.sql}");
 			#ifEnd#
-			#ifStart($one.countSql != null)#
-			countSql.append("#{$one.countSql}");
+		}
+		#ifEnd#
+	#forEnd#
+	
+		// SQL 条件语句
+		StringBuffer whereSql = new StringBuffer();
+		// 组合条件语句
+	#forStart($where, $one)#
+		#ifStart($one.condition == null)#
+			#ifStart($one.sql != null)#
+		whereSql.append("#{$one.sql}");
 			#ifEnd#
-			#ifStart($one.whereSql != null)#
-			whereSql.append("#{$one.whereSql}");
+			#ifStart($one.param != null)#
+				#ifStart($one.param.value != null)#
+		param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+				#ifEnd#
+				#ifStart($one.param.value == null && $one.param.defaultvalue == null)#
+		param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+				#ifEnd#
+				#ifStart($one.param.value == null && $one.param.defaultvalue != null)#
+		value = JexlTool.invoke("#{$one.param.name}", data);
+		if(value == null || StringUtil.isEmptyIfStr(value)){
+			value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
+		}
+		param.put("#{$one.param.key}", value);
+				#ifEnd#
 			#ifEnd#
-			#ifStart($one.$param != null)#
-			#ifStart($one.$param.value != null)#
-			param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.value}", data));
+		#ifEnd#
+		#ifStart($one.condition != null)#
+		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
+			#ifStart($one.sql != null)#
+			whereSql.append("#{$one.sql}");
 			#ifEnd#
-			#ifStart($one.$param.value == null)#
-			#ifStart($one.$param.defaultvalue == null)#
-			param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.key}", data));
-			#ifEnd#
-			#ifStart($one.$param.defaultvalue != null)#
-			value = JexlTool.invoke("#{$one.$param.key}", data);
-			if(StringUtil.isEmptyIfStr(value)){
-				value = JexlTool.invoke("#{$one.$param.defaultvalue}", data);
+			#ifStart($one.param != null)#
+				#ifStart($one.param.value != null)#
+			param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+				#ifEnd#
+				#ifStart($one.param.value == null && $one.param.defaultvalue == null)#
+			param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+				#ifEnd#
+				#ifStart($one.param.value == null && $one.param.defaultvalue != null)#
+			value = JexlTool.invoke("#{$one.param.key}", data);
+			if(value == null || StringUtil.isEmptyIfStr(value)){
+				value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
 			}
-			#ifEnd#
-			#ifEnd#
+			param.put("#{$one.param.key}", value);
+				#ifEnd#
 			#ifEnd#
 		}
 		#ifEnd#
-		#forEnd#
+	#forEnd#
+	
+		// 拼接查询语句条件
 		sql.append(whereSql);
+		#ifStart($whereAfter != null && $whereAfter.size() > 0)#
+		
+		// 最后拼接排序等语句
+		#ifEnd#
+	#forStart($whereAfter, $one)#
+		#ifStart($one.condition == null)#
+			#ifStart($one.sql != null)#
+		sql.append("#{$one.sql}");
+			#ifEnd#
+		#ifEnd#
+		#ifStart($one.condition != null)#
+		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
+			#ifStart($one.sql != null)#
+			sql.append("#{$one.sql}");
+			#ifEnd#
+		}
+		#ifEnd#
+	#forEnd#
+	
+		#ifStart($sqlType == 'SELECT_PAGE')#
+		// 统计语句，用于分页
+		StringBuffer countSql = new StringBuffer("SELECT COUNT(1) ");
+		#forStart($from, $one)#
+			#ifStart($one.condition == null)#
+				#ifStart($one.sql != null)#
+		sql.append("#{$one.sql}");
+				#ifEnd#
+			#ifEnd#
+			#ifStart($one.condition != null)#
+		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
+				#ifStart($one.sql != null)#
+			sql.append("#{$one.sql}");
+				#ifEnd#
+		}
+			#ifEnd#
+		#forEnd#
+		// 拼接统计语句条件
 		countSql.append(whereSql);
-		PageSqlParam sqlParam = new PageSqlParam(sql.toString(), countSql.toString(), param);
-		int pagesize = data.getData().getIntValue("_pagesize");
-		int pageindex = data.getData().getIntValue("_pageindex");
-		sqlParam.setPagesize(pagesize);
-		sqlParam.setPageindex(pageindex);
+		
+		PageSqlParam pageSqlParam = new PageSqlParam(sql.toString(), countSql.toString(), param);
+		// 获取页码和每页数量
+		int pagesize = data.getIntValue("_pagesize");
+		int pageindex = data.getIntValue("_pageindex");
+		pageSqlParam.setPagesize(pagesize);
+		pageSqlParam.setPageindex(pageindex);
+		
+		return pageSqlParam;
+		#ifEnd#
+		#ifStart($sqlType != 'SELECT_PAGE')#
+		SqlParam sqlParam = new SqlParam(sql.toString(), param);
 		return sqlParam;
+		#ifEnd#
 	}
 }

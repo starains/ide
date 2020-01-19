@@ -1,0 +1,44 @@
+package #{$package};
+
+
+import com.teamide.db.bean.SqlParam;
+
+import com.teamide.dao.IDao;
+import com.teamide.param.DataParam;
+import com.teamide.jexl.JexlTool;
+import com.teamide.util.ObjectUtil;
+import com.teamide.util.StringUtil;
+
+/**
+ * SQL Dao
+ * #{$comment}
+ */
+
+@javax.annotation.Resource(name="#{$propertyname}")
+public class #{$classname} {
+	
+	public Map<String, Object> invoke(JSONObject data) {
+		
+		Dao dao = AppFactory.getDao();
+		
+		SqlParam sqlParam = buildSqlParam(data);
+		
+		dao.execute(sqlParam);
+		
+		return sqlParam.getParam();
+	}
+	
+	/**
+	 * 组合SQL
+	 */
+	public SqlParam buildSqlParam(JSONObject data) {
+		// 用于暂存字段取到的值
+		Object value = null;
+		// SQL执行用到的参数，SQL中使用“:key”作占位符
+		Map<String, Object> param = new HashMap<String, Object>();
+		// SQL语句
+		StringBuffer sql = new StringBuffer();
+		SqlParam sqlParam = new SqlParam(sql.toString(), param);
+		return sqlParam;
+	}
+}

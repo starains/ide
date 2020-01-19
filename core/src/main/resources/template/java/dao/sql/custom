@@ -1,7 +1,12 @@
 package #{$package};
 
-
+#ifStart($customsqltype == 'SELECT_PAGE')#
+import com.teamide.db.bean.PageSqlParam;
+import com.teamide.bean.PageResultBean;
+#ifEnd#
+#ifStart($customsqltype != 'SELECT_PAGE')#
 import com.teamide.db.bean.SqlParam;
+#ifEnd#
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
@@ -10,136 +15,120 @@ import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
 
 /**
- * SQL Dao
+ * SQL Dao 修改
  * #{$comment}
  */
 
-@javax.annotation.Resource(name="#{$name}")
+@javax.annotation.Resource(name="#{$propertyname}")
 public class #{$classname} {
 	
-	#ifStart($sqlType == 'SELECT_PAGE')#
-	public PageResultBean<Map<String, Object>> invoke(JSONObject data) {
+	/**
+	 * 执行
+	 */
+	#ifStart($customsqltype == 'SELECT_ONE')#
+	public Map<String, Object> invoke(JSONObject data) {
 	#ifEnd#
-	#ifStart($sqlType == '')#
+	#ifStart($customsqltype == 'SELECT_LIST')#
 	public List<Map<String, Object>> invoke(JSONObject data) {
 	#ifEnd#
-	#ifStart($sqlType == '')#
+	#ifStart($customsqltype == 'SELECT_PAGE')#
+	public PageResultBean<Map<String, Object>> invoke(JSONObject data) {
+	#ifEnd#
+	#ifStart($customsqltype == null)#
 	public Map<String, Object> invoke(JSONObject data) {
 	#ifEnd#
-	#ifStart($sqlType == '')#
-	public Map<String, Object> invoke(JSONObject data) {
-	#ifEnd#
-	public $result_classname invoke(JSONObject data) {
 		
 		Dao dao = AppFactory.getDao();
-		$result_classname result = new $result_classname();
 		
-		#ifStart($isPage)#
-		PageSqlParam param = buildSqlParam(data);
-		#ifEnd#
-		#ifStart($isPage == false)#
-		SqlParam param = buildSqlParam(data);
-		#ifEnd#
+		// 组合SQL Param
+		#ifStart($sqlType == 'SELECT_ONE')#
+		SqlParam sqlParam = buildSqlParam(data);
 		
-		dao.queryOne(param);
-		dao.queryList(param);
-		dao.queryPage(param);
-		dao.execute(param);
-		dao.batchExecute(param);
-		return result;
+		return dao.queryOne(sqlParam);
+		#ifEnd#
+		#ifStart($sqlType == 'SELECT_LIST')#
+		SqlParam sqlParam = buildSqlParam(data);
+		
+		return dao.queryList(sqlParam);
+		#ifEnd#
+		#ifStart($sqlType == 'SELECT_PAGE')#
+		PageSqlParam pageSqlParam = buildSqlParam(data);
+		
+		return dao.queryPage(pageSqlParam);
+		#ifEnd#
+		#ifStart($customsqltype == null)#
+		SqlParam sqlParam = buildSqlParam(data);
+		int result = dao.execute(sqlParam);
+		
+		return sqlParam.getParam();
+		#ifEnd#
 	}
 	
 	/**
 	 * 组合SQL
 	 */
-	#ifStart($isPage)#
+	#ifStart($customsqltype == 'SELECT_PAGE')#
 	public PageSqlParam buildSqlParam(JSONObject data) {
 	#ifEnd#
-	#ifStart($isPage == false)#
+	#ifStart($customsqltype != 'SELECT_PAGE')#
 	public SqlParam buildSqlParam(JSONObject data) {
 	#ifEnd#
 		// 用于暂存字段取到的值
 		Object value = null;
 		// SQL执行用到的参数，SQL中使用“:key”作占位符
 		Map<String, Object> param = new HashMap<String, Object>();
+		
 		// SQL语句
 		StringBuffer sql = new StringBuffer();
-		#ifStart($isPage)#
-		// 统计语句
-		StringBuffer countSql = new StringBuffer();
-		#ifEnd#
-		// 条件
-		StringBuffer whereSql = new StringBuffer("WHERE 1=1 ");
-		#forStart($list, $one)#
+		// 组合SQL语句
+	#forStart($sql, $one)#
 		#ifStart($one.condition == null)#
-		#ifStart($one.sql != null)#
+			#ifStart($one.sql != null)#
 		sql.append("#{$one.sql}");
-		#ifEnd#
-		#ifStart($one.countSql != null)#
-		countSql.append("#{$one.countSql}");
-		#ifEnd#
-		#ifStart($one.whereSql != null)#
-		whereSql.append("#{$one.whereSql}");
-		#ifEnd#
-		#ifStart($one.$param != null)#
-		#ifStart($one.$param.value != null)#
-		param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.value}", data));
-		#ifEnd#
-		#ifStart($one.$param.value == null)#
-		#ifStart($one.$param.defaultvalue == null)#
-		param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.key}", data));
-		#ifEnd#
-		#ifStart($one.$param.defaultvalue != null)#
-		value = JexlTool.invoke("#{$one.$param.key}", data);
-		if(StringUtil.isEmptyIfStr(value)){
-			value = JexlTool.invoke("#{$one.$param.defaultvalue}", data);
-		}
-		#ifEnd#
-		#ifEnd#
-		#ifEnd#
+			#ifEnd#
 		#ifEnd#
 		#ifStart($one.condition != null)#
 		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
 			#ifStart($one.sql != null)#
 			sql.append("#{$one.sql}");
 			#ifEnd#
-			#ifStart($one.countSql != null)#
-			countSql.append("#{$one.countSql}");
+		}
+		#ifEnd#
+	#forEnd#
+	
+	#ifStart($customsqltype == 'SELECT_PAGE')#
+		// 分页查询的统计语句
+		StringBuffer countSql = new StringBuffer();
+		// 统计语句
+	#forStart($countSql, $one)#
+		#ifStart($one.condition == null)#
+			#ifStart($one.sql != null)#
+		countSql.append("#{$one.sql}");
 			#ifEnd#
-			#ifStart($one.whereSql != null)#
-			whereSql.append("#{$one.whereSql}");
-			#ifEnd#
-			#ifStart($one.$param != null)#
-			#ifStart($one.$param.value != null)#
-			param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.value}", data));
-			#ifEnd#
-			#ifStart($one.$param.value == null)#
-			#ifStart($one.$param.defaultvalue == null)#
-			param.put("#{$one.$param.key}", JexlTool.invoke("#{$one.$param.key}", data));
-			#ifEnd#
-			#ifStart($one.$param.defaultvalue != null)#
-			value = JexlTool.invoke("#{$one.$param.key}", data);
-			if(StringUtil.isEmptyIfStr(value)){
-				value = JexlTool.invoke("#{$one.$param.defaultvalue}", data);
-			}
-			#ifEnd#
-			#ifEnd#
+		#ifEnd#
+		#ifStart($one.condition != null)#
+		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
+			#ifStart($one.sql != null)#
+			countSql.append("#{$one.sql}");
 			#ifEnd#
 		}
 		#ifEnd#
-		#forEnd#
-		sql.append(whereSql);
-		#ifStart($isPage)#
-		countSql.append(whereSql);
-		PageSqlParam sqlParam = new PageSqlParam(sql.toString(), countSql.toString(), param);
-		int pagesize = data.getData().getIntValue("_pagesize");
-		int pageindex = data.getData().getIntValue("_pageindex");
-		sqlParam.setPagesize(pagesize);
-		sqlParam.setPageindex(pageindex);
+	#forEnd#
+	#ifEnd#
+	
+		#ifStart($customsqltype == 'SELECT_PAGE')#
+		PageSqlParam pageSqlParam = new PageSqlParam(sql.toString(), countSql.toString(), param);
+		// 获取页码和每页数量
+		int pagesize = data.getIntValue("_pagesize");
+		int pageindex = data.getIntValue("_pageindex");
+		pageSqlParam.setPagesize(pagesize);
+		pageSqlParam.setPageindex(pageindex);
+		
+		return pageSqlParam;
 		#ifEnd#
-		#ifStart($isPage == false)#
+		#ifStart($customsqltype != 'SELECT_PAGE')#
 		SqlParam sqlParam = new SqlParam(sql.toString(), param);
-		#ifEnd#
 		return sqlParam;
+		#ifEnd#
 	}
 }

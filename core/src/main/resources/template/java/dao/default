@@ -1,0 +1,16 @@
+package #{$package};
+
+
+/**
+ * Default Dao
+ * #{$comment}
+ */
+
+@javax.annotation.Resource(name="#{$propertyname}")
+public class #{$classname} {
+	
+	public Object invoke(JSONObject data) {
+		
+		return null;
+	}
+}

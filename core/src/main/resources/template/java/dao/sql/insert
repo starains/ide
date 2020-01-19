@@ -1,0 +1,132 @@
+package #{$package};
+
+
+import com.teamide.db.bean.SqlParam;
+
+import com.teamide.dao.IDao;
+import com.teamide.param.DataParam;
+import com.teamide.jexl.JexlTool;
+import com.teamide.util.ObjectUtil;
+import com.teamide.util.StringUtil;
+
+/**
+ * SQL Dao 新增
+ * #{$comment}
+ */
+
+@javax.annotation.Resource(name="#{$propertyname}")
+public class #{$classname} {
+	
+	/**
+	 * 执行
+	 */
+	public Map<String, Object> invoke(JSONObject data) {
+		
+		Dao dao = AppFactory.getDao();
+		
+		SqlParam sqlParam = buildSqlParam(data);
+		int result = dao.execute(sqlParam);
+		
+		return sqlParam.getParam();
+	}
+	
+	/**
+	 * 组合SQL
+	 */
+	public SqlParam buildSqlParam(JSONObject data) {
+		// 用于暂存字段取到的值
+		Object value = null;
+		// SQL执行用到的参数，SQL中使用“:key”作占位符
+		Map<String, Object> param = new HashMap<String, Object>();
+		
+		// SQL语句
+		StringBuffer sql = new StringBuffer();
+		// 组合新增语句
+	#forStart($before, $one)#
+		#ifStart($one.condition == null)#
+			#ifStart($one.sql != null)#
+		sql.append("#{$one.sql}");
+			#ifEnd#
+		#ifEnd#
+		#ifStart($one.condition != null)#
+		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
+			#ifStart($one.sql != null)#
+			sql.append("#{$one.sql}");
+			#ifEnd#
+		}
+		#ifEnd#
+	#forEnd#
+	
+		// 新增语句字段SQL
+		StringBuffer columnSql = new StringBuffer();
+		// 新增语句字段映射值SQL
+		StringBuffer valueSql = new StringBuffer();
+		// 组合新增字段语句
+	#forStart($column, $one)#
+		#ifStart($one.condition == null)#
+			#ifStart($one.sql != null)#
+		columnSql.append("#{$one.sql}");
+			#ifEnd#
+			#ifStart($one.valueSql != null)#
+		valueSql.append("#{$one.valueSql}");
+			#ifEnd#
+			#ifStart($one.param != null)#
+				#ifStart($one.param.value != null)#
+		param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+				#ifEnd#
+				#ifStart($one.param.value == null && $one.param.defaultvalue == null)#
+		param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+				#ifEnd#
+				#ifStart($one.param.value == null && $one.param.defaultvalue != null)#
+		value = JexlTool.invoke("#{$one.param.name}", data);
+		if(value == null || StringUtil.isEmptyIfStr(value)){
+			value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
+		}
+		param.put("#{$one.param.key}", value);
+				#ifEnd#
+			#ifEnd#
+		#ifEnd#
+		#ifStart($one.condition != null)#
+		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
+			#ifStart($one.sql != null)#
+			columnSql.append("#{$one.sql}");
+			#ifEnd#
+			#ifStart($one.valueSql != null)#
+			valueSql.append("#{$one.valueSql}");
+			#ifEnd#
+			#ifStart($one.param != null)#
+				#ifStart($one.param.value != null)#
+			param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+				#ifEnd#
+				#ifStart($one.param.value == null && $one.param.defaultvalue == null)#
+			param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+				#ifEnd#
+				#ifStart($one.param.value == null && $one.param.defaultvalue != null)#
+			value = JexlTool.invoke("#{$one.param.key}", data);
+			if(value == null || StringUtil.isEmptyIfStr(value)){
+				value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
+			}
+			param.put("#{$one.param.key}", value);
+				#ifEnd#
+			#ifEnd#
+		}
+		#ifEnd#
+		
+	#forEnd#
+	
+		// 去除结尾“,”
+		if(columnSql.toString().endsWith(",")){
+			columnSql.setLength(columnSql.length() - 1);
+		}
+		if(valueSql.toString().endsWith(",")){
+			valueSql.setLength(valueSql.length() - 1);
+		}
+	
+		// 拼接新增SQL语句
+		sql.append("(").append(columnSql).append(")");
+		sql.append(" VALUES (").append(valueSql).append(")");
+		
+		SqlParam sqlParam = new SqlParam(sql.toString(), param);
+		return sqlParam;
+	}
+}

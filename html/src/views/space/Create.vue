@@ -174,7 +174,7 @@ export default {
               }
             });
           } else {
-            source.do("SPACE_CREATE", this.form).then(result => {
+            source.do("SPACE_CREATE", this.form).then(res => {
               if (res.errcode == 0) {
                 coos.success("新增成功！");
                 this.$router.go(-1);

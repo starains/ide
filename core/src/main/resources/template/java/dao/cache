@@ -9,7 +9,7 @@ import com.teamide.jexl.JexlTool;
  * #{$comment}
  */
 
-@javax.annotation.Resource(name="#{$name}")
+@javax.annotation.Resource(name="#{$propertyname}")
 public class #{$classname} {
 	
 	public $result_classname invoke(DataParam data) {
