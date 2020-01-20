@@ -47,10 +47,9 @@ public class #{$classname} extends HttpServlet {
 			DataParam param = new DataParam(request, session);
 
 			JSONObject data = new JSONObject();
-			if (param.getBody() != null) {
-				data = (JSONObject) param.getBody();
+			if (param.getData() != null) {
+				data = (JSONObject) param.getData();
 			}
-
 			JSONObject variableCache = param.toVariableCache(data);
 			
 			result = #{$service.$propertyname}.invoke(variableCache);

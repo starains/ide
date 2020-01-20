@@ -28,6 +28,7 @@ public class ServiceControllerGenerater extends CodeGenerater {
 		if (StringUtil.isEmpty(pack)) {
 			pack = getBasePackage() + ".controller";
 		}
+		pack += ".service";
 		return pack;
 	}
 

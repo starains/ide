@@ -43,6 +43,10 @@ public class AppGenerater extends Generater {
 		for (DictionaryBean dictionary : dictionarys) {
 			DictionaryGenerater generater = new DictionaryGenerater(dictionary, param, app, context);
 			generater.generate();
+
+			DictionaryControllerGenerater controller = new DictionaryControllerGenerater(dictionary, param, app,
+					context);
+			controller.generate();
 		}
 
 	}

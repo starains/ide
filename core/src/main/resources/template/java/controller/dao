@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.ResultBean;
 import com.teamide.bean.Status;
@@ -46,10 +47,9 @@ public class #{$classname} extends HttpServlet {
 			ClientSession session = ClientHandler.getSession(request);
 
 			JSONObject data = new JSONObject();
-			if (param.getBody() != null) {
-				data = (JSONObject) param.getBody();
+			if (param.getData() != null) {
+				data = (JSONObject) param.getData();
 			}
-
 			JSONObject variableCache = param.toVariableCache(data);
 			
 			result = #{$dao.$propertyname}.invoke(variableCache);

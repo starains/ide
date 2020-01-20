@@ -1,0 +1,46 @@
+package #{$package};
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
+import com.teamide.bean.ResultBean;
+import com.teamide.bean.Status;
+import com.teamide.client.ClientHandler;
+import com.teamide.client.ClientSession;
+import com.teamide.exception.BaseException;
+import com.teamide.param.DataParam;
+import com.teamide.util.ResponseUtil;
+
+#forStart($imports, $import)#
+import #{$import};
+#forEnd#
+
+import #{$dictionary.$package}.#{$dictionary.$classname};
+
+@WebServlet(urlPatterns = "/app/dictionary/#{$dictionary.$name}")
+public class #{$classname} extends HttpServlet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		invoke(request, response);
+	}
+
+	public void invoke(HttpServletRequest request, HttpServletResponse response) {
+		Status status = Status.SUCCESS();
+		status.setValue(#{$dictionary.$classname}.getOptions());
+		ResponseUtil.outJSON(response, status);
+	}
+
+}

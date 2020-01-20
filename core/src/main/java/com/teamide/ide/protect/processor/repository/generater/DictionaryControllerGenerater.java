@@ -1,25 +1,19 @@
 package com.teamide.ide.protect.processor.repository.generater;
 
 import com.teamide.app.AppContext;
-import com.teamide.app.bean.DaoBean;
+import com.teamide.app.bean.DictionaryBean;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
 import com.teamide.util.StringUtil;
 
-public class DaoControllerGenerater extends CodeGenerater {
+public class DictionaryControllerGenerater extends CodeGenerater {
 
-	protected final DaoBean dao;
+	protected final DictionaryBean dictionary;
 
-	public DaoControllerGenerater(DaoBean dao, RepositoryProcessorParam param, AppBean app, AppContext context) {
-		super(dao, param, app, context);
-		this.dao = dao;
-	}
-
-	public void generate() throws Exception {
-		if (StringUtil.isEmpty(dao.getRequestmapping())) {
-			return;
-		}
-		super.generate();
+	public DictionaryControllerGenerater(DictionaryBean dictionary, RepositoryProcessorParam param, AppBean app,
+			AppContext context) {
+		super(dictionary, param, app, context);
+		this.dictionary = dictionary;
 	}
 
 	public String getPackage() {
@@ -27,7 +21,7 @@ public class DaoControllerGenerater extends CodeGenerater {
 		if (StringUtil.isEmpty(pack)) {
 			pack = getBasePackage() + ".controller";
 		}
-		pack += ".dao";
+		pack += ".dictionary";
 		return pack;
 	}
 
@@ -38,15 +32,14 @@ public class DaoControllerGenerater extends CodeGenerater {
 	@Override
 	public void buildData() {
 
-		DaoGenerater daoGenerater = new DaoGenerater(dao, param, app, context);
-		daoGenerater.init();
-		data.put("$dao", daoGenerater.data);
+		DictionaryGenerater dictionaryGenerater = new DictionaryGenerater(dictionary, param, app, context);
+		dictionaryGenerater.init();
+		data.put("$dictionary", dictionaryGenerater.data);
 	}
 
 	@Override
 	public String getTemplate() throws Exception {
-
-		return "template/java/controller/dao";
+		return "template/java/controller/dictionary";
 	}
 
 }
