@@ -20,6 +20,6 @@
 	</appender>
 	<logger name="com.teamide" level="DEBUG" />
 	<root level="ERROR">
-		<appender-ref ref="STDOUT" />
+		<appender-ref ref="ROLLING" />
 	</root>
 </configuration>
