@@ -1,0 +1,118 @@
+package #{$package};
+
+import java.util.*;
+import com.teamide.util.*;
+
+import com.alibaba.fastjson.*;
+
+#forStart($imports, $import)#
+import #{$import};
+#forEnd#
+
+import com.teamide.dao.IDao;
+import com.teamide.param.DataParam;
+import com.teamide.jexl.JexlTool;
+
+
+#forStart($propertys, $property)#
+import #{$property.$package}.#{$property.$classname};
+#forEnd#
+/**
+ * Service
+ * #{$comment}
+ */
+
+#ifStart($result_classname.startsWith('JSON'))#
+@SuppressWarnings({"unused"})
+#ifEnd#
+#ifStart($result_classname.startsWith('JSON') == false)#
+@SuppressWarnings({"unused", "unchecked"})
+#ifEnd#
+public class #{$classname} {
+	
+	#forStart($propertys, $property)#
+	//#{$property.$comment}
+	#{$property.$classname} #{$property.$name} = new #{$property.$classname}();
+	#forEnd#
+		
+	/**
+	 * 执行服务
+	 */
+	public #{$result_classname} invoke(JSONObject variableCache) throws Exception {
+		if(variableCache == null) {
+			variableCache = new JSONObject();
+		}
+		JSONObject invokeCache = new JSONObject();
+		
+		#ifStart($start != null)#
+		#{$start.$method}(variableCache, invokeCache);
+		#ifEnd#
+		
+		#ifStart($result_name != null)#
+		#{$result_classname} result = (#{$result_classname}) invokeCache.get("#{$result_name}");
+		#ifEnd#
+		#ifStart($result_name == null)#
+		#{$result_classname} result = invokeCache;
+		#ifEnd#
+		
+		return result;
+	}
+	#forStart($processs, $one)#
+	
+	/**
+	 * #{$one.name}
+	 * 说明：#{$one.text}
+	 */
+	private void #{$one.$method}(JSONObject variableCache, JSONObject invokeCache) throws Exception {
+	
+		// 用于暂存字段取到的值
+		Object value = null;
+		
+		#forStart($one.variables, $variable)#
+			#ifStart($variable != null)#
+				#ifStart($variable.value != null)#
+		variableCache.put("#{$variable.name}", JexlTool.invoke("#{$variable.value}", variableCache));
+				#ifEnd#
+				#ifStart($variable.value == null && $variable.defaultvalue == null)#
+		invokeCache.put("#{$variable.name}", JexlTool.invoke("#{$variable.name}", variableCache));
+				#ifEnd#
+				#ifStart($variable.value == null && $variable.defaultvalue != null)#
+		value = JexlTool.invoke("#{$variable.name}", variableCache);
+		if(value == null || StringUtil.isEmptyIfStr(value)){
+			value = JexlTool.invoke("#{$variable.defaultvalue}", variableCache);
+		}
+		invokeCache.put("#{$variable.name}", value);
+				#ifEnd#
+			#ifEnd#
+		#forEnd#
+		
+		#forStart($one.validates, $validate)#
+		// 验证#{$validate}
+		#forEnd#
+		
+		#ifStart($one.type == 'DECISION' && $one.$conditions != null)#
+		#forStart($one.$conditions, $condition)#
+		if(ObjectUtil.isTrue(JexlTool.invoke("#{$condition.condition}", variableCache))){
+			//#{$condition.$next.text}
+			#{$condition.$next.$method}(variableCache, invokeCache);
+		}
+		#forEnd#
+		#ifEnd#
+		#ifStart($one.$dao != null)#
+		//#{$one.$dao.$comment}
+		#{$one.$dao.$result_classname} result = #{$one.$dao.$propertyname}.invoke(variableCache);
+		invokeCache.put("#{$one.name}", result);
+		#ifEnd#
+		#ifStart($one.$service != null)#
+		//#{$one.$service.$comment}
+		#{$one.$service.$result_classname} result = #{$one.$service.$propertyname}.invoke(variableCache);
+		invokeCache.put("#{$one.name}", result);
+		#ifEnd#
+		#ifStart($one.type != 'DECISION' && $one.$next != null)#
+		//#{$one.$next.text}
+		#{$one.$next.$method}(variableCache, invokeCache);
+		#ifEnd#
+	}
+	#forEnd#
+	
+}

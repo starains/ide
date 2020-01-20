@@ -16,9 +16,6 @@ public class DaoGenerater extends SQLDaoGenerater {
 		super(dao, param, app, context);
 	}
 
-	public void appendContentCenter() throws Exception {
-	}
-
 	public String getPackage() {
 		String pack = app.getOption().getDaopackage();
 		if (StringUtil.isEmpty(pack)) {

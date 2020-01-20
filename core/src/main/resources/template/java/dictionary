@@ -12,6 +12,11 @@ import com.teamide.util.StringUtil;
  */
 public class #{$classname} extends OptionBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final List<#{$classname}> options = new ArrayList<#{$classname}>();
 
 	static {
@@ -50,7 +55,7 @@ public class #{$classname} extends OptionBean {
 			if(StringUtil.isEmpty(value) && StringUtil.isEmpty(option.getValue())){
 				return option;
 			}
-			if(null != value && value.equals(option.getValue()) {
+			if(null != value && value.equals(option.getValue())) {
 				return option;
 			}
 		}

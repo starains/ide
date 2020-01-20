@@ -1,17 +1,26 @@
-package $package;
+package #{$package};
 
-import java.util.List;
-import java.util.ArrayList;
-
-import com.teamide.bean.OptionBean;
-import com.teamide.util.StringUtil;
+import com.teamide.dao.IDao;
+import com.teamide.exception.DatabaseNotFoundException;
+import com.teamide.factory.DatabaseFactory;
+import com.teamide.service.IService;
 
 /**
  * AppFactory
  * 应用工厂
  */
-public class AppFactory {
+public class #{$classname} {
 
+	static DatabaseFactory DATABASE_FACTORY = new DatabaseFactory("jdbc", "databases");
+
+	public static IDao getDao() throws DatabaseNotFoundException {
+
+		return DATABASE_FACTORY.newDao();
+	}
+
+	public static IService getService() throws DatabaseNotFoundException {
+
+		return DATABASE_FACTORY.newService();
+	}
 	
-
 }

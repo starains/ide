@@ -5,8 +5,7 @@ package #{$package};
  * Default Dao
  * #{$comment}
  */
-
-@javax.annotation.Resource(name="#{$propertyname}")
+@SuppressWarnings("unused")
 public class #{$classname} {
 	
 	public Object invoke(JSONObject data) {

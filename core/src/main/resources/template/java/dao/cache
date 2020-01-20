@@ -8,8 +8,7 @@ import com.teamide.jexl.JexlTool;
  * Cache Dao
  * #{$comment}
  */
-
-@javax.annotation.Resource(name="#{$propertyname}")
+@SuppressWarnings("unused")
 public class #{$classname} {
 	
 	public $result_classname invoke(DataParam data) {

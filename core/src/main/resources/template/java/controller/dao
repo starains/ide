@@ -1,0 +1,78 @@
+package #{$package};
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
+import com.teamide.bean.ResultBean;
+import com.teamide.bean.Status;
+import com.teamide.client.ClientHandler;
+import com.teamide.client.ClientSession;
+import com.teamide.exception.BaseException;
+import com.teamide.param.DataParam;
+import com.teamide.util.ResponseUtil;
+
+#forStart($imports, $import)#
+import #{$import};
+#forEnd#
+
+import #{$dao.$package}.#{$dao.$classname};
+
+@WebServlet(urlPatterns = "#{$requestmapping}")
+public class #{$classname} extends HttpServlet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	//#{$dao.$comment}
+	#{$dao.$classname} #{$dao.$propertyname} = new #{$dao.$classname}();
+
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		invoke(request, response);
+	}
+
+	public void invoke(HttpServletRequest request, HttpServletResponse response) {
+		Object result = null;
+		try {
+			ClientSession session = ClientHandler.getSession(request);
+
+			JSONObject data = new JSONObject();
+			if (param.getBody() != null) {
+				data = (JSONObject) param.getBody();
+			}
+
+			JSONObject variableCache = param.toVariableCache(data);
+			
+			result = #{$dao.$propertyname}.invoke(variableCache);
+		} catch (Exception e) {
+			Status error = Status.FAIL();
+			error.setErrmsg(e.getMessage());
+			if (e instanceof BaseException) {
+				BaseException base = (BaseException) e;
+				error.setErrcode(base.getErrcode());
+				error.setErrmsg(base.getErrmsg());
+			}
+			result = error;
+		}
+
+		if (result == null) {
+			result = Status.SUCCESS();
+		}
+		if (!(result instanceof ResultBean)) {
+			Status status = Status.SUCCESS();
+			status.setValue(result);
+			result = status;
+		}
+		ResponseUtil.outJSON(response, result);
+	}
+
+}

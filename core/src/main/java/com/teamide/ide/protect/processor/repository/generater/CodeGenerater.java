@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -68,8 +70,17 @@ public abstract class CodeGenerater extends Generater {
 		data.put("$result_classname", "JSONObject");
 		data.put("$propertyname", this.className.substring(0, 1).toLowerCase() + this.className.substring(1));
 
+		JSONObject $app_factory = new JSONObject();
+
+		$app_factory.put("$package", getAppFactoryPackage());
+		$app_factory.put("$classname", getAppFactoryClassname());
+		data.put("$app_factory", $app_factory);
+		data.put("$imports", imports);
+
 		buildData();
 	}
+
+	protected List<String> imports = new ArrayList<String>();
 
 	public void generate() throws Exception {
 		param.getLog().info("generate " + this.pack + "." + this.className + " code.");

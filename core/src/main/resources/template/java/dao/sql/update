@@ -1,28 +1,31 @@
 package #{$package};
 
+import java.util.*;
+import com.teamide.util.*;
+
+import com.alibaba.fastjson.*;
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
 
 import com.teamide.db.bean.SqlParam;
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.jexl.JexlTool;
-import com.teamide.util.ObjectUtil;
-import com.teamide.util.StringUtil;
 
 /**
  * SQL Dao 修改
  * #{$comment}
  */
-
-@javax.annotation.Resource(name="#{$propertyname}")
+@SuppressWarnings("unused")
 public class #{$classname} {
 	
 	/**
 	 * 执行
 	 */
-	public Map<String, Object> invoke(JSONObject data) {
+	public Map<String, Object> invoke(JSONObject data) throws Exception {
 		
-		Dao dao = AppFactory.getDao();
+		IDao dao = #{$app_factory.$classname}.getDao();
 		
 		SqlParam sqlParam = buildSqlParam(data);
 		int result = dao.execute(sqlParam);
@@ -33,7 +36,7 @@ public class #{$classname} {
 	/**
 	 * 组合SQL
 	 */
-	public SqlParam buildSqlParam(JSONObject data) {
+	public SqlParam buildSqlParam(JSONObject data) throws Exception {
 		// 用于暂存字段取到的值
 		Object value = null;
 		// SQL执行用到的参数，SQL中使用“:key”作占位符
@@ -62,44 +65,56 @@ public class #{$classname} {
 		// 组合修改字段语句
 	#forStart($set, $one)#
 		#ifStart($one.condition == null)#
-			#ifStart($one.sql != null)#
+			#ifStart($one.param == null)#
+				#ifStart($one.sql != null)#
 		setSql.append("#{$one.sql}");
+				#ifEnd#
 			#ifEnd#
 			#ifStart($one.param != null)#
 				#ifStart($one.param.value != null)#
-		param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+		value = JexlTool.invoke("#{$one.param.value}", data);
 				#ifEnd#
-				#ifStart($one.param.value == null && $one.param.defaultvalue == null)#
-		param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
-				#ifEnd#
-				#ifStart($one.param.value == null && $one.param.defaultvalue != null)#
+				#ifStart($one.param.value == null)#
 		value = JexlTool.invoke("#{$one.param.name}", data);
+				#ifEnd#
+				#ifStart($one.param.defaultvalue != null)#
 		if(value == null || StringUtil.isEmptyIfStr(value)){
 			value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
 		}
-		param.put("#{$one.param.key}", value);
 				#ifEnd#
+		if(value != null && !StringUtil.isEmptyIfStr(value)){
+				#ifStart($one.sql != null)#
+			setSql.append("#{$one.sql}");
+				#ifEnd#
+			param.put("#{$one.param.key}", value);
+		}
 			#ifEnd#
 		#ifEnd#
 		#ifStart($one.condition != null)#
 		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.sql != null)#
+			#ifStart($one.param == null)#
+				#ifStart($one.sql != null)#
 			setSql.append("#{$one.sql}");
+				#ifEnd#
 			#ifEnd#
 			#ifStart($one.param != null)#
 				#ifStart($one.param.value != null)#
-			param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+			value = JexlTool.invoke("#{$one.param.value}", data);
 				#ifEnd#
-				#ifStart($one.param.value == null && $one.param.defaultvalue == null)#
-			param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+				#ifStart($one.param.value == null)#
+			value = JexlTool.invoke("#{$one.param.name}", data);
 				#ifEnd#
-				#ifStart($one.param.value == null && $one.param.defaultvalue != null)#
-			value = JexlTool.invoke("#{$one.param.key}", data);
+				#ifStart($one.param.defaultvalue != null)#
 			if(value == null || StringUtil.isEmptyIfStr(value)){
 				value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
 			}
-			param.put("#{$one.param.key}", value);
 				#ifEnd#
+			if(value != null && !StringUtil.isEmptyIfStr(value)){
+				#ifStart($one.sql != null)#
+				setSql.append("#{$one.sql}");
+				#ifEnd#
+				param.put("#{$one.param.key}", value);
+			}
 			#ifEnd#
 		}
 		#ifEnd#
@@ -107,7 +122,7 @@ public class #{$classname} {
 	#forEnd#
 	
 		// SQL 条件语句
-		StringBuffer whereSql = new StringBuffer();
+		StringBuffer whereSql = new StringBuffer("WHERE 1=1 ");
 		// 组合条件语句
 	#forStart($where, $one)#
 		#ifStart($one.condition == null)#

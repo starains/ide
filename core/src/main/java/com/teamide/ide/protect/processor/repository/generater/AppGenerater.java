@@ -16,10 +16,18 @@ public class AppGenerater extends Generater {
 	}
 
 	public void generate() throws Exception {
+		generateResource();
 		generateFactory();
 		generateDictionary();
 		generateDao();
 		generateService();
+	}
+
+	public void generateResource() throws Exception {
+
+		ResourceGenerater generater = new ResourceGenerater(param, app, context);
+		generater.generate();
+
 	}
 
 	public void generateFactory() throws Exception {
@@ -44,6 +52,9 @@ public class AppGenerater extends Generater {
 		for (DaoBean dao : daos) {
 			DaoGenerater generater = new DaoGenerater(dao, param, app, context);
 			generater.generate();
+
+			DaoControllerGenerater controller = new DaoControllerGenerater(dao, param, app, context);
+			controller.generate();
 		}
 
 	}
@@ -53,6 +64,9 @@ public class AppGenerater extends Generater {
 		for (ServiceBean service : services) {
 			ServiceGenerater generater = new ServiceGenerater(service, param, app, context);
 			generater.generate();
+
+			ServiceControllerGenerater controller = new ServiceControllerGenerater(service, param, app, context);
+			controller.generate();
 		}
 
 	}

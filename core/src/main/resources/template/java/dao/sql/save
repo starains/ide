@@ -1,25 +1,29 @@
 package #{$package};
 
+import java.util.*;
+import com.teamide.util.*;
+
+import com.alibaba.fastjson.*;
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
 
 import com.teamide.db.bean.SqlParam;
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.jexl.JexlTool;
-import com.teamide.util.ObjectUtil;
-import com.teamide.util.StringUtil;
 
 /**
  * SQL Dao
  * #{$comment}
  */
 
-@javax.annotation.Resource(name="#{$propertyname}")
+@SuppressWarnings("unused")
 public class #{$classname} {
 	
-	public Map<String, Object> invoke(JSONObject data) {
+	public Map<String, Object> invoke(JSONObject data) throws Exception {
 		
-		Dao dao = AppFactory.getDao();
+		IDao dao = #{$app_factory.$classname}.getDao();
 		
 		SqlParam sqlParam = buildSqlParam(data);
 		
@@ -31,7 +35,7 @@ public class #{$classname} {
 	/**
 	 * 组合SQL
 	 */
-	public SqlParam buildSqlParam(JSONObject data) {
+	public SqlParam buildSqlParam(JSONObject data) throws Exception {
 		// 用于暂存字段取到的值
 		Object value = null;
 		// SQL执行用到的参数，SQL中使用“:key”作占位符

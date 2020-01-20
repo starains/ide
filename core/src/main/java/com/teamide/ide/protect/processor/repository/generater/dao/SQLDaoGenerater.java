@@ -6,6 +6,7 @@ import java.util.List;
 import com.teamide.app.AppContext;
 import com.teamide.app.bean.DaoBean;
 import com.teamide.app.process.dao.DaoSqlProcess;
+import com.teamide.app.process.dao.sql.CustomSql;
 import com.teamide.app.process.dao.sql.SqlTemplate;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
@@ -24,6 +25,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 
 		data.put("$result_classname", "Map<String, Object>");
 		if (sqlProcess.getSqlType().startsWith("SELECT")) {
+
 			templates.clear();
 			sqlProcess.getSelect().appendWhereBeforeSql(templates);
 			data.put("$whereBefore", formatSqlTemplate(templates));
@@ -38,7 +40,9 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			data.put("$from", formatSqlTemplate(templates));
 			templates.clear();
 			if (sqlProcess.getSqlType().indexOf("PAGE") >= 0) {
-				data.put("$result_classname", "PageResultBean");
+				data.put("$result_classname", "PageResultBean<Map<String, Object>>");
+			} else if (sqlProcess.getSqlType().indexOf("LIST") >= 0) {
+				data.put("$result_classname", "List<Map<String, Object>>");
 			}
 
 		} else if (sqlProcess.getSqlType().startsWith("INSERT")) {
@@ -70,6 +74,17 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			data.put("$where", formatSqlTemplate(templates));
 			templates.clear();
 		} else if (sqlProcess.getSqlType().startsWith("CUSTOM")) {
+			CustomSql customSql = sqlProcess.getCustomSql();
+			if (StringUtil.isEmpty(customSql.getCustomsqltype()) && !StringUtil.isEmpty(customSql.getSql())) {
+				if (customSql.getSql().toUpperCase().trim().startsWith("SELECT")) {
+					customSql.setCustomsqltype("SELECT_LIST");
+				} else if (customSql.getSql().toUpperCase().trim().startsWith("SHOW")) {
+					customSql.setCustomsqltype("SELECT_LIST");
+				}
+			}
+			if (StringUtil.isEmpty(customSql.getCustomsqltype())) {
+				customSql.setCustomsqltype(null);
+			}
 			data.put("$customsqltype", sqlProcess.getCustomSql().getCustomsqltype());
 			templates.clear();
 			sqlProcess.getCustomSql().appendSql(templates);
@@ -81,7 +96,9 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 
 			if (StringUtil.isNotEmpty(sqlProcess.getCustomSql().getCustomsqltype())) {
 				if (sqlProcess.getCustomSql().getCustomsqltype().indexOf("PAGE") >= 0) {
-					data.put("$result_classname", "PageResultBean");
+					data.put("$result_classname", "PageResultBean<Map<String, Object>>");
+				} else if (sqlProcess.getCustomSql().getCustomsqltype().indexOf("LIST") >= 0) {
+					data.put("$result_classname", "List<Map<String, Object>>");
 				}
 			}
 		}

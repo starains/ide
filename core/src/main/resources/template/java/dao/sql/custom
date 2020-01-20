@@ -1,5 +1,12 @@
 package #{$package};
 
+import java.util.*;
+import com.teamide.util.*;
+
+import com.alibaba.fastjson.*;
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
 #ifStart($customsqltype == 'SELECT_PAGE')#
 import com.teamide.db.bean.PageSqlParam;
 import com.teamide.bean.PageResultBean;
@@ -11,47 +18,45 @@ import com.teamide.db.bean.SqlParam;
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.jexl.JexlTool;
-import com.teamide.util.ObjectUtil;
-import com.teamide.util.StringUtil;
 
 /**
  * SQL Dao 修改
  * #{$comment}
  */
 
-@javax.annotation.Resource(name="#{$propertyname}")
+@SuppressWarnings("unused")
 public class #{$classname} {
 	
 	/**
 	 * 执行
 	 */
 	#ifStart($customsqltype == 'SELECT_ONE')#
-	public Map<String, Object> invoke(JSONObject data) {
+	public Map<String, Object> invoke(JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($customsqltype == 'SELECT_LIST')#
-	public List<Map<String, Object>> invoke(JSONObject data) {
+	public List<Map<String, Object>> invoke(JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($customsqltype == 'SELECT_PAGE')#
-	public PageResultBean<Map<String, Object>> invoke(JSONObject data) {
+	public PageResultBean<Map<String, Object>> invoke(JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($customsqltype == null)#
-	public Map<String, Object> invoke(JSONObject data) {
+	public Map<String, Object> invoke(JSONObject data) throws Exception {
 	#ifEnd#
 		
-		Dao dao = AppFactory.getDao();
+		IDao dao = #{$app_factory.$classname}.getDao();
 		
 		// 组合SQL Param
-		#ifStart($sqlType == 'SELECT_ONE')#
+		#ifStart($customsqltype == 'SELECT_ONE')#
 		SqlParam sqlParam = buildSqlParam(data);
 		
 		return dao.queryOne(sqlParam);
 		#ifEnd#
-		#ifStart($sqlType == 'SELECT_LIST')#
+		#ifStart($customsqltype == 'SELECT_LIST')#
 		SqlParam sqlParam = buildSqlParam(data);
 		
 		return dao.queryList(sqlParam);
 		#ifEnd#
-		#ifStart($sqlType == 'SELECT_PAGE')#
+		#ifStart($customsqltype == 'SELECT_PAGE')#
 		PageSqlParam pageSqlParam = buildSqlParam(data);
 		
 		return dao.queryPage(pageSqlParam);
@@ -71,7 +76,7 @@ public class #{$classname} {
 	public PageSqlParam buildSqlParam(JSONObject data) {
 	#ifEnd#
 	#ifStart($customsqltype != 'SELECT_PAGE')#
-	public SqlParam buildSqlParam(JSONObject data) {
+	public SqlParam buildSqlParam(JSONObject data) throws Exception {
 	#ifEnd#
 		// 用于暂存字段取到的值
 		Object value = null;

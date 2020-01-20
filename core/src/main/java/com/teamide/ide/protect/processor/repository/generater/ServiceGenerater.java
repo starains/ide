@@ -11,20 +11,17 @@ import com.teamide.app.bean.ServiceBean;
 import com.teamide.app.enums.ServiceProcessType;
 import com.teamide.app.process.ServiceProcess;
 import com.teamide.app.process.service.DaoProcess;
+import com.teamide.bean.PageResultBean;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
 import com.teamide.util.StringUtil;
 
 public class ServiceGenerater extends CodeGenerater {
-
 	protected final ServiceBean service;
 
 	public ServiceGenerater(ServiceBean service, RepositoryProcessorParam param, AppBean app, AppContext context) {
 		super(service, param, app, context);
 		this.service = service;
-	}
-
-	public void appendContentCenter() throws Exception {
 	}
 
 	public String getPackage() {
@@ -62,6 +59,8 @@ public class ServiceGenerater extends CodeGenerater {
 		}
 
 		JSONObject $process = (JSONObject) JSONObject.toJSON(process);
+		String method = process.getName().replaceAll("\\.", "_");
+		$process.put("$method", method);
 		if (data.get("$process_" + process.getName()) != null) {
 			return;
 		}
@@ -104,6 +103,9 @@ public class ServiceGenerater extends CodeGenerater {
 			if (service.getProcesss().size() <= 3) {
 				data.put("$result_name", process.getName());
 				data.put("$result_classname", $dao.getString("$result_classname"));
+				if ($dao.getString("$result_classname").indexOf("Page") >= 0) {
+					imports.add(PageResultBean.class.getName());
+				}
 			}
 		}
 	}
@@ -143,14 +145,21 @@ public class ServiceGenerater extends CodeGenerater {
 						conditionToProcess = getProcessByName(conditionTo);
 					}
 					if (conditionToProcess != null) {
-						$condition.put("$next", JSON.toJSON(conditionToProcess));
+						JSONObject $next = (JSONObject) JSON.toJSON(conditionToProcess);
+						String method = conditionToProcess.getName().replaceAll("\\.", "_");
+						$next.put("$method", method);
+
+						$condition.put("$next", $next);
 
 						appendProcess($processs, conditionToProcess, $propertys);
 					}
 				}
 
 			} else {
-				$process.put("$next", JSON.toJSON(toProcess));
+				JSONObject $next = (JSONObject) JSON.toJSON(toProcess);
+				String method = toProcess.getName().replaceAll("\\.", "_");
+				$next.put("$method", method);
+				$process.put("$next", $next);
 				appendProcess($processs, toProcess, $propertys);
 			}
 		}
@@ -171,7 +180,7 @@ public class ServiceGenerater extends CodeGenerater {
 
 	@Override
 	public String getTemplate() throws Exception {
-		return "template/java/service";
+		return "template/java/service/default";
 	}
 
 }

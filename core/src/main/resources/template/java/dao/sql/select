@@ -1,41 +1,45 @@
 package #{$package};
 
-	#ifStart($sqlType == 'SELECT_ONE')#
+import java.util.*;
+import com.teamide.util.*;
+
+import com.alibaba.fastjson.*;
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
+#ifStart($sqlType == 'SELECT_PAGE')#
 import com.teamide.db.bean.PageSqlParam;
 import com.teamide.bean.PageResultBean;
 #ifEnd#
-	#ifStart($sqlType != 'SELECT_ONE')#
+#ifStart($sqlType != 'SELECT_PAGE')#
 import com.teamide.db.bean.SqlParam;
 #ifEnd#
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.jexl.JexlTool;
-import com.teamide.util.ObjectUtil;
-import com.teamide.util.StringUtil;
 
 /**
  * SQL Dao 查询
  * #{$comment}
  */
-
-@javax.annotation.Resource(name="#{$propertyname}")
+@SuppressWarnings("unused")
 public class #{$classname} {
 	
 	/**
 	 * 执行
 	 */
 	#ifStart($sqlType == 'SELECT_ONE')#
-	public Map<String, Object> invoke(JSONObject data) {
+	public Map<String, Object> invoke(JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($sqlType == 'SELECT_LIST')#
-	public List<Map<String, Object>> invoke(JSONObject data) {
+	public List<Map<String, Object>> invoke(JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($sqlType == 'SELECT_PAGE')#
-	public PageResultBean<Map<String, Object>> invoke(JSONObject data) {
+	public PageResultBean<Map<String, Object>> invoke(JSONObject data) throws Exception {
 	#ifEnd#
 		
-		Dao dao = AppFactory.getDao();
+		IDao dao = #{$app_factory.$classname}.getDao();
 		
 		// 组合SQL Param
 		#ifStart($sqlType == 'SELECT_ONE')#
@@ -56,10 +60,10 @@ public class #{$classname} {
 	 * 组合SQL
 	 */
 	#ifStart($sqlType == 'SELECT_PAGE')#
-	public PageSqlParam buildSqlParam(JSONObject data) {
+	public PageSqlParam buildSqlParam(JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($sqlType != 'SELECT_PAGE')#
-	public SqlParam buildSqlParam(JSONObject data) {
+	public SqlParam buildSqlParam(JSONObject data) throws Exception {
 	#ifEnd#
 		// 用于暂存字段取到的值
 		Object value = null;
@@ -85,48 +89,60 @@ public class #{$classname} {
 	#forEnd#
 	
 		// SQL 条件语句
-		StringBuffer whereSql = new StringBuffer();
+		StringBuffer whereSql = new StringBuffer("WHERE 1=1 ");
 		// 组合条件语句
 	#forStart($where, $one)#
 		#ifStart($one.condition == null)#
-			#ifStart($one.sql != null)#
+			#ifStart($one.param == null)#
+				#ifStart($one.sql != null)#
 		whereSql.append("#{$one.sql}");
+				#ifEnd#
 			#ifEnd#
 			#ifStart($one.param != null)#
 				#ifStart($one.param.value != null)#
-		param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+		value = JexlTool.invoke("#{$one.param.value}", data);
 				#ifEnd#
-				#ifStart($one.param.value == null && $one.param.defaultvalue == null)#
-		param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
-				#ifEnd#
-				#ifStart($one.param.value == null && $one.param.defaultvalue != null)#
+				#ifStart($one.param.value == null)#
 		value = JexlTool.invoke("#{$one.param.name}", data);
+				#ifEnd#
+				#ifStart($one.param.defaultvalue != null)#
 		if(value == null || StringUtil.isEmptyIfStr(value)){
 			value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
 		}
-		param.put("#{$one.param.key}", value);
 				#ifEnd#
+		if(value != null && !StringUtil.isEmptyIfStr(value)){
+				#ifStart($one.sql != null)#
+			whereSql.append("#{$one.sql}");
+				#ifEnd#
+			param.put("#{$one.param.key}", value);
+		}
 			#ifEnd#
 		#ifEnd#
 		#ifStart($one.condition != null)#
 		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.sql != null)#
+			#ifStart($one.param == null)#
+				#ifStart($one.sql != null)#
 			whereSql.append("#{$one.sql}");
+				#ifEnd#
 			#ifEnd#
 			#ifStart($one.param != null)#
 				#ifStart($one.param.value != null)#
-			param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+			value = JexlTool.invoke("#{$one.param.value}", data);
 				#ifEnd#
-				#ifStart($one.param.value == null && $one.param.defaultvalue == null)#
-			param.put("#{$one.param.key}", JexlTool.invoke("#{$one.param.name}", data));
+				#ifStart($one.param.value == null)#
+			value = JexlTool.invoke("#{$one.param.name}", data);
 				#ifEnd#
-				#ifStart($one.param.value == null && $one.param.defaultvalue != null)#
-			value = JexlTool.invoke("#{$one.param.key}", data);
+				#ifStart($one.param.defaultvalue != null)#
 			if(value == null || StringUtil.isEmptyIfStr(value)){
 				value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
 			}
-			param.put("#{$one.param.key}", value);
 				#ifEnd#
+			if(value != null && !StringUtil.isEmptyIfStr(value)){
+				#ifStart($one.sql != null)#
+				whereSql.append("#{$one.sql}");
+				#ifEnd#
+				param.put("#{$one.param.key}", value);
+			}
 			#ifEnd#
 		}
 		#ifEnd#
@@ -159,13 +175,13 @@ public class #{$classname} {
 		#forStart($from, $one)#
 			#ifStart($one.condition == null)#
 				#ifStart($one.sql != null)#
-		sql.append("#{$one.sql}");
+		countSql.append("#{$one.sql}");
 				#ifEnd#
 			#ifEnd#
 			#ifStart($one.condition != null)#
 		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
 				#ifStart($one.sql != null)#
-			sql.append("#{$one.sql}");
+			countSql.append("#{$one.sql}");
 				#ifEnd#
 		}
 			#ifEnd#
