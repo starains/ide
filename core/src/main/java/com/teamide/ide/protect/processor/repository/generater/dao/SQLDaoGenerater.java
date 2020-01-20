@@ -27,17 +27,17 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 		if (sqlProcess.getSqlType().startsWith("SELECT")) {
 
 			templates.clear();
-			sqlProcess.getSelect().appendWhereBeforeSql(templates);
-			data.put("$whereBefore", formatSqlTemplate(templates));
+			sqlProcess.getSelect().appendSelectSql(templates);
+			data.put("$select", formatSqlTemplate(templates));
+			templates.clear();
+			sqlProcess.getSelect().appendSelectFromSql(templates);
+			data.put("$from", formatSqlTemplate(templates));
 			templates.clear();
 			sqlProcess.getSelect().appendWhereSql(templates);
 			data.put("$where", formatSqlTemplate(templates));
 			templates.clear();
 			sqlProcess.getSelect().appendWhereAfterSql(templates);
 			data.put("$whereAfter", formatSqlTemplate(templates));
-			templates.clear();
-			sqlProcess.getSelect().appendFromLeftJoin(templates);
-			data.put("$from", formatSqlTemplate(templates));
 			templates.clear();
 			if (sqlProcess.getSqlType().indexOf("PAGE") >= 0) {
 				data.put("$result_classname", "PageResultBean<Map<String, Object>>");

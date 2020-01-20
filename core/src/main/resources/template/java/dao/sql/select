@@ -72,8 +72,8 @@ public class #{$classname} {
 		
 		// SQL语句
 		StringBuffer sql = new StringBuffer();
-		// 组合查询语句
-	#forStart($whereBefore, $one)#
+		// 组合查询字段语句
+	#forStart($select, $one)#
 		#ifStart($one.condition == null)#
 			#ifStart($one.sql != null)#
 		sql.append("#{$one.sql}");
@@ -87,6 +87,27 @@ public class #{$classname} {
 		}
 		#ifEnd#
 	#forEnd#
+	
+		// SQL From 语句
+		StringBuffer fromSql = new StringBuffer();
+		// 组合From语句
+	#forStart($from, $one)#
+		#ifStart($one.condition == null)#
+			#ifStart($one.sql != null)#
+		fromSql.append("#{$one.sql}");
+			#ifEnd#
+		#ifEnd#
+		#ifStart($one.condition != null)#
+		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
+			#ifStart($one.sql != null)#
+			fromSql.append("#{$one.sql}");
+			#ifEnd#
+		}
+		#ifEnd#
+	#forEnd#
+	
+		// 拼接查询From语句条件
+		sql.append(fromSql);
 	
 		// SQL 条件语句
 		StringBuffer whereSql = new StringBuffer("WHERE 1=1 ");
@@ -172,20 +193,10 @@ public class #{$classname} {
 		#ifStart($sqlType == 'SELECT_PAGE')#
 		// 统计语句，用于分页
 		StringBuffer countSql = new StringBuffer("SELECT COUNT(1) ");
-		#forStart($from, $one)#
-			#ifStart($one.condition == null)#
-				#ifStart($one.sql != null)#
-		countSql.append("#{$one.sql}");
-				#ifEnd#
-			#ifEnd#
-			#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-				#ifStart($one.sql != null)#
-			countSql.append("#{$one.sql}");
-				#ifEnd#
-		}
-			#ifEnd#
-		#forEnd#
+		
+		// 拼接查询From语句条件
+		countSql.append(fromSql);
+		
 		// 拼接统计语句条件
 		countSql.append(whereSql);
 		
