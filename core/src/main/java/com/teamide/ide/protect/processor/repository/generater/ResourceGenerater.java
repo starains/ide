@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.app.AppContext;
 import com.teamide.app.bean.DatabaseBean;
+import com.teamide.db.bean.Database;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
 
@@ -39,8 +40,13 @@ public class ResourceGenerater extends Generater {
 	}
 
 	public void saveJDBCProperties(File file, DatabaseBean database) throws Exception {
+
 		param.getLog().info("save jdbc [" + file.getName() + "] properties code.");
 		JSONObject json = (JSONObject) JSON.toJSON(database);
+
+		Database db = json.toJavaObject(Database.class);
+		json = (JSONObject) JSON.toJSON(db);
+
 		Properties properties = new Properties();
 		for (String key : json.keySet()) {
 			if (json.get(key) != null) {
