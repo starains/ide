@@ -2,6 +2,7 @@ package #{$package};
 
 import java.util.*;
 import com.teamide.util.*;
+import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 
@@ -44,82 +45,10 @@ public class #{$classname} {
 		
 		// SQL语句
 		StringBuffer sql = new StringBuffer();
-		// 组合删除语句
-	#forStart($before, $one)#
-		#ifStart($one.condition == null)#
-			#ifStart($one.sql != null)#
-		sql.append("#{$one.sql}");
-			#ifEnd#
-		#ifEnd#
-		#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.sql != null)#
-			sql.append("#{$one.sql}");
-			#ifEnd#
-		}
-		#ifEnd#
-	#forEnd#
-	
-			
-		// SQL 条件语句
-		StringBuffer whereSql = new StringBuffer("WHERE 1=1 ");
-		// 组合条件语句
-	#forStart($where, $one)#
-		#ifStart($one.condition == null)#
-			#ifStart($one.param == null)#
-				#ifStart($one.sql != null)#
-		whereSql.append("#{$one.sql}");
-				#ifEnd#
-			#ifEnd#
-			#ifStart($one.param != null)#
-				#ifStart($one.param.value != null)#
-		value = JexlTool.invoke("#{$one.param.value}", data);
-				#ifEnd#
-				#ifStart($one.param.value == null)#
-		value = JexlTool.invoke("#{$one.param.name}", data);
-				#ifEnd#
-				#ifStart($one.param.defaultvalue != null)#
-		if(value == null || StringUtil.isEmptyIfStr(value)){
-			value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
-		}
-				#ifEnd#
-		if(value != null && !StringUtil.isEmptyIfStr(value)){
-				#ifStart($one.sql != null)#
-			whereSql.append("#{$one.sql}");
-				#ifEnd#
-			param.put("#{$one.param.key}", value);
-		}
-			#ifEnd#
-		#ifEnd#
-		#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.param == null)#
-				#ifStart($one.sql != null)#
-			whereSql.append("#{$one.sql}");
-				#ifEnd#
-			#ifEnd#
-			#ifStart($one.param != null)#
-				#ifStart($one.param.value != null)#
-			value = JexlTool.invoke("#{$one.param.value}", data);
-				#ifEnd#
-				#ifStart($one.param.value == null)#
-			value = JexlTool.invoke("#{$one.param.name}", data);
-				#ifEnd#
-				#ifStart($one.param.defaultvalue != null)#
-			if(value == null || StringUtil.isEmptyIfStr(value)){
-				value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
-			}
-				#ifEnd#
-			if(value != null && !StringUtil.isEmptyIfStr(value)){
-				#ifStart($one.sql != null)#
-				whereSql.append("#{$one.sql}");
-				#ifEnd#
-				param.put("#{$one.param.key}", value);
-			}
-			#ifEnd#
-		}
-		#ifEnd#
-	#forEnd#
+		// SQL Where语句
+		StringBuffer whereSql = new StringBuffer();
+		
+#{$content}
 		
 		// 拼接删除SQL语句
 		sql.append(" ").append(whereSql);

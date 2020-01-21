@@ -2,6 +2,7 @@ package #{$package};
 
 import java.util.*;
 import com.teamide.util.*;
+import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 

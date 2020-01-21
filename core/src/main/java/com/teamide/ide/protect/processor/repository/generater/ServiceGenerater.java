@@ -12,6 +12,8 @@ import com.teamide.app.enums.ServiceProcessType;
 import com.teamide.app.process.ServiceProcess;
 import com.teamide.app.process.service.DaoProcess;
 import com.teamide.bean.PageResultBean;
+import com.teamide.ide.generater.ValidateGenerater;
+import com.teamide.ide.generater.VariableGenerater;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
 import com.teamide.util.StringUtil;
@@ -61,6 +63,13 @@ public class ServiceGenerater extends CodeGenerater {
 		JSONObject $process = (JSONObject) JSONObject.toJSON(process);
 		String method = process.getName().replaceAll("\\.", "_");
 		$process.put("$method", method);
+
+		VariableGenerater variableGenerater = new VariableGenerater();
+		$process.put("$variable_content", variableGenerater.generate(2, process.getVariables()));
+
+		ValidateGenerater validateGenerater = new ValidateGenerater();
+		$process.put("$validate_content", validateGenerater.generate(2, process.getValidates()));
+
 		if (data.get("$process_" + process.getName()) != null) {
 			return;
 		}

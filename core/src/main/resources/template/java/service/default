@@ -2,6 +2,7 @@ package #{$package};
 
 import java.util.*;
 import com.teamide.util.*;
+import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 
@@ -67,29 +68,8 @@ public class #{$classname} {
 	
 		// 用于暂存字段取到的值
 		Object value = null;
-		
-		#forStart($one.variables, $variable)#
-			#ifStart($variable != null)#
-				#ifStart($variable.value != null)#
-		variableCache.put("#{$variable.name}", JexlTool.invoke("#{$variable.value}", variableCache));
-				#ifEnd#
-				#ifStart($variable.value == null && $variable.defaultvalue == null)#
-		invokeCache.put("#{$variable.name}", JexlTool.invoke("#{$variable.name}", variableCache));
-				#ifEnd#
-				#ifStart($variable.value == null && $variable.defaultvalue != null)#
-		value = JexlTool.invoke("#{$variable.name}", variableCache);
-		if(value == null || StringUtil.isEmptyIfStr(value)){
-			value = JexlTool.invoke("#{$variable.defaultvalue}", variableCache);
-		}
-		invokeCache.put("#{$variable.name}", value);
-				#ifEnd#
-			#ifEnd#
-		#forEnd#
-		
-		#forStart($one.validates, $validate)#
-		// 验证#{$validate}
-		#forEnd#
-		
+#{$one.$variable_content}
+#{$one.$validate_content}
 		#ifStart($one.type == 'DECISION' && $one.$conditions != null)#
 		#forStart($one.$conditions, $condition)#
 		if(ObjectUtil.isTrue(JexlTool.invoke("#{$condition.condition}", variableCache))){

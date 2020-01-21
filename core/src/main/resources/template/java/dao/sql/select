@@ -2,6 +2,7 @@ package #{$package};
 
 import java.util.*;
 import com.teamide.util.*;
+import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 
@@ -72,123 +73,14 @@ public class #{$classname} {
 		
 		// SQL语句
 		StringBuffer sql = new StringBuffer();
-		// 组合查询字段语句
-	#forStart($select, $one)#
-		#ifStart($one.condition == null)#
-			#ifStart($one.sql != null)#
-		sql.append("#{$one.sql}");
-			#ifEnd#
-		#ifEnd#
-		#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.sql != null)#
-			sql.append("#{$one.sql}");
-			#ifEnd#
-		}
-		#ifEnd#
-	#forEnd#
-	
-		// SQL From 语句
+		// SQL From语句
 		StringBuffer fromSql = new StringBuffer();
-		// 组合From语句
-	#forStart($from, $one)#
-		#ifStart($one.condition == null)#
-			#ifStart($one.sql != null)#
-		fromSql.append("#{$one.sql}");
-			#ifEnd#
-		#ifEnd#
-		#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.sql != null)#
-			fromSql.append("#{$one.sql}");
-			#ifEnd#
-		}
-		#ifEnd#
-	#forEnd#
-	
-		// 拼接查询From语句条件
-		sql.append(fromSql);
-	
-		// SQL 条件语句
-		StringBuffer whereSql = new StringBuffer("WHERE 1=1 ");
-		// 组合条件语句
-	#forStart($where, $one)#
-		#ifStart($one.condition == null)#
-			#ifStart($one.param == null)#
-				#ifStart($one.sql != null)#
-		whereSql.append("#{$one.sql}");
-				#ifEnd#
-			#ifEnd#
-			#ifStart($one.param != null)#
-				#ifStart($one.param.value != null)#
-		value = JexlTool.invoke("#{$one.param.value}", data);
-				#ifEnd#
-				#ifStart($one.param.value == null)#
-		value = JexlTool.invoke("#{$one.param.name}", data);
-				#ifEnd#
-				#ifStart($one.param.defaultvalue != null)#
-		if(value == null || StringUtil.isEmptyIfStr(value)){
-			value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
-		}
-				#ifEnd#
-		if(value != null && !StringUtil.isEmptyIfStr(value)){
-				#ifStart($one.sql != null)#
-			whereSql.append("#{$one.sql}");
-				#ifEnd#
-			param.put("#{$one.param.key}", value);
-		}
-			#ifEnd#
-		#ifEnd#
-		#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.param == null)#
-				#ifStart($one.sql != null)#
-			whereSql.append("#{$one.sql}");
-				#ifEnd#
-			#ifEnd#
-			#ifStart($one.param != null)#
-				#ifStart($one.param.value != null)#
-			value = JexlTool.invoke("#{$one.param.value}", data);
-				#ifEnd#
-				#ifStart($one.param.value == null)#
-			value = JexlTool.invoke("#{$one.param.name}", data);
-				#ifEnd#
-				#ifStart($one.param.defaultvalue != null)#
-			if(value == null || StringUtil.isEmptyIfStr(value)){
-				value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
-			}
-				#ifEnd#
-			if(value != null && !StringUtil.isEmptyIfStr(value)){
-				#ifStart($one.sql != null)#
-				whereSql.append("#{$one.sql}");
-				#ifEnd#
-				param.put("#{$one.param.key}", value);
-			}
-			#ifEnd#
-		}
-		#ifEnd#
-	#forEnd#
-	
-		// 拼接查询语句条件
-		sql.append(whereSql);
-		#ifStart($whereAfter != null && $whereAfter.size() > 0)#
+		// SQL Where语句
+		StringBuffer whereSql = new StringBuffer();
+		// SQL Group语句
+		StringBuffer groupSql = new StringBuffer();
 		
-		// 最后拼接排序等语句
-		#ifEnd#
-	#forStart($whereAfter, $one)#
-		#ifStart($one.condition == null)#
-			#ifStart($one.sql != null)#
-		sql.append("#{$one.sql}");
-			#ifEnd#
-		#ifEnd#
-		#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.sql != null)#
-			sql.append("#{$one.sql}");
-			#ifEnd#
-		}
-		#ifEnd#
-	#forEnd#
+#{$content}
 	
 		#ifStart($sqlType == 'SELECT_PAGE')#
 		// 统计语句，用于分页
@@ -196,9 +88,10 @@ public class #{$classname} {
 		
 		// 拼接查询From语句条件
 		countSql.append(fromSql);
-		
 		// 拼接统计语句条件
 		countSql.append(whereSql);
+		// 拼接统计语句条件
+		countSql.append(groupSql);
 		
 		PageSqlParam pageSqlParam = new PageSqlParam(sql.toString(), countSql.toString(), param);
 		// 获取页码和每页数量

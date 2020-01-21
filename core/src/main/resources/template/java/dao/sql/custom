@@ -2,6 +2,7 @@ package #{$package};
 
 import java.util.*;
 import com.teamide.util.*;
+import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 
@@ -20,7 +21,7 @@ import com.teamide.param.DataParam;
 import com.teamide.jexl.JexlTool;
 
 /**
- * SQL Dao 修改
+ * SQL Dao 自定义
  * #{$comment}
  */
 
@@ -85,42 +86,13 @@ public class #{$classname} {
 		
 		// SQL语句
 		StringBuffer sql = new StringBuffer();
-		// 组合SQL语句
-	#forStart($sql, $one)#
-		#ifStart($one.condition == null)#
-			#ifStart($one.sql != null)#
-		sql.append("#{$one.sql}");
-			#ifEnd#
-		#ifEnd#
-		#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.sql != null)#
-			sql.append("#{$one.sql}");
-			#ifEnd#
-		}
-		#ifEnd#
-	#forEnd#
-	
 	#ifStart($customsqltype == 'SELECT_PAGE')#
 		// 分页查询的统计语句
 		StringBuffer countSql = new StringBuffer();
-		// 统计语句
-	#forStart($countSql, $one)#
-		#ifStart($one.condition == null)#
-			#ifStart($one.sql != null)#
-		countSql.append("#{$one.sql}");
-			#ifEnd#
-		#ifEnd#
-		#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.sql != null)#
-			countSql.append("#{$one.sql}");
-			#ifEnd#
-		}
-		#ifEnd#
-	#forEnd#
 	#ifEnd#
 	
+#{$content}
+
 		#ifStart($customsqltype == 'SELECT_PAGE')#
 		PageSqlParam pageSqlParam = new PageSqlParam(sql.toString(), countSql.toString(), param);
 		// 获取页码和每页数量

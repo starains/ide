@@ -126,6 +126,7 @@ export default {
         resourcepath: "",
         codepackage: "",
         controllerpackage: "",
+        basepackage: "",
         daopackage: "",
         servicepackage: "",
         factorypackage: "",

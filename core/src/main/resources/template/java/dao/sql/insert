@@ -2,6 +2,7 @@ package #{$package};
 
 import java.util.*;
 import com.teamide.util.*;
+import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 
@@ -45,97 +46,13 @@ public class #{$classname} {
 		
 		// SQL语句
 		StringBuffer sql = new StringBuffer();
-		// 组合新增语句
-	#forStart($before, $one)#
-		#ifStart($one.condition == null)#
-			#ifStart($one.sql != null)#
-		sql.append("#{$one.sql}");
-			#ifEnd#
-		#ifEnd#
-		#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.sql != null)#
-			sql.append("#{$one.sql}");
-			#ifEnd#
-		}
-		#ifEnd#
-	#forEnd#
-	
 		// 新增语句字段SQL
 		StringBuffer columnSql = new StringBuffer();
 		// 新增语句字段映射值SQL
 		StringBuffer valueSql = new StringBuffer();
-		// 组合新增字段语句
-	#forStart($column, $one)#
-		#ifStart($one.condition == null)#
-			#ifStart($one.param == null)#
-				#ifStart($one.sql != null)#
-		columnSql.append("#{$one.sql}");
-				#ifEnd#
-				#ifStart($one.valueSql != null)#
-		valueSql.append("#{$one.valueSql}");
-				#ifEnd#
-			#ifEnd#
-			#ifStart($one.param != null)#
-				#ifStart($one.param.value != null)#
-		value = JexlTool.invoke("#{$one.param.value}", data);
-				#ifEnd#
-				#ifStart($one.param.value == null)#
-		value = JexlTool.invoke("#{$one.param.name}", data);
-				#ifEnd#
-				#ifStart($one.param.defaultvalue != null)#
-		if(value == null || StringUtil.isEmptyIfStr(value)){
-			value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
-		}
-				#ifEnd#
-		if(value != null && !StringUtil.isEmptyIfStr(value)){
-				#ifStart($one.sql != null)#
-			columnSql.append("#{$one.sql}");
-				#ifEnd#
-				#ifStart($one.valueSql != null)#
-			valueSql.append("#{$one.valueSql}");
-				#ifEnd#
-			param.put("#{$one.param.key}", value);
-		}
-			#ifEnd#
-		#ifEnd#
-		#ifStart($one.condition != null)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$one.condition}", data))){
-			#ifStart($one.param == null)#
-				#ifStart($one.sql != null)#
-		columnSql.append("#{$one.sql}");
-				#ifEnd#
-				#ifStart($one.valueSql != null)#
-		valueSql.append("#{$one.valueSql}");
-				#ifEnd#
-			#ifEnd#
-			#ifStart($one.param != null)#
-				#ifStart($one.param.value != null)#
-			value = JexlTool.invoke("#{$one.param.value}", data);
-				#ifEnd#
-				#ifStart($one.param.value == null)#
-			value = JexlTool.invoke("#{$one.param.name}", data);
-				#ifEnd#
-				#ifStart($one.param.defaultvalue != null)#
-			if(value == null || StringUtil.isEmptyIfStr(value)){
-				value = JexlTool.invoke("#{$one.param.defaultvalue}", data);
-			}
-				#ifEnd#
-			if(value != null && !StringUtil.isEmptyIfStr(value)){
-				#ifStart($one.sql != null)#
-				columnSql.append("#{$one.sql}");
-				#ifEnd#
-				#ifStart($one.valueSql != null)#
-				valueSql.append("#{$one.valueSql}");
-				#ifEnd#
-				param.put("#{$one.param.key}", value);
-			}
-			#ifEnd#
-		}
-		#ifEnd#
 		
-	#forEnd#
-	
+#{$content}
+
 		// 去除结尾“,”
 		if(columnSql.toString().endsWith(",")){
 			columnSql.setLength(columnSql.length() - 1);
