@@ -72,7 +72,8 @@ public abstract class SqlGenerater extends CodeGenerater {
 
 		if (ObjectUtil.isTrue(where.getCustom())) {
 			String customsql = where.getCustomsql();
-			content.append(getTab(tab)).append("whereSql.append(\"" + customsql + "\");").append("\n");
+			content.append(getTab(tab)).append("whereSql.append(\" " + where.splice() + " (" + customsql + ")\");")
+					.append("\n");
 			return;
 		}
 

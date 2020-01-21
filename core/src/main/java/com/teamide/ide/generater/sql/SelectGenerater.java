@@ -44,6 +44,7 @@ public class SelectGenerater extends SqlGenerater {
 		content.append("\n");
 		content.append(getTab(tab)).append("// 组合查询SQL From语句").append("\n");
 		appendFrom(tab);
+		appendLeftJoin(tab);
 
 		content.append("\n");
 		content.append(getTab(tab)).append("// 拼接SQL").append("\n");
@@ -265,6 +266,7 @@ public class SelectGenerater extends SqlGenerater {
 
 	public StringBuffer getLeftJoinSql(LeftJoin leftJoin) {
 		StringBuffer sql = new StringBuffer();
+		sql.append(" LEFT JOIN ");
 		String table = StringUtil.trim(leftJoin.getTable());
 		if (!StringUtil.isEmpty(table)) {
 			sql.append(table);
