@@ -61,7 +61,7 @@
 					</el-form-item>
 					<el-form-item class label="数据库初始化实现" prop="initializeclass">
 					  <el-input type="text" v-model="form.initializeclass" autocomplete="off" @change="change($event,'initializeclass')"></el-input>
-					  <span>需要实现com.coospro.app.ifaces.IDatabaseInitialize接口，可以修改Database对象中的属性值</span>
+					  <span>需要实现com.teamide.db.ifaces.IDatabaseInitialize接口，返回Database</span>
 					</el-form-item>
 				</el-form>
 			</div>

@@ -1,6 +1,7 @@
 package com.teamide.ide.controller.handler;
 
 import java.io.File;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.app.Application;
 import com.teamide.app.ApplicationFactory;
 import com.teamide.app.bean.DaoBean;
+import com.teamide.app.bean.DatabaseBean;
 import com.teamide.app.bean.ServiceBean;
 import com.teamide.app.enums.BeanModelType;
 import com.teamide.app.enums.ColumnType;
@@ -373,6 +375,12 @@ public class DataHandler {
 			Application application = ApplicationFactory.start(new File(path));
 			DataParam param = new DataParam((JSON) JSON.parse(data));
 
+			List<DatabaseBean> databases = application.getContext().get(DatabaseBean.class);
+			if (databases != null) {
+				for (DatabaseBean database : databases) {
+					database.setInitializeclass(null);
+				}
+			}
 			if (type.equalsIgnoreCase("DAO")) {
 				DaoBean dao = application.getContext().get(DaoBean.class, name);
 				result = application.invokeDao(dao, param);

@@ -88,32 +88,35 @@ public class ServiceGenerater extends CodeGenerater {
 		if (ServiceProcessType.DAO.getValue().equalsIgnoreCase(process.getType())) {
 			DaoProcess daoProcess = (DaoProcess) process;
 			DaoBean dao = context.get(DaoBean.class, daoProcess.getDaoname());
-			DaoGenerater daoGenerater = new DaoGenerater(dao, param, app, context);
-			daoGenerater.init();
+			if (dao != null) {
+				DaoGenerater daoGenerater = new DaoGenerater(dao, param, app, context);
+				daoGenerater.init();
 
-			JSONObject $dao = daoGenerater.data;
-			String $propertyname = $dao.getString("$propertyname");
-			boolean find = false;
-			for (int i = 0; i < $propertys.size(); i++) {
-				JSONObject $property = $propertys.getJSONObject(i);
-				if ($property.getString("$name").equals($propertyname)) {
-					find = true;
+				JSONObject $dao = daoGenerater.data;
+				String $propertyname = $dao.getString("$propertyname");
+				boolean find = false;
+				for (int i = 0; i < $propertys.size(); i++) {
+					JSONObject $property = $propertys.getJSONObject(i);
+					if ($property.getString("$name").equals($propertyname)) {
+						find = true;
+					}
 				}
-			}
-			if (!find) {
-				JSONObject $property = new JSONObject();
-				$property.put("$comment", $dao.getString("$comment"));
-				$property.put("$package", $dao.getString("$package"));
-				$property.put("$classname", $dao.getString("$classname"));
-				$property.put("$name", $propertyname);
-				$propertys.add($property);
-			}
-			$process.put("$dao", $dao);
-			if (service.getProcesss().size() <= 3) {
-				data.put("$result_name", process.getName());
-				data.put("$result_classname", $dao.getString("$result_classname"));
-				if ($dao.getString("$result_classname").indexOf("Page") >= 0) {
-					imports.add(PageResultBean.class.getName());
+				if (!find) {
+					JSONObject $property = new JSONObject();
+					$property.put("$comment", $dao.getString("$comment"));
+					$property.put("$package", $dao.getString("$package"));
+					$property.put("$classname", $dao.getString("$classname"));
+					$property.put("$name", $propertyname);
+					$propertys.add($property);
+				}
+				$process.put("$dao", $dao);
+
+				if (service.getProcesss().size() <= 3) {
+					data.put("$result_name", process.getName());
+					data.put("$result_classname", $dao.getString("$result_classname"));
+					if ($dao.getString("$result_classname").indexOf("Page") >= 0) {
+						imports.add(PageResultBean.class.getName());
+					}
 				}
 			}
 		}

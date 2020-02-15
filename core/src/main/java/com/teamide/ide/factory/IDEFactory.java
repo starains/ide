@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.websocket.Session;
 
+import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
 import com.teamide.db.DataSourceFactory;
 import com.teamide.db.TableUtil;
@@ -104,7 +105,7 @@ public class IDEFactory {
 
 		try {
 			if (getDatabase() != null) {
-				return DatabaseFactory.newService(getDatabase());
+				return DatabaseFactory.newService(getDatabase(), new JSONObject());
 			}
 		} catch (Exception e) {
 		}

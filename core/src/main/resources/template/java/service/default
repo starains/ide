@@ -29,11 +29,20 @@ import #{$property.$package}.#{$property.$classname};
 #ifStart($result_classname.startsWith('JSON') == false)#
 @SuppressWarnings({"unused", "unchecked"})
 #ifEnd#
+#ifStart($usespringannotation == true)#
+@org.springframework.stereotype.Service
+#ifEnd#
 public class #{$classname} {
 	
 	#forStart($propertys, $property)#
 	//#{$property.$comment}
+	#ifStart($usespringannotation == true)#
+	@org.springframework.beans.factory.annotation.Autowired
 	#{$property.$classname} #{$property.$name} = new #{$property.$classname}();
+	#ifEnd#
+	#ifStart($usespringannotation == false)#
+	#{$property.$classname} #{$property.$name} = new #{$property.$classname}();
+	#ifEnd#
 	#forEnd#
 		
 	/**

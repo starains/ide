@@ -831,13 +831,12 @@ window.app = app;
 			<div class="color-grey pdl-20">$cache：为AppSession缓存数据</div>
 			<div class="color-grey pdl-20">$result：为执行节点产生的结果，可以使用$result.节点名称</div>
 		<div class="color-grey">3：扩展函数：</div>
-			<div class="color-grey pdl-20">coos.now_date()：获取当前时间。示例：coos.now_date("yyyy-MM-dd HH:mm:ss"（非必填）)</div>
-			<div class="color-grey pdl-20">coos.generate_id()：生成ID。示例：coos.generate_id(12~32（非必填）)</div>
-			<div class="color-grey pdl-20">coos.MD5()：MD5加密。示例：coos.MD5(value（必填）)</div>
-			<div class="color-grey pdl-20">coos.to_json()：转为JSON。示例：coos.to_json(value（必填）)</div>
-			<div class="color-grey pdl-20">coos.to_tree()：转为Tree结构。示例：coos.to_tree(value（必填）,"id"（ID名称非必填）,"parentid"（父ID名称非必填）,"children"（子名称非必填）)</div>
-			<div class="color-grey pdl-20">coos.format_date()：格式化日期字符串。示例：coos.format_date(value（必填，可以是Long类型，Date类型，String类型）,"yyyy-MM-dd HH:mm:ss"（非必填）)</div>
-			<div class="color-grey pdl-20">coos.string_join()：将拼接集合字符串。示例：coos.string_join(value,"key"（非必填，用于拼接某个字段）,","（拼接符号默认“,”）)</div>
+			<div class="color-grey pdl-20">$script_id.generate()：生成ID。示例：$script_id.generate(12~32（非必填）)</div>
+			<div class="color-grey pdl-20">$script_date.now()：获取当前时间。示例：$script_date.now("yyyy-MM-dd HH:mm:ss"（非必填）)</div>
+			<div class="color-grey pdl-20">$script_date.format()：格式化日期字符串。示例：$script_date.format(value（必填，可以是Long类型，Date类型，String类型）,"yyyy-MM-dd HH:mm:ss"（非必填）)</div>
+			<div class="color-grey pdl-20">$script_md5.MD5()：MD5加密。示例：$script_md5.MD5(value（必填）)</div>
+			<div class="color-grey pdl-20">$script_json.to_json()：转为JSON。示例：$script_json.to_json(value（必填）)</div>
+			<div class="color-grey pdl-20">$script_tree.to_tree()：转为Tree结构。示例：$script_tree.to_tree(value（必填）,"id"（ID名称非必填）,"parentid"（父ID名称非必填）,"children"（子名称非必填）)</div>
 		<div class="color-grey">4：使用说明：</div>
 			<div class="color-grey pdl-20">$user.user：可以取到登录用户ID</div>
 	</div>
@@ -1061,7 +1060,7 @@ window.app = app;
 					</el-form-item>
 					<el-form-item class label="数据库初始化实现" prop="initializeclass">
 					  <el-input type="text" v-model="form.initializeclass" autocomplete="off" @change="change($event,'initializeclass')"></el-input>
-					  <span>需要实现com.coospro.app.ifaces.IDatabaseInitialize接口，可以修改Database对象中的属性值</span>
+					  <span>需要实现com.teamide.db.ifaces.IDatabaseInitialize接口，返回Database</span>
 					</el-form-item>
 				</el-form>
 			</div>

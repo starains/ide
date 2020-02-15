@@ -108,6 +108,7 @@ public class InsertGenerater extends SqlGenerater {
 
 		content.append(getTab(tab + 1));
 		content.append("columnSql.append(\"" + name + ",\");").append("\n");
+		content.append(getTab(tab + 1));
 		content.append("valueSql.append(\":" + placeKey + ",\");").append("\n");
 
 		content.append(getTab(tab + 1));

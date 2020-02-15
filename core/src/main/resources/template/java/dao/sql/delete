@@ -19,6 +19,9 @@ import com.teamide.jexl.JexlTool;
  */
 
 @SuppressWarnings("unused")
+#ifStart($usespringannotation == true)#
+@org.springframework.stereotype.Service
+#ifEnd#
 public class #{$classname} {
 	
 	/**
@@ -26,7 +29,12 @@ public class #{$classname} {
 	 */
 	public Map<String, Object> invoke(JSONObject data) throws Exception {
 		
-		IDao dao = #{$app_factory.$classname}.getDao();
+		#ifStart($database == null)#
+		IDao dao = #{$app_factory.$classname}.getDao(data);
+		#ifEnd#
+		#ifStart($database != null)#
+		IDao dao = #{$app_factory.$classname}.getDaoFor#{$database.name}(data);
+		#ifEnd#
 		
 		SqlParam sqlParam = buildSqlParam(data);
 		int result = dao.execute(sqlParam);

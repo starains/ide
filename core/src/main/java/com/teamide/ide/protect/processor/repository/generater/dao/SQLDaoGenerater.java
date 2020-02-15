@@ -3,8 +3,14 @@ package com.teamide.ide.protect.processor.repository.generater.dao;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.app.AppContext;
 import com.teamide.app.bean.DaoBean;
+import com.teamide.app.bean.DatabaseBean;
+import com.teamide.app.bean.TableBean;
 import com.teamide.app.process.dao.DaoSqlProcess;
 import com.teamide.app.process.dao.sql.CustomSql;
+import com.teamide.app.process.dao.sql.Delete;
+import com.teamide.app.process.dao.sql.Insert;
+import com.teamide.app.process.dao.sql.Select;
+import com.teamide.app.process.dao.sql.Update;
 import com.teamide.ide.generater.sql.CustomGenerater;
 import com.teamide.ide.generater.sql.DeleteGenerater;
 import com.teamide.ide.generater.sql.InsertGenerater;
@@ -20,12 +26,59 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 		super(dao, param, app, context);
 	}
 
+	public DatabaseBean getDatabaseByTable(String table) {
+		if (table != null) {
+			TableBean tab = context.get(TableBean.class, table);
+			if (tab != null && !StringUtil.isEmpty(tab.getDatabasename())) {
+				return context.get(DatabaseBean.class, tab.getDatabasename());
+			}
+		}
+		return null;
+	}
+
+	public DatabaseBean getDatabase(Select select) {
+		if (select != null && select.getFroms() != null && select.getFroms().size() > 0) {
+			return getDatabaseByTable(select.getFroms().get(0).getTable());
+		}
+		return null;
+	}
+
+	public DatabaseBean getDatabase(Update update) {
+		if (update != null) {
+			return getDatabaseByTable(update.getTable());
+		}
+		return null;
+	}
+
+	public DatabaseBean getDatabase(Insert insert) {
+		if (insert != null) {
+			return getDatabaseByTable(insert.getTable());
+		}
+		return null;
+	}
+
+	public DatabaseBean getDatabase(Delete delete) {
+		if (delete != null) {
+			return getDatabaseByTable(delete.getTable());
+		}
+		return null;
+	}
+
+	public DatabaseBean getDatabase(CustomSql customSql) {
+		if (customSql != null && !StringUtil.isEmpty(customSql.getDatabasename())) {
+			return context.get(DatabaseBean.class, customSql.getDatabasename());
+		}
+		return null;
+	}
+
 	public void buildSQLData() {
 		DaoSqlProcess sqlProcess = (DaoSqlProcess) dao.getProcess();
 		data.put("$sqlType", sqlProcess.getSqlType());
 
 		data.put("$result_classname", "Map<String, Object>");
+		data.put("$database", null);
 		if (sqlProcess.getSqlType().indexOf("SELECT") >= 0) {
+			data.put("$database", getDatabase(sqlProcess.getSelect()));
 
 			SelectGenerater selectGenerater = new SelectGenerater(sqlProcess.getSelect());
 			data.put("$content", selectGenerater.generate(2));
@@ -37,22 +90,26 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			}
 
 		} else if (sqlProcess.getSqlType().indexOf("INSERT") >= 0) {
+			data.put("$database", getDatabase(sqlProcess.getInsert()));
 
 			InsertGenerater insertGenerater = new InsertGenerater(sqlProcess.getInsert());
 			data.put("$content", insertGenerater.generate(2));
 
 		} else if (sqlProcess.getSqlType().indexOf("UPDATE") >= 0) {
+			data.put("$database", getDatabase(sqlProcess.getUpdate()));
 
 			UpdateGenerater updateGenerater = new UpdateGenerater(sqlProcess.getUpdate());
 			data.put("$content", updateGenerater.generate(2));
 
 		} else if (sqlProcess.getSqlType().indexOf("DELETE") >= 0) {
+			data.put("$database", getDatabase(sqlProcess.getDelete()));
 
 			DeleteGenerater deleteGenerater = new DeleteGenerater(sqlProcess.getDelete());
 			data.put("$content", deleteGenerater.generate(2));
 
 		} else if (sqlProcess.getSqlType().indexOf("CUSTOM") >= 0) {
 			CustomSql customSql = sqlProcess.getCustomSql();
+			data.put("$database", getDatabase(customSql));
 			if (StringUtil.isEmpty(customSql.getCustomsqltype()) && !StringUtil.isEmpty(customSql.getSql())) {
 				if (customSql.getSql().toUpperCase().trim().startsWith("SELECT")) {
 					customSql.setCustomsqltype("SELECT_LIST");

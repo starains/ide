@@ -39,6 +39,10 @@ public abstract class Generater {
 		return pack;
 	}
 
+	public boolean isUsespringannotation() {
+		return app.getOption().isUsespringannotation();
+	}
+
 	public String getJdbcPath() {
 		String path = app.getOption().getJdbcpath();
 		if (StringUtil.isEmpty(path)) {

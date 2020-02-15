@@ -1,9 +1,11 @@
 package #{$package};
 
 import com.teamide.dao.IDao;
-import com.teamide.exception.DatabaseNotFoundException;
+import com.teamide.exception.*;
 import com.teamide.factory.DatabaseFactory;
 import com.teamide.service.IService;
+
+import com.alibaba.fastjson.*;
 
 /**
  * AppFactory
@@ -13,14 +15,26 @@ public class #{$classname} {
 
 	static DatabaseFactory DATABASE_FACTORY = new DatabaseFactory("jdbc", "databases");
 
-	public static IDao getDao() throws DatabaseNotFoundException {
+	public static IDao getDao(JSONObject data) throws DatabaseNotFoundException, DatabaseInitializeException {
 
-		return DATABASE_FACTORY.newDao();
+		return DATABASE_FACTORY.newDao(data);
 	}
 
-	public static IService getService() throws DatabaseNotFoundException {
+	public static IService getService(JSONObject data) throws DatabaseNotFoundException, DatabaseInitializeException {
 
-		return DATABASE_FACTORY.newService();
+		return DATABASE_FACTORY.newService(data);
 	}
+	
+	#forStart($databases, $database)#
+	public static IDao getDaoFor#{$database.name}(JSONObject data) throws DatabaseNotFoundException, DatabaseInitializeException {
+
+		return DATABASE_FACTORY.newDao("#{$database.name}", data);
+	}
+
+	public static IService getServiceFor#{$database.name}(JSONObject data) throws DatabaseNotFoundException, DatabaseInitializeException {
+
+		return DATABASE_FACTORY.newService("#{$database.name}", data);
+	}
+	#forEnd#
 	
 }

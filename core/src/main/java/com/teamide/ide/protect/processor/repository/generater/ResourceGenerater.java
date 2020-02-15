@@ -1,6 +1,7 @@
 package com.teamide.ide.protect.processor.repository.generater;
 
 import java.io.File;
+import java.util.List;
 import java.util.Properties;
 
 import com.alibaba.fastjson.JSON;
@@ -37,6 +38,20 @@ public class ResourceGenerater extends Generater {
 		}
 
 		saveJDBCProperties(jdbcFile, context.getJdbc());
+
+		List<DatabaseBean> databases = context.get(DatabaseBean.class);
+		if (databases.size() > 0) {
+			String jdbcDirectoryPath = getJdbcDirectoryPath();
+
+			File jdbcDirectory = new File(resourceFolder, jdbcDirectoryPath);
+			if (!jdbcDirectory.exists()) {
+				jdbcDirectory.mkdirs();
+			}
+			for (DatabaseBean database : databases) {
+				File jdbcDirectoryFile = new File(jdbcDirectory, database.getName() + ".properties");
+				saveJDBCProperties(jdbcDirectoryFile, database);
+			}
+		}
 	}
 
 	public void saveJDBCProperties(File file, DatabaseBean database) throws Exception {

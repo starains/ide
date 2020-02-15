@@ -76,7 +76,7 @@ public abstract class CodeGenerater extends Generater {
 		$app_factory.put("$classname", getAppFactoryClassname());
 		data.put("$app_factory", $app_factory);
 		data.put("$imports", imports);
-
+		data.put("$usespringannotation", isUsespringannotation());
 		buildData();
 	}
 

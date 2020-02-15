@@ -25,6 +25,9 @@ import com.teamide.jexl.JexlTool;
  * #{$comment}
  */
 @SuppressWarnings("unused")
+#ifStart($usespringannotation == true)#
+@org.springframework.stereotype.Service
+#ifEnd#
 public class #{$classname} {
 	
 	/**
@@ -40,7 +43,12 @@ public class #{$classname} {
 	public PageResultBean<Map<String, Object>> invoke(JSONObject data) throws Exception {
 	#ifEnd#
 		
-		IDao dao = #{$app_factory.$classname}.getDao();
+		#ifStart($database == null)#
+		IDao dao = #{$app_factory.$classname}.getDao(data);
+		#ifEnd#
+		#ifStart($database != null)#
+		IDao dao = #{$app_factory.$classname}.getDaoFor#{$database.name}(data);
+		#ifEnd#
 		
 		// 组合SQL Param
 		#ifStart($sqlType == 'SELECT_ONE')#
