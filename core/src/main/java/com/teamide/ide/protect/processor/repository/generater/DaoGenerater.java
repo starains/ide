@@ -27,9 +27,10 @@ public class DaoGenerater extends SQLDaoGenerater {
 	@Override
 	public void buildData() {
 		DaoProcess daoProcess = dao.getProcess();
-
-		if (DaoProcessType.SQL.getValue().equals(daoProcess.getType())) {
-			buildSQLData();
+		if (daoProcess != null) {
+			if (DaoProcessType.SQL.getValue().equals(daoProcess.getType())) {
+				buildSQLData();
+			}
 		}
 
 	}
@@ -39,28 +40,30 @@ public class DaoGenerater extends SQLDaoGenerater {
 
 		DaoProcess daoProcess = dao.getProcess();
 
-		if (DaoProcessType.SQL.getValue().equals(daoProcess.getType())) {
+		if (daoProcess != null) {
+			if (DaoProcessType.SQL.getValue().equals(daoProcess.getType())) {
 
-			DaoSqlProcess sqlProcess = (DaoSqlProcess) dao.getProcess();
-			if (sqlProcess.getSqlType().indexOf("SELECT") >= 0) {
-				return "template/java/dao/sql/select";
-			} else if (sqlProcess.getSqlType().indexOf("INSERT") >= 0) {
-				return "template/java/dao/sql/insert";
-			} else if (sqlProcess.getSqlType().indexOf("UPDATE") >= 0) {
-				return "template/java/dao/sql/update";
-			} else if (sqlProcess.getSqlType().indexOf("DELETE") >= 0) {
-				return "template/java/dao/sql/delete";
-			} else if (sqlProcess.getSqlType().indexOf("CUSTOM") >= 0) {
-				return "template/java/dao/sql/custom";
-			} else if (sqlProcess.getSqlType().indexOf("SAVE") >= 0) {
-				return "template/java/dao/sql/save";
-			} else {
-				throw new Exception("sql type [" + sqlProcess.getSqlType() + "] template does not exist.");
+				DaoSqlProcess sqlProcess = (DaoSqlProcess) dao.getProcess();
+				if (sqlProcess.getSqlType().indexOf("SELECT") >= 0) {
+					return "template/java/dao/sql/select";
+				} else if (sqlProcess.getSqlType().indexOf("INSERT") >= 0) {
+					return "template/java/dao/sql/insert";
+				} else if (sqlProcess.getSqlType().indexOf("UPDATE") >= 0) {
+					return "template/java/dao/sql/update";
+				} else if (sqlProcess.getSqlType().indexOf("DELETE") >= 0) {
+					return "template/java/dao/sql/delete";
+				} else if (sqlProcess.getSqlType().indexOf("CUSTOM") >= 0) {
+					return "template/java/dao/sql/custom";
+				} else if (sqlProcess.getSqlType().indexOf("SAVE") >= 0) {
+					return "template/java/dao/sql/save";
+				} else {
+					throw new Exception("sql type [" + sqlProcess.getSqlType() + "] template does not exist.");
+				}
+			} else if (DaoProcessType.HTTP.getValue().equals(daoProcess.getType())) {
+				return "template/java/dao/http";
+			} else if (DaoProcessType.CACHE.getValue().equals(daoProcess.getType())) {
+				return "template/java/dao/cache";
 			}
-		} else if (DaoProcessType.HTTP.getValue().equals(daoProcess.getType())) {
-			return "template/java/dao/http";
-		} else if (DaoProcessType.CACHE.getValue().equals(daoProcess.getType())) {
-			return "template/java/dao/cache";
 		}
 		return "template/java/dao/default";
 	}

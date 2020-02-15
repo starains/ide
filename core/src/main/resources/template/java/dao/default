@@ -6,6 +6,9 @@ package #{$package};
  * #{$comment}
  */
 @SuppressWarnings("unused")
+#ifStart($usespringannotation == true)#
+@org.springframework.stereotype.Service
+#ifEnd#
 public class #{$classname} {
 	
 	public Object invoke(JSONObject data) {
