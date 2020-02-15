@@ -38,7 +38,7 @@ public class #{$classname} {
 	//#{$property.$comment}
 	#ifStart($usespringannotation == true)#
 	@org.springframework.beans.factory.annotation.Autowired
-	#{$property.$classname} #{$property.$name} = new #{$property.$classname}();
+	#{$property.$classname} #{$property.$name};
 	#ifEnd#
 	#ifStart($usespringannotation == false)#
 	#{$property.$classname} #{$property.$name} = new #{$property.$classname}();
