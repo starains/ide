@@ -57,12 +57,21 @@ co.isArray = function(arg) {
 };
 
 co.isString = function(arg) {
+	if (arg == null) {
+		return false;
+	}
 	return typeof (arg) === "string";
 };
 co.isObject = function(arg) {
+	if (arg == null) {
+		return false;
+	}
 	return typeof (arg) === "object";
 };
 co.isFunction = function(arg) {
+	if (arg == null) {
+		return false;
+	}
 	return typeof (arg) === "function";
 };
 co.isNumber = function(arg) {

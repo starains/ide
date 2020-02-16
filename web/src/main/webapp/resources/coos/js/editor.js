@@ -2986,12 +2986,12 @@ window.app = app;
 			});
 			if (find) {
 				coos.error('名称已存在，请重新输入！');
-				that.toInsertProcess(data);
+				that.toUpdateProcess(data);
 				return;
 			}
 			if (data.name == 'start' || data.name == 'end') {
 				coos.error('名称不能定义为start或end!');
-				that.toInsertProcess(data);
+				that.toUpdateProcess(data);
 				return;
 			}
 			$(that.model.processs).each(function(index, one) {
