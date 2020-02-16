@@ -202,12 +202,27 @@ export default {
             };
             starterMenu.menus.push(oMenu);
 
-            oMenu.menus.push({
-              text: "运行",
-              onClick() {
-                source.starterStart(data.path, option);
+            let startting = false;
+            source.repository.starters.forEach(s => {
+              if (s && s.option && s.option.name == one.name) {
+                startting = true;
               }
             });
+            if (startting) {
+              oMenu.menus.push({
+                text: "已运行，打开控制台",
+                onClick() {
+                  source.openStarterBox();
+                }
+              });
+            } else {
+              oMenu.menus.push({
+                text: "运行",
+                onClick() {
+                  source.starterStart(data.path, option);
+                }
+              });
+            }
             oMenu.menus.push({
               text: "修改配置",
               onClick() {

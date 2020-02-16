@@ -181,18 +181,22 @@
 						that.toViewResult(process);
 					}
 				});
-				menus.push({
-					text : "修改",
-					onClick : function() {
-						that.toUpdateProcess(process);
-					}
-				});
-				menus.push({
-					text : "删除",
-					onClick : function() {
-						that.toDeleteProcess(process);
-					}
-				});
+				if (process.type == 'START' || process.type == 'END') {
+
+				} else {
+					menus.push({
+						text : "修改",
+						onClick : function() {
+							that.toUpdateProcess(process);
+						}
+					});
+					menus.push({
+						text : "删除",
+						onClick : function() {
+							that.toDeleteProcess(process);
+						}
+					});
+				}
 			} else {
 				menus.push({
 					text : "添加",

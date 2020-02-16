@@ -2694,18 +2694,22 @@ window.app = app;
 						that.toViewResult(process);
 					}
 				});
-				menus.push({
-					text : "修改",
-					onClick : function() {
-						that.toUpdateProcess(process);
-					}
-				});
-				menus.push({
-					text : "删除",
-					onClick : function() {
-						that.toDeleteProcess(process);
-					}
-				});
+				if (process.type == 'START' || process.type == 'END') {
+
+				} else {
+					menus.push({
+						text : "修改",
+						onClick : function() {
+							that.toUpdateProcess(process);
+						}
+					});
+					menus.push({
+						text : "删除",
+						onClick : function() {
+							that.toDeleteProcess(process);
+						}
+					});
+				}
 			} else {
 				menus.push({
 					text : "添加",
@@ -2946,6 +2950,12 @@ window.app = app;
 			});
 			if (find) {
 				coos.error('名称已存在，请重新输入！');
+				that.toInsertProcess(data);
+				return;
+			}
+			if (data.name == 'start' || data.name == 'end') {
+				coos.error('名称不能定义为start或end!');
+				that.toInsertProcess(data);
 				return;
 			}
 
@@ -2975,7 +2985,13 @@ window.app = app;
 				}
 			});
 			if (find) {
-				coos.box.error('名称已存在，请重新输入！');
+				coos.error('名称已存在，请重新输入！');
+				that.toInsertProcess(data);
+				return;
+			}
+			if (data.name == 'start' || data.name == 'end') {
+				coos.error('名称不能定义为start或end!');
+				that.toInsertProcess(data);
 				return;
 			}
 			$(that.model.processs).each(function(index, one) {
@@ -3045,16 +3061,21 @@ window.app = app;
 				$btn.click(function(e) {
 					that.toViewResult(process);
 				});
-				$ul.append($btn)
-				var $btn = $('<a class="coos-btn coos-btn-xs color-green" title="设置">设置</a>');
-				$btn.click(function(e) {
-					that.toUpdateProcess(process);
-				});
-				$ul.append($btn)
-				var $btn = $('<a class="coos-btn coos-btn-xs color-red" title="删除">删除</a>');
-				$btn.click(function(e) {
-					that.toDeleteProcess(process);
-				});
+				$ul.append($btn);
+				if (process.type == 'START' || process.type == 'END') {
+
+				} else {
+					var $btn = $('<a class="coos-btn coos-btn-xs color-green" title="设置">设置</a>');
+					$btn.click(function(e) {
+						that.toUpdateProcess(process);
+					});
+					$ul.append($btn)
+					var $btn = $('<a class="coos-btn coos-btn-xs color-red" title="删除">删除</a>');
+					$btn.click(function(e) {
+						that.toDeleteProcess(process);
+					});
+					$ul.append($btn)
+				}
 				$node.on('mousedown', function(e) {
 					if ($(e.target).closest('.process-node-toolbar').length > 0 ||
 
@@ -3063,7 +3084,6 @@ window.app = app;
 						return false;
 					}
 				});
-				$ul.append($btn)
 				$toolbar.append($ul);
 				$node.append($toolbar);
 				$node.attr('id', that.getIdByProcess(process));

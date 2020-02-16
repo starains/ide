@@ -9,10 +9,18 @@ source.repository.file_data_map = {};
         }
     };
     source.closeFolder = function (path) {
-        let index = source.repository.open_folders.indexOf(path);
-        if (index >= 0) {
-            source.repository.open_folders.splice(index, 1);
-        }
+        let fs = [];
+        source.repository.open_folders.forEach((folder) => {
+            if (folder.startsWith(path + '/') || folder == path) {
+                fs.push(folder);
+            }
+        });
+        fs.forEach(f => {
+            let index = source.repository.open_folders.indexOf(f);
+            if (index >= 0) {
+                source.repository.open_folders.splice(index, 1);
+            }
+        });
     };
 
 

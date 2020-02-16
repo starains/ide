@@ -159,7 +159,7 @@ window.app = app;
                 $input = $('<el-slider autocomplete="off" />');
                 data[item.name] = coos.isTrue(data[item.name]);
             } else if (item.type == 'select') {
-                $input = $('<el-select placeholder="请选择"/>');
+                $input = $('<el-select placeholder="请选择" ref="select" @visible-change="visibleChange" :filterable="true"/>');
                 let $option = $('<el-option :key="option.value" :value="option.value" :label="option.text" />');
                 $input.append($option);
                 item.options = item.options || [];
@@ -227,6 +227,16 @@ window.app = app;
                     this.$refs['form'].validate(valid => {
                         this.valid = valid;
                     });
+                },
+                visibleChange(visible) {
+                    if (this.$refs["select"]) {
+                        this.$refs["select"].$nextTick(() => {
+                            let popperElm = this.$refs["select"].popperElm;
+                            if (popperElm) {
+                                $(popperElm).css('z-index', '100000');
+                            }
+                        })
+                    }
                 }
             }
         });

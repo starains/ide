@@ -381,6 +381,9 @@ public class DataHandler {
 					database.setInitializeclass(null);
 				}
 			}
+			if (application.getContext().getJdbc() != null) {
+				application.getContext().getJdbc().setInitializeclass(null);
+			}
 			if (type.equalsIgnoreCase("DAO")) {
 				DaoBean dao = application.getContext().get(DaoBean.class, name);
 				result = application.invokeDao(dao, param);

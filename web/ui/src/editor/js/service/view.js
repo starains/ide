@@ -27,16 +27,21 @@
 				$btn.click(function(e) {
 					that.toViewResult(process);
 				});
-				$ul.append($btn)
-				var $btn = $('<a class="coos-btn coos-btn-xs color-green" title="设置">设置</a>');
-				$btn.click(function(e) {
-					that.toUpdateProcess(process);
-				});
-				$ul.append($btn)
-				var $btn = $('<a class="coos-btn coos-btn-xs color-red" title="删除">删除</a>');
-				$btn.click(function(e) {
-					that.toDeleteProcess(process);
-				});
+				$ul.append($btn);
+				if (process.type == 'START' || process.type == 'END') {
+
+				} else {
+					var $btn = $('<a class="coos-btn coos-btn-xs color-green" title="设置">设置</a>');
+					$btn.click(function(e) {
+						that.toUpdateProcess(process);
+					});
+					$ul.append($btn)
+					var $btn = $('<a class="coos-btn coos-btn-xs color-red" title="删除">删除</a>');
+					$btn.click(function(e) {
+						that.toDeleteProcess(process);
+					});
+					$ul.append($btn)
+				}
 				$node.on('mousedown', function(e) {
 					if ($(e.target).closest('.process-node-toolbar').length > 0 ||
 
@@ -45,7 +50,6 @@
 						return false;
 					}
 				});
-				$ul.append($btn)
 				$toolbar.append($ul);
 				$node.append($toolbar);
 				$node.attr('id', that.getIdByProcess(process));
