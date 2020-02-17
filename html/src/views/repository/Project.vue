@@ -457,7 +457,6 @@ export default {
           .then(res => {
             if (res.errcode == 0) {
               coos.success("移动成功！");
-              source.loadGitStatus();
             } else {
               coos.error(res.errmsg);
             }
@@ -507,7 +506,6 @@ export default {
             coos.success("删除成功！");
             let index = file.parent.files.indexOf(file);
             file.parent.files.splice(index, 1);
-            source.loadGitStatus();
           } else {
             coos.error(res.errmsg);
           }
@@ -585,7 +583,6 @@ export default {
             if (file.parent) {
               source.sortFolderFiles(file.parent);
             }
-            source.loadGitStatus();
           } else {
             coos.error(res.errmsg);
           }
@@ -605,7 +602,6 @@ export default {
             if (file.parent) {
               source.sortFolderFiles(file.parent);
             }
-            source.loadGitStatus();
           } else {
             coos.error(res.errmsg);
           }

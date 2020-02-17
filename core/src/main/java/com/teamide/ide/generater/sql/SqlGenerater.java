@@ -128,9 +128,37 @@ public abstract class SqlGenerater extends CodeGenerater {
 		sql.append(" ").append(where.splice()).append(" ");
 		if (operator.equals(ComparisonOperator.IN_LIKE) || operator.equals(ComparisonOperator.IN)
 				|| operator.equals(ComparisonOperator.NOT_IN)) {
-
+			switch (operator) {
+			case IN:
+				sql.append(" IN ");
+				break;
+			case IN_LIKE:
+				sql.append(" LIKE ");
+				break;
+			case NOT_IN:
+				sql.append(" NOT IN ");
+				break;
+			default:
+				break;
+			}
+			content.append("whereSql.append(\"" + sql + "\");").append("\n");
 		} else {
-			sql.append(whereName).append(comparisonoperator).append(":" + placeKey);
+			sql.append(whereName).append(" ");
+			switch (operator) {
+			case LIKE:
+				sql.append(" LIKE ");
+				break;
+			case LIKE_AFTER:
+				sql.append(" LIKE ");
+				break;
+			case LIKE_BEFORE:
+				sql.append(" LIKE ");
+				break;
+			default:
+				sql.append(operator.getValue());
+				break;
+			}
+			sql.append(" ").append(":" + placeKey);
 
 			content.append(getTab(tab + 1));
 			content.append("whereSql.append(\"" + sql + "\");").append("\n");
@@ -142,7 +170,6 @@ public abstract class SqlGenerater extends CodeGenerater {
 			case LIKE_BEFORE:
 				content.append(getTab(tab + 1));
 				content.append("value = \"%\" + String.valueOf(value);").append("\n");
-
 				break;
 			case LIKE_AFTER:
 				content.append(getTab(tab + 1));

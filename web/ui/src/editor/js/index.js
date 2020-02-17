@@ -13,7 +13,7 @@ window.app = app;
 		this.readyonly = options.readyonly;
 		this.type = options.type;
 		this.model_original = options.model || {};
-		this.context = options.context || {};
+		this.project = options.project || {};
 		this.file = options.file;
 		this.ENUM_MAP = source.ENUM_MAP || {};
 		if (this.file && this.file.model && this.file.model.bean) {
@@ -260,6 +260,10 @@ window.app = app;
 		case "PLUGIN":
 			editor = new coos.Editor.Plugin(options);
 			break;
+		case "ATTRIBUTE":
+			editor = new coos.Editor.Attribute(options);
+			break;
+
 		default:
 			editor = new coos.Editor(options);
 			break;

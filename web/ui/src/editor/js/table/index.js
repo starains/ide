@@ -45,7 +45,8 @@
 		var $input = $('<select class="input" name="databasename" ></select>');
 		$li.append($input);
 		$input.append('<option value="">默认库</option>');
-		$(that.context.DATABASE).each(function(index, one) {
+
+		$(this.getBeans('DATABASE')).each(function(index, one) {
 			$input.append('<option value="' + one.name + '">' + one.name + '</option>');
 		});
 		$input.val(model.databasename);

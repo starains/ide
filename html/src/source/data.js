@@ -51,6 +51,42 @@
         });
     };
     source.do = function (type, data) {
+        return new Promise((resolve, reject) => {
+            source.server.do(type, data).then(res => {
+                resolve && resolve(res);
+                if (res.errcode == 0) {
+                    if (type == 'FILE_CREATE' || type == 'FILE_SAVE' || type == 'FILE_RENAME' || type == 'FILE_DELETE' || type == 'FILE_MOVE') {
+                        source.loadGitStatus();
+
+                        let project = null;
+                        data = data || {};
+                        if (data.parentPath) {
+                            project = source.getProjectByPath(data.parentPath);
+                        }
+                        if (data.path) {
+                            project = source.getProjectByPath(data.path);
+                        }
+                        if (project != null) {
+                            let needLoadApp = false;
+                            if (project.app && project.app.path_model_type) {
+                                Object.keys(project.app.path_model_type).forEach(key => {
+                                    if (data.path && data.path.startsWith(key)) {
+                                        needLoadApp = true;
+                                    }
+                                    if (data.parentPath && data.parentPath.startsWith(key)) {
+                                        needLoadApp = true;
+                                    }
+                                });
+                            }
+
+                            if (needLoadApp) {
+                                source.loadApp(project);
+                            }
+                        }
+                    }
+                }
+            });
+        });
         return source.server.do(type, data);
     };
     source.load = function (type, data) {

@@ -100,10 +100,16 @@
 	Editor.prototype.hasSetting = function() {
 		return false;
 	};
-
+	Editor.prototype.getContext = function(type) {
+		var context = null;
+		if (this.project && this.project.app) {
+			context = this.project.app.context;
+		}
+		return context;
+	};
 	Editor.prototype.getBeans = function(type) {
 		var list = [];
-		var context = this.context;
+		var context = this.getContext();
 		if (context) {
 			list = context[type] || [];
 		}

@@ -65,3 +65,6 @@ resource/html.js
 
 plugin/index.js
 plugin/html.js
+
+attribute/index.js
+attribute/html.js

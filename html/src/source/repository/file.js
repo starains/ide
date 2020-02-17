@@ -215,7 +215,6 @@ source.repository.file_data_map = {};
                 coos.success('保存成功！');
                 let tab = source.getTab(path);
                 tab.changed = false;
-                source.loadGitStatus();
             } else {
                 coos.error(res.errmsg);
             }

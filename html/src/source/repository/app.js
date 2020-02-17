@@ -11,7 +11,28 @@
         if (project == null) {
             return;
         }
-        project.app = value.app;
+        if (project.app == null) {
+            project.app = value.app;
+        } else {
+            console.log(project.app)
+            console.log(value.app)
+            Object.keys(project.app).forEach(key => {
+                if (coos.isObject(value.app[key])) {
+                    if (project.app[key] == null) {
+                        project.app[key] = {};
+                    }
+                    Object.keys(value.app[key]).forEach(key1 => {
+                        project.app[key][key1] = value.app[key][key1];
+                    });
+                }
+            });
+        }
+    };
+
+    source.loadApp = function (project) {
+        source.load("APP", {
+            path: project.path
+        })
     };
 
 

@@ -61,9 +61,7 @@ source.repository.activeTab = null;
         let project = source.getProjectByPath(file_date.path);
 
         let type = null;
-        let context = null;
         if (project.app) {
-            context = project.app.context;
             let model = null;
             if (project.app.path_model_type) {
                 Object.keys(project.app.path_model_type).forEach(path => {
@@ -90,7 +88,7 @@ source.repository.activeTab = null;
         }
         let editor = coos.editor({
             type: type,
-            context: context,
+            project: project,
             file: file_date,
             readyonly: !app.hasPermission(),
             onSave(content) {
