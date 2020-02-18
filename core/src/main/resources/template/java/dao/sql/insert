@@ -38,7 +38,16 @@ public class #{$classname} {
 		#ifEnd#
 		
 		SqlParam sqlParam = buildSqlParam(data);
+		#ifStart($autoincrement_key == null)#
 		int result = dao.execute(sqlParam);
+		#ifEnd#
+		#ifStart($autoincrement_key != null)#
+		List<Object> keyValues = new ArrayList<Object>();
+		int result = dao.execute(sqlParam, keyValues);
+		if(keyValues.size() > 0){
+			sqlParam.getParam().put("#{$autoincrement_key}", keyValues.get(0));
+		}
+		#ifEnd#
 		
 		return sqlParam.getParam();
 	}

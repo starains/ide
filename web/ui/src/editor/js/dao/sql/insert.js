@@ -66,26 +66,39 @@
 			$li.append($input);
 			$li.append('<span class="mglr-10">=</span>');
 
-			var $input = $('<input class="input input-mini " name="value" />');
-			$input.val(column.value);
-			$li.append($input);
-			$li.append('<span class="pdr-10">或</span>');
-			$li.append('<span class="">自动取名称相同的值  或</span>');
-			var $input = $('<input class="input input-mini " name="defaultvalue" />');
-			$input.val(column.defaultvalue);
-			$li.append($input);
-			$li.append('<span class="pdr-10"></span>');
+			if (!coos.isTrue(column.autoincrement)) {
+				var $input = $('<input class="input input-mini " name="value" />');
+				$input.val(column.value);
+				$li.append($input);
+				$li.append('<span class="pdr-10">或</span>');
+				$li.append('<span class="">自动取名称相同的值  或</span>');
+				var $input = $('<input class="input input-mini " name="defaultvalue" />');
+				$input.val(column.defaultvalue);
+				$li.append($input);
+				$li.append('<span class="pdr-10"></span>');
+			} else {
+				$li.append('<span class="pdlr-10">表字段自增</span>');
+			}
 
 			if (coos.isEmpty(column.ifrule)) {
 				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="ifrule" property-value="1=1"  >设置条件</a>');
 			} else {
 				$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="ifrule" property-value="">清空条件</a>');
 			}
-			if (!coos.isTrue(column.required)) {
-				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="required" >设为必填</a>');
-			} else {
-				$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="required" >设为非必填</a>');
+			if (!coos.isTrue(column.autoincrement)) {
+				if (!coos.isTrue(column.required)) {
+					$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="required" >设为必填</a>');
+				} else {
+					$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="required" >设为非必填</a>');
+				}
 			}
+
+			if (!coos.isTrue(column.autoincrement)) {
+				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="autoincrement" >设为自增</a>');
+			} else {
+				$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="autoincrement" >设为非自增</a>');
+			}
+
 			var $btn = $('<a class="mgl-10 coos-pointer color-orange">修改</a>');
 			$li.append($btn);
 			$btn.click(function() {});

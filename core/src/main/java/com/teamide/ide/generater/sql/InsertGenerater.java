@@ -70,9 +70,18 @@ public class InsertGenerater extends SqlGenerater {
 			content.append(getTab(tab)).append("sql.append(\"" + customsql + "\");").append("\n");
 			return;
 		}
+		String name = StringUtil.trim(column.getName());
+		if (ObjectUtil.isTrue(column.getAutoincrement())) {
+			if (!StringUtil.isEmpty(name)) {
+				content.append(getTab(tab));
+				content.append("columnSql.append(\"" + name + ",\");").append("\n");
+				content.append(getTab(tab));
+				content.append("valueSql.append(\"null,\");").append("\n");
+			}
+			return;
+		}
 
 		if (StringUtil.isNotTrimEmpty(column.getValuer())) {
-
 			content.append(getTab(tab));
 			content.append("value = new " + column.getValuer() + "().getValue();").append("\n");
 		} else {
@@ -92,19 +101,14 @@ public class InsertGenerater extends SqlGenerater {
 
 					content.append(getTab(tab)).append("}").append("\n");
 				}
-
 			}
 		}
 
 		content.append(getTab(tab));
 		content.append("if(value != null) {").append("\n");
 
-		String name = StringUtil.trim(column.getName());
-
 		String placeKey = base.getPlaceKey(column.getName());
 		placeKey = StringUtil.trim(placeKey);
-		StringBuffer sql = new StringBuffer();
-		sql.append(name).append("=").append(":" + placeKey);
 
 		content.append(getTab(tab + 1));
 		content.append("columnSql.append(\"" + name + ",\");").append("\n");

@@ -9,6 +9,7 @@ import com.teamide.app.process.dao.DaoSqlProcess;
 import com.teamide.app.process.dao.sql.CustomSql;
 import com.teamide.app.process.dao.sql.Delete;
 import com.teamide.app.process.dao.sql.Insert;
+import com.teamide.app.process.dao.sql.InsertColumn;
 import com.teamide.app.process.dao.sql.Select;
 import com.teamide.app.process.dao.sql.Update;
 import com.teamide.ide.generater.sql.CustomGenerater;
@@ -18,6 +19,7 @@ import com.teamide.ide.generater.sql.SelectGenerater;
 import com.teamide.ide.generater.sql.UpdateGenerater;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
+import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
 
 public abstract class SQLDaoGenerater extends BaseDaoGenerater {
@@ -94,6 +96,19 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 
 			InsertGenerater insertGenerater = new InsertGenerater(sqlProcess.getInsert());
 			data.put("$content", insertGenerater.generate(2));
+
+			String $autoincrement_key = null;
+			if (sqlProcess.getInsert() != null && sqlProcess.getInsert().getColumns() != null) {
+				for (InsertColumn column : sqlProcess.getInsert().getColumns()) {
+					if (column == null || StringUtil.isEmpty(StringUtil.trim(column.getName()))) {
+						continue;
+					}
+					if (ObjectUtil.isTrue(column.getAutoincrement())) {
+						$autoincrement_key = StringUtil.trim(column.getName());
+					}
+				}
+			}
+			data.put("$autoincrement_key", $autoincrement_key);
 
 		} else if (sqlProcess.getSqlType().indexOf("UPDATE") >= 0) {
 			data.put("$database", getDatabase(sqlProcess.getUpdate()));
