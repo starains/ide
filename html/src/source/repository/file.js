@@ -209,14 +209,16 @@ source.repository.file_data_map = {};
     source.loadFile = function (path) {
         source.load('FILE', { path: path });
     };
-    source.saveFile = function (path, content) {
+    source.saveFile = function (path, content, callback) {
         source.do('FILE_SAVE', { path: path, content: content }).then((res) => {
             if (res.errcode == 0) {
                 coos.success('保存成功！');
                 let tab = source.getTab(path);
                 tab.changed = false;
+                callback && callback(true);
             } else {
                 coos.error(res.errmsg);
+                callback && callback(false);
             }
         });
     };

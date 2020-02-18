@@ -91,8 +91,8 @@ source.repository.activeTab = null;
             project: project,
             file: file_date,
             readyonly: !app.hasPermission(),
-            onSave(content) {
-                source.saveFile(path, content);
+            onSave(content, callback) {
+                source.saveFile(path, content, callback);
             },
             onTest(data, callback) {
                 if (project.app && project.app.localpath && file_date.model) {

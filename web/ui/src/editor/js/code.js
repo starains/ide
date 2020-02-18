@@ -27,6 +27,8 @@
 		var file = this.file;
 		$code.empty();
 		var $pre = $("<textarea ></textarea>");
+		$pre.val(file.content);
+		//		this.codeMirror.setValue(file.content);
 		$pre.css("width", "100%");
 		$pre.css("height", "100%");
 		$code.append($pre);
@@ -102,10 +104,26 @@
 			}
 		}); // 设置初始文本，这个选项也可以在fromTextArea中配置`
 		this.codeMirror = myCodeMirror;
-		this.codeMirror.setValue(file.content);
 		myCodeMirror.on("change", function() {
 			//			myCodeMirror.showHint();
 			that.changeCode(that.getCode());
 		});
+		let cache = this.getCache();
+		if (cache) {
+			coos.confirm('检测到上次未提交的代码，是否加载到编辑器？（注：不会自动保存）').then(res => {
+				console.log(cache);
+				if (cache.type == 'code') {
+					this.setCode(cache.data);
+				} else if (cache.type == 'model') {
+					this.viewDesign(function() {
+						that.recordHistory();
+						that.model = cache.data;
+						that.changeModel(true);
+					});
+				}
+			}).catch(res => {
+				this.removeCache();
+			})
+		}
 	};
 })();

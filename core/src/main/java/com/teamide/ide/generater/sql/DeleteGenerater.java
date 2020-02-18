@@ -30,9 +30,6 @@ public class DeleteGenerater extends SqlGenerater {
 		appendWhere(tab, delete.getWheres());
 
 		content.append("\n");
-		content.append(getTab(tab)).append("// 拼接SQL").append("\n");
-		content.append(getTab(tab)).append("sql.append(whereSql);").append("\n");
-		content.append("\n");
 
 		return content;
 	}

@@ -94,7 +94,7 @@ window.app = app;
 		});
 	};
 
-	Editor.prototype.viewDesign = function() {
+	Editor.prototype.viewDesign = function(callback) {
 		if (this.data.view == 'design') {
 			return;
 		}
@@ -104,6 +104,7 @@ window.app = app;
 			that.$design.show();
 			that.$code.hide();
 			that.buildDesignView();
+			callback && callback();
 		}
 		if (this.type) {
 			var data = {
@@ -195,17 +196,17 @@ window.app = app;
 			filename : this.file.name
 		}
 		this.lastModel = $.extend(true, {}, this.model);
-		this.options.onChange && this.options.onChange(true);
+		this.onChange('model', true);
 	};
 
 
 	Editor.prototype.changeCode = function(content) {
 		if (coos.isEmpty(content) && coos.isEmpty(this.file.content)) {
-			this.options.onChange && this.options.onChange(false);
+			this.onChange('code', false);
 		} else if (content == this.file.content) {
-			this.options.onChange && this.options.onChange(false);
+			this.onChange('code', false);
 		} else {
-			this.options.onChange && this.options.onChange(true);
+			this.onChange('code', true);
 		}
 	};
 
@@ -277,7 +278,51 @@ window.app = app;
 (function() {
 	var Editor = coos.Editor;
 
-	Editor.prototype.onChange = function() {};
+	Editor.prototype.onChange = function(type, change) {
+		this.options.onChange && this.options.onChange(change);
+		if (change) {
+			if (type == 'model') {
+				this.cache(this.lastModel);
+			} else if (type == 'code') {
+				this.cache(this.getCode());
+			}
+		} else {
+			this.removeCache();
+		}
+	};
+
+	Editor.prototype.getCacheKey = function() {
+		return 'EDITOR-CACHE-FILE-' + this.file.path;
+	};
+
+	Editor.prototype.cache = function(obj) {
+		let data = {};
+		if (coos.isObject(obj)) {
+			data.type = 'model';
+			data.data = obj;
+		} else {
+			data.type = 'code';
+			data.data = obj;
+		}
+		let key = this.getCacheKey();
+		localStorage.setItem(key, JSON.stringify(data));
+
+	};
+
+	Editor.prototype.getCache = function() {
+		let key = this.getCacheKey();
+		let data = localStorage.getItem(key);
+		if (coos.isEmpty(data)) {
+			return null;
+		} else {
+			return JSON.parse(data);
+		}
+	};
+
+	Editor.prototype.removeCache = function() {
+		let key = this.getCacheKey();
+		localStorage.removeItem(key);
+	};
 
 	Editor.prototype.toPreviousStep = function() {
 		if (this.historys.length == 0) {
@@ -337,10 +382,18 @@ window.app = app;
 			if (this.lastModel != null) {
 				this.getCodeByModel(this.lastModel, function(res) {
 					that.setCode(res);
-					that.options.onSave(that.getCode());
+					that.options.onSave(that.getCode(), function(flag) {
+						if (flag) {
+							that.removeCache();
+						}
+					});
 				});
 			} else {
-				this.options.onSave(this.getCode());
+				this.options.onSave(this.getCode(), function(flag) {
+					if (flag) {
+						that.removeCache();
+					}
+				});
 			}
 		}
 	};
@@ -665,6 +718,8 @@ window.app = app;
 		var file = this.file;
 		$code.empty();
 		var $pre = $("<textarea ></textarea>");
+		$pre.val(file.content);
+		//		this.codeMirror.setValue(file.content);
 		$pre.css("width", "100%");
 		$pre.css("height", "100%");
 		$code.append($pre);
@@ -740,11 +795,27 @@ window.app = app;
 			}
 		}); // 设置初始文本，这个选项也可以在fromTextArea中配置`
 		this.codeMirror = myCodeMirror;
-		this.codeMirror.setValue(file.content);
 		myCodeMirror.on("change", function() {
 			//			myCodeMirror.showHint();
 			that.changeCode(that.getCode());
 		});
+		let cache = this.getCache();
+		if (cache) {
+			coos.confirm('检测到上次未提交的代码，是否加载到编辑器？（注：不会自动保存）').then(res => {
+				console.log(cache);
+				if (cache.type == 'code') {
+					this.setCode(cache.data);
+				} else if (cache.type == 'model') {
+					this.viewDesign(function() {
+						that.recordHistory();
+						that.model = cache.data;
+						that.changeModel(true);
+					});
+				}
+			}).catch(res => {
+				this.removeCache();
+			})
+		}
 	};
 })();
 (function() {

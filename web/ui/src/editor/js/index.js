@@ -92,7 +92,7 @@ window.app = app;
 		});
 	};
 
-	Editor.prototype.viewDesign = function() {
+	Editor.prototype.viewDesign = function(callback) {
 		if (this.data.view == 'design') {
 			return;
 		}
@@ -102,6 +102,7 @@ window.app = app;
 			that.$design.show();
 			that.$code.hide();
 			that.buildDesignView();
+			callback && callback();
 		}
 		if (this.type) {
 			var data = {
@@ -193,17 +194,17 @@ window.app = app;
 			filename : this.file.name
 		}
 		this.lastModel = $.extend(true, {}, this.model);
-		this.options.onChange && this.options.onChange(true);
+		this.onChange('model', true);
 	};
 
 
 	Editor.prototype.changeCode = function(content) {
 		if (coos.isEmpty(content) && coos.isEmpty(this.file.content)) {
-			this.options.onChange && this.options.onChange(false);
+			this.onChange('code', false);
 		} else if (content == this.file.content) {
-			this.options.onChange && this.options.onChange(false);
+			this.onChange('code', false);
 		} else {
-			this.options.onChange && this.options.onChange(true);
+			this.onChange('code', true);
 		}
 	};
 

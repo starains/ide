@@ -1,7 +1,51 @@
 (function() {
 	var Editor = coos.Editor;
 
-	Editor.prototype.onChange = function() {};
+	Editor.prototype.onChange = function(type, change) {
+		this.options.onChange && this.options.onChange(change);
+		if (change) {
+			if (type == 'model') {
+				this.cache(this.lastModel);
+			} else if (type == 'code') {
+				this.cache(this.getCode());
+			}
+		} else {
+			this.removeCache();
+		}
+	};
+
+	Editor.prototype.getCacheKey = function() {
+		return 'EDITOR-CACHE-FILE-' + this.file.path;
+	};
+
+	Editor.prototype.cache = function(obj) {
+		let data = {};
+		if (coos.isObject(obj)) {
+			data.type = 'model';
+			data.data = obj;
+		} else {
+			data.type = 'code';
+			data.data = obj;
+		}
+		let key = this.getCacheKey();
+		localStorage.setItem(key, JSON.stringify(data));
+
+	};
+
+	Editor.prototype.getCache = function() {
+		let key = this.getCacheKey();
+		let data = localStorage.getItem(key);
+		if (coos.isEmpty(data)) {
+			return null;
+		} else {
+			return JSON.parse(data);
+		}
+	};
+
+	Editor.prototype.removeCache = function() {
+		let key = this.getCacheKey();
+		localStorage.removeItem(key);
+	};
 
 	Editor.prototype.toPreviousStep = function() {
 		if (this.historys.length == 0) {
@@ -61,10 +105,18 @@
 			if (this.lastModel != null) {
 				this.getCodeByModel(this.lastModel, function(res) {
 					that.setCode(res);
-					that.options.onSave(that.getCode());
+					that.options.onSave(that.getCode(), function(flag) {
+						if (flag) {
+							that.removeCache();
+						}
+					});
 				});
 			} else {
-				this.options.onSave(this.getCode());
+				this.options.onSave(this.getCode(), function(flag) {
+					if (flag) {
+						that.removeCache();
+					}
+				});
 			}
 		}
 	};
