@@ -2637,6 +2637,8 @@ window.app = app;
 				var $ul_ = $('<ul class="pdl-30"/>');
 				$li.append($ul_);
 
+				where.wheres.is_delete = is_delete;
+				where.wheres.is_update = is_update;
 				that.appendWhereLi($ul_, where.wheres, table, true);
 
 				var $li = $('<li class="pdl-30"/>');
