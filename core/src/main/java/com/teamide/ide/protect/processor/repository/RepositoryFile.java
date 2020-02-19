@@ -7,10 +7,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.protect.processor.repository.project.ProjectBean;
-import com.teamide.ide.protect.processor.repository.project.ProjectLoader;
-import com.teamide.ide.protect.processor.repository.starter.Starter;
-import com.teamide.ide.protect.processor.repository.starter.StarterHandler;
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
 
@@ -28,21 +24,26 @@ public class RepositoryFile extends RepositoryBase {
 			@Override
 			public void run() {
 				try {
-					ProjectLoader loader = new ProjectLoader(param);
-					final String path = param.getPath(folder);
-					ProjectBean projectBean = loader.getProjectByPath(path);
-					if (projectBean != null) {
-						File projectFolader = param.getFile(projectBean.getPath());
-						List<Starter> starters = StarterHandler.getStarters(param);
-						for (Starter starter : starters) {
-							String path_ = starter.getStarterInfo().getString("path");
-							File terminalProjectFolder = param.getFile(path_);
-							if (projectFolader.getAbsolutePath().equals(terminalProjectFolder.getAbsolutePath())) {
-								starter.onChange(folder);
-							}
-						}
-
-					}
+					// ProjectLoader loader = new ProjectLoader(param);
+					// final String path = param.getPath(folder);
+					// ProjectBean projectBean = loader.getProjectByPath(path);
+					// if (projectBean != null) {
+					// File projectFolader =
+					// param.getFile(projectBean.getPath());
+					// List<Starter> starters =
+					// StarterHandler.getStarters(param);
+					// for (Starter starter : starters) {
+					// String path_ =
+					// starter.getStarterInfo().getString("path");
+					// File terminalProjectFolder = param.getFile(path_);
+					// if
+					// (projectFolader.getAbsolutePath().equals(terminalProjectFolder.getAbsolutePath()))
+					// {
+					// starter.onChange(folder);
+					// }
+					// }
+					//
+					// }
 
 				} catch (Exception e) {
 					e.printStackTrace();
