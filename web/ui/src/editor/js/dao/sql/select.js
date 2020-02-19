@@ -385,6 +385,7 @@
 				$li.append($input);
 				$li.append('<span class="pdlr-10">) //不填或值为true、1则为真</span>');
 
+				that.bindLiEvent($li, group);
 				var $li = $('<li class="pdl-30"/>');
 				$ul.append($li);
 			}
@@ -451,6 +452,7 @@
 				$li.append($input);
 				$li.append('<span class="pdlr-10">) //不填或值为true、1则为真</span>');
 
+				that.bindLiEvent($li, order);
 				var $li = $('<li class="pdl-30"/>');
 				$ul.append($li);
 			}

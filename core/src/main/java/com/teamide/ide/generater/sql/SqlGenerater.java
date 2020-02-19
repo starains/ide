@@ -64,7 +64,7 @@ public abstract class SqlGenerater extends CodeGenerater {
 
 	public void appendWhereSql(int tab, Where where) {
 		if (ObjectUtil.isTrue(where.getPiece())) {
-			content.append(getTab(tab)).append("whereSql.append(\"(\");").append("\n");
+			content.append(getTab(tab)).append("whereSql.append(\" " + where.splice() + " (\");").append("\n");
 			appendPieceWhere(tab, where.getWheres());
 			content.append(getTab(tab)).append("whereSql.append(\")\");").append("\n");
 			return;
