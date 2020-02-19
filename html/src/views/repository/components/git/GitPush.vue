@@ -46,26 +46,47 @@
         </el-form-item>
 
         <el-form-item label="未暂存文件" prop="not_staged">
-          <div class="coos-row text-right">
+          <div class="coos-row col-8">
+            <el-input
+              type="input"
+              placeholder="输入搜索"
+              v-model="search_not_staged"
+              autocomplete="off"
+            ></el-input>
+          </div>
+          <div class="coos-row col-4 text-right">
             <a class="coos-link color-grey ft-12 mgr-10" @click="stagedAll()">暂存所有</a>
             <a class="coos-link color-grey ft-12" @click="stagedChecked()">暂存选定</a>
           </div>
-          <div class="mgt-10 coos-row file-box coos-scrollbar">
+          <div class="col-12 mgt-5 coos-row file-box coos-scrollbar">
             <div v-show="not_staged.length == 0" class="text-center">暂无数据</div>
             <el-checkbox-group v-model="not_staged_checked">
-              <el-checkbox v-for="one in not_staged" :label="one.path" :key="one.path">{{one.text}}</el-checkbox>
+              <el-checkbox
+                v-for="one in not_staged"
+                :label="one.path"
+                :key="one.path"
+                v-show="coos.isEmpty(search_not_staged) || one.path.toLowerCase().indexOf(search_not_staged.toLowerCase()) >= 0"
+              >{{one.text}}</el-checkbox>
             </el-checkbox-group>
           </div>
         </el-form-item>
         <el-form-item label="已暂存文件" prop="staged">
-          <div class="coos-row text-right">
+          <div class="coos-row col-8">
+            <el-input type="input" placeholder="输入搜索" v-model="search_staged" autocomplete="off"></el-input>
+          </div>
+          <div class="coos-row col-4 text-right">
             <a class="coos-link color-grey ft-12 mgr-10" @click="cancelAll()">取消所有暂存</a>
             <a class="coos-link color-grey ft-12" @click="cancelChecked()">取消选定暂存</a>
           </div>
-          <div class="mgt-10 coos-row file-box coos-scrollbar">
+          <div class="col-12 mgt-5 coos-row file-box coos-scrollbar">
             <div v-show="staged.length == 0" class="text-center">暂无数据</div>
             <el-checkbox-group v-model="staged_checked">
-              <el-checkbox v-for="one in staged" :label="one.path" :key="one.path">{{one.text}}</el-checkbox>
+              <el-checkbox
+                v-for="one in staged"
+                :label="one.path"
+                :key="one.path"
+                v-show="coos.isEmpty(search_staged) || one.path.toLowerCase().indexOf(search_staged.toLowerCase()) >= 0"
+              >{{one.text}}</el-checkbox>
             </el-checkbox-group>
           </div>
         </el-form-item>
@@ -97,6 +118,8 @@ export default {
       staged_checked: [],
       not_staged: [],
       not_staged_checked: [],
+      search_not_staged: "",
+      search_staged: "",
       form: {
         gitRemoteName: "",
         gitRemoteBranch: "",

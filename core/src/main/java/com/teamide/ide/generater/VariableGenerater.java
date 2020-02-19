@@ -27,17 +27,17 @@ public class VariableGenerater extends CodeGenerater {
 		} else {
 			if (StringUtil.isNotTrimEmpty(variable.getValue())) {
 				content.append(getTab(tab));
-				content.append("value = JexlTool.invoke(\"" + variable.getValue() + "\", invokeCache);").append("\n");
+				content.append("value = JexlTool.invoke(\"" + variable.getValue() + "\", variableCache);").append("\n");
 			} else {
 				content.append(getTab(tab));
-				content.append("value = JexlTool.invoke(\"" + variable.getName() + "\", invokeCache);").append("\n");
+				content.append("value = JexlTool.invoke(\"" + variable.getName() + "\", variableCache);").append("\n");
 
 				if (StringUtil.isNotTrimEmpty(variable.getDefaultvalue())) {
 					content.append(getTab(tab));
 					content.append("if(value == null || StringUtil.isEmptyIfStr(value)) {").append("\n");
 
 					content.append(getTab(tab + 1));
-					content.append("value = JexlTool.invoke(\"" + variable.getDefaultvalue() + "\", invokeCache);")
+					content.append("value = JexlTool.invoke(\"" + variable.getDefaultvalue() + "\", variableCache);")
 							.append("\n");
 
 					content.append(getTab(tab)).append("}").append("\n");
@@ -47,7 +47,7 @@ public class VariableGenerater extends CodeGenerater {
 		}
 
 		content.append(getTab(tab));
-		content.append("invokeCache.put(\"" + variable.getName() + "\", value);").append("\n");
+		content.append("variableCache.put(\"" + variable.getName() + "\", value);").append("\n");
 
 	}
 }

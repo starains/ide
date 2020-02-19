@@ -28,7 +28,7 @@ public class ValidateGenerater extends CodeGenerater {
 			content.append("new " + validate.getValidator() + "().validate();").append("\n");
 		} else {
 			content.append(getTab(tab));
-			content.append("value = JexlTool.invoke(\"" + validate.getValue() + "\", invokeCache);").append("\n");
+			content.append("value = JexlTool.invoke(\"" + validate.getValue() + "\", variableCache);").append("\n");
 			String errcode = validate.getErrcode();
 			String errmsg = validate.getErrmsg();
 			if (StringUtil.isEmpty(errcode)) {
