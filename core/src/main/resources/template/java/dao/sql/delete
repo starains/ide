@@ -8,7 +8,7 @@ import com.alibaba.fastjson.*;
 
 import #{$app_factory.$package}.#{$app_factory.$classname};
 
-import com.teamide.db.bean.SqlParam;
+import com.teamide.db.bean.*;
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.jexl.JexlTool;

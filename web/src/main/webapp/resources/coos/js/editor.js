@@ -891,6 +891,9 @@ window.app = app;
 				setJexlScript($input.val(), function(text) {
 					$input.val(text);
 					$input.change();
+					if ($input.data('data') && $input.attr('form-name')) {
+						$input.data('data')[$input.attr('form-name')] = text;
+					}
 				});
 			}
 		});
@@ -2177,6 +2180,14 @@ window.app = app;
 
 		var $li = $('<li />');
 		$ul.append($li);
+		$li.append('<span class="pdr-10 color-orange">配置data</span>');
+		var $input = $('<input class="input" name="data" />');
+		$input.val(model.data);
+		$li.append($input);
+		that.bindLiEvent($li, model, false);
+
+		$li = $('<li />');
+		$ul.append($li);
 		$li.append('<span class="pdr-10 color-orange">INSERT INTO</span>');
 
 		var $input = $('<input class="input" name="table" />');
@@ -3008,6 +3019,11 @@ window.app = app;
 				name : "data",
 				info : "此处配置传入数据，默认使用$data解析的数据",
 				"class-name" : "setJexlScriptBtn"
+			}, {
+				"v-if" : "form.type == 'DAO' || form.type == 'SERVICE'",
+				label : "设置结果名称",
+				name : "resultname",
+				info : "设置存入$result的名称"
 			}, {
 				"v-if" : "form.type == 'CONDITION'",
 				label : "条件",

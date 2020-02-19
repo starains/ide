@@ -79,7 +79,14 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 
 		data.put("$result_classname", "Map<String, Object>");
 		data.put("$database", null);
+		data.put("$is_batch", false);
+		if (sqlProcess.getSqlType().indexOf("BATCH") >= 0) {
+			data.put("$is_batch", true);
+			data.put("$result_classname", "List<Map<String, Object>>");
+		}
+		String datarule = null;
 		if (sqlProcess.getSqlType().indexOf("SELECT") >= 0) {
+			datarule = sqlProcess.getSelect().getData();
 			data.put("$database", getDatabase(sqlProcess.getSelect()));
 
 			SelectGenerater selectGenerater = new SelectGenerater(sqlProcess.getSelect());
@@ -92,6 +99,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			}
 
 		} else if (sqlProcess.getSqlType().indexOf("INSERT") >= 0) {
+			datarule = sqlProcess.getInsert().getData();
 			data.put("$database", getDatabase(sqlProcess.getInsert()));
 
 			InsertGenerater insertGenerater = new InsertGenerater(sqlProcess.getInsert());
@@ -111,18 +119,21 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			data.put("$autoincrement_key", $autoincrement_key);
 
 		} else if (sqlProcess.getSqlType().indexOf("UPDATE") >= 0) {
+			datarule = sqlProcess.getUpdate().getData();
 			data.put("$database", getDatabase(sqlProcess.getUpdate()));
 
 			UpdateGenerater updateGenerater = new UpdateGenerater(sqlProcess.getUpdate());
 			data.put("$content", updateGenerater.generate(2));
 
 		} else if (sqlProcess.getSqlType().indexOf("DELETE") >= 0) {
+			datarule = sqlProcess.getDelete().getData();
 			data.put("$database", getDatabase(sqlProcess.getDelete()));
 
 			DeleteGenerater deleteGenerater = new DeleteGenerater(sqlProcess.getDelete());
 			data.put("$content", deleteGenerater.generate(2));
 
 		} else if (sqlProcess.getSqlType().indexOf("CUSTOM") >= 0) {
+			datarule = sqlProcess.getCustomSql().getData();
 			CustomSql customSql = sqlProcess.getCustomSql();
 			data.put("$database", getDatabase(customSql));
 			if (StringUtil.isEmpty(customSql.getCustomsqltype()) && !StringUtil.isEmpty(customSql.getSql())) {
@@ -152,5 +163,10 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			System.out.println(JSONObject.toJSONString(dao));
 		}
 
+		datarule = StringUtil.trim(datarule);
+		data.put("$datarule", null);
+		if (!StringUtil.isEmpty(datarule)) {
+			data.put("$datarule", datarule);
+		}
 	}
 }

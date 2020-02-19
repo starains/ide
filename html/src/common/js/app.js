@@ -178,6 +178,7 @@ window.app = app;
                 $option.attr('v-for', 'option in items[' + index + '].options');
             }
             $input.attr('v-model', 'form.' + item.name);
+            $input.attr('form-name', item.name);
             $input.attr('v-on:change', "change($event, '" + item.name + "')");
             $input.addClass(item['class-name']);
 
@@ -207,7 +208,8 @@ window.app = app;
             };
         }
 
-
+        let $box = window.jQuery('<div class=" " />');
+        $box.append($html);
 
         let vue = new Vue({
             el: $html[0],
@@ -240,8 +242,10 @@ window.app = app;
                 }
             }
         });
-        $(vue.$el).find('textarea').css('max-height', '150px').css('height', '150px');
-        return coos.confirm(vue.$el, options);
+        $box.find('textarea').css('max-height', '150px').css('height', '150px');
+        $box.find('textarea').data('data', data);
+        $box.find('input').data('data', data);
+        return coos.confirm($box, options);
     };
 
 })();

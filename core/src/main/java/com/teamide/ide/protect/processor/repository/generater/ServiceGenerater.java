@@ -11,7 +11,9 @@ import com.teamide.app.bean.ServiceBean;
 import com.teamide.app.enums.ServiceProcessType;
 import com.teamide.app.process.ServiceProcess;
 import com.teamide.app.process.service.DaoProcess;
+import com.teamide.app.process.service.ErrorEndProcess;
 import com.teamide.bean.PageResultBean;
+import com.teamide.exception.Errcode;
 import com.teamide.ide.generater.ValidateGenerater;
 import com.teamide.ide.generater.VariableGenerater;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
@@ -49,6 +51,7 @@ public class ServiceGenerater extends CodeGenerater {
 		data.put("$start", null);
 		data.put("$end", null);
 		data.put("$result_name", null);
+		data.put("$has_last_result", false);
 		appendProcess($processs, start, $propertys);
 		data.put("$processs", $processs);
 		data.put("$propertys", $propertys);
@@ -111,14 +114,44 @@ public class ServiceGenerater extends CodeGenerater {
 				}
 				$process.put("$dao", $dao);
 
-				if (service.getProcesss().size() <= 3) {
-					data.put("$result_name", process.getName());
+				int dao_service_count = 0;
+				for (ServiceProcess p : service.getProcesss()) {
+					if (ServiceProcessType.DAO.getValue().equalsIgnoreCase(p.getType())) {
+						dao_service_count++;
+					}
+				}
+				if (dao_service_count == 1) {
+					if (StringUtil.isEmpty(daoProcess.getResultname())) {
+						data.put("$result_name", daoProcess.getName());
+					} else {
+						data.put("$result_name", daoProcess.getResultname());
+					}
 					data.put("$result_classname", $dao.getString("$result_classname"));
 					if ($dao.getString("$result_classname").indexOf("Page") >= 0) {
 						imports.add(PageResultBean.class.getName());
 					}
 				}
+				if (dao_service_count > 1) {
+					data.put("$result_classname", "Object");
+				}
+				data.put("$has_last_result", true);
 			}
+			String datarule = StringUtil.trim(daoProcess.getData());
+			$process.put("$datarule", null);
+			if (!StringUtil.isEmpty(datarule)) {
+				$process.put("$datarule", datarule);
+			}
+		}
+
+		if (ServiceProcessType.ERROR_END.getValue().equalsIgnoreCase(process.getType())) {
+			ErrorEndProcess errorEndProcess = (ErrorEndProcess) process;
+			String errcode = errorEndProcess.getErrcode();
+			String errmsg = errorEndProcess.getErrmsg();
+			if (StringUtil.isEmpty(errcode)) {
+				errcode = Errcode.FAIL;
+			}
+			$process.put("$errcode", errcode);
+			$process.put("$errmsg", errmsg);
 		}
 	}
 

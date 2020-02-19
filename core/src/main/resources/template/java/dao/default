@@ -1,5 +1,6 @@
 package #{$package};
 
+import com.alibaba.fastjson.*;
 
 /**
  * Default Dao

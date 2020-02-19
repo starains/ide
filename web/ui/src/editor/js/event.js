@@ -71,6 +71,9 @@
 				setJexlScript($input.val(), function(text) {
 					$input.val(text);
 					$input.change();
+					if ($input.data('data') && $input.attr('form-name')) {
+						$input.data('data')[$input.attr('form-name')] = text;
+					}
 				});
 			}
 		});

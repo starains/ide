@@ -8,12 +8,11 @@ import com.alibaba.fastjson.*;
 
 import #{$app_factory.$package}.#{$app_factory.$classname};
 
+import com.teamide.db.bean.*;
 #ifStart($sqlType == 'SELECT_PAGE')#
-import com.teamide.db.bean.PageSqlParam;
 import com.teamide.bean.PageResultBean;
 #ifEnd#
 #ifStart($sqlType != 'SELECT_PAGE')#
-import com.teamide.db.bean.SqlParam;
 #ifEnd#
 
 import com.teamide.dao.IDao;

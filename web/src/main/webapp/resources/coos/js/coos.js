@@ -839,14 +839,22 @@ co.getNextZIndex = function() {
 
 		if (this.message != null) {
 			if (co.isObject(this.message)) {
-				html.appendChild(this.message);
+				if (window.jQuery && this.message instanceof window.jQuery) {
+					window.jQuery(html).append(this.message);
+				} else {
+					html.appendChild(this.message);
+				}
 			} else {
 				html.innerHTML = '' + this.message;
 			}
 		}
 		if (this.html != null) {
 			if (co.isObject(this.html)) {
-				html.appendChild(this.html);
+				if (window.jQuery && this.html instanceof window.jQuery) {
+					window.jQuery(html).append(this.html);
+				} else {
+					html.appendChild(this.html);
+				}
 			} else {
 				html.innerHTML = '' + this.html;
 			}

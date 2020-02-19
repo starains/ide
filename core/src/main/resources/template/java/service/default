@@ -54,6 +54,8 @@ public class #{$classname} {
 		}
 		JSONObject invokeCache = new JSONObject();
 		
+		variableCache.put("$result", invokeCache);
+		
 		#ifStart($start != null)#
 		#{$start.$method}(variableCache, invokeCache);
 		#ifEnd#
@@ -61,7 +63,10 @@ public class #{$classname} {
 		#ifStart($result_name != null)#
 		#{$result_classname} result = (#{$result_classname}) invokeCache.get("#{$result_name}");
 		#ifEnd#
-		#ifStart($result_name == null)#
+		#ifStart($result_name == null && $has_last_result == true)#
+		#{$result_classname} result = (#{$result_classname}) invokeCache.get("$last_result");
+		#ifEnd#
+		#ifStart($result_name == null && $has_last_result == false)#
 		#{$result_classname} result = invokeCache;
 		#ifEnd#
 		
@@ -89,17 +94,42 @@ public class #{$classname} {
 		#ifEnd#
 		#ifStart($one.$dao != null)#
 		//#{$one.$dao.$comment}
+		#ifStart($one.$dao.$is_batch != true)#
 		#{$one.$dao.$result_classname} result = #{$one.$dao.$propertyname}.invoke(variableCache);
+		#ifEnd#
+		#ifStart($one.$dao.$is_batch == true)#
+		JSON json = variableCache;
+		#ifStart($one.$datarule != null)#
+			json = (JSON) JSON.toJSON(JexlTool.invoke("#{$one.$datarule}", variableCache));
+		#ifEnd#
+		#{$one.$dao.$result_classname} result = #{$one.$dao.$propertyname}.invoke(json, variableCache);
+		#ifEnd#
+		#ifStart($one.resultname != null)#
+		invokeCache.put("#{$one.resultname}", result);
+		#ifEnd#
+		#ifStart($one.resultname == null)#
 		invokeCache.put("#{$one.name}", result);
+		#ifEnd#
+		invokeCache.put("$last_result", result);
 		#ifEnd#
 		#ifStart($one.$service != null)#
 		//#{$one.$service.$comment}
 		#{$one.$service.$result_classname} result = #{$one.$service.$propertyname}.invoke(variableCache);
+		#ifStart($one.resultname != null)#
+		invokeCache.put("#{$one.resultname}", result);
+		#ifEnd#
+		#ifStart($one.resultname == null)#
 		invokeCache.put("#{$one.name}", result);
+		#ifEnd#
+		invokeCache.put("$last_result", result);
 		#ifEnd#
 		#ifStart($one.type != 'DECISION' && $one.$next != null)#
 		//#{$one.$next.text}
 		#{$one.$next.$method}(variableCache, invokeCache);
+		#ifEnd#
+		#ifStart($one.type == 'ERROR_END')#
+		// 抛出异常
+		throw new BaseException("#{$one.$errcode}", "#{$one.$errmsg}");
 		#ifEnd#
 	}
 	#forEnd#
