@@ -2,6 +2,8 @@
 	var DaoEditor = coos.Editor.Dao;
 
 	DaoEditor.prototype.appendWhereLi = function($ul, wheres, table, isPiece) {
+		let is_update = wheres.is_update;
+		let is_delete = wheres.is_delete;
 		var that = this;
 		var $li = $('<li />');
 		$ul.append($li);
@@ -19,7 +21,11 @@
 			that.recordHistory();
 			var where = {};
 			wheres.push(where);
-			where.tablealias = 'T1';
+			if (is_update || is_delete) {
+				where.tablealias = '';
+			} else {
+				where.tablealias = 'T1';
+			}
 			where.name = '';
 			where.comparisonoperator = '=';
 			where.relationaloperation = 'AND';
@@ -81,10 +87,15 @@
 					$li.append($input);
 
 				} else {
-					var $input = $('<input class="input input-mini" name="tablealias" />');
-					$input.val(where.tablealias);
-					$li.append($input);
-					$li.append('<span class="pdlr-10">.</span>');
+
+					if (is_update || is_delete) {
+
+					} else {
+						var $input = $('<input class="input input-mini" name="tablealias" />');
+						$input.val(where.tablealias);
+						$li.append($input);
+						$li.append('<span class="pdlr-10">.</span>');
+					}
 					var $input = $('<input class="input" name="name" />');
 					app.autocomplete({
 						$input : $input,

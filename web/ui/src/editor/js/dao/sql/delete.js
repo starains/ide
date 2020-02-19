@@ -33,6 +33,7 @@
 		that.bindLiEvent($li, model, false);
 
 		var table = that.getTableByName(model.table);
+		wheres.is_delete = true;
 		that.appendWhereLi($ul, wheres, table);
 
 		return $box;

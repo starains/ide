@@ -113,6 +113,7 @@
 		});
 
 		var table = that.getTableByName(model.table);
+		wheres.is_update = true;
 		that.appendWhereLi($ul, wheres, table);
 
 		return $box;

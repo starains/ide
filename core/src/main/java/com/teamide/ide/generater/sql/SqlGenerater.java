@@ -87,7 +87,7 @@ public abstract class SqlGenerater extends CodeGenerater {
 				content.append("value = JexlTool.invoke(\"" + where.getValue() + "\", data);").append("\n");
 			} else {
 				content.append(getTab(tab));
-				content.append("value = JexlTool.invoke(\"" + where.getName() + "\", data);").append("\n");
+				content.append("value = data.get(\"" + where.getName() + "\");").append("\n");
 
 				if (StringUtil.isNotTrimEmpty(where.getDefaultvalue())) {
 					content.append(getTab(tab));

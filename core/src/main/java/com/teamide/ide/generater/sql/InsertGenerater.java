@@ -90,7 +90,7 @@ public class InsertGenerater extends SqlGenerater {
 				content.append("value = JexlTool.invoke(\"" + column.getValue() + "\", data);").append("\n");
 			} else {
 				content.append(getTab(tab));
-				content.append("value = JexlTool.invoke(\"" + column.getName() + "\", data);").append("\n");
+				content.append("value = data.get(\"" + column.getName() + "\");").append("\n");
 
 				if (StringUtil.isNotTrimEmpty(column.getDefaultvalue())) {
 					content.append(getTab(tab));
