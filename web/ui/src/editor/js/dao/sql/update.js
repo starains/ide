@@ -15,6 +15,14 @@
 
 		var $li = $('<li />');
 		$ul.append($li);
+		$li.append('<span class="pdr-10 color-orange">配置data</span>');
+		var $input = $('<input class="input" name="data" />');
+		$input.val(model.data);
+		$li.append($input);
+		that.bindLiEvent($li, model, false);
+
+		$li = $('<li />');
+		$ul.append($li);
 		$li.append('<span class="pdr-10 color-orange">UPDATE</span>');
 
 		var $input = $('<input class="input" name="table" />');

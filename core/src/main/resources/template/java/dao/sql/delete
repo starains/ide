@@ -27,8 +27,19 @@ public class #{$classname} {
 	/**
 	 * 执行
 	 */
+	#ifStart($is_batch == true)#
+	public List<Map<String, Object>> invoke(JSON json, JSONObject data) throws Exception {
+	#ifEnd#
+	#ifStart($is_batch == false)#
 	public Map<String, Object> invoke(JSONObject data) throws Exception {
-		
+	#ifEnd#
+		#ifStart($datarule != null)#
+		JSONObject cache = (JSONObject)data.clone();
+		if (json != null && !(json instanceof JSONArray)) {
+			cache.putAll((JSONObject) JSON.toJSON(json));
+		}
+		json = (JSON) JSON.toJSON(JexlTool.invoke("#{$datarule}", cache));
+		#ifEnd#
 		#ifStart($database == null)#
 		IDao dao = #{$app_factory.$classname}.getDao(data);
 		#ifEnd#
@@ -36,10 +47,36 @@ public class #{$classname} {
 		IDao dao = #{$app_factory.$classname}.getDaoFor#{$database.name}(data);
 		#ifEnd#
 		
+		#ifStart($is_batch == true)#
+		SqlParamList sqlParamList = new SqlParamList();
+		JSONArray list = new JSONArray();
+		if(json != null) {
+			if (json instanceof JSONArray) {
+				list = (JSONArray) JSON.toJSON(json);
+			} else {
+				list.add(JSON.toJSON(json));
+			}
+		}
+		for(int i = 0; i < list.size(); i++){
+			JSONObject one = (JSONObject)data.clone();
+			one.putAll(list.getJSONObject(i));
+			one.put("$index", i);
+			SqlParam sqlParam = buildSqlParam(one);
+			sqlParamList.add(sqlParam);
+		}
+		int result = dao.batchExecute(sqlParamList);
+		List<Map<String, Object>> params = new ArrayList<Map<String, Object>>();
+		for (int i = 0; i < sqlParamList.size(); i++) {
+			params.add(sqlParamList.get(i).getParam());
+		}
+		return params;
+		#ifEnd#
+		#ifStart($is_batch == false)#
 		SqlParam sqlParam = buildSqlParam(data);
 		int result = dao.execute(sqlParam);
 		
 		return sqlParam.getParam();
+		#ifEnd#
 	}
 	
 	/**
