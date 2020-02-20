@@ -55,7 +55,7 @@ public class #{$classname} extends HttpServlet {
 	#ifEnd#
 	
 	#ifStart($usespringannotation == true)#
-	@RequestMapping("#{$requestmapping}")
+	@RequestMapping("/app/dictionary/#{$dictionary.$name}")
 	@ResponseBody
 	public Object invoke(HttpServletRequest request, HttpServletResponse response) {
 	#ifEnd#
