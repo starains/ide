@@ -14,7 +14,10 @@ import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.jexl.JexlTool;
 
-
+#ifStart($usespringannotation == true)#
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+#ifEnd#
 #forStart($propertys, $property)#
 import #{$property.$package}.#{$property.$classname};
 #forEnd#
@@ -23,21 +26,21 @@ import #{$property.$package}.#{$property.$classname};
  * #{$comment}
  */
 
-#ifStart($result_classname.startsWith('JSON'))#
+#ifStart($result_classname.startsWith('JSON') || $result_classname.startsWith('Object') == true)#
 @SuppressWarnings({"unused"})
 #ifEnd#
-#ifStart($result_classname.startsWith('JSON') == false)#
+#ifStart($result_classname.startsWith('JSON') == false && $result_classname.startsWith('Object') == false)#
 @SuppressWarnings({"unused", "unchecked"})
 #ifEnd#
 #ifStart($usespringannotation == true)#
-@org.springframework.stereotype.Service
+@Service
 #ifEnd#
 public class #{$classname} {
 	
 	#forStart($propertys, $property)#
 	//#{$property.$comment}
 	#ifStart($usespringannotation == true)#
-	@org.springframework.beans.factory.annotation.Autowired
+	@Autowired
 	#{$property.$classname} #{$property.$name};
 	#ifEnd#
 	#ifStart($usespringannotation == false)#

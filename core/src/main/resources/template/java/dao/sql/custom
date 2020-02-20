@@ -19,6 +19,10 @@ import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.jexl.JexlTool;
 
+#ifStart($usespringannotation == true)#
+import org.springframework.stereotype.Service;
+#ifEnd#
+
 /**
  * SQL Dao 自定义
  * #{$comment}
@@ -26,7 +30,7 @@ import com.teamide.jexl.JexlTool;
 
 @SuppressWarnings("unused")
 #ifStart($usespringannotation == true)#
-@org.springframework.stereotype.Service
+@Service
 #ifEnd#
 public class #{$classname} {
 	

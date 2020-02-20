@@ -23,6 +23,7 @@ import com.teamide.app.enums.SqlType;
 import com.teamide.app.util.ModelFileUtil;
 import com.teamide.bean.Status;
 import com.teamide.client.ClientHandler;
+import com.teamide.http.Method;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.enums.EnvironmentType;
@@ -235,6 +236,15 @@ public class DataHandler {
 			one.put("text", type.getText());
 			one.put("value", type.getValue());
 			one.put("pattern", type.getPattern());
+		}
+
+		array = new JSONArray();
+		ENUM_MAP.put("HTTP_METHOD", array);
+		for (Method method : Method.values()) {
+			JSONObject one = new JSONObject();
+			array.add(one);
+			one.put("text", method.name());
+			one.put("value", method.name());
 		}
 	}
 

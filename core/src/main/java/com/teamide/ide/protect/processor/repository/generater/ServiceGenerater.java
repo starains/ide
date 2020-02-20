@@ -56,6 +56,11 @@ public class ServiceGenerater extends CodeGenerater {
 		data.put("$processs", $processs);
 		data.put("$propertys", $propertys);
 		data.put("$service", JSON.toJSON(service));
+		data.put("$requestmethod", null);
+		if (StringUtil.isNotEmpty(service.getRequestmethod())) {
+			data.put("$requestmethod", service.getRequestmethod());
+		}
+
 	}
 
 	public void appendProcess(JSONArray $processs, ServiceProcess process, JSONArray $propertys) {

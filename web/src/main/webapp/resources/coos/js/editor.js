@@ -1403,10 +1403,27 @@ window.app = app;
 		$input.val(model.requestmapping);
 		$li.append($input);
 
-		$li.append('<span class="pdr-10">ContentType</span>');
-		var $input = $('<input class="input" name="contenttype" />');
-		$input.val(model.contenttype);
+		$li.append('<span class="pdr-10">请求方法</span>');
+		var $input = $('<select class="input mgr-10" name="requestmethod" ></select>');
 		$li.append($input);
+		$input.append('<option value="">全部</option>');
+		$(that.ENUM_MAP.HTTP_METHOD).each(function(index, one) {
+			$input.append('<option value="' + one.value + '">' + one.text + '</option>');
+		});
+		$input.val(model.requestmethod);
+		$li.append($input);
+
+		$li.append('<span class="pdr-10">请求ContentType</span>');
+		var $input = $('<input class="input" name="requestcontenttype" />');
+		$input.val(model.requestcontenttype);
+		$li.append($input);
+
+
+		$li.append('<span class="pdr-10">响应ContentType</span>');
+		var $input = $('<input class="input" name="responsecontenttype" />');
+		$input.val(model.responsecontenttype);
+		$li.append($input);
+
 		that.bindLiEvent($li, model, false);
 
 		$li = $('<li />');
@@ -2725,9 +2742,31 @@ window.app = app;
 
 		$li = $('<li />');
 		$ul.append($li);
-		$li.append('<span class="pdr-10">ContentType</span>');
-		var $input = $('<input class="input" name="contenttype" />');
-		$input.val(model.contenttype);
+		$li.append('<span class="pdr-10">请求方法</span>');
+		var $input = $('<select class="input mgr-10" name="requestmethod" ></select>');
+		$li.append($input);
+		$input.append('<option value="">全部</option>');
+		$(that.ENUM_MAP.HTTP_METHOD).each(function(index, one) {
+			$input.append('<option value="' + one.value + '">' + one.text + '</option>');
+		});
+		$input.val(model.requestmethod);
+		$li.append($input);
+		that.bindLiEvent($li, model, false);
+
+		$li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10">请求ContentType</span>');
+		var $input = $('<input class="input" name="requestcontenttype" />');
+		$input.val(model.requestcontenttype);
+		$li.append($input);
+		that.bindLiEvent($li, model, false);
+
+
+		$li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10">响应ContentType</span>');
+		var $input = $('<input class="input" name="responsecontenttype" />');
+		$input.val(model.responsecontenttype);
 		$li.append($input);
 		that.bindLiEvent($li, model, false);
 
