@@ -209,7 +209,11 @@ source.repository.starterActive = "0";
         });
         return find;
     };
-
+    source.cleanStarterLog = function (starter) {
+        source.do('STARTER_LOG_CLEAN', { token: starter.token }).then((res) => {
+            source.reloadStarterLog(starter);
+        });
+    };
     source.reloadStarterLog = function (starter) {
 
         delete starter.logStar;
