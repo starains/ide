@@ -2,6 +2,7 @@ package com.teamide.ide.protect.git;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jgit.api.AddCommand;
@@ -21,6 +22,7 @@ import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.ReflogCommand;
 import org.eclipse.jgit.api.RemoteAddCommand;
 import org.eclipse.jgit.api.RemoteListCommand;
 import org.eclipse.jgit.api.RemoteRemoveCommand;
@@ -34,6 +36,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.ReflogEntry;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.PushResult;
@@ -219,6 +222,12 @@ public class JGitUtil {
 
 		LogCommand command = git.log();
 		command.setMaxCount(maxCount);
+		return command.call();
+	}
+
+	public static Collection<ReflogEntry> refLog(Git git) throws GitAPIException {
+
+		ReflogCommand command = git.reflog();
 		return command.call();
 	}
 

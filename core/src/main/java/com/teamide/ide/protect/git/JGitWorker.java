@@ -1,6 +1,7 @@
 package com.teamide.ide.protect.git;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jgit.api.CherryPickResult;
@@ -11,6 +12,7 @@ import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.ReflogEntry;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteConfig;
@@ -168,6 +170,15 @@ public class JGitWorker {
 
 		try {
 			return JGitUtil.add(open(), filepattern);
+		} finally {
+			close();
+		}
+	}
+
+	public Collection<ReflogEntry> refLog() throws Exception {
+
+		try {
+			return JGitUtil.refLog(open());
 		} finally {
 			close();
 		}

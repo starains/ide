@@ -86,6 +86,7 @@
                 </template>
               </template>
               <a class="coos-btn coos-btn-xs bg-orange" @click="source.cleanStarterLog(item)">清理日志</a>
+              <a class="coos-btn coos-btn-xs bg-blue" @click="source.reloadStarterLog(item)">重新加载日志</a>
             </div>
             <div class="repository-starter-log-box coos-scrollbar">
               <div
@@ -93,7 +94,11 @@
                 :key="log.id"
                 class
                 :class="{'color-red':log.level == 'ERROR','color-orange':log.level == 'WARN'}"
-              >{{log.msg}}</div>
+                v-show="log.show"
+              >
+                <span class="pdr-10 color-grey">{{log.index + 1}}</span>
+                {{log.line}}
+              </div>
             </div>
           </div>
         </el-tab-pane>
@@ -124,7 +129,7 @@ export default {
 <style  >
 .repository-starter-box {
   position: absolute;
-  top: 0px;
+  top: -105px;
   left: 0px;
   bottom: 0px;
   right: 0px;

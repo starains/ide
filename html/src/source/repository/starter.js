@@ -53,9 +53,32 @@ source.repository.starterActive = "0";
             }, 1000);
             return;
         }
-        let data = { token: starter.token };
-        data.lastIndex = starter.lastIndex;
-        source.load('STARTER_LOG', data);
+        let start = starter.logStart;
+        let end = starter.logEnd;
+        let timestamp = starter.logTimestamp;
+        start = start || 0;
+        end = end || 0;
+        if (start > 0) {
+            let data = { token: starter.token };
+            data.start = 0;
+            if (start > load_size) {
+                data.start = start - load_size;
+            }
+            data.end = start - 1;
+            data.timestamp = timestamp;
+            data.isloadold = true;
+            source.load('STARTER_LOG', data);
+        }
+        if (start == 0 && end == 0) {
+            let data = { token: starter.token };
+            source.load('STARTER_LOG', data);
+        } else {
+            let data = { token: starter.token };
+            data.start = end + 1;
+            data.end = end + load_size;
+            data.timestamp = timestamp;
+            source.load('STARTER_LOG', data);
+        }
         log_loading = false;
     };
     source.loadStarterStatus();
@@ -112,12 +135,6 @@ source.repository.starterActive = "0";
 
 
 
-    source.cleanStarterLog = function (starter) {
-        source.do('STARTER_LOG_CLEAN', { token: starter.token }).then((res) => {
-            delete starter.lastIndex;
-            coos.trimList(starter.logs);
-        });
-    };
     source.openStarterBox = function () {
         source.repository.starter_show = true;
     };
@@ -192,41 +209,78 @@ source.repository.starterActive = "0";
         });
         return find;
     };
+
+    source.reloadStarterLog = function (starter) {
+
+        delete starter.logStar;
+        delete starter.logEnd;
+        delete starter.logTimestamp;
+        coos.trimArray(starter.logs);
+        source.loadStarterLog();
+    };
+
+    let load_size = 50;
     source.onStarterLog = function (value) {
         value = value || {};
 
         let starter = source.getStarter(value.token);
+        if (value.timestamp == null) {
+            return;
+        }
+
         var time = 1000;
         if (starter != null) {
-            starter.lastIndex = value.lastIndex;
-            if (value.hasNext) {
+            if (starter.logTimestamp == null) {
+                starter.logTimestamp = value.timestamp;
+            }
+
+            if (starter.logTimestamp != value.timestamp) {
+                coos.confirm('日志文件已被清理，是否重新读取？').then(res => {
+                    source.reloadStarterLog(starter);
+                });
+                return;
+            }
+
+            var logs = value.logs || [];
+            if (logs.length < load_size) {
                 time = 1000;
             } else {
                 time = 200;
             }
-            var lines = value.lines || [];
-            lines.forEach(line => {
-                var log = {};
-                log.msg = line;
-                if (line) {
-                    if (line.indexOf(">>] [<<") > 0) {
-                        var groups = line.split(">>] [<<");
-                        if (groups.length > 0) {
-                            log.time = groups[0].replace(">>]", "").replace("[<<", "");
-                        }
-                        if (groups.length > 1) {
-                            log.thread = groups[1].replace(">>]", "").replace("[<<", "");
-                        }
-                        if (groups.length > 2) {
-                            log.level = groups[2].replace(">>]", "").replace("[<<", "");
-                        }
-                        if (groups.length > 3) {
-                            log.msg = groups[3].replace(">>]", "").replace("[<<", "");
-                        }
+            if (logs.length > 0) {
+                if (coos.isEmpty(starter.logStart)) {
+                    starter.logStart = logs[0].index;
+                } else {
+                    if (starter.logStart > logs[0].index) {
+                        starter.logStart = logs[0].index;
                     }
                 }
-                starter.logs.push(log);
+
+                if (coos.isEmpty(starter.logEnd)) {
+                    starter.logEnd = logs[logs.length - 1].index;
+                } else {
+                    if (starter.logEnd < logs[logs.length - 1].index) {
+                        starter.logEnd = logs[logs.length - 1].index;
+                    }
+                }
+                if (starter.logs.length == 0) {
+                    for (let i = 0; i < starter.logStart; i++) {
+                        starter.logs.push({ line: null, index: i, show: false });
+                    }
+                }
+            }
+            logs.forEach((log, i) => {
+                if (starter.logs[log.index]) {
+                    starter.logs[log.index].show = true;
+                    starter.logs[log.index].line = log.line;
+                } else {
+                    log.show = true;
+                    starter.logs.push(log);
+                }
             });
+        }
+        if (value.isloadold) {
+            return;
         }
 
         window.setTimeout(() => {

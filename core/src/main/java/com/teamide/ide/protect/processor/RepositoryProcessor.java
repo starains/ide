@@ -683,24 +683,26 @@ public class RepositoryProcessor extends SpaceProcessor {
 			break;
 		case STARTER_LOG:
 			token = data.getString("token");
-
-			int lastIndex = -1;
-			if (StringUtil.isNotEmpty(data.getString("lastIndex"))) {
-				lastIndex = data.getIntValue("lastIndex");
-			}
+			int start = data.getIntValue("start");
+			int end = data.getIntValue("end");
+			String timestamp = data.getString("timestamp");
+			boolean isloadold = data.getBooleanValue("isloadold");
 			res = null;
 			if (!StringUtil.isEmpty(token) && !token.equals("0")) {
 
 				RepositoryLog repositoryLog = StarterHandler.getStarterLog(token);
 				if (repositoryLog != null) {
-					res = repositoryLog.read(lastIndex);
+					res = repositoryLog.read(start, end, timestamp);
 				} else {
 					res = new JSONObject();
 				}
 			} else {
-				res = param.getLog().read(lastIndex);
+				res = param.getLog().read(start, end, timestamp);
 			}
 			res.put("token", token);
+			res.put("start", start);
+			res.put("end", end);
+			res.put("isloadold", isloadold);
 			value = res;
 			break;
 
@@ -725,11 +727,10 @@ public class RepositoryProcessor extends SpaceProcessor {
 		case RUNNER_LOG:
 			token = data.getString("token");
 
-			lastIndex = -1;
-			if (StringUtil.isNotEmpty(data.getString("lastIndex"))) {
-				lastIndex = data.getIntValue("lastIndex");
-			}
-			value = param.getRunnerLog(token).read(lastIndex);
+			start = data.getIntValue("start");
+			end = data.getIntValue("end");
+			timestamp = data.getString("timestamp");
+			value = param.getRunnerLog(token).read(start, end, timestamp);
 			break;
 		case RUNNER_STATUS:
 			token = data.getString("token");

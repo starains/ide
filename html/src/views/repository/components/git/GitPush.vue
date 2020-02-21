@@ -91,6 +91,8 @@
           </div>
         </el-form-item>
 
+        <el-form-item label="未推送成功">{{not_push_message}}</el-form-item>
+
         <el-form-item label="备注" prop="message">
           <el-input type="textarea" v-model="form.message" autocomplete="off"></el-input>
         </el-form-item>
@@ -111,6 +113,7 @@ export default {
     return {
       title: "Git Push (推送)",
       labelWidth: "120px",
+      not_push_message: "暂无",
       size: "mini",
       source: source,
       show_form: false,
@@ -200,6 +203,19 @@ export default {
       let form = this.form;
       let git = source.repository.git;
       if (git) {
+        if (git.reflogs && git.reflogs.length > 0) {
+          // this.not_push_message = "";
+          // git.reflogs.forEach(one => {
+          //   let comment = one.comment;
+          //   if (comment && comment.startsWith("commit:")) {
+          //     this.not_push_message += "[" + comment + "]";
+          //   }
+          // });
+          // if (this.not_push_message.length == 0) {
+          //   this.not_push_message = "暂无";
+          // }
+        }
+
         let remoteList = git.remoteList || [];
         let branchList = git.branchList || [];
 

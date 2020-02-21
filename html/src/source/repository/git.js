@@ -121,6 +121,7 @@ source.repository.navs.push(git_branche_nav);
             } else if (!coos.isEmpty(value.message)) {
                 coos.error(value.message);
             }
+            source.loadGitStatus();
         }
         if (!coos.isEmpty(message)) {
             source.repository.loading = true;

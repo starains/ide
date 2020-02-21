@@ -1,13 +1,16 @@
 package com.teamide.ide.protect.processor.repository;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jgit.api.CherryPickResult;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.ReflogEntry;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
@@ -103,6 +106,8 @@ public class RepositoryGit extends RepositoryBase {
 		result.put("branchList", toJSONByRefs(branchList));
 		try {
 
+			// result.put("reflogs", toReflogs(worker.refLog()));
+			result.put("cherryPick", toCherryPick(worker.cherryPick()));
 			result.put("status", toStatus(status));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -110,7 +115,25 @@ public class RepositoryGit extends RepositoryBase {
 		return result;
 	}
 
+	public JSONArray toReflogs(Collection<ReflogEntry> refs) {
+
+		// for (ReflogEntry ref : refs) {
+		// System.out.println(ref.getComment());
+		// }
+		return (JSONArray) JSON.toJSON(refs);
+	}
+
+	public JSONObject toCherryPick(CherryPickResult cherryPickResult) {
+
+		JSONObject json = new JSONObject();
+		json.put("refs", toJSONByRefs(cherryPickResult.getCherryPickedRefs()));
+		json.put("failingPaths", cherryPickResult.getFailingPaths());
+		json.put("status", cherryPickResult.getStatus());
+		return json;
+	}
+
 	public JSONObject toStatus(Status status) {
+
 		JSONObject json = (JSONObject) JSON.toJSON(status);
 		json.put("hasUncommittedChanges", status.hasUncommittedChanges());
 		json.put("uncommittedChanges", status.getUncommittedChanges());

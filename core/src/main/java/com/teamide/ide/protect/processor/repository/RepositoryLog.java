@@ -3,13 +3,14 @@ package com.teamide.ide.protect.processor.repository;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.FileUtil;
 import com.teamide.util.IOUtil;
+import com.teamide.util.StringUtil;
 
 public class RepositoryLog {
 
@@ -71,11 +72,19 @@ public class RepositoryLog {
 	}
 
 	private void destroy() {
+		delete();
+		removed = true;
+	}
+
+	private void delete() {
 		File file = getFile();
 		if (file.exists()) {
 			file.delete();
 		}
-		removed = true;
+		file = getTimestampFile();
+		if (file.exists()) {
+			file.delete();
+		}
 	}
 
 	public void append(String line) {
@@ -91,6 +100,7 @@ public class RepositoryLog {
 		if (file.exists()) {
 			try {
 				FileUtil.write("".getBytes(), file);
+				writeTimestamp();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -103,10 +113,33 @@ public class RepositoryLog {
 		return file;
 	}
 
-	public JSONObject read(int lastIndex) {
+	public File getTimestampFile() {
+		String path = folder;
+		File file = new File(path, name + ".log.timestamp");
+		return file;
+	}
+
+	public synchronized void writeTimestamp() throws IOException {
+		File file = getTimestampFile();
+		FileUtil.write(String.valueOf(System.currentTimeMillis()).getBytes(), file);
+	}
+
+	public synchronized String getTimestamp() throws IOException {
+		File file = getTimestampFile();
+		if (!file.exists()) {
+			try {
+				writeTimestamp();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return new String(FileUtil.read(file));
+	}
+
+	public JSONObject read(int start, int end, String timestamp) {
 		JSONObject result = new JSONObject();
-		List<String> lines = new ArrayList<String>();
-		result.put("lines", lines);
+		JSONArray logs = new JSONArray();
+		result.put("logs", logs);
 		if (removed) {
 			return result;
 		}
@@ -114,51 +147,47 @@ public class RepositoryLog {
 		if (file.exists()) {
 			BufferedReader br = null;
 			try {
+				String nowtimestamp = getTimestamp();
+				result.put("timestamp", nowtimestamp);
+				if (StringUtil.isEmpty(timestamp)) {
+					timestamp = nowtimestamp;
+				}
+				if (!nowtimestamp.equals(timestamp)) {
+					return result;
+				}
 				FileInputStream fis = new FileInputStream(file);
 				InputStreamReader ir = new InputStreamReader(fis);
 				br = new BufferedReader(ir);
-
 				String line = null;
-				int start = 0;
-				if (lastIndex > 0) {
-					start = lastIndex + 1;
+				if (start == 0 && end == 0) {
+					while ((line = br.readLine()) != null) {
+						end++;
+					}
+					IOUtil.close(br);
+					fis = new FileInputStream(file);
+					ir = new InputStreamReader(fis);
+					br = new BufferedReader(ir);
+					start = end - 100;
 				}
-				int max = 50;
-				int end = start + max;
-				IOUtil.close(br);
-				fis = new FileInputStream(file);
-				ir = new InputStreamReader(fis);
-				br = new BufferedReader(ir);
+
 				int index = 0;
 
-				int outLastIndex = 0;
-				if (lastIndex > 0) {
-					outLastIndex = lastIndex;
-				}
-				boolean hasNext = false;
 				while ((line = br.readLine()) != null) {
-
-					if (index >= start) {
-						outLastIndex = index;
-						lines.add(line);
-					}
-					if (index >= end) {
-						if (br.readLine() != null) {
-							hasNext = true;
-						}
-						break;
+					if (index >= start && index <= end) {
+						JSONObject log = new JSONObject();
+						log.put("line", line);
+						log.put("index", index);
+						logs.add(log);
 					}
 					index++;
 				}
-				result.put("lastIndex", outLastIndex);
-				result.put("hasNext", hasNext);
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
 				IOUtil.close(br);
 				if (removed) {
-					file.delete();
+					delete();
 				}
 			}
 		}

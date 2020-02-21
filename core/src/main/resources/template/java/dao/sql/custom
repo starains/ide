@@ -95,6 +95,10 @@ public class #{$classname} {
 		// SQL执行用到的参数，SQL中使用“:key”作占位符
 		Map<String, Object> param = new HashMap<String, Object>();
 		
+		if(data != null){
+			param.putAll(data);
+		}
+		
 		// SQL语句
 		StringBuffer sql = new StringBuffer();
 	#ifStart($customsqltype == 'SELECT_PAGE')#
