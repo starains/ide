@@ -216,7 +216,7 @@ source.repository.starterActive = "0";
     };
     source.reloadStarterLog = function (starter) {
 
-        delete starter.logStar;
+        delete starter.logStart;
         delete starter.logEnd;
         delete starter.logTimestamp;
         coos.trimArray(starter.logs);
