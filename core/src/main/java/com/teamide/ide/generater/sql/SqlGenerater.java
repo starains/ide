@@ -130,18 +130,40 @@ public abstract class SqlGenerater extends CodeGenerater {
 				|| operator.equals(ComparisonOperator.NOT_IN)) {
 			switch (operator) {
 			case IN:
+				sql.append(whereName).append(" ");
 				sql.append(" IN ");
+
+				content.append(getTab(tab + 1));
+				content.append("whereSql.append(\"" + sql + "\");").append("\n");
+
+				content.append(getTab(tab + 1));
+				content.append("value = \"('\" + String.join(\"','\", String.valueOf(value).split(\",\")) + \"')\";")
+						.append("\n");
+				content.append(getTab(tab + 1));
+				content.append("whereSql.append(value);").append("\n");
+
 				break;
 			case IN_LIKE:
 				sql.append(" LIKE ");
 				break;
 			case NOT_IN:
+				sql.append(whereName).append(" ");
 				sql.append(" NOT IN ");
+
+				content.append(getTab(tab + 1));
+				content.append("whereSql.append(\"" + sql + "\");").append("\n");
+
+				content.append(getTab(tab + 1));
+				content.append("value = \"('\" + String.join(\"','\", String.valueOf(value).split(\",\")) + \"')\";")
+						.append("\n");
+
+				content.append(getTab(tab + 1));
+				content.append("whereSql.append(value);").append("\n");
 				break;
 			default:
 				break;
 			}
-			content.append("whereSql.append(\"" + sql + "\");").append("\n");
+
 		} else {
 			sql.append(whereName).append(" ");
 			switch (operator) {

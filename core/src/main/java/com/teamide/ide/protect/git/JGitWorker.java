@@ -14,6 +14,7 @@ import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.ReflogEntry;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
@@ -71,6 +72,15 @@ public class JGitWorker {
 		try {
 			git = JGitUtil.cloneRepository(dirFile, uri, branch, remote, credentialsProvider);
 			return git;
+		} finally {
+			close();
+		}
+	}
+
+	public FetchResult fetch(String remote) throws Exception {
+
+		try {
+			return JGitUtil.fetch(git, remote);
 		} finally {
 			close();
 		}
@@ -267,10 +277,10 @@ public class JGitWorker {
 		}
 	}
 
-	public List<DiffEntry> diff() throws Exception {
+	public List<DiffEntry> diff(String remote, String remoteBranchName) throws Exception {
 
 		try {
-			return JGitUtil.diff(open());
+			return JGitUtil.diff(open(), remote, remoteBranchName);
 		} finally {
 			close();
 		}

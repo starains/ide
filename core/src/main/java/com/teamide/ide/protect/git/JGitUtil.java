@@ -14,6 +14,7 @@ import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.DeleteBranchCommand;
 import org.eclipse.jgit.api.DiffCommand;
+import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.InitCommand;
 import org.eclipse.jgit.api.ListBranchCommand;
@@ -35,13 +36,16 @@ import org.eclipse.jgit.api.StatusCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.ReflogEntry;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 
 import com.teamide.util.StringUtil;
 
@@ -205,9 +209,35 @@ public class JGitUtil {
 	 * @return
 	 * @throws GitAPIException
 	 */
-	public static List<DiffEntry> diff(Git git) throws GitAPIException {
+	public static List<DiffEntry> diff(Git git, String remote, String remoteBranchName) throws Exception {
 
 		DiffCommand command = git.diff();
+
+		ObjectId localObjectId = git.getRepository().resolve("HEAD^{tree}");
+		ObjectId remoteObjectId = git.getRepository().resolve(remote + "/" + remoteBranchName + "^{tree}");
+
+		CanonicalTreeParser localTree = new CanonicalTreeParser();
+		localTree.reset(git.getRepository().newObjectReader(), localObjectId);
+
+		CanonicalTreeParser remoteTree = new CanonicalTreeParser();
+		remoteTree.reset(git.getRepository().newObjectReader(), remoteObjectId);
+
+		command.setNewTree(localTree);
+		command.setOldTree(remoteTree);
+		return command.call();
+	}
+
+	/**
+	 * 将远程主机的最新内容拉到本地
+	 * 
+	 * @param git
+	 * @return
+	 * @throws GitAPIException
+	 */
+	public static FetchResult fetch(Git git, String remote) throws GitAPIException {
+
+		FetchCommand command = git.fetch();
+		command.setRemote(remote);
 		return command.call();
 	}
 

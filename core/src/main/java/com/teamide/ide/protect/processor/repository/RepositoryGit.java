@@ -107,7 +107,7 @@ public class RepositoryGit extends RepositoryBase {
 		try {
 
 			// result.put("reflogs", toReflogs(worker.refLog()));
-			result.put("cherryPick", toCherryPick(worker.cherryPick()));
+			// result.put("cherryPick", toCherryPick(worker.cherryPick()));
 			result.put("status", toStatus(status));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -494,8 +494,8 @@ public class RepositoryGit extends RepositoryBase {
 		return result;
 	}
 
-	public JSONObject push(String remote, String branchName, String remoteBranchName, String username, String password)
-			throws Exception {
+	public JSONObject push(JSONArray paths, String message, String remote, String branchName, String remoteBranchName,
+			String username, String password) throws Exception {
 		this.param.getLog().info("git push,  remote:" + remote + ",  remoteBranchName:" + remoteBranchName);
 
 		JSONObject result = new JSONObject();
@@ -512,6 +512,21 @@ public class RepositoryGit extends RepositoryBase {
 			@Override
 			public void run() {
 				try {
+					// 检查最新版本
+					// worker.fetch(remote);
+					// List<DiffEntry> diffs = worker.diff(remote,
+					// remoteBranchName);
+					// if (diffs != null && diffs.size() > 0) {
+					// for (DiffEntry diff : diffs) {
+					// System.out.println(diff);
+					// }
+					// throw new Exception("有最新代码需要更新，请先更新代码。");
+					// }
+
+					add(paths);
+
+					commit(message);
+
 					worker.push(remote, branchName, remoteBranchName, getCredentialsProvider(username, password));
 					setGitWorkStatus(GitWorkStatus.PUSHED);
 					setGitWorkMessage(null);

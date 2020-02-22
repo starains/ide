@@ -317,9 +317,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			String message = data.getString("message");
 
 			paths = data.getJSONArray("paths");
-			repositoryGit.add(paths);
-
-			repositoryGit.commit(message);
 
 			certificate = data.getJSONObject("certificate");
 			username = null;
@@ -329,7 +326,8 @@ public class RepositoryProcessor extends SpaceProcessor {
 				password = certificate.getString("password");
 			}
 
-			new RepositoryGit(param).push(gitRemoteName, branchName, gitRemoteBranch, username, password);
+			new RepositoryGit(param).push(paths, message, gitRemoteName, branchName, gitRemoteBranch, username,
+					password);
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
