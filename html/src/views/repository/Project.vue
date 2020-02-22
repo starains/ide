@@ -156,6 +156,21 @@ export default {
             }
           });
           appModelMenu.menus.push({
+            text: "生成库表",
+            onClick() {
+              let param = {};
+              param.path = data.app.localpath;
+              param.type = "DATABASE";
+              source.service.data.doTest(param).then(result => {
+                if (result.errcode == 0) {
+                  coos.success("库表创建成功！");
+                } else {
+                  coos.error(result.errmsg);
+                }
+              });
+            }
+          });
+          appModelMenu.menus.push({
             text: "修改配置",
             onClick() {
               source.appOptionForm.show(data.path, data.app.option);

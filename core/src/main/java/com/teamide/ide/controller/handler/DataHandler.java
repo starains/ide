@@ -383,7 +383,6 @@ public class DataHandler {
 		Object result = null;
 		try {
 			Application application = ApplicationFactory.start(new File(path));
-			DataParam param = new DataParam((JSON) JSON.parse(data));
 
 			List<DatabaseBean> databases = application.getContext().get(DatabaseBean.class);
 			if (databases != null) {
@@ -394,12 +393,18 @@ public class DataHandler {
 			if (application.getContext().getJdbc() != null) {
 				application.getContext().getJdbc().setInitializeclass(null);
 			}
-			if (type.equalsIgnoreCase("DAO")) {
+			if (type.equalsIgnoreCase("DATABASE")) {
+				application.installDatabases();
+				application.installTables();
+				result = Status.SUCCESS();
+			} else if (type.equalsIgnoreCase("DAO")) {
+				DataParam param = new DataParam((JSON) JSON.parse(data));
 				DaoBean dao = application.getContext().get(DaoBean.class, name);
 				result = application.invokeDao(dao, param);
 				application.responseResult(dao, result, response, true);
 				return;
 			} else if (type.equalsIgnoreCase("SERVICE")) {
+				DataParam param = new DataParam((JSON) JSON.parse(data));
 				ServiceBean service = application.getContext().get(ServiceBean.class, name);
 				result = application.invokeService(service, param);
 				application.responseResult(service, result, response, true);
