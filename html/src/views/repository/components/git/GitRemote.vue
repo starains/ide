@@ -6,8 +6,9 @@
         :rules="form_rules"
         ref="form"
         :label-width="labelWidth"
-        class
         :size="size"
+        append-to-body
+        zIndex="100"
       >
         <el-form-item label="设置远程名称" prop="gitRemoteName">
           <el-input v-model="form.gitRemoteName" type="text" autocomplete="off"></el-input>

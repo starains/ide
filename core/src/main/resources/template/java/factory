@@ -13,13 +13,22 @@ import com.alibaba.fastjson.*;
  */
 public class #{$classname} {
 
+	/**
+	 * 实例化数据库工厂类，传入默认jdbc，和数据库配置目录，配置目录可以通过文件名直接访问
+	 */
 	static DatabaseFactory DATABASE_FACTORY = new DatabaseFactory("jdbc", "databases");
 
+	/**
+	 * 获取默认jdbc实例化的Dao，可以传入data，根据data属性值实现动态数据源
+	 */
 	public static IDao getDao(JSONObject data) throws DatabaseNotFoundException, DatabaseInitializeException {
 
 		return DATABASE_FACTORY.newDao(data);
 	}
 
+	/**
+	 * 获取默认jdbc实例化的Service，可以传入data，根据data属性值实现动态数据源
+	 */
 	public static IService getService(JSONObject data) throws DatabaseNotFoundException, DatabaseInitializeException {
 
 		return DATABASE_FACTORY.newService(data);

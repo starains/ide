@@ -18,6 +18,7 @@ import com.teamide.ide.protect.service.InstallService;
 import com.teamide.ide.protect.service.LoginService;
 import com.teamide.ide.protect.service.UserPreferenceService;
 import com.teamide.ide.protect.service.UserService;
+import com.teamide.ide.protect.util.TokenUtil;
 import com.teamide.ide.service.IConfigureService;
 import com.teamide.ide.service.IEnvironmentService;
 import com.teamide.ide.service.IInstallService;
@@ -75,6 +76,9 @@ public class Processor extends ProcessorLoad {
 			break;
 		case LOGIN:
 			doLogin(data);
+			break;
+		case AUTO_LOGIN:
+			doAutoLogin(data);
 			break;
 		case LOGOUT:
 			doLogout(data);
@@ -157,6 +161,22 @@ public class Processor extends ProcessorLoad {
 		}
 		ILoginService loginService = new LoginService();
 		loginService.doLogin(session, loginname, password);
+	}
+
+	private void doAutoLogin(JSONObject data) throws Exception {
+		ClientSession session = this.param.getSession();
+
+		String token = data.getString("token");
+		if (StringUtil.isEmpty(token)) {
+			throw new Exception("用户登录令牌信息丢失.");
+		}
+		JSONObject json = TokenUtil.getJSON(token);
+		String id = json.getString("id");
+		if (StringUtil.isEmpty(id)) {
+			throw new Exception("登录信息丢失.");
+		}
+		ILoginService loginService = new LoginService();
+		loginService.doLoginById(session, id);
 	}
 
 	private void doLogout(JSONObject data) throws Exception {

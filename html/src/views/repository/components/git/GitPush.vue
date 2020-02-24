@@ -6,6 +6,8 @@
       :close-on-click-modal="false"
       width="1000px"
       top="50px"
+      append-to-body
+      zIndex="100"
     >
       <el-form
         :model="form"
@@ -263,11 +265,15 @@ export default {
       });
     },
     stagedAll() {
-      this.not_staged.forEach(one => {
-        this.staged.push(one);
-      });
-      coos.trimList(this.not_staged);
-      coos.trimList(this.not_staged_checked);
+      coos
+        .confirm("此操作将暂存所有未提交的文件，确定暂存所有文件？")
+        .then(res => {
+          this.not_staged.forEach(one => {
+            this.staged.push(one);
+          });
+          coos.trimList(this.not_staged);
+          coos.trimList(this.not_staged_checked);
+        });
     },
     stagedChecked() {
       this.not_staged_checked.forEach(path => {
@@ -281,11 +287,13 @@ export default {
       coos.trimList(this.not_staged_checked);
     },
     cancelAll() {
-      this.staged.forEach(one => {
-        this.not_staged.push(one);
+      coos.confirm("确定取消所有文件的暂存？").then(res => {
+        this.staged.forEach(one => {
+          this.not_staged.push(one);
+        });
+        coos.trimList(this.staged);
+        coos.trimList(this.staged_checked);
       });
-      coos.trimList(this.staged);
-      coos.trimList(this.staged_checked);
     },
     cancelChecked() {
       this.staged_checked.forEach(path => {

@@ -12,6 +12,8 @@ public enum ProcessorType {
 
 	LOGIN("LOGIN", "登录"),
 
+	AUTO_LOGIN("AUTO_LOGIN", "自动登录"),
+
 	LOGOUT("LOGOUT", "登出"),
 
 	REGISTER("REGISTER", "注册"),

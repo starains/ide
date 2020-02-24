@@ -8,11 +8,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.Status;
+import com.teamide.client.ClientHandler;
+import com.teamide.client.ClientSession;
 import com.teamide.exception.BaseException;
 import com.teamide.ide.controller.handler.DataHandler;
 import com.teamide.ide.controller.handler.ResourcesHandler;
 import com.teamide.ide.controller.handler.ResourcesMergeHandler;
+import com.teamide.ide.controller.handler.ListenHandler;
 import com.teamide.ide.controller.handler.WorkspaceHandler;
 import com.teamide.util.RequestUtil;
 import com.teamide.util.ResponseUtil;
@@ -26,13 +30,15 @@ public class RootController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 4357127201255115763L;
 
-	ResourcesHandler resourcesController = new ResourcesHandler();
+	ResourcesHandler resourcesHandler = new ResourcesHandler();
 
 	ResourcesMergeHandler resourcesMergeHandler = new ResourcesMergeHandler();
 
-	DataHandler dataController = new DataHandler();
+	DataHandler dataHandler = new DataHandler();
 
-	WorkspaceHandler workspaceController = new WorkspaceHandler();
+	ListenHandler listenHandler = new ListenHandler();
+
+	WorkspaceHandler workspaceHandler = new WorkspaceHandler();
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -69,17 +75,26 @@ public class RootController extends HttpServlet {
 				if (path.startsWith("/resources/coos/merge/")) {
 					resourcesMergeHandler.handle(path, request, response);
 				} else {
-					resourcesController.handle(path, request, response);
+					resourcesHandler.handle(path, request, response);
 				}
 			} else if (path.startsWith("/api/data/")) {
-				dataController.handle(path, request, response);
+				dataHandler.handle(path, request, response);
+			} else if (path.startsWith("/api/listen")) {
+				listenHandler.listen(request, response);
 			} else if (path.startsWith("/api/validate")) {
-				ResponseUtil.outJSON(response, Status.SUCCESS());
+				Status status = Status.SUCCESS();
+				ClientSession session = ClientHandler.getSession(request);
+				JSONObject json = new JSONObject();
+				if (session.isLogin()) {
+					json.put("isLogin", true);
+				}
+				status.setValue(json);
+				ResponseUtil.outJSON(response, status);
 			} else if (path.startsWith("/api/workspace/")) {
-				workspaceController.handle(path, request, response);
+				workspaceHandler.handle(path, request, response);
 			} else {
 				if ("GET".equalsIgnoreCase(request.getMethod())) {
-					resourcesController.handle("/html/index.html", request, response);
+					resourcesHandler.handle("/html/index.html", request, response);
 				} else {
 
 				}

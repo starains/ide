@@ -15,7 +15,7 @@
                 source.server.session().then(() => {
                     source.readyed = true;
                     source.loadSession();
-                    // source.websocket.open();
+                    source.websocket.open();
                     resolve && resolve();
                 });
             }

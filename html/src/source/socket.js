@@ -1,6 +1,4 @@
 (function () {
-    let opened = false;
-    let reconnectCount = 0;
 
     var websocket = null;
     let open_callbacks = [];
@@ -37,9 +35,6 @@
                 }
                 source.websocket.opening = true;
 
-                if (reconnectCount > 0) {
-                    //source.screen.error('断线重连中，请稍后...')
-                }
                 if ('WebSocket' in window) {
                     let url = window._SERVER_URL.replace('http', 'ws') + '/websocket/' + source.token;
                     websocket = new WebSocket(url);
@@ -54,12 +49,6 @@
                 websocket.onopen = function () {
                     source.websocket.opening = false;
                     source.websocket.opened = true;
-                    if (reconnectCount > 0) {
-                        source.screen.remove()
-                    }
-                    reconnectCount = 0;
-                    source.validate();
-                    //source.load('SESSION');
                     call_opened();
 
                 }
@@ -68,22 +57,17 @@
                     source.websocket.opened = false;
                     source.server.status().then((res) => {
                         if (res) {
-                            reconnectCount++;
-                            source.websocket.open().then(resolve);
+                            source.websocket.open();
                         } else {
                             source.server.wait().then(() => {
-                                reconnectCount++;
-                                source.websocket.open().then(resolve);
+                                source.websocket.open();
                             });
                         }
                     });
-                    // coos.error('WebSocket closed!');
                 }
                 websocket.onmessage = function (event) {
                     let message = event.data;
                     if (message == '-1') {
-                        coos.info('会话信息丢失，将刷新浏览器！');
-                        // location.reload();
                     }
                 }
             });

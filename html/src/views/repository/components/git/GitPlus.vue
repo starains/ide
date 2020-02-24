@@ -5,6 +5,8 @@
       :visible.sync="show_form"
       :close-on-click-modal="false"
       width="1000px"
+      append-to-body
+      zIndex="100"
     >
       <el-form
         :model="form"

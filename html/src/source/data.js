@@ -118,6 +118,7 @@
             source.isLogin = source.LOGIN_USER != null;
             source.isManager = value.isManager;
             source.preference = value.preference || {};
+            source.LOGIN_USER_TOKEN = value.LOGIN_USER_TOKEN;
             coos.trimList(source.roles);
             if (value.roles) {
                 value.roles.forEach(role => {

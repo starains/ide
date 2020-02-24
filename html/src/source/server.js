@@ -90,7 +90,15 @@
                     type: "post",
                     beforeSend: function () { },
                     success: function (o) {
-                        resolve && resolve(true);
+                        if (o.value && !o.value.isLogin && source.LOGIN_USER_TOKEN) {
+                            source.server.session().then(() => {
+                                source.do('AUTO_LOGIN', { token: source.LOGIN_USER_TOKEN }).then(res => {
+                                    resolve && resolve(true);
+                                });
+                            });
+                        } else {
+                            resolve && resolve(true);
+                        }
                     },
                     complete: function (XMLHttpRequest, textStatus) { },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -107,7 +115,7 @@
                         wait_check_count = 0;
                         // source.screen.success('服务器连接成功！');
                         window.setTimeout(function () {
-                            source.screen.remove();
+                            // source.screen.remove();
                             resolve && resolve();
                         }, 500);
                     } else {
@@ -136,5 +144,42 @@
     };
     let wait_check_count = 0;
 
+
+    let listen_error_count = 0;
+    let listen = function () {
+        $.ajax({
+            url: _SERVER_URL + "/api/listen",
+            data: {},
+            type: "post",
+            beforeSend: function () { },
+            success: function (o) {
+                console.log(o);
+                listen_error_count = 0;
+                listen();
+            },
+            complete: function (XMLHttpRequest, textStatus) { },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                let second = 3;
+                if (listen_error_count >= 3) {
+                    second = 5;
+                }
+                if (listen_error_count >= 5) {
+                    second = 10;
+                }
+                if (listen_error_count >= 10) {
+                    second = 30;
+                }
+                if (listen_error_count >= 20) {
+                    // source.screen.error('服务器连接异常，请联系管理员！');
+                    second = 60;
+                }
+                listen_error_count++;
+                window.setTimeout(() => {
+                    listen();
+                }, second * 1000);
+            }
+        });
+    };
+    //listen();
 })();
 export default source;

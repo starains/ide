@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.RoleBean;
 import com.teamide.ide.bean.UserBean;
+import com.teamide.ide.protect.util.TokenUtil;
 import com.teamide.ide.service.ILoginService;
 
 @Resource
@@ -30,7 +31,14 @@ public class LoginService implements ILoginService {
 		if (user == null) {
 			throw new Exception("用户名或密码错误！");
 		}
-		if (session != null) {
+
+		return doLoginById(session, user.getId());
+	}
+
+	@Override
+	public UserBean doLoginById(ClientSession session, String id) throws Exception {
+		UserBean user = new UserService().get(id);
+		if (user != null && session != null) {
 			JSONObject userJSON = (JSONObject) JSONObject.toJSON(user);
 
 			session.doLogin(userJSON.toJavaObject(com.teamide.bean.UserBean.class));
@@ -39,6 +47,12 @@ public class LoginService implements ILoginService {
 			session.setCache("user", user);
 			session.setCache("roles", roles);
 			session.setCache("isManager", false);
+			JSONObject json = new JSONObject();
+			json.put("id", user.getId());
+			json.put("loginname", user.getLoginname());
+			json.put("name", user.getName());
+			json.put("timestamp", System.currentTimeMillis());
+			session.setCache("LOGIN_USER_TOKEN", TokenUtil.getToken(json));
 			for (RoleBean role : roles) {
 				if (role.isForsuper()) {
 					session.setCache("isManager", true);

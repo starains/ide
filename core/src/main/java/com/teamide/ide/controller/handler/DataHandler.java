@@ -381,9 +381,9 @@ public class DataHandler {
 		String path = json.getString("path");
 		String name = json.getString("name");
 		Object result = null;
+		Application application = null;
 		try {
-			Application application = ApplicationFactory.start(new File(path));
-
+			application = ApplicationFactory.start(new File(path));
 			List<DatabaseBean> databases = application.getContext().get(DatabaseBean.class);
 			if (databases != null) {
 				for (DatabaseBean database : databases) {
@@ -416,6 +416,14 @@ public class DataHandler {
 			status.setErrmsg(e.getMessage());
 			result = status;
 			e.printStackTrace();
+		} finally {
+			if (application != null) {
+				try {
+					application.stop();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		ResponseUtil.outJSON(response, result);

@@ -60,7 +60,7 @@ public class WorkspaceHandler {
 
 		if (work.equals("do")) {
 
-			if (type.equalsIgnoreCase("LOGIN") || type.equalsIgnoreCase("LOGOUT")
+			if (type.equalsIgnoreCase("LOGIN") || type.equalsIgnoreCase("AUTO_LOGIN") || type.equalsIgnoreCase("LOGOUT")
 
 					|| type.equalsIgnoreCase("INSTALL") || type.equalsIgnoreCase("VALIDATE")
 

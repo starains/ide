@@ -6,8 +6,9 @@
         :rules="form_rules"
         ref="form"
         :label-width="labelWidth"
-        class
         :size="size"
+        append-to-body
+        zIndex="100"
       >
         <el-form-item>
           <strong class="pdb-10 color-red">

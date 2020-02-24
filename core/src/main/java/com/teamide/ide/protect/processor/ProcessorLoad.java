@@ -72,6 +72,7 @@ public class ProcessorLoad extends ProcessorBase {
 				out.put("LOGIN_USER", USER);
 				out.put("isManager", session.getCache("isManager"));
 				out.put("roles", session.getCache("roles"));
+				out.put("LOGIN_USER_TOKEN", session.getCache("LOGIN_USER_TOKEN"));
 
 				JSONObject preference = new JSONObject();
 				UserPreferenceService service = new UserPreferenceService();
