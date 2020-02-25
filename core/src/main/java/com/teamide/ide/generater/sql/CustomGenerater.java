@@ -7,8 +7,8 @@ public class CustomGenerater extends SqlGenerater {
 
 	protected final CustomSql custom;
 
-	public CustomGenerater(CustomSql custom) {
-		super(custom);
+	public CustomGenerater(String factory_classname, CustomSql custom) {
+		super(factory_classname, custom);
 		this.custom = custom;
 	}
 

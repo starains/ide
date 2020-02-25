@@ -89,7 +89,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			datarule = sqlProcess.getSelect().getData();
 			data.put("$database", getDatabase(sqlProcess.getSelect()));
 
-			SelectGenerater selectGenerater = new SelectGenerater(sqlProcess.getSelect());
+			SelectGenerater selectGenerater = new SelectGenerater(getAppFactoryClassname(), sqlProcess.getSelect());
 			data.put("$content", selectGenerater.generate(2));
 
 			if (sqlProcess.getSqlType().indexOf("PAGE") >= 0) {
@@ -102,7 +102,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			datarule = sqlProcess.getInsert().getData();
 			data.put("$database", getDatabase(sqlProcess.getInsert()));
 
-			InsertGenerater insertGenerater = new InsertGenerater(sqlProcess.getInsert());
+			InsertGenerater insertGenerater = new InsertGenerater(getAppFactoryClassname(), sqlProcess.getInsert());
 			data.put("$content", insertGenerater.generate(2));
 
 			String $autoincrement_key = null;
@@ -122,14 +122,14 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			datarule = sqlProcess.getUpdate().getData();
 			data.put("$database", getDatabase(sqlProcess.getUpdate()));
 
-			UpdateGenerater updateGenerater = new UpdateGenerater(sqlProcess.getUpdate());
+			UpdateGenerater updateGenerater = new UpdateGenerater(getAppFactoryClassname(), sqlProcess.getUpdate());
 			data.put("$content", updateGenerater.generate(2));
 
 		} else if (sqlProcess.getSqlType().indexOf("DELETE") >= 0) {
 			datarule = sqlProcess.getDelete().getData();
 			data.put("$database", getDatabase(sqlProcess.getDelete()));
 
-			DeleteGenerater deleteGenerater = new DeleteGenerater(sqlProcess.getDelete());
+			DeleteGenerater deleteGenerater = new DeleteGenerater(getAppFactoryClassname(), sqlProcess.getDelete());
 			data.put("$content", deleteGenerater.generate(2));
 
 		} else if (sqlProcess.getSqlType().indexOf("CUSTOM") >= 0) {
@@ -149,7 +149,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 
 			data.put("$customsqltype", customSql.getCustomsqltype());
 
-			CustomGenerater customGenerater = new CustomGenerater(sqlProcess.getCustomSql());
+			CustomGenerater customGenerater = new CustomGenerater(getAppFactoryClassname(), sqlProcess.getCustomSql());
 			data.put("$content", customGenerater.generate(2));
 
 			if (StringUtil.isNotEmpty(sqlProcess.getCustomSql().getCustomsqltype())) {

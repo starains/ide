@@ -18,8 +18,8 @@ public class SelectGenerater extends SqlGenerater {
 
 	protected final Select select;
 
-	public SelectGenerater(Select select) {
-		super(select);
+	public SelectGenerater(String factory_classname, Select select) {
+		super(factory_classname, select);
 		this.select = select;
 	}
 
@@ -78,6 +78,12 @@ public class SelectGenerater extends SqlGenerater {
 			}
 		}
 		appendUnion(tab);
+
+		if (select.getAppends() != null && select.getAppends().size() > 0) {
+			content.append("\n");
+			content.append(getTab(tab)).append("// 追加SQL").append("\n");
+			appendAppends(tab, select.getAppends());
+		}
 
 		return content;
 	}
@@ -158,8 +164,8 @@ public class SelectGenerater extends SqlGenerater {
 			}
 
 			content.append(getTab(tab));
-			content.append("if(ObjectUtil.isTrue(JexlTool.invoke(\"" + column.getIfrule() + "\", data))) {")
-					.append("\n");
+			content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\"" + column.getIfrule()
+					+ "\", data))) {").append("\n");
 
 			StringBuffer sql = new StringBuffer();
 			sql.append(",");
@@ -184,8 +190,8 @@ public class SelectGenerater extends SqlGenerater {
 
 			if (StringUtil.isNotTrimEmpty(from.getIfrule())) {
 				content.append(getTab(tab));
-				content.append("if(ObjectUtil.isTrue(JexlTool.invoke(\"" + from.getIfrule() + "\", data))) {")
-						.append("\n");
+				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
+						+ from.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
 			} else {
 				content.append(getTab(tab));
@@ -237,8 +243,8 @@ public class SelectGenerater extends SqlGenerater {
 
 			if (StringUtil.isNotTrimEmpty(leftJoin.getIfrule())) {
 				content.append(getTab(tab));
-				content.append("if(ObjectUtil.isTrue(JexlTool.invoke(\"" + leftJoin.getIfrule() + "\", data))) {")
-						.append("\n");
+				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
+						+ leftJoin.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
 			} else {
 				content.append(getTab(tab));
@@ -300,8 +306,8 @@ public class SelectGenerater extends SqlGenerater {
 
 			if (StringUtil.isNotTrimEmpty(group.getIfrule())) {
 				content.append(getTab(tab));
-				content.append("if(ObjectUtil.isTrue(JexlTool.invoke(\"" + group.getIfrule() + "\", data))) {")
-						.append("\n");
+				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
+						+ group.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
 			} else {
 				content.append(getTab(tab));
@@ -356,8 +362,8 @@ public class SelectGenerater extends SqlGenerater {
 
 			if (StringUtil.isNotTrimEmpty(having.getIfrule())) {
 				content.append(getTab(tab));
-				content.append("if(ObjectUtil.isTrue(JexlTool.invoke(\"" + having.getIfrule() + "\", data))) {")
-						.append("\n");
+				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
+						+ having.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
 			} else {
 				content.append(getTab(tab));
@@ -410,8 +416,8 @@ public class SelectGenerater extends SqlGenerater {
 
 			if (StringUtil.isNotTrimEmpty(order.getIfrule())) {
 				content.append(getTab(tab));
-				content.append("if(ObjectUtil.isTrue(JexlTool.invoke(\"" + order.getIfrule() + "\", data))) {")
-						.append("\n");
+				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
+						+ order.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
 			} else {
 				content.append(getTab(tab));
@@ -469,8 +475,8 @@ public class SelectGenerater extends SqlGenerater {
 
 			if (StringUtil.isNotTrimEmpty(union.getIfrule())) {
 				content.append(getTab(tab));
-				content.append("if(ObjectUtil.isTrue(JexlTool.invoke(\"" + union.getIfrule() + "\", data))) {")
-						.append("\n");
+				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
+						+ union.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
 			} else {
 				content.append(getTab(tab));

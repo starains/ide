@@ -355,6 +355,12 @@
 			$li.append('UNION ');
 
 		}
+
+
+
+		model.appends = model.appends || [];
+		that.appendAppends($ul, model.appends, table);
+
 		return $box;
 	};
 	DaoEditor.prototype.appendGroupBy = function($ul, groups, froms) {

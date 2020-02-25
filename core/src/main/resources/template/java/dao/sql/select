@@ -17,7 +17,6 @@ import com.teamide.bean.PageResultBean;
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
-import com.teamide.jexl.JexlTool;
 
 #ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Service;
@@ -90,9 +89,13 @@ public class #{$classname} {
 		StringBuffer whereSql = new StringBuffer();
 		// SQL Group语句
 		StringBuffer groupSql = new StringBuffer();
+		// SQL 追加语句
+		StringBuffer appendSql = new StringBuffer();
 		
 #{$content}
-	
+
+		// 拼接追加SQL语句
+		sql.append(" ").append(appendSql);
 		#ifStart($sqlType == 'SELECT_PAGE')#
 		// 统计语句，用于分页
 		StringBuffer countSql = new StringBuffer("SELECT COUNT(1) ");
@@ -104,7 +107,10 @@ public class #{$classname} {
 		// 拼接统计语句条件
 		countSql.append(groupSql);
 		
-		PageSqlParam pageSqlParam = new PageSqlParam(sql.toString(), countSql.toString(), param);
+		// 解析SQL表达式，获得真实SQL
+		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
+		String realCountSql = #{$app_factory.$classname}.resolveSqlJexl(countSql.toString(), param, data);
+		PageSqlParam pageSqlParam = new PageSqlParam(realSql, realCountSql, param);
 		// 获取页码和每页数量
 		int pagesize = data.getIntValue("_pagesize");
 		int pageindex = data.getIntValue("_pageindex");
@@ -114,7 +120,9 @@ public class #{$classname} {
 		return pageSqlParam;
 		#ifEnd#
 		#ifStart($sqlType != 'SELECT_PAGE')#
-		SqlParam sqlParam = new SqlParam(sql.toString(), param);
+		// 解析SQL表达式，获得真实SQL
+		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
+		SqlParam sqlParam = new SqlParam(realSql, param);
 		return sqlParam;
 		#ifEnd#
 	}

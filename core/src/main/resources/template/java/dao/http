@@ -1,8 +1,6 @@
 package #{$package};
 
-import com.teamide.dao.IDao;
-import com.teamide.param.DataParam;
-import com.teamide.jexl.JexlTool;
+import com.alibaba.fastjson.*;
 
 /**
  * HTTP Dao
@@ -11,10 +9,8 @@ import com.teamide.jexl.JexlTool;
 @SuppressWarnings("unused")
 public class #{$classname} {
 	
-	public $result_classname invoke(DataParam data) {
+	public $result_classname invoke(JSONObject data) {
 		$result_classname result = new $result_classname();
-		
-		
 		
 		return result;
 	}

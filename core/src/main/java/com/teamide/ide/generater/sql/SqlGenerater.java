@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.teamide.app.enums.ComparisonOperator;
 import com.teamide.app.process.dao.sql.Abstract;
+import com.teamide.app.process.dao.sql.AppendCustomSql;
 import com.teamide.app.process.dao.sql.PieceWhere;
 import com.teamide.app.process.dao.sql.Where;
 import com.teamide.ide.generater.CodeGenerater;
@@ -15,7 +16,8 @@ public abstract class SqlGenerater extends CodeGenerater {
 
 	protected final Abstract base;
 
-	public SqlGenerater(Abstract base) {
+	public SqlGenerater(String factory_classname, Abstract base) {
+		super(factory_classname);
 		this.base = base;
 	}
 
@@ -47,8 +49,8 @@ public abstract class SqlGenerater extends CodeGenerater {
 			int t = tab;
 			if (StringUtil.isNotTrimEmpty(where.getIfrule())) {
 				content.append(getTab(tab));
-				content.append("if(ObjectUtil.isTrue(JexlTool.invoke(\"" + where.getIfrule() + "\", data))) {")
-						.append("\n");
+				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
+						+ where.getIfrule() + "\", data))) {").append("\n");
 				t++;
 			} else {
 			}
@@ -84,7 +86,9 @@ public abstract class SqlGenerater extends CodeGenerater {
 		} else {
 			if (StringUtil.isNotTrimEmpty(where.getValue())) {
 				content.append(getTab(tab));
-				content.append("value = JexlTool.invoke(\"" + where.getValue() + "\", data);").append("\n");
+				content.append(
+						"value = " + factory_classname + ".getValueByJexlScript(\"" + where.getValue() + "\", data);")
+						.append("\n");
 			} else {
 				content.append(getTab(tab));
 				content.append("value = data.get(\"" + where.getName() + "\");").append("\n");
@@ -94,7 +98,8 @@ public abstract class SqlGenerater extends CodeGenerater {
 					content.append("if(value == null || StringUtil.isEmptyIfStr(value)) {").append("\n");
 
 					content.append(getTab(tab + 1));
-					content.append("value = JexlTool.invoke(\"" + where.getDefaultvalue() + "\", data);").append("\n");
+					content.append("value = " + factory_classname + ".getValueByJexlScript(\"" + where.getDefaultvalue()
+							+ "\", data);").append("\n");
 
 					content.append(getTab(tab)).append("}").append("\n");
 				}
@@ -218,4 +223,50 @@ public abstract class SqlGenerater extends CodeGenerater {
 
 	}
 
+	public void appendAppends(int tab, List<AppendCustomSql> appends) {
+
+		if (appends == null || appends.size() == 0) {
+			return;
+		}
+		boolean isFirst = true;
+		for (AppendCustomSql append : appends) {
+
+			if (StringUtil.isNotTrimEmpty(append.getIfrule())) {
+				content.append(getTab(tab));
+				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
+						+ append.getIfrule() + "\", data))) {").append("\n");
+				content.append(getTab(tab + 1));
+			} else {
+				content.append(getTab(tab));
+			}
+
+			StringBuffer sql = new StringBuffer();
+			if (isFirst) {
+				sql.append(" ");
+			}
+			sql.append(getAppendSql(append));
+			sql.append(" ");
+
+			content.append("appendSql.append(\"" + sql + "\");").append("\n");
+
+			if (StringUtil.isNotTrimEmpty(append.getIfrule())) {
+				content.append(getTab(tab));
+				content.append("}").append("\n");
+			}
+
+			isFirst = false;
+
+		}
+
+	}
+
+	public StringBuffer getAppendSql(AppendCustomSql append) {
+		StringBuffer sql = new StringBuffer();
+		sql.append(" ");
+		if (StringUtil.isNotEmpty(append.getSql())) {
+			sql.append(append.getSql());
+		}
+		return sql;
+
+	}
 }

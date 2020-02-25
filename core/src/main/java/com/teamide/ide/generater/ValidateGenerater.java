@@ -9,6 +9,10 @@ import com.teamide.variable.VariableValidate;
 
 public class ValidateGenerater extends CodeGenerater {
 
+	public ValidateGenerater(String factory_classname) {
+		super(factory_classname);
+	}
+
 	public StringBuffer generate(int tab, List<VariableValidate> validates) {
 		if (validates == null || validates.size() == 0) {
 			return content;
@@ -28,7 +32,8 @@ public class ValidateGenerater extends CodeGenerater {
 			content.append("new " + validate.getValidator() + "().validate();").append("\n");
 		} else {
 			content.append(getTab(tab));
-			content.append("value = JexlTool.invoke(\"" + validate.getValue() + "\", variableCache);").append("\n");
+			content.append("value = " + factory_classname + ".getValueByJexlScript(\"" + validate.getValue()
+					+ "\", variableCache);").append("\n");
 			String errcode = validate.getErrcode();
 			String errmsg = validate.getErrmsg();
 			if (StringUtil.isEmpty(errcode)) {

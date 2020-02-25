@@ -12,7 +12,6 @@ import com.teamide.db.bean.*;
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
-import com.teamide.jexl.JexlTool;
 
 #ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Service;
@@ -55,7 +54,10 @@ public class #{$classname} {
 		Map<String, Object> param = new HashMap<String, Object>();
 		// SQL语句
 		StringBuffer sql = new StringBuffer();
-		SqlParam sqlParam = new SqlParam(sql.toString(), param);
+		
+		// 解析SQL表达式，获得真实SQL
+		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
+		SqlParam sqlParam = new SqlParam(realSql, param);
 		return sqlParam;
 	}
 }

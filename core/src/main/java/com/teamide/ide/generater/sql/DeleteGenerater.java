@@ -7,8 +7,8 @@ public class DeleteGenerater extends SqlGenerater {
 
 	protected final Delete delete;
 
-	public DeleteGenerater(Delete delete) {
-		super(delete);
+	public DeleteGenerater(String factory_classname, Delete delete) {
+		super(factory_classname, delete);
 		this.delete = delete;
 	}
 
@@ -28,6 +28,12 @@ public class DeleteGenerater extends SqlGenerater {
 
 		content.append(getTab(tab)).append("// 组合条件语句").append("\n");
 		appendWhere(tab, delete.getWheres());
+
+		if (delete.getAppends() != null && delete.getAppends().size() > 0) {
+			content.append("\n");
+			content.append(getTab(tab)).append("// 追加SQL").append("\n");
+			appendAppends(tab, delete.getAppends());
+		}
 
 		content.append("\n");
 

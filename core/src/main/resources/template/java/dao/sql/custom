@@ -17,7 +17,6 @@ import com.teamide.bean.PageResultBean;
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
-import com.teamide.jexl.JexlTool;
 
 #ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Service;
@@ -109,7 +108,11 @@ public class #{$classname} {
 #{$content}
 
 		#ifStart($customsqltype == 'SELECT_PAGE')#
-		PageSqlParam pageSqlParam = new PageSqlParam(sql.toString(), countSql.toString(), param);
+		
+		// 解析SQL表达式，获得真实SQL
+		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
+		String realCountSql = #{$app_factory.$classname}.resolveSqlJexl(countSql.toString(), param, data);
+		PageSqlParam pageSqlParam = new PageSqlParam(realSql, realCountSql, param);
 		// 获取页码和每页数量
 		int pagesize = data.getIntValue("_pagesize");
 		int pageindex = data.getIntValue("_pageindex");
@@ -119,7 +122,10 @@ public class #{$classname} {
 		return pageSqlParam;
 		#ifEnd#
 		#ifStart($customsqltype != 'SELECT_PAGE')#
-		SqlParam sqlParam = new SqlParam(sql.toString(), param);
+		
+		// 解析SQL表达式，获得真实SQL
+		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
+		SqlParam sqlParam = new SqlParam(realSql, param);
 		return sqlParam;
 		#ifEnd#
 	}

@@ -6,13 +6,11 @@ import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
 #forStart($imports, $import)#
 import #{$import};
 #forEnd#
-
-import com.teamide.dao.IDao;
-import com.teamide.param.DataParam;
-import com.teamide.jexl.JexlTool;
 
 #ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Service;
@@ -89,7 +87,7 @@ public class #{$classname} {
 #{$one.$validate_content}
 		#ifStart($one.type == 'DECISION' && $one.$conditions != null)#
 		#forStart($one.$conditions, $condition)#
-		if(ObjectUtil.isTrue(JexlTool.invoke("#{$condition.condition}", variableCache))){
+		if(ObjectUtil.isTrue(#{$app_factory.$classname}.getValueByJexlScript("#{$condition.condition}", variableCache))){
 			//#{$condition.$next.text}
 			#{$condition.$next.$method}(variableCache, invokeCache);
 		}
@@ -103,7 +101,7 @@ public class #{$classname} {
 		#ifStart($one.$dao.$is_batch == true)#
 		JSON json = variableCache;
 		#ifStart($one.$datarule != null)#
-			json = (JSON) JSON.toJSON(JexlTool.invoke("#{$one.$datarule}", variableCache));
+			json = (JSON) JSON.toJSON(#{$app_factory.$classname}.getValueByJexlScript("#{$one.$datarule}", variableCache));
 		#ifEnd#
 		#{$one.$dao.$result_classname} result = #{$one.$dao.$propertyname}.invoke(json, variableCache);
 		#ifEnd#

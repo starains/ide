@@ -121,6 +121,12 @@
 			that.bindPropertyEvent($li, column);
 			that.bindLiEvent($subUl, column, false);
 		});
+
+
+		var table = that.getTableByName(model.table);
+		model.appends = model.appends || [];
+		that.appendAppends($ul, model.appends, table);
+
 		return $box;
 	};
 

@@ -7,6 +7,10 @@ import com.teamide.variable.Variable;
 
 public class VariableGenerater extends CodeGenerater {
 
+	public VariableGenerater(String factory_classname) {
+		super(factory_classname);
+	}
+
 	public StringBuffer generate(int tab, List<Variable> variables) {
 		if (variables == null || variables.size() == 0) {
 			return content;
@@ -27,18 +31,20 @@ public class VariableGenerater extends CodeGenerater {
 		} else {
 			if (StringUtil.isNotTrimEmpty(variable.getValue())) {
 				content.append(getTab(tab));
-				content.append("value = JexlTool.invoke(\"" + variable.getValue() + "\", variableCache);").append("\n");
+				content.append("value = " + factory_classname + ".getValueByJexlScript(\"" + variable.getValue()
+						+ "\", variableCache);").append("\n");
 			} else {
 				content.append(getTab(tab));
-				content.append("value = JexlTool.invoke(\"" + variable.getName() + "\", variableCache);").append("\n");
+				content.append("value = " + factory_classname + ".getValueByJexlScript(\"" + variable.getName()
+						+ "\", variableCache);").append("\n");
 
 				if (StringUtil.isNotTrimEmpty(variable.getDefaultvalue())) {
 					content.append(getTab(tab));
 					content.append("if(value == null || StringUtil.isEmptyIfStr(value)) {").append("\n");
 
 					content.append(getTab(tab + 1));
-					content.append("value = JexlTool.invoke(\"" + variable.getDefaultvalue() + "\", variableCache);")
-							.append("\n");
+					content.append("value = " + factory_classname + ".getValueByJexlScript(\""
+							+ variable.getDefaultvalue() + "\", variableCache);").append("\n");
 
 					content.append(getTab(tab)).append("}").append("\n");
 				}

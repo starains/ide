@@ -1,8 +1,6 @@
 package #{$package};
 
-import com.teamide.dao.IDao;
-import com.teamide.param.DataParam;
-import com.teamide.jexl.JexlTool;
+import com.alibaba.fastjson.*;
 
 /**
  * Cache Dao

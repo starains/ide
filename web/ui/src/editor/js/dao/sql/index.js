@@ -95,4 +95,74 @@
 
 	};
 
+
+
+
+	DaoEditor.prototype.appendAppends = function($ul, appends, table) {
+		var that = this;
+		var $li = $('<li />');
+		$ul.append($li);
+
+		var $btn = $('<a class="mgr-10 coos-pointer color-green">添加追加SQL</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			var append = {};
+			appends.push(append);
+			append.ifrule = '';
+			append.sql = '';
+			that.changeModel();
+		});
+
+		$(appends).each(function(index, append) {
+
+			var $li = $('<li class="pdl-10"/>');
+			$ul.append($li);
+
+			var $subUl = $('<ul class=""/>');
+			$li.append($subUl);
+
+			var $li = $('<li class=""/>');
+			$subUl.append($li);
+
+
+			if (!coos.isEmpty(append.ifrule)) {
+				$li.append('<span class="pdlr-10">if (</span>');
+				var $input = $('<input class="input input-mini" name="ifrule" />');
+				$input.val(append.ifrule);
+				$li.append($input);
+				$li.append('<span class="pdlr-10">) //不填或值为true、1则为真</span>');
+
+				var $li = $('<li class="pdl-30"/>');
+				$subUl.append($li);
+
+			}
+
+			var $input = $('<input class="input" name="sql" />');
+			$input.val(append.sql);
+			$li.append($input);
+
+
+			if (coos.isEmpty(append.ifrule)) {
+				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="ifrule" property-value="1=1"  >设置条件</a>');
+			} else {
+				$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="ifrule" property-value="">清空条件</a>');
+			}
+
+
+			var $btn = $('<a class="mgl-10 coos-pointer color-orange">修改</a>');
+			$li.append($btn);
+			$btn.click(function() {});
+			var $btn = $('<a class="mgl-10 coos-pointer color-red">删除</a>');
+			$li.append($btn);
+			$btn.click(function() {
+				that.recordHistory();
+				appends.splice(appends.indexOf(append), 1);
+				that.changeModel();
+			});
+
+			that.bindPropertyEvent($li, append);
+			that.bindLiEvent($subUl, append, false);
+		});
+	};
 })();

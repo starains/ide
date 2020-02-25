@@ -116,6 +116,8 @@
 		wheres.is_update = true;
 		that.appendWhereLi($ul, wheres, table);
 
+		model.appends = model.appends || [];
+		that.appendAppends($ul, model.appends, table);
 		return $box;
 	};
 

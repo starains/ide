@@ -72,10 +72,10 @@ public class ServiceGenerater extends CodeGenerater {
 		String method = process.getName().replaceAll("\\.", "_");
 		$process.put("$method", method);
 
-		VariableGenerater variableGenerater = new VariableGenerater();
+		VariableGenerater variableGenerater = new VariableGenerater(getAppFactoryClassname());
 		$process.put("$variable_content", variableGenerater.generate(2, process.getVariables()));
 
-		ValidateGenerater validateGenerater = new ValidateGenerater();
+		ValidateGenerater validateGenerater = new ValidateGenerater(getAppFactoryClassname());
 		$process.put("$validate_content", validateGenerater.generate(2, process.getValidates()));
 
 		if (data.get("$process_" + process.getName()) != null) {

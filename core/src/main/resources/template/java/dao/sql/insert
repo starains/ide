@@ -12,7 +12,6 @@ import com.teamide.db.bean.*;
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
-import com.teamide.jexl.JexlTool;
 
 #ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Service;
@@ -43,7 +42,7 @@ public class #{$classname} {
 		if (json != null && !(json instanceof JSONArray)) {
 			cache.putAll((JSONObject) JSON.toJSON(json));
 		}
-		json = (JSON) JSON.toJSON(JexlTool.invoke("#{$datarule}", cache));
+		json = (JSON) JSON.toJSON(#{$app_factory.$classname}.getValueByJexlScript("#{$datarule}", cache));
 		#ifEnd#
 		#ifStart($database == null)#
 		IDao dao = #{$app_factory.$classname}.getDao(data);
@@ -123,6 +122,8 @@ public class #{$classname} {
 		StringBuffer columnSql = new StringBuffer();
 		// 新增语句字段映射值SQL
 		StringBuffer valueSql = new StringBuffer();
+		// SQL 追加语句
+		StringBuffer appendSql = new StringBuffer();
 		
 #{$content}
 
@@ -137,8 +138,12 @@ public class #{$classname} {
 		// 拼接新增SQL语句
 		sql.append("(").append(columnSql).append(")");
 		sql.append(" VALUES (").append(valueSql).append(")");
+		// 拼接追加SQL语句
+		sql.append(" ").append(appendSql);
 		
-		SqlParam sqlParam = new SqlParam(sql.toString(), param);
+		// 解析SQL表达式，获得真实SQL
+		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
+		SqlParam sqlParam = new SqlParam(realSql, param);
 		return sqlParam;
 	}
 }

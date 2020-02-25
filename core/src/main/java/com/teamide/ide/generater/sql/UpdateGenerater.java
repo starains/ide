@@ -11,8 +11,8 @@ public class UpdateGenerater extends SqlGenerater {
 
 	protected final Update update;
 
-	public UpdateGenerater(Update update) {
-		super(update);
+	public UpdateGenerater(String factory_classname, Update update) {
+		super(factory_classname, update);
 		this.update = update;
 	}
 
@@ -39,6 +39,12 @@ public class UpdateGenerater extends SqlGenerater {
 		content.append(getTab(tab)).append("// 组合条件语句").append("\n");
 		appendWhere(tab, update.getWheres());
 
+		if (update.getAppends() != null && update.getAppends().size() > 0) {
+			content.append("\n");
+			content.append(getTab(tab)).append("// 追加SQL").append("\n");
+			appendAppends(tab, update.getAppends());
+		}
+
 		return content;
 	}
 
@@ -54,8 +60,8 @@ public class UpdateGenerater extends SqlGenerater {
 			int t = tab;
 			if (StringUtil.isNotTrimEmpty(column.getIfrule())) {
 				content.append(getTab(tab));
-				content.append("if(ObjectUtil.isTrue(JexlTool.invoke(\"" + column.getIfrule() + "\", data))) {")
-						.append("\n");
+				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
+						+ column.getIfrule() + "\", data))) {").append("\n");
 				t++;
 			} else {
 			}
@@ -83,7 +89,9 @@ public class UpdateGenerater extends SqlGenerater {
 		} else {
 			if (StringUtil.isNotTrimEmpty(column.getValue())) {
 				content.append(getTab(tab));
-				content.append("value = JexlTool.invoke(\"" + column.getValue() + "\", data);").append("\n");
+				content.append(
+						"value = " + factory_classname + ".getValueByJexlScript(\"" + column.getValue() + "\", data);")
+						.append("\n");
 			} else {
 				content.append(getTab(tab));
 				content.append("value = data.get(\"" + column.getName() + "\");").append("\n");
@@ -93,7 +101,8 @@ public class UpdateGenerater extends SqlGenerater {
 					content.append("if(value == null || StringUtil.isEmptyIfStr(value)) {").append("\n");
 
 					content.append(getTab(tab + 1));
-					content.append("value = JexlTool.invoke(\"" + column.getDefaultvalue() + "\", data);").append("\n");
+					content.append("value = " + factory_classname + ".getValueByJexlScript(\""
+							+ column.getDefaultvalue() + "\", data);").append("\n");
 
 					content.append(getTab(tab)).append("}").append("\n");
 				}
