@@ -249,7 +249,7 @@ source.repository.file_data_map = {};
                     file.conflicting = change_file.status == 'conflicting';
                 }
             } else if (file.isFile) {
-                if (change_file.key.indexOf(file.path) >= 0) {
+                if (change_file.key == file.path) {
                     file.modified = change_file.status == 'modified';
                     file.untracked = change_file.status == 'untracked';
                     file.conflicting = change_file.status == 'conflicting';

@@ -58,6 +58,7 @@ source.repository.projects = [];
                 if (one.root) {
                     one.name = source.space.name;
                 }
+                one.deletes = [];
                 one.files = [];
                 if (one.maven && one.packaging != 'pom') {
                     one.format_folders = maven_format_folders;

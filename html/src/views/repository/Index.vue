@@ -22,6 +22,7 @@
     <GitRemote ref="git-remote"></GitRemote>
     <GitPlus ref="git-plus"></GitPlus>
     <GitPush ref="git-push"></GitPush>
+    <GitRevert ref="git-revert"></GitRevert>
     <StarterForm ref="starter-form"></StarterForm>
     <RunnerForm ref="runner-form"></RunnerForm>
     <BranchCreate ref="branch-create"></BranchCreate>
@@ -40,6 +41,7 @@ import GitCertificate from "@/views/repository/components/git/GitCertificate";
 import GitRemote from "@/views/repository/components/git/GitRemote";
 import GitPlus from "@/views/repository/components/git/GitPlus";
 import GitPush from "@/views/repository/components/git/GitPush";
+import GitRevert from "@/views/repository/components/git/GitRevert";
 import StarterForm from "@/views/repository/components/starter/StarterForm";
 import RunnerForm from "@/views/repository/components/runner/RunnerForm";
 import BranchCreate from "@/views/repository/components/branch/BranchCreate";
@@ -57,6 +59,7 @@ export default {
     GitRemote,
     GitPlus,
     GitPush,
+    GitRevert,
     StarterForm,
     RunnerForm,
     BranchCreate,
@@ -73,6 +76,7 @@ export default {
     source.gitCertificateForm = this.$refs["git-certificate"];
     source.gitPlusForm = this.$refs["git-plus"];
     source.gitPushForm = this.$refs["git-push"];
+    source.gitRevertForm = this.$refs["git-revert"];
     source.starterForm = this.$refs["starter-form"];
     source.runnerForm = this.$refs["runner-form"];
     source.branchCreateForm = this.$refs["branch-create"];

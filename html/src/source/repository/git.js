@@ -9,8 +9,8 @@ let git_nav = {
 source.repository.navs.push(git_nav);
 
 let git_plus_nav = {
-    title: 'Git提交', icon: 'coos-icon-plus-circle', value: 0, disabled: true, dot: false, type: 'success', onClick() {
-        source.gitPlusForm.show();
+    title: 'Git还原', icon: 'coos-icon-undo', value: 0, disabled: true, dot: false, type: 'success', onClick() {
+        source.gitRevertForm.show();
     }
 };
 source.repository.navs.push(git_plus_nav);
@@ -61,7 +61,17 @@ source.repository.navs.push(git_branche_nav);
 
         let change_files = source.repository.change_files;
         let status = value.status;
+        source.repository.projects.forEach(project => {
+            coos.trimArray(project.deletes);
+        });
         if (status) {
+
+            status.missing.forEach(path => {
+                let project = source.getProjectByPath(path);
+                if (project) {
+                    project.deletes.push(path);
+                }
+            });
 
             status.modified.forEach(path => {
                 change_files.push({
@@ -91,6 +101,8 @@ source.repository.navs.push(git_branche_nav);
                     label: path + "(冲突)"
                 });
             });
+
+
 
             git_push_nav.value = status.added.length + status.changed.length + status.removed.length;
             git_push_nav.dot = git_push_nav.value > 0;
@@ -185,22 +197,26 @@ source.repository.navs.push(git_branche_nav);
         if (coos.isEmpty(paths[0])) {
             paths[0] = ".";
         }
-        coos.confirm(
-            '确定还原路径<span class="pdlr-10 color-green">[' +
-            paths.join("；") +
-            "]</span>？"
-        ).then(res => {
+        let html = '';
+        html += '<div class="coos-row">';
+        html += '<div class="coos-row ft-14">确定还原以下路径？</div>';
+
+        paths.forEach(one => {
+            html += '<div class="coos-row color-grey ft-13 mgb-5" style="word-wrap: break-word;word-break: normal;">' + one + '</div>';
+        });
+
+        html += '</div>';
+        coos.confirm(html, { width: '500px' }).then(res => {
             var data = {};
             data.paths = paths;
 
             source.do("GIT_REVERT", data).then(res => {
                 if (res.errcode == 0) {
                     coos.success("还原成功！");
-                    let project = source.getProjectByPath(value.path);
-                    if (project == null) {
-                        return;
+                    let project = source.getProjectByPath(paths[0]);
+                    if (project != null) {
+                        source.reloadProject(project);
                     }
-                    source.reloadProject(project);
 
                     source.loadGitStatus();
                 } else {
