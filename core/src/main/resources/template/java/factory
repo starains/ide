@@ -78,7 +78,7 @@ public class #{$classname} {
 		} catch (JexlException.Variable e) {
 			logger.warn(e.getMessage());
 		}
-		return JEXL_PROCESSOR.invoke(jexlScript, data);
+		return null;
 	}
 
 	/**
