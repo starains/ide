@@ -33,7 +33,7 @@
                 ></i>
               </a>
             </div>
-            <div class="ft-14">{{coos.isEmpty(one.description)?'暂无描述':one.description}}</div>
+            <div class="ft-14">{{coos.isEmpty(one.comment)?'暂无描述':one.comment}}</div>
           </div>
           <div class="coos-flex-right">
             <a v-if="one.permission == 'MASTER'" class="color-orange mgl-5" title="管理员权限">

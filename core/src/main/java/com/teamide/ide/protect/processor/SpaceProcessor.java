@@ -72,11 +72,11 @@ public class SpaceProcessor extends Processor {
 		case SPACE_UPDATE:
 			spaceService = new SpaceService();
 			id = data.getString("id");
-			String type = data.getString("type");
+			String publictype = data.getString("publictype");
 			String comment = data.getString("comment");
 			space = new SpaceBean();
 			space.setId(id);
-			space.setType(type);
+			space.setPublictype(publictype);
 			space.setComment(comment);
 			spaceService.update(param.getSession(), space);
 

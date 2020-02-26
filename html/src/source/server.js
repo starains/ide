@@ -21,7 +21,7 @@
 
             });
         },
-        session() {
+        session(check) {
             return new Promise((resolve, reject) => {
                 let action = '/api/data/session';
 
@@ -33,19 +33,24 @@
                 source.server.post(action, { SPACE_PATH: SPACE_PATH }).then((status) => {
                     let value = status.value || {};
 
-                    if (source.installed) {
-                        delete value['installed'];
+                    if (check) {
+                        if (source.installed) {
+                            delete value['installed'];
+                        }
                     }
 
                     $(Object.keys(value)).each(function (index, key) {
                         source[key] = value[key];
                     });
                     source.CONFIGURE = value.CONFIGURE || {};
-                    source.data = {};
-                    if (value.ENUM_MAP && value.ENUM_MAP.MODEL_TYPE) {
-                        $(value.ENUM_MAP.MODEL_TYPE).each(function (index, one) {
-                            source.data[one.value] = null;
-                        });
+
+                    if (!check) {
+                        source.data = {};
+                        if (value.ENUM_MAP && value.ENUM_MAP.MODEL_TYPE) {
+                            $(value.ENUM_MAP.MODEL_TYPE).each(function (index, one) {
+                                source.data[one.value] = null;
+                            });
+                        }
                     }
                     resolve && resolve(status);
                 });
@@ -95,7 +100,7 @@
                     beforeSend: function () { },
                     success: function (o) {
                         if (o.value && !o.value.isLogin && source.LOGIN_USER_TOKEN) {
-                            source.server.session().then(() => {
+                            source.server.session(true).then(() => {
                                 source.do('AUTO_LOGIN', { token: source.LOGIN_USER_TOKEN }).then(res => {
                                     resolve && resolve(true);
                                 });

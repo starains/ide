@@ -54,6 +54,9 @@
           </el-radio-group>
         </el-form-item>
 
+        <el-form-item label="描述" prop="comment">
+          <el-input v-model="form.comment" type="textarea" autocomplete="off" :rows="5"></el-input>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="doSubmit('form')">提交</el-button>
           <el-button @click="goBack">返回</el-button>
@@ -70,7 +73,13 @@ export default {
     return {
       parents: [],
       source: source,
-      form: { name: "", parentid: "", type: "REPOSITORYS", publictype: "OPEN" },
+      form: {
+        name: "",
+        parentid: "",
+        type: "REPOSITORYS",
+        publictype: "OPEN",
+        comment: ""
+      },
       records: [],
       rules: {
         name: [
