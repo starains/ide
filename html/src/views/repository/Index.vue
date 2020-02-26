@@ -1,32 +1,51 @@
 <template>
   <div
-    class="repository-box"
-    v-loading="repository.loading"
-    :element-loading-text="repository.loading_msg"
+    class="app-repository"
+    :class="{'show' : $route.path == '/','repository-fullscreen':repository.fullscreen}"
   >
-    <div class="repository-top"></div>
-    <div class="repository-left">
-      <Project :repository="repository"></Project>
+    <div class="repository-screen-control-toolbar">
+      <a
+        class="repository-screen-control coos-icon coos-icon-fullscreen"
+        @click="source.fullScreen()"
+        v-if="!repository.fullscreen"
+        title="撑满屏幕"
+      ></a>
+      <a
+        class="repository-screen-control coos-icon coos-icon-fullscreen-exit"
+        @click="source.fullScreenExit()"
+        v-if="repository.fullscreen"
+        title="还原屏幕"
+      ></a>
     </div>
-    <div class="repository-center">
-      <Tabs :repository="repository"></Tabs>
-    </div>
-    <div class="repository-contextmenu">
-      <Contextmenu :contextmenu="repository.contextmenu"></Contextmenu>
-    </div>
+    <div
+      class="repository-box"
+      v-loading="repository.loading"
+      :element-loading-text="repository.loading_msg"
+    >
+      <div class="repository-top"></div>
+      <div class="repository-left">
+        <Project :repository="repository"></Project>
+      </div>
+      <div class="repository-center">
+        <Tabs :repository="repository"></Tabs>
+      </div>
+      <div class="repository-contextmenu">
+        <Contextmenu :contextmenu="repository.contextmenu"></Contextmenu>
+      </div>
 
-    <Starter :repository="repository"></Starter>
-    <Runner :repository="repository"></Runner>
+      <Starter :repository="repository"></Starter>
+      <Runner :repository="repository"></Runner>
 
-    <GitCertificate ref="git-certificate"></GitCertificate>
-    <GitRemote ref="git-remote"></GitRemote>
-    <GitPlus ref="git-plus"></GitPlus>
-    <GitPush ref="git-push"></GitPush>
-    <GitRevert ref="git-revert"></GitRevert>
-    <StarterForm ref="starter-form"></StarterForm>
-    <RunnerForm ref="runner-form"></RunnerForm>
-    <BranchCreate ref="branch-create"></BranchCreate>
-    <AppOptionForm ref="app-option-form"></AppOptionForm>
+      <GitCertificate ref="git-certificate"></GitCertificate>
+      <GitRemote ref="git-remote"></GitRemote>
+      <GitPlus ref="git-plus"></GitPlus>
+      <GitPush ref="git-push"></GitPush>
+      <GitRevert ref="git-revert"></GitRevert>
+      <StarterForm ref="starter-form"></StarterForm>
+      <RunnerForm ref="runner-form"></RunnerForm>
+      <BranchCreate ref="branch-create"></BranchCreate>
+      <AppOptionForm ref="app-option-form"></AppOptionForm>
+    </div>
   </div>
 </template>
 
@@ -87,6 +106,39 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  >
+.app-repository {
+  display: none;
+  background-color: #ddd;
+  position: absolute;
+  top: 105px;
+  left: 0px;
+  bottom: 0px;
+  width: 100%;
+}
+.app-repository.show {
+  display: block;
+}
+.app-repository.repository-fullscreen {
+  top: 0px;
+}
+.repository-screen-control-toolbar {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1;
+  font-size: 15px;
+  height: 20px;
+}
+.repository-screen-control {
+  cursor: pointer;
+  background: #989898;
+  color: #ffffff;
+  padding: 2px;
+}
+.repository-screen-control:hover {
+  background: #bdbdbd;
+  color: #fff;
+}
 .repository-box {
   position: relative;
   background-color: #ddd;

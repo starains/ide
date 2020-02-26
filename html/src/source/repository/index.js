@@ -10,7 +10,14 @@ import app from "@/source/repository/app";
 
 source.repository.branchs = [];
 source.repository.projects = [];
+source.repository.fullscreen = false;
 (function () {
+    source.fullScreen = function () {
+        source.repository.fullscreen = true;
+    };
+    source.fullScreenExit = function () {
+        source.repository.fullscreen = false;
+    };
     let maven_format_folders = ["src/main/java", "src/main/resources", "src/main/webapp"];
     source.loadRepository = function () {
         source.repository.loading = true;

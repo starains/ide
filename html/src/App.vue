@@ -21,9 +21,7 @@
           </template>
           <router-view></router-view>
           <template v-if="source.SPACE_TYPE =='REPOSITORYS'">
-            <div class="app-repository" :class="{'show' : $route.path == '/'}">
-              <Rpository ref="repository" :repository="source.repository"></Rpository>
-            </div>
+            <Rpository ref="repository" :repository="source.repository"></Rpository>
           </template>
         </template>
       </template>

@@ -11,12 +11,12 @@
               <span @click="toSpace(one)">{{one.name}}</span>
             </template>
             <template v-else>
-              <el-dropdown size="mini">
+              <el-dropdown size="mini" @command="toSpace">
                 <span class="el-dropdown-link" @click="toSpace(one)">{{one.name}}</span>
                 <el-dropdown-menu slot="dropdown" class="toolbar-menu">
                   <template v-for="level in one.levels">
-                    <el-dropdown-item :key="level.id+'-level'">
-                      <span class @click="toSpace(level)">{{level.name}}</span>
+                    <el-dropdown-item :key="level.id+'-level'" :command="level">
+                      <span class>{{level.name}}</span>
                     </el-dropdown-item>
                   </template>
                 </el-dropdown-menu>
@@ -27,12 +27,16 @@
       </template>
       <template v-if="source.branch != null">
         <el-breadcrumb-item :to="{path:''}">
-          <el-dropdown size="mini">
+          <el-dropdown size="mini" @command="toBranch">
             <span class="el-dropdown-link coos-pointer">{{source.branch}}</span>
             <el-dropdown-menu slot="dropdown" class="toolbar-menu">
               <template v-if="source.data.BRANCHS != null">
-                <el-dropdown-item v-for="branch in source.data.BRANCHS" :key="branch.id">
-                  <span @click="toBranch(branch.name)" class="coos-pointer">{{branch.name}}</span>
+                <el-dropdown-item
+                  v-for="branch in source.data.BRANCHS"
+                  :key="branch.id"
+                  :command="branch.name"
+                >
+                  <span class="coos-pointer">{{branch.name}}</span>
                 </el-dropdown-item>
               </template>
               <el-dropdown-item v-if="source.space.permission == 'MASTER'">

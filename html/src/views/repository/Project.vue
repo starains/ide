@@ -47,7 +47,7 @@
     </div>
     <el-input placeholder="输入关键字进行过滤" size="mini" v-model="searchText"></el-input>
     <div class="repository-project-tree-box">
-      <div class="repository-project-tree coos-scrollbar">
+      <div class="repository-project-tree">
         <el-tree
           ref="tree"
           draggable
@@ -631,6 +631,7 @@ export default {
             class={{ "rename-file": data.toRename }}
           >
             <span class="color-orange">
+              <i class="coos-icon coos-icon-appstore mgr-5" />
               {data.modified || data.untracked || data.conflicting ? (
                 <i
                   class="coos-icon mgr-5 coos-icon-right ft-12"
@@ -639,7 +640,6 @@ export default {
               ) : (
                 <i />
               )}
-              <i class="coos-icon coos-icon-appstore mgr-5" />
 
               <input
                 v-show={data.toRename}
@@ -685,6 +685,7 @@ export default {
             class={{ "rename-file": data.toRename }}
           >
             <span class="">
+              <i class="coos-icon coos-icon-folder-fill mgr-5 color-orange" />
               {data.modified || data.untracked || data.conflicting ? (
                 <i
                   class="coos-icon mgr-5 coos-icon-right ft-12"
@@ -693,7 +694,6 @@ export default {
               ) : (
                 <i />
               )}
-              <i class="coos-icon coos-icon-folder-fill mgr-5 color-orange" />
               <input
                 v-show={data.toRename}
                 value={data.name}
@@ -715,6 +715,9 @@ export default {
           on-dblclick={() => this.openFile(data)}
         >
           <span class="">
+            <i
+              class={"coos-icon coos-icon-file mgr-5 coos-icon-" + data.type}
+            />
             {data.modified || data.conflicting ? (
               <i
                 class="coos-icon mgr-5 coos-icon-right ft-12"
@@ -731,9 +734,6 @@ export default {
             ) : (
               <i />
             )}
-            <i
-              class={"coos-icon coos-icon-file mgr-5 coos-icon-" + data.type}
-            />
             <input
               v-show={data.toRename}
               value={data.name}

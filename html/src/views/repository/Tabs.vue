@@ -117,6 +117,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  >
+.repository-tab-box {
+  margin-right: 30px;
+}
 .repository-tab-box .el-tabs__header {
   margin: 0px;
 }
