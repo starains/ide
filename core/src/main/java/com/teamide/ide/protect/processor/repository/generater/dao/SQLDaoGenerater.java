@@ -1,5 +1,7 @@
 package com.teamide.ide.protect.processor.repository.generater.dao;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.app.AppContext;
 import com.teamide.app.bean.DaoBean;
@@ -11,6 +13,7 @@ import com.teamide.app.process.dao.sql.Delete;
 import com.teamide.app.process.dao.sql.Insert;
 import com.teamide.app.process.dao.sql.InsertColumn;
 import com.teamide.app.process.dao.sql.Select;
+import com.teamide.app.process.dao.sql.SubSelect;
 import com.teamide.app.process.dao.sql.Update;
 import com.teamide.ide.generater.sql.CustomGenerater;
 import com.teamide.ide.generater.sql.DeleteGenerater;
@@ -75,11 +78,15 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 
 	public void buildSQLData() {
 		DaoSqlProcess sqlProcess = (DaoSqlProcess) dao.getProcess();
+		if (sqlProcess.getSqlType().indexOf("SELECT_COUNT") >= 0) {
+			sqlProcess.setSqlType("SELECT_ONE");
+		}
 		data.put("$sqlType", sqlProcess.getSqlType());
 
 		data.put("$result_classname", "Map<String, Object>");
 		data.put("$database", null);
 		data.put("$is_batch", false);
+		data.put("$subselects", null);
 		if (sqlProcess.getSqlType().indexOf("BATCH") >= 0) {
 			data.put("$is_batch", true);
 			data.put("$result_classname", "List<Map<String, Object>>");
@@ -96,6 +103,21 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 				data.put("$result_classname", "PageResultBean<Map<String, Object>>");
 			} else if (sqlProcess.getSqlType().indexOf("LIST") >= 0) {
 				data.put("$result_classname", "List<Map<String, Object>>");
+			}
+
+			if (sqlProcess.getSelect().getSubselects() != null && sqlProcess.getSelect().getSubselects().size() > 0) {
+				JSONArray $subselects = new JSONArray();
+
+				for (SubSelect subSelect : sqlProcess.getSelect().getSubselects()) {
+					if (subSelect.getSelect() != null) {
+						JSONObject $subselect = (JSONObject) JSON.toJSON(subSelect);
+						$subselects.add($subselect);
+						SelectGenerater subSlectGenerater = new SelectGenerater(getAppFactoryClassname(),
+								subSelect.getSelect());
+						$subselect.put("$content", subSlectGenerater.generate(2));
+					}
+				}
+				data.put("$subselects", $subselects);
 			}
 
 		} else if (sqlProcess.getSqlType().indexOf("INSERT") >= 0) {

@@ -55,16 +55,18 @@ public class #{$classname} {
 		// 组合SQL Param
 		#ifStart($sqlType == 'SELECT_ONE')#
 		SqlParam sqlParam = buildSqlParam(data);
-		return dao.queryOne(sqlParam);
+		Map<String, Object> result = dao.queryOne(sqlParam);
 		#ifEnd#
 		#ifStart($sqlType == 'SELECT_LIST')#
 		SqlParam sqlParam = buildSqlParam(data);
-		return dao.queryList(sqlParam);
+		List<Map<String, Object>> result = dao.queryList(sqlParam);
 		#ifEnd#
 		#ifStart($sqlType == 'SELECT_PAGE')#
 		PageSqlParam pageSqlParam = buildSqlParam(data);
-		return dao.queryPage(pageSqlParam);
+		PageResultBean<Map<String, Object>> result = dao.queryPage(pageSqlParam);
 		#ifEnd#
+		format(result, data);
+		return result;
 	}
 	
 	/**
@@ -124,6 +126,90 @@ public class #{$classname} {
 		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
 		SqlParam sqlParam = new SqlParam(realSql, param);
 		return sqlParam;
+		#ifEnd#
+	}
+	
+	#ifStart($sqlType == 'SELECT_PAGE')#
+	/**
+	 * 格式化结果
+	 */
+	public void format(PageResultBean<Map<String, Object>> result, JSONObject data) throws Exception {
+		if(result == null) {
+			return;
+		}
+		for(Map<String, Object> one : result.getValue()){
+			format(one, data);
+		}
+	}
+	#ifEnd#
+	#ifStart($sqlType == 'SELECT_LIST')#
+	/**
+	 * 格式化结果
+	 */
+	public void format(List<Map<String, Object>> result, JSONObject data) throws Exception {
+		if(result == null) {
+			return;
+		}
+		for(Map<String, Object> one : result){
+			format(one, data);
+		}
+	}
+	#ifEnd#
+	
+	/**
+	 * 格式化结果
+	 */
+	public void format(Map<String, Object> result, JSONObject data_) throws Exception {
+		if(result == null) {
+			return;
+		}
+		JSONObject data = new JSONObject();
+		data.putAll(result);
+		data.putAll(data_);
+		
+		#ifStart($subselects != null)#
+		IDao dao = #{$app_factory.$classname}.getDao(data);
+		
+		// 用于暂存字段取到的值
+		Object value = null;
+		// SQL执行用到的参数，SQL中使用“:key”作占位符
+		Map<String, Object> param = new HashMap<String, Object>();
+		
+		// SQL语句
+		StringBuffer sql = new StringBuffer();
+		// SQL From语句
+		StringBuffer fromSql = new StringBuffer();
+		// SQL Where语句
+		StringBuffer whereSql = new StringBuffer();
+		// SQL Group语句
+		StringBuffer groupSql = new StringBuffer();
+		// SQL 追加语句
+		StringBuffer appendSql = new StringBuffer();
+		
+		#forStart($subselects, $subselect, $index)#
+		#ifStart($index > 0)#
+		param.clear();
+		sql.setLength(0);
+		fromSql.setLength(0);
+		whereSql.setLength(0);
+		groupSql.setLength(0);
+		appendSql.setLength(0);
+		#ifEnd#
+#{$subselect.$content}
+
+		// 拼接追加SQL语句
+		sql.append(" ").append(appendSql);
+		
+		// 解析SQL表达式，获得真实SQL
+		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
+		
+		#ifStart($subselect.queryone == true)#
+		result.put("#{$subselect.name}", dao.queryOne(new SqlParam(realSql, param)));
+		#ifEnd#
+		#ifStart($subselect.queryone == false)#
+		result.put("#{$subselect.name}", dao.queryList(new SqlParam(realSql, param)));
+		#ifEnd#
+		#forEnd#
 		#ifEnd#
 	}
 }
