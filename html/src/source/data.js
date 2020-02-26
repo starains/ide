@@ -127,7 +127,9 @@
             }
             if (source.isLogin) {
                 if (!coos.isEmpty(source.spaceid)) {
-                    source.load('SPACE');
+                    if (source.space == null) {
+                        source.load('SPACE');
+                    }
                 }
             }
             source.initPreferenceStyle();

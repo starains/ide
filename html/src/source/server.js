@@ -33,6 +33,10 @@
                 source.server.post(action, { SPACE_PATH: SPACE_PATH }).then((status) => {
                     let value = status.value || {};
 
+                    if (source.installed) {
+                        delete value['installed'];
+                    }
+
                     $(Object.keys(value)).each(function (index, key) {
                         source[key] = value[key];
                     });

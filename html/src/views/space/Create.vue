@@ -195,9 +195,13 @@ export default {
     this.typeChange();
     const id = this.$route.query.id;
 
-    let data = { pagesize: 1000 };
+    let data = { pagesize: 1000, pageindex: 1 };
     source.load("MASTER_SPACES", data).then(result => {
-      this.master_spaces = result.value || [];
+      coos.trimArray(this.master_spaces);
+      result.value = result.value || [];
+      result.value.forEach(one => {
+        this.master_spaces.push(one);
+      });
       this.typeChange();
     });
   }
