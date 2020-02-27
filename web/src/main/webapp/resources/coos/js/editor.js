@@ -266,7 +266,12 @@ window.app = app;
 		case "ATTRIBUTE":
 			editor = new coos.Editor.Attribute(options);
 			break;
-
+		case "CONTROL":
+			editor = new coos.Editor.Control(options);
+			break;
+		case "JEXL":
+			editor = new coos.Editor.Jexl(options);
+			break;
 		default:
 			editor = new coos.Editor(options);
 			break;
@@ -4279,6 +4284,46 @@ window.app = app;
 			}
 		});
 
+
+	};
+})();
+(function() {
+	var ControlEditor = coos.createClass(coos.Editor);
+	coos.Editor.Control = ControlEditor;
+
+	ControlEditor.prototype.isYaml = function() {
+		return true;
+	};
+	ControlEditor.prototype.buildDesign = function() {
+		var that = this;
+
+		var $design = this.$design;
+		$design.empty();
+
+		var $box = $('<div class="editor-control pd-20"></div>');
+		$design.append($box);
+
+		var model = this.model;
+
+	};
+})();
+(function() {
+	var JexlEditor = coos.createClass(coos.Editor);
+	coos.Editor.Jexl = JexlEditor;
+
+	JexlEditor.prototype.isYaml = function() {
+		return true;
+	};
+	JexlEditor.prototype.buildDesign = function() {
+		var that = this;
+
+		var $design = this.$design;
+		$design.empty();
+
+		var $box = $('<div class="editor-jexl pd-20"></div>');
+		$design.append($box);
+
+		var model = this.model;
 
 	};
 })();

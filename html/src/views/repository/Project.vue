@@ -574,7 +574,6 @@ export default {
       }
       file.toRename = true;
       this.toRename = true;
-      $input.focus();
       if (file.isNew) {
         let path = file.parentPath + "/" + new_name;
         if (coos.isEmpty(file.parentPath)) {
@@ -648,6 +647,7 @@ export default {
                 on-click={() => this.clickInput(data)}
                 on-blur={() => this.blurInput(data)}
                 on-change={() => this.changeInput(data)}
+                on-keyup={() => this.keyup(data, event)}
               />
               <span v-show={!data.toRename}>{data.name}</span>
               {data.app != null ? (
@@ -701,6 +701,7 @@ export default {
                 on-click={() => this.clickInput(data)}
                 on-blur={() => this.blurInput(data)}
                 on-change={() => this.changeInput(data)}
+                on-keyup={() => this.keyup(data, event)}
               />
               <span v-show={!data.toRename}>{data.name}</span>
             </span>
@@ -741,12 +742,29 @@ export default {
               on-click={() => this.clickInput(data)}
               on-blur={() => this.blurInput(data)}
               on-change={() => this.changeInput(data)}
+              on-keyup={() => this.keyup(data, event)}
             />
             <span v-show={!data.toRename}>{data.name}</span>
           </span>
           <span />
         </span>
       );
+    },
+    keyup(data, event) {
+      event = event || window.event;
+      //ESC
+      if (event.keyCode == "27") {
+        if (data != null) {
+          this.toRename = false;
+          data.toRename = false;
+        }
+      }
+      //ESC
+      if (event.keyCode == "13") {
+        if (data != null) {
+          this.blurInput(data);
+        }
+      }
     }
   },
   mounted() {
@@ -765,21 +783,6 @@ export default {
         let node = this.$refs.tree.getCurrentNode();
         if (node != null) {
           this.rename(node);
-        }
-      }
-      //ESC
-      if (event.keyCode == "27") {
-        let node = this.$refs.tree.getCurrentNode();
-        if (node != null) {
-          this.toRename = false;
-          node.toRename = false;
-        }
-      }
-      //ESC
-      if (event.keyCode == "13") {
-        let node = this.$refs.tree.getCurrentNode();
-        if (node != null) {
-          this.blurInput(node);
         }
       }
     });

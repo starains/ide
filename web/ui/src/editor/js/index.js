@@ -264,7 +264,12 @@ window.app = app;
 		case "ATTRIBUTE":
 			editor = new coos.Editor.Attribute(options);
 			break;
-
+		case "CONTROL":
+			editor = new coos.Editor.Control(options);
+			break;
+		case "JEXL":
+			editor = new coos.Editor.Jexl(options);
+			break;
 		default:
 			editor = new coos.Editor(options);
 			break;

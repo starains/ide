@@ -14,8 +14,6 @@
         if (project.app == null) {
             project.app = value.app;
         } else {
-            console.log(project.app)
-            console.log(value.app)
             Object.keys(project.app).forEach(key => {
                 if (coos.isObject(value.app[key])) {
                     if (project.app[key] == null) {

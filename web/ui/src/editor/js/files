@@ -68,3 +68,11 @@ plugin/html.js
 
 attribute/index.js
 attribute/html.js
+
+control/index.js
+control/method.js
+control/process.js
+control/html.js
+
+jexl/index.js
+jexl/html.js
