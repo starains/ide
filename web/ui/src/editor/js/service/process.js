@@ -70,7 +70,7 @@
 				label : "配置数据",
 				name : "data",
 				info : "此处配置传入数据，默认使用$data解析的数据",
-				"class-name" : "setJexlScriptBtn"
+				"class-name" : ""
 			}, {
 				"v-if" : "form.type == 'DAO' || form.type == 'SERVICE'",
 				label : "设置结果名称",

@@ -29,8 +29,8 @@
 	};
 	ServiceEditor.prototype.appendValidates = function($box, process) {
 		var that = this;
-		$box.append('<h4 class="title color-orange">验证（值:必填:类型:表达式:正则）</h4>');
-		var $list = $('<ul class="coos-list ft-13 pd-5 " />');
+		$box.append('<div class="title color-orange ft-13">验证（值:必填:类型:表达式:正则）</div>');
+		var $list = $('<ul class="coos-list ft-12 pd-5 " />');
 		$box.append($list);
 
 		process.validates = process.validates || [];
@@ -43,31 +43,44 @@
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(validate.value);
+
+			if (!coos.isEmpty(validate.value)) {
+				$span.text(validate.value);
+			}
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(coos.isTrue(validate.required));
+			$span.text(coos.isTrue(validate.required) ? '必填' : '非必填');
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(validate.type);
+
+			if (!coos.isEmpty(validate.type)) {
+				$span.text(validate.type);
+			}
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(validate.rule);
+
+			if (!coos.isEmpty(validate.rule)) {
+				$span.text(validate.rule);
+			}
+
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(validate.pattern);
+
+			if (!coos.isEmpty(validate.pattern)) {
+				$span.text(validate.pattern);
+			}
 
 			$li.append($card)
 
@@ -108,9 +121,9 @@
 		return {
 			width : "800px",
 			items : [ {
-				label : "值",
+				label : "值（Jexl）",
 				name : "value",
-				"class-name" : "setJexlScriptBtn"
+				"class-name" : ""
 			}, {
 				label : "必填",
 				name : "required",
@@ -119,9 +132,9 @@
 				label : "正则",
 				name : "pattern"
 			}, {
-				label : "表达式",
+				label : "表达式（Jexl）",
 				name : "rule",
-				"class-name" : "setJexlScriptBtn"
+				"class-name" : ""
 			}, {
 				label : "类型",
 				name : "type",

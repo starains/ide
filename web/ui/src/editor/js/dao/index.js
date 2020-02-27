@@ -22,6 +22,11 @@
 
 		var $li = $('<li />');
 		$ul.append($li);
+		$li.append('<span class="pdr-10 color-red">注意：此处值、默认值等为Jexl表达式，如果写字符串的值请用单引号，示例：\'字符串值\'。</span>');
+
+		$li = $('<li />');
+		$ul.append($li);
+
 		$li.append('<span class="pdr-10">名称</span>');
 		var $input = $('<input class="input" name="name" />');
 		$input.val(model.name);

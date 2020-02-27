@@ -29,8 +29,8 @@
 	};
 	ServiceEditor.prototype.appendVariables = function($box, process) {
 		var that = this;
-		$box.append('<h4 class="title color-orange">变量（名称:值:默认值）</h4>');
-		var $list = $('<ul class="coos-list ft-13 pd-5  " />');
+		$box.append('<div class="title color-orange ft-13">变量（名称:值:默认值）</div>');
+		var $list = $('<ul class="coos-list ft-12 pd-5  " />');
 		$box.append($list);
 
 		process.variables = process.variables || [];
@@ -43,19 +43,26 @@
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(variable.name);
+			if (!coos.isEmpty(variable.name)) {
+				$span.text(variable.name);
+			}
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(variable.value);
+
+			if (!coos.isEmpty(variable.value)) {
+				$span.text(variable.value);
+			}
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(variable.defaultvalue);
+			if (!coos.isEmpty(variable.defaultvalue)) {
+				$span.text(variable.defaultvalue);
+			}
 
 			$li.append($card)
 
@@ -90,13 +97,13 @@
 				label : "名称",
 				name : "name"
 			}, {
-				label : "值",
+				label : "值（Jexl）",
 				name : "value",
-				"class-name" : "setJexlScriptBtn"
+				"class-name" : ""
 			}, {
-				label : "默认值",
+				label : "默认值（Jexl）",
 				name : "defaultvalue",
-				"class-name" : "setJexlScriptBtn"
+				"class-name" : ""
 			}, {
 				label : "取值器",
 				name : "valuer"

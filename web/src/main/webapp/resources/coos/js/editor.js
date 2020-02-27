@@ -1385,6 +1385,11 @@ window.app = app;
 
 		var $li = $('<li />');
 		$ul.append($li);
+		$li.append('<span class="pdr-10 color-red">注意：此处值、默认值等为Jexl表达式，如果写字符串的值请用单引号，示例：\'字符串值\'。</span>');
+
+		$li = $('<li />');
+		$ul.append($li);
+
 		$li.append('<span class="pdr-10">名称</span>');
 		var $input = $('<input class="input" name="name" />');
 		$input.val(model.name);
@@ -2944,6 +2949,9 @@ window.app = app;
 			if ($processBox.length == 0) {
 				return;
 			}
+			if ($(e.target).closest('.process-node-toolbar').length > 0) {
+				return;
+			}
 			var $node = $(e.target).closest('.process-node');
 			var menus = [];
 			if ($node.length > 0) {
@@ -3184,7 +3192,7 @@ window.app = app;
 				label : "配置数据",
 				name : "data",
 				info : "此处配置传入数据，默认使用$data解析的数据",
-				"class-name" : "setJexlScriptBtn"
+				"class-name" : ""
 			}, {
 				"v-if" : "form.type == 'DAO' || form.type == 'SERVICE'",
 				label : "设置结果名称",
@@ -3322,23 +3330,40 @@ window.app = app;
 			var design_ = jsPlumb.getInstance();
 			$(processs).each(function(index, process) {
 				var $node = $('<div class="process-node"/>');
+				if (that.lastShowProcess == process) {
+					$node.addClass('show');
+				}
+				$node.click(function(e) {
+					if ($(e.target).closest('.process-node-toolbar').length == 1) {
+						return;
+					}
+					let $toolbar = $node.find('.process-node-toolbar');
+					if ($node.hasClass('show')) {
+						$node.removeClass('show');
+						that.lastShowProcess = null;
+					} else {
+						$processBox.find('.process-node').removeClass('show');
+						$node.addClass('show');
+						that.lastShowProcess = process;
+					}
+				});
 				var $toolbar = $('<div class="process-node-toolbar"/>');
 				var $ul = $('<div  />');
 				var $btn = $('<a class="coos-btn validate-btn coos-btn-xs color-green" title="验证">验证</a>');
 				$btn.click(function(e) {
 					that.toViewValidate(process);
 				});
-				$ul.append($btn)
+				//$ul.append($btn)
 				var $btn = $('<a class="coos-btn variable-btn coos-btn-xs color-green" title="变量">变量</a>');
 				$btn.click(function(e) {
 					that.toViewVariable(process);
 				});
-				$ul.append($btn)
+				//$ul.append($btn)
 				var $btn = $('<a class="coos-btn result-btn coos-btn-xs color-orange" title="结果">结果</a>');
 				$btn.click(function(e) {
 					that.toViewResult(process);
 				});
-				$ul.append($btn);
+				//$ul.append($btn);
 				if (process.type == 'START' || process.type == 'END') {
 
 				} else {
@@ -3346,12 +3371,12 @@ window.app = app;
 					$btn.click(function(e) {
 						that.toUpdateProcess(process);
 					});
-					$ul.append($btn)
+					//$ul.append($btn)
 					var $btn = $('<a class="coos-btn coos-btn-xs color-red" title="删除">删除</a>');
 					$btn.click(function(e) {
 						that.toDeleteProcess(process);
 					});
-					$ul.append($btn)
+				//$ul.append($btn)
 				}
 				$node.on('mousedown', function(e) {
 					if ($(e.target).closest('.process-node-toolbar').length > 0 ||
@@ -3362,6 +3387,15 @@ window.app = app;
 					}
 				});
 				$toolbar.append($ul);
+
+				var $validateBox = $('<div class="process-validate-box"/>');
+				$toolbar.append($validateBox);
+				that.appendValidates($validateBox, process);
+
+				var $variableBox = $('<div class="process-variable-box"/>');
+				$toolbar.append($variableBox);
+				that.appendVariables($variableBox, process);
+
 				$node.append($toolbar);
 				$node.attr('id', that.getIdByProcess(process));
 				$node.data('process', process);
@@ -3369,22 +3403,30 @@ window.app = app;
 				$node.append('<div class="ring" />');
 				var $content = $('<div class="content" />');
 				$node.append($content);
-
+				var $text = $('<div class="text" />');
 				switch (process.type) {
 				case "START":
 					break;
 				case "END":
 					break;
 				case "DECISION":
+					$text.append('<span class="pdlr-0 ft-14 color-green">决策：</span>');
 					//$content.append('<i class="icon coos-icon coos-icon-branches"></i>');
 					break;
 				case "CONDITION":
+					$text.append('<span class="pdlr-0 ft-14 color-green">条件：</span>');
 					//$content.append('<i class="icon coos-icon coos-icon-issuesclose"></i>');
 					break;
 				case "DAO":
+					$text.append('<span class="pdlr-0 ft-14 color-green">Dao：</span>');
 					//$content.append('<i class="icon coos-icon coos-icon-database"></i>');
 					break;
 				case "SUB_SERVICE":
+					$text.append('<span class="pdlr-0 ft-14 color-green">子服务：</span>');
+					//$content.append('<i class="icon coos-icon coos-icon-sever"></i>');
+					break;
+				case "ERROR_END":
+					$text.append('<span class="pdlr-0 ft-14 color-green">异常结束：</span>');
 					//$content.append('<i class="icon coos-icon coos-icon-sever"></i>');
 					break;
 				}
@@ -3395,14 +3437,11 @@ window.app = app;
 				}
 
 				if (process.text) {
-					var $text = $('<div class="text" />');
-					$text.text(process.text);
-					$content.append($text);
+					$text.append(process.text);
 				} else if (process.name) {
-					var $text = $('<div class="text" />');
-					$text.text(process.name);
-					$content.append($text);
+					$text.append(process.name);
 				}
+				$content.append($text);
 
 				$node.css('left', (process.left || 0) + 'px');
 				$node.css('top', (process.top || 0) + 'px');
@@ -3495,11 +3534,14 @@ window.app = app;
 			design_.draggable($processBox.find(".process-node "), {
 				rightButtonCanDrag : false,
 				stop : function(arg1, arg2) {
-					that.recordHistory();
 					var process = $(arg1.el).data('process');
+					if (process.top == $(arg1.el).position().top && process.left == $(arg1.el).position().left) {
+						return;
+					}
+					that.recordHistory();
 					process.top = $(arg1.el).position().top;
 					process.left = $(arg1.el).position().left;
-					that.changeModel();
+					that.changeModel(false);
 				}
 			});
 			// 监听所有的连接事件
@@ -3656,8 +3698,8 @@ window.app = app;
 	};
 	ServiceEditor.prototype.appendVariables = function($box, process) {
 		var that = this;
-		$box.append('<h4 class="title color-orange">变量（名称:值:默认值）</h4>');
-		var $list = $('<ul class="coos-list ft-13 pd-5  " />');
+		$box.append('<div class="title color-orange ft-13">变量（名称:值:默认值）</div>');
+		var $list = $('<ul class="coos-list ft-12 pd-5  " />');
 		$box.append($list);
 
 		process.variables = process.variables || [];
@@ -3670,19 +3712,26 @@ window.app = app;
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(variable.name);
+			if (!coos.isEmpty(variable.name)) {
+				$span.text(variable.name);
+			}
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(variable.value);
+
+			if (!coos.isEmpty(variable.value)) {
+				$span.text(variable.value);
+			}
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(variable.defaultvalue);
+			if (!coos.isEmpty(variable.defaultvalue)) {
+				$span.text(variable.defaultvalue);
+			}
 
 			$li.append($card)
 
@@ -3717,13 +3766,13 @@ window.app = app;
 				label : "名称",
 				name : "name"
 			}, {
-				label : "值",
+				label : "值（Jexl）",
 				name : "value",
-				"class-name" : "setJexlScriptBtn"
+				"class-name" : ""
 			}, {
-				label : "默认值",
+				label : "默认值（Jexl）",
 				name : "defaultvalue",
-				"class-name" : "setJexlScriptBtn"
+				"class-name" : ""
 			}, {
 				label : "取值器",
 				name : "valuer"
@@ -3812,8 +3861,8 @@ window.app = app;
 	};
 	ServiceEditor.prototype.appendValidates = function($box, process) {
 		var that = this;
-		$box.append('<h4 class="title color-orange">验证（值:必填:类型:表达式:正则）</h4>');
-		var $list = $('<ul class="coos-list ft-13 pd-5 " />');
+		$box.append('<div class="title color-orange ft-13">验证（值:必填:类型:表达式:正则）</div>');
+		var $list = $('<ul class="coos-list ft-12 pd-5 " />');
 		$box.append($list);
 
 		process.validates = process.validates || [];
@@ -3826,31 +3875,44 @@ window.app = app;
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(validate.value);
+
+			if (!coos.isEmpty(validate.value)) {
+				$span.text(validate.value);
+			}
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(coos.isTrue(validate.required));
+			$span.text(coos.isTrue(validate.required) ? '必填' : '非必填');
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(validate.type);
+
+			if (!coos.isEmpty(validate.type)) {
+				$span.text(validate.type);
+			}
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(validate.rule);
+
+			if (!coos.isEmpty(validate.rule)) {
+				$span.text(validate.rule);
+			}
+
 
 			$card.append('<span class="pdlr-2 ">:</span>');
 
 			var $span = $('<span class="pdlr-5 "></span>');
 			$card.append($span);
-			$span.text(validate.pattern);
+
+			if (!coos.isEmpty(validate.pattern)) {
+				$span.text(validate.pattern);
+			}
 
 			$li.append($card)
 
@@ -3891,9 +3953,9 @@ window.app = app;
 		return {
 			width : "800px",
 			items : [ {
-				label : "值",
+				label : "值（Jexl）",
 				name : "value",
-				"class-name" : "setJexlScriptBtn"
+				"class-name" : ""
 			}, {
 				label : "必填",
 				name : "required",
@@ -3902,9 +3964,9 @@ window.app = app;
 				label : "正则",
 				name : "pattern"
 			}, {
-				label : "表达式",
+				label : "表达式（Jexl）",
 				name : "rule",
-				"class-name" : "setJexlScriptBtn"
+				"class-name" : ""
 			}, {
 				label : "类型",
 				name : "type",

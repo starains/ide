@@ -181,6 +181,9 @@
 			if ($processBox.length == 0) {
 				return;
 			}
+			if ($(e.target).closest('.process-node-toolbar').length > 0) {
+				return;
+			}
 			var $node = $(e.target).closest('.process-node');
 			var menus = [];
 			if ($node.length > 0) {
