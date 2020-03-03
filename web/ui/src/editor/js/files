@@ -71,6 +71,8 @@ attribute/html.js
 
 control/index.js
 control/method.js
+control/variable.js
+control/validate.js
 control/process.js
 control/html.js
 

@@ -1,0 +1,142 @@
+package #{$package};
+
+#ifStart($usespringannotation == false)#
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+
+#ifEnd#
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.util.regex.Pattern;
+
+import com.alibaba.fastjson.*;
+
+import com.teamide.*;
+import com.teamide.bean.*;
+import com.teamide.util.*;
+
+import com.teamide.client.ClientHandler;
+import com.teamide.client.ClientSession;
+import com.teamide.exception.*;
+import com.teamide.param.DataParam;
+
+#ifStart($usespringannotation == true)#
+import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+#ifEnd#
+
+#forStart($imports, $import)#
+import #{$import};
+#forEnd#
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
+#forStart($propertys, $property)#
+import #{$property.$package}.#{$property.$classname};
+#forEnd#
+
+@SuppressWarnings("unused")
+#ifStart($usespringannotation == true)#
+@Controller
+#ifStart($requestmapping != null)#
+@RequestMapping("#{$requestmapping}")
+#ifEnd#
+public class #{$classname} {
+#ifEnd#
+#ifStart($usespringannotation == false)#
+@WebServlet(urlPatterns = "#{$requestmapping}")
+public class #{$classname} extends HttpServlet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+#ifEnd#
+	
+	#forStart($propertys, $property)#
+	// #{$property.$comment}
+		#ifStart($usespringannotation == true)#
+	@Autowired
+	#{$property.$classname} #{$property.$name};
+		#ifEnd#
+		#ifStart($usespringannotation == false)#
+	#{$property.$classname} #{$property.$name} = new #{$property.$classname}();
+		#ifEnd#
+	#forEnd#
+
+	#forStart($methods, $method)#
+	
+	/**
+	 * #{$method.name}
+	 * 说明：#{$method.comment}
+	 */
+	#ifStart($usespringannotation == true)#
+		#ifStart($method.requestmethod == null)#
+	@RequestMapping("#{$method.$requestmapping}")
+		#ifEnd#
+		#ifStart($method.requestmethod != null)#
+	@RequestMapping(path = "#{$method.$requestmapping}", method = {RequestMethod.#{$method.requestmethod}})
+		#ifEnd#
+	@ResponseBody
+		#ifStart($method.$userrequestbody == true)#
+	public Object #{$method.name}(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
+		#ifEnd#
+		#ifStart($method.$userrequestbody == false)#
+	public Object #{$method.name}(HttpServletRequest request, HttpServletResponse response) {
+		#ifEnd#
+	#ifEnd#
+	#ifStart($usespringannotation == false)#
+	public void invoke(HttpServletRequest request, HttpServletResponse response) {
+	#ifEnd#
+		Object result = null;
+		Exception exception = null;
+		try {
+			ClientSession session = ClientHandler.getSession(request);
+			#ifStart($method.$userrequestbody == true)#
+			DataParam param = new DataParam(body, session);
+			#ifEnd#
+			#ifStart($method.$userrequestbody == false)#
+			DataParam param = new DataParam(request, session);
+			#ifEnd#
+	
+			JSONObject data = new JSONObject();
+			if (param.getData() != null) {
+				data = (JSONObject) param.getData();
+			}
+			JSONObject variableCache = param.toVariableCache(data);
+			// 用于暂存字段取到的值
+			Object value = null;
+#{$method.$variable_content}
+#{$method.$validate_content}
+			#forStart($method.$processs, $process)#
+			#ifStart($process.$ifrule == null)#
+#{$process.$variable_content}
+#{$process.$validate_content}
+				#ifStart($process.$property != null)#
+			result = #{$process.$property.$name}.invoke(variableCache);
+				#ifEnd#
+			#ifEnd#
+			#ifStart($process.$ifrule != null)#
+			if(ObjectUtil.isTrue(#{$app_factory.$classname}.getValueByJexlScript("#{$process.$ifrule}", variableCache))){
+#{$process.$variable_content}
+#{$process.$validate_content}
+				#ifStart($process.$property != null)#
+				result = #{$process.$property.$name}.invoke(variableCache);
+				#ifEnd#
+			}
+			#ifEnd#
+			#forEnd#
+		} catch (Exception e) {
+			exception = e;
+		}
+		
+		return #{$app_factory.$classname}.toStatus(result, exception);
+	}
+	#forEnd#
+
+}

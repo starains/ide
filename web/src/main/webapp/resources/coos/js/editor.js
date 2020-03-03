@@ -4300,10 +4300,541 @@ window.app = app;
 		var $design = this.$design;
 		$design.empty();
 
-		var $box = $('<div class="editor-control pd-20"></div>');
+		var $box = $('<div class="editor-control editor-case"></div>');
 		$design.append($box);
 
 		var model = this.model;
+
+		var $ul = $('<ul />')
+		$box.append($ul);
+
+		var $li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10 color-red">注意：此处值、默认值等为Jexl表达式，如果写字符串的值请用单引号，示例：\'字符串值\'。</span>');
+
+		$li = $('<li />');
+		$ul.append($li);
+
+		$li.append('<span class="pdr-10">名称</span>');
+		var $input = $('<input class="input" name="name" />');
+		$input.val(model.name);
+		$li.append($input);
+
+		$li.append('<span class="pdr-10">说明</span>');
+		var $input = $('<input class="input" name="comment" />');
+		$input.val(model.comment);
+		$li.append($input);
+		that.bindLiEvent($li, model, false);
+
+
+		$li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10">@Controller</span>');
+
+		$li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10">@RequestMapping("</span>');
+		var $input = $('<input class="input" name="requestmapping" />');
+		$input.val(model.requestmapping);
+		$li.append($input);
+		$li.append('<span class="pdr-10">")（不填写则不会加该注解）</span>');
+
+		that.bindLiEvent($li, model, false);
+
+
+		$li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10">public class Controller {</span>');
+
+		var $btn = $('<a class="mgr-10 coos-pointer color-green">添加方法</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			var method = {};
+			model.methods.push(method);
+			method.name = 'method_' + model.methods.length;
+			that.changeModel();
+		});
+
+		model.methods = model.methods || [];
+
+		$li = $('<li />');
+		$ul.append($li);
+		let $methodUl = $('<ul />');
+		$li.append($methodUl);
+		model.methods.forEach(method => {
+			var $view = this.createMethodView(method, model.methods);
+			$methodUl.append($view);
+		});
+
+		$li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10">}</span>');
+	};
+})();
+(function() {
+	var ControlEditor = coos.Editor.Control;
+	ControlEditor.prototype.createMethodView = function(method, methods) {
+		var that = this;
+		var $box = $('<li />');
+
+		var $ul = $('<ul class="sub1"/>');
+		$box.append($ul);
+
+		var $li = $('<li />');
+		$ul.append($li);
+
+
+		$li.append('<span class="pdr-10">// </span>');
+		var $input = $('<input class="input" name="comment" />');
+		$input.val(method.comment);
+		$li.append($input);
+		that.bindLiEvent($li, method, false);
+
+
+		$li = $('<li />');
+		$ul.append($li);
+
+
+		$li.append('<span class="pdr-10">@RequestMapping(path = "</span>');
+		var $input = $('<input class="input" name="requestmapping" />');
+		$input.val(method.requestmapping);
+		$li.append($input);
+		$li.append('<span class="pdr-10">", method = </span>');
+
+		var $input = $('<select class="input mgr-10" name="requestmethod" ></select>');
+		$li.append($input);
+		$input.append('<option value="">全部</option>');
+		$(that.ENUM_MAP.HTTP_METHOD).each(function(index, one) {
+			$input.append('<option value="' + one.value + '">' + one.text + '</option>');
+		});
+		$input.val(method.requestmethod);
+		$li.append($input);
+
+		$li.append('<span class="pdr-10">) </span>');
+
+		that.bindLiEvent($li, method, false);
+
+		$li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10">@ResponseBody</span>');
+
+		$li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10">public Object </span>');
+		var $input = $('<input class="input" name="name" />');
+		$input.val(method.name);
+		$li.append($input);
+
+		if (coos.isTrue(method.userrequestbody)) {
+			$li.append('<span class="pdr-10">(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) { </span>');
+		} else {
+			$li.append('<span class="pdr-10">(HttpServletRequest request, HttpServletResponse response) { </span>');
+		}
+
+
+		if (coos.isTrue(method.userrequestbody)) {
+			$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="userrequestbody" property-value="false"  >不读取body</a>');
+		} else {
+			$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="userrequestbody" property-value="true">读取body</a>');
+		}
+
+		var $btn = $('<a class="mgl-10 coos-pointer color-red">删除</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			methods.splice(methods.indexOf(method), 1);
+			that.changeModel();
+		});
+
+		that.bindPropertyEvent($li, method);
+
+		that.bindLiEvent($li, method, false);
+
+
+		$li = $('<li />');
+		$ul.append($li);
+
+		let $subUl = $('<ul class="sub2"/>');
+		$li.append($subUl);
+
+		$li = $('<li />');
+		$subUl.append($li);
+		$li.append('<span class="pdr-10 ">Object result = null;</span>');
+
+		$li = $('<li />');
+		$subUl.append($li);
+		$li.append('<span class="pdr-10 ">Object value = null;</span>');
+
+
+		$li = $('<li />');
+		$subUl.append($li);
+		$li.append('<span class="pdr-10 ">ClientSession session = ClientHandler.getSession(request);</span>');
+
+		$li = $('<li />');
+		$subUl.append($li);
+		if (coos.isTrue(method.userrequestbody)) {
+			$li.append('<span class="pdr-10 ">DataParam param = new DataParam(body, session);</span>');
+		} else {
+			$li.append('<span class="pdr-10 ">DataParam param = new DataParam(request, session);</span>');
+		}
+		$li = $('<li />');
+		$subUl.append($li);
+		$li.append('<span class="pdr-10 ">JSONObject data = param.getData();</span>');
+
+		$li = $('<li />');
+		$subUl.append($li);
+		$li.append('<span class="pdr-10 ">JSONObject variableCache = param.toVariableCache(data);</span>');
+
+
+		method.variables = method.variables || [];
+		method.validates = method.validates || [];
+		method.processs = method.processs || [];
+
+
+		$li = $('<li class="mgt-10"/>');
+		$subUl.append($li);
+		$li.append('<span class="pdr-10 color-orange">// 定义变量存入variableCache对象，后续只需要根据名称就能获取到值</span>');
+
+		var $btn = $('<a class="mgr-10 coos-pointer color-green">添加</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			var variable = {};
+			method.variables.push(variable);
+			that.changeModel();
+		});
+
+		method.variables.forEach(variable => {
+			$li = $('<li />');
+			$subUl.append($li);
+			var $view = this.createMethodVariableView(variable, method.variables);
+			$li.append($view);
+		});
+
+
+
+		$li = $('<li class="mgt-10"/>');
+		$subUl.append($li);
+		$li.append('<span class="pdr-10 color-orange">// 定义一个验证，可以验证参数抛出相应的异常</span>');
+
+		var $btn = $('<a class="mgr-10 coos-pointer color-green">添加</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			var validate = {};
+			validate.required = true;
+			method.validates.push(validate);
+			that.changeModel();
+		});
+
+		method.validates.forEach(validate => {
+			$li = $('<li />');
+			$subUl.append($li);
+			var $view = this.createMethodValidateView(validate, method.validates);
+			$li.append($view);
+		});
+
+
+		$li = $('<li />');
+		$subUl.append($li);
+		$li.append('<span class="pdr-10 color-orange">// 执行Service 或者 Dao</span>');
+
+		var $btn = $('<a class="mgr-10 coos-pointer color-green">添加</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			var process = {};
+			method.processs.push(process);
+			that.changeModel();
+		});
+
+		method.processs.forEach(process => {
+			$li = $('<li />');
+			$subUl.append($li);
+			var $view = this.createMethodProcessView(process, method.processs);
+			$li.append($view);
+		});
+
+
+		$li = $('<li />');
+		$subUl.append($li);
+		$li.append('<span class="pdr-10">reutrn AppFactory.toStatus(result, exception);</span>');
+
+		$li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10">} </span>');
+		return $box;
+
+	};
+})();
+(function() {
+	var ControlEditor = coos.Editor.Control;
+
+	ControlEditor.prototype.createMethodVariableView = function(variable, variables) {
+		var that = this;
+		var $box = $('<li />');
+
+		var $ul = $('<ul class=""/>');
+		$box.append($ul);
+
+
+		var $li = $('<li />');
+		$ul.append($li);
+
+
+		$li.append('<span class="pdr-10">variableCache.put("</span>');
+		var $input = $('<input class="input" name="name" />');
+		$input.val(variable.name);
+		$li.append($input);
+		$li.append('<span class="pdr-10">", AppFactory.getValueByJexlScript("</span>');
+
+		$li.append('<span class="pdr-10"></span>');
+		var $input = $('<input class="input" name="value" />');
+		$input.val(variable.value);
+		$li.append($input);
+
+		$li.append('<span class="pdr-10">或默认值</span>');
+		var $input = $('<input class="input" name="defaultvalue" />');
+		$input.val(variable.defaultvalue);
+		$li.append($input);
+
+		$li.append('<span class="pdr-10">", variableCache) 自定义类取值</span>');
+		var $input = $('<input class="input" name="valuer" />');
+		$input.val(variable.valuer);
+		$li.append($input);
+
+		$li.append('<span class="pdr-10">);</span>');
+
+		that.bindLiEvent($li, variable, false);
+
+		var $btn = $('<a class="mgl-10 coos-pointer color-red">删除</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			variables.splice(variables.indexOf(variable), 1);
+			that.changeModel();
+		});
+		return $box;
+
+	};
+})();
+(function() {
+	var ControlEditor = coos.Editor.Control;
+	ControlEditor.prototype.createMethodValidateView = function(validate, validates) {
+		var that = this;
+		var $box = $('<li />');
+
+		var $ul = $('<ul class="sub2"/>');
+		$box.append($ul);
+
+		var $li = $('<li />');
+		$ul.append($li);
+
+		let $baseUl = $ul;
+
+		//		$li.append('<span class="pdr-10">判断表达式（Jexl）</span>');
+		//		var $input = $('<input class="input" name="rule" />');
+		//		$input.val(validate.rule);
+		//		$li.append($input);
+
+		if (!coos.isEmpty(validate.rule)) {
+			$li.append('<span class="pdr-10">if (</span>');
+			var $input = $('<input class="input " name="rule" />');
+			$input.val(validate.rule);
+			$li.append($input);
+			$li.append('<span class="pdlr-10">) {//值为true、1则为真</span>');
+
+			that.bindLiEvent($li, validate, false);
+
+			$li = $('<li class="pdl-30"/>');
+			$ul.append($li);
+			$ul = $('<ul />');
+			$li.append($ul);
+			$li = $('<li />');
+			$ul.append($li);
+		} else {
+			$li.append('<span class="pdr-10">value = AppFactory.getValueByJexlScript("</span>');
+			var $input = $('<input class="input" name="value" />');
+			$input.val(validate.value);
+			$li.append($input);
+			that.bindLiEvent($li, validate, false);
+
+			$li.append('<span class="pdr-10">", variableCache);</span>');
+			$li = $('<li />');
+			$ul.append($li);
+
+			$li.append('<span class="pdr-10">if (</span>');
+			if (coos.isTrue(validate.required)) {
+				$li.append('<span class="pdlr-10">(value == null || StringUtil.isEmptyIfStr(value))</span>');
+			} else {
+
+			}
+
+			if (!coos.isEmpty(validate.pattern)) {
+				if (coos.isTrue(validate.required)) {
+					$li.append('<span class="pdlr-10"> || </span>');
+				} else {
+					$li.append('<span class="pdlr-10">value != null && </span>');
+				}
+				$li.append('<span class="pdr-10">!Pattern.matches("</span>');
+				var $input = $('<input class="input" name="pattern" />');
+				$input.val(validate.pattern);
+				$li.append($input);
+				$li.append('<span class="pdlr-10">", String.valueOf(value))</span>');
+			}
+
+			$li.append('<span class="pdlr-10">) {(</span>');
+
+			that.bindLiEvent($li, validate, false);
+
+			$li = $('<li class="pdl-30"/>');
+			$ul.append($li);
+			$ul = $('<ul />');
+			$li.append($ul);
+			$li = $('<li />');
+			$ul.append($li);
+		}
+
+		$li.append('<span class="pdr-10">throw new FieldValidateException("</span>');
+		var $input = $('<input class="input" name="errcode" />');
+		$input.val(validate.errcode);
+		$li.append($input);
+
+		$li.append('<span class="pdr-10">" 或  "-1", "</span>');
+		var $input = $('<input class="input" name="errmsg" />');
+		$input.val(validate.errmsg);
+		$li.append($input);
+
+		that.bindLiEvent($li, validate, false);
+
+		$li.append('<span class="pdr-10">");</span>');
+
+		if (coos.isEmpty(validate.rule)) {
+			$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="rule" property-value="1=1"  >设值表达式</a>');
+
+			if (coos.isTrue(validate.required)) {
+				$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="required" property-value="false"  >设为非必填</a>');
+			} else {
+				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="required" property-value="true">设为必填</a>');
+			}
+			if (coos.isEmpty(validate.pattern)) {
+				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="pattern" property-value="^*$"  >设置正则</a>');
+			} else {
+				$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="pattern" property-value="">去掉正则</a>');
+			}
+		} else {
+			$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="rule" property-value=""  >去掉表达式</a>');
+
+		}
+
+		that.bindPropertyEvent($li, validate);
+
+		var $btn = $('<a class="mgl-10 coos-pointer color-red">删除</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			validates.splice(validates.indexOf(validate), 1);
+			that.changeModel();
+		});
+
+		$li = $('<li />');
+		$baseUl.append($li);
+		$li.append('<span class="pdr-10">}</span>');
+		return $box;
+
+	};
+})();
+(function() {
+	var ControlEditor = coos.Editor.Control;
+	ControlEditor.prototype.createMethodProcessView = function(process, processs) {
+		var that = this;
+		var $box = $('<li />');
+
+		var $ul = $('<ul class="sub2"/>');
+		$box.append($ul);
+
+		var $li = $('<li />');
+		$ul.append($li);
+
+		if (!coos.isEmpty(process.ifrule)) {
+
+			$li.append('<span class="pdlr-10">if (</span>');
+			var $input = $('<input class="input " name="ifrule" />');
+			$input.val(process.ifrule);
+			$li.append($input);
+			$li.append('<span class="pdlr-10">) //不填或值为true、1则为真</span>');
+
+			$li = $('<li class="pdl-30"/>');
+			$ul.append($li);
+			$ul = $('<ul />');
+			$li.append($ul);
+			$li = $('<li />');
+			$ul.append($li);
+		}
+
+		$li.append('<span class="pdr-10">// </span>');
+		var $input = $('<input class="input" name="comment" />');
+		$input.val(process.comment);
+		$li.append($input);
+		that.bindLiEvent($li, process, true);
+
+		$li = $('<li />');
+		$ul.append($li);
+
+		process.type = process.type || 'SERVICE';
+		$li.append('<span class="pdr-10">result = </span>');
+		var $input = $('<select class="input mgr-10" name="type" ></select>');
+		$li.append($input);
+		$input.append('<option value="SERVICE">执行Service</option>');
+		$input.append('<option value="DAO">执行Dao</option>');
+		$input.val(process.type);
+		$li.append($input);
+
+		if (process.type == 'SERVICE') {
+			$li.append('<span class="pdr-10"></span>');
+			var $input = $('<input class="input" name="servicename" />');
+			app.autocomplete({
+				$input : $input,
+				datas : that.getOptions('SERVICE')
+			})
+			$input.val(process.servicename);
+			$li.append($input);
+		} else if (process.type == 'DAO') {
+			$li.append('<span class="pdr-10"></span>');
+			var $input = $('<input class="input" name="daoname" />');
+			app.autocomplete({
+				$input : $input,
+				datas : that.getOptions('DAO')
+			})
+			$input.val(process.daoname);
+			$li.append($input);
+
+		}
+
+		$li.append('<span class="pdr-10">.invoke(variableCache);</span>');
+
+		if (coos.isEmpty(process.ifrule)) {
+			$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="ifrule" property-value="1=1"  >设置条件</a>');
+		} else {
+			$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="ifrule" property-value="">清空条件</a>');
+		}
+
+		var $btn = $('<a class="mgl-10 coos-pointer color-red">删除</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			processs.splice(processs.indexOf(process), 1);
+			that.changeModel();
+		});
+
+
+		that.bindPropertyEvent($li, process);
+
+
+		that.bindLiEvent($li, process, true);
+
+		return $box;
 
 	};
 })();

@@ -13,12 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.bean.ResultBean;
-import com.teamide.bean.Status;
+import com.teamide.bean.*;
 import com.teamide.client.ClientHandler;
 import com.teamide.client.ClientSession;
 import com.teamide.exception.BaseException;
 import com.teamide.param.DataParam;
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
 
 #ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,7 @@ import #{$import};
 
 import #{$dao.$package}.#{$dao.$classname};
 
+@SuppressWarnings("unused")
 #ifStart($usespringannotation == true)#
 @Controller
 public class #{$classname} {
@@ -77,6 +79,7 @@ public class #{$classname} extends HttpServlet {
 	public void invoke(HttpServletRequest request, HttpServletResponse response) {
 	#ifEnd#
 		Object result = null;
+		Exception exception = null;
 		try {
 			ClientSession session = ClientHandler.getSession(request);
 			DataParam param = new DataParam(request, session);
@@ -94,29 +97,14 @@ public class #{$classname} extends HttpServlet {
 			result = #{$dao.$propertyname}.invoke(variableCache);
 			#ifEnd#
 		} catch (Exception e) {
-			Status error = Status.FAIL();
-			error.setErrmsg(e.getMessage());
-			if (e instanceof BaseException) {
-				BaseException base = (BaseException) e;
-				error.setErrcode(base.getErrcode());
-				error.setErrmsg(base.getErrmsg());
-			}
-			result = error;
+			exception = e;
 		}
-
-		if (result == null) {
-			result = Status.SUCCESS();
-		}
-		if (!(result instanceof ResultBean)) {
-			Status status = Status.SUCCESS();
-			status.setValue(result);
-			result = status;
-		}
+		
 		#ifStart($usespringannotation == true)#
-		return result;
+		return #{$app_factory.$classname}.toStatus(result, exception);
 		#ifEnd#
 		#ifStart($usespringannotation == false)#
-		ResponseUtil.outJSON(response, result);
+		ResponseUtil.outJSON(response, #{$app_factory.$classname}.toStatus(result, exception));
 		#ifEnd#
 	}
 

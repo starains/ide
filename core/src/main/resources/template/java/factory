@@ -1,5 +1,7 @@
 package #{$package};
 
+import com.teamide.*;
+import com.teamide.bean.*;
 import com.teamide.dao.IDao;
 import com.teamide.exception.*;
 import com.teamide.factory.DatabaseFactory;
@@ -19,6 +21,7 @@ import com.alibaba.fastjson.*;
  * AppFactory
  * 应用工厂
  */
+@SuppressWarnings("unused")
 public class #{$classname} {
 	
 	static Logger logger = LogUtil.get();
@@ -102,6 +105,37 @@ public class #{$classname} {
 			}
 		}
 		return sql;
+	}
+	
+	
+	/**
+	 * 将结果转成status
+	 * 
+	 * @param result
+	 *            结果
+	 * @return status 转后的返回
+	 */
+	public static Status toStatus(Object result, Exception e) {
+		if (e != null) {
+			Status error = Status.FAIL();
+			error.setErrmsg(e.getMessage());
+			if (e instanceof BaseException) {
+				BaseException base = (BaseException) e;
+				error.setErrcode(base.getErrcode());
+				error.setErrmsg(base.getErrmsg());
+			} else if (e instanceof NullPointerException) {
+				error.setErrmsg("null pointer exception.");
+				e.printStackTrace();
+			}
+			return error;
+		}
+		Status status = Status.SUCCESS();
+		if (result != null) {
+			if (!(result instanceof ResultBean)) {
+				status.setValue(result);
+			}
+		}
+		return status;
 	}
 
 }

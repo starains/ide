@@ -31,9 +31,6 @@ public class ValidateGenerater extends CodeGenerater {
 			content.append(getTab(tab));
 			content.append("new " + validate.getValidator() + "().validate();").append("\n");
 		} else {
-			content.append(getTab(tab));
-			content.append("value = " + factory_classname + ".getValueByJexlScript(\"" + validate.getValue()
-					+ "\", variableCache);").append("\n");
 			String errcode = validate.getErrcode();
 			String errmsg = validate.getErrmsg();
 			if (StringUtil.isEmpty(errcode)) {
@@ -42,35 +39,52 @@ public class ValidateGenerater extends CodeGenerater {
 			if (StringUtil.isEmpty(errmsg)) {
 				errmsg = "field validation is fail.";
 			}
-			if (ObjectUtil.isTrue(validate.getRequired())) {
-				content.append(getTab(tab)).append("if(value == null || StringUtil.isEmptyIfStr(value)) {")
-						.append("\n");
+			if (StringUtil.isNotEmpty(validate.getRule())) {
+
+				content.append(getTab(tab)).append("if(ObjectUtil.isTrue(" + factory_classname
+						+ ".getValueByJexlScript(\"" + validate.getRule() + "\", variableCache))) {").append("\n");
 				content.append(getTab(tab + 1))
 						.append("throw new FieldValidateException(\"" + errcode + "\", \"" + errmsg + "\");")
 						.append("\n");
 				content.append(getTab(tab)).append("}").append("\n");
-			}
-			if (StringUtil.isNotEmpty(validate.getType())) {
-				String type = validate.getType();
+			} else {
+				content.append(getTab(tab));
+				content.append("value = " + factory_classname + ".getValueByJexlScript(\"" + validate.getValue()
+						+ "\", variableCache);").append("\n");
+				if (ObjectUtil.isTrue(validate.getRequired())) {
+					content.append(getTab(tab)).append("if(value == null || StringUtil.isEmptyIfStr(value)) {")
+							.append("\n");
+					content.append(getTab(tab + 1))
+							.append("throw new FieldValidateException(\"" + errcode + "\", \"" + errmsg + "\");")
+							.append("\n");
+					content.append(getTab(tab)).append("}").append("\n");
+				}
+				if (StringUtil.isNotEmpty(validate.getType())) {
+					String type = validate.getType();
 
-				content.append(getTab(tab)).append("if(Pattern.matches(com.teamide.variable.enums.ValueType.get(\""
-						+ type + "\").getPattern(), String.valueOf(value)) {").append("\n");
-				content.append(getTab(tab + 1))
-						.append("throw new FieldValidateException(\"" + errcode + "\", \"" + errmsg + "\");")
-						.append("\n");
-				content.append(getTab(tab)).append("}").append("\n");
-			}
-			if (StringUtil.isNotEmpty(validate.getPattern())) {
-				String pattern = validate.getPattern();
+					content.append(getTab(tab))
+							.append("if(value != null && !Pattern.matches(com.teamide.variable.enums.ValueType.get(\""
+									+ type + "\").getPattern(), String.valueOf(value))) {")
+							.append("\n");
+					content.append(getTab(tab + 1))
+							.append("throw new FieldValidateException(\"" + errcode + "\", \"" + errmsg + "\");")
+							.append("\n");
+					content.append(getTab(tab)).append("}").append("\n");
+				}
+				if (StringUtil.isNotEmpty(validate.getPattern())) {
+					String pattern = validate.getPattern();
 
-				content.append(getTab(tab)).append("if(Pattern.matches(\"" + pattern + "\"), String.valueOf(value)) {")
-						.append("\n");
-				content.append(getTab(tab + 1))
-						.append("throw new FieldValidateException(\"" + errcode + "\", \"" + errmsg + "\");")
-						.append("\n");
-				content.append(getTab(tab)).append("}").append("\n");
+					content.append(getTab(tab)).append(
+							"if(value != null && !Pattern.matches(\"" + pattern + "\", String.valueOf(value))) {")
+							.append("\n");
+					content.append(getTab(tab + 1))
+							.append("throw new FieldValidateException(\"" + errcode + "\", \"" + errmsg + "\");")
+							.append("\n");
+					content.append(getTab(tab)).append("}").append("\n");
 
+				}
 			}
+
 		}
 
 	}
