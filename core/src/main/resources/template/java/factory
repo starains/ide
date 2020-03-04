@@ -34,7 +34,7 @@ public class #{$classname} {
 	/**
 	 * 获取默认jdbc实例化的Dao，可以传入data，根据data属性值实现动态数据源
 	 */
-	public static IDao getDao(JSONObject data) throws DatabaseNotFoundException, DatabaseInitializeException {
+	public static IDao getDao(JSONObject data) throws Exception {
 
 		return DATABASE_FACTORY.newDao(data);
 	}
@@ -42,18 +42,18 @@ public class #{$classname} {
 	/**
 	 * 获取默认jdbc实例化的Service，可以传入data，根据data属性值实现动态数据源
 	 */
-	public static IService getService(JSONObject data) throws DatabaseNotFoundException, DatabaseInitializeException {
+	public static IService getService(JSONObject data) throws Exception {
 
 		return DATABASE_FACTORY.newService(data);
 	}
 	
 	#forStart($databases, $database)#
-	public static IDao getDaoFor#{$database.name}(JSONObject data) throws DatabaseNotFoundException, DatabaseInitializeException {
+	public static IDao getDaoFor#{$database.name}(JSONObject data) throws Exception {
 
 		return DATABASE_FACTORY.newDao("#{$database.name}", data);
 	}
 
-	public static IService getServiceFor#{$database.name}(JSONObject data) throws DatabaseNotFoundException, DatabaseInitializeException {
+	public static IService getServiceFor#{$database.name}(JSONObject data) throws Exception {
 
 		return DATABASE_FACTORY.newService("#{$database.name}", data);
 	}
@@ -115,7 +115,7 @@ public class #{$classname} {
 	 *            结果
 	 * @return status 转后的返回
 	 */
-	public static Status toStatus(Object result, Exception e) {
+	public static Object toStatus(Object result, Exception e) {
 		if (e != null) {
 			Status error = Status.FAIL();
 			error.setErrmsg(e.getMessage());
@@ -133,6 +133,8 @@ public class #{$classname} {
 		if (result != null) {
 			if (!(result instanceof ResultBean)) {
 				status.setValue(result);
+			} else {
+				return result;
 			}
 		}
 		return status;
