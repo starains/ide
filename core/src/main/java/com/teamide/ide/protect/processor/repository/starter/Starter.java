@@ -238,6 +238,8 @@ public class Starter extends StarterParam {
 
 		if (starterJSON != null) {
 			starterJSON.put("status", readStatus());
+			starterJSON.put("starter_timestamp", readTimestamp());
+			starterJSON.put("now_timestamp", System.currentTimeMillis());
 		}
 
 		return starterJSON;

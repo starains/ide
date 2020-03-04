@@ -64,6 +64,9 @@
                   <a class="color-red starter-status">终端销毁成功</a>
                 </template>
 
+                <template v-if="item.now_timestamp - item.starter_timestamp > 5000">
+                  <a class="color-red starter-status">终端已停止，请移除</a>
+                </template>
                 <template
                   v-if="item.status == 'STOPPED' || item.status == 'DESTROYED' || item.status == 'STARTED_TERMINAL'"
                 >
@@ -81,7 +84,7 @@
                 >
                   <a class="coos-btn coos-btn-xs bg-orange" @click="source.destroyStarter(item)">销毁</a>
                 </template>
-                <template v-if="item.status == 'DESTROYED'">
+                <template v-if="item.status == 'DESTROYED' || item.now_timestamp - item.starter_timestamp > 5000">
                   <a class="coos-btn coos-btn-xs bg-orange" @click="source.removeStarter(item)">移除</a>
                 </template>
               </template>

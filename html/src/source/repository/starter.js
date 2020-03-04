@@ -298,6 +298,8 @@ source.repository.starterActive = "0";
         var time = 1000;
         if (starter != null) {
             starter.status = value.status;
+            starter.starter_timestamp = value.starter_timestamp;
+            starter.now_timestamp = value.now_timestamp;
         }
         window.setTimeout(() => {
             source.loadStarterStatus();
