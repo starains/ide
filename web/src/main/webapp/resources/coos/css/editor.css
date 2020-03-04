@@ -102,6 +102,7 @@
 	max-width: 100%;
 	padding-left: 5px;
 	padding-right: 5px;
+	font-size: 13px;
 }
 
 .editor-case .input.error {

@@ -225,6 +225,7 @@
 				initWidth(this);
 			});
 			$li.find('.input').on('change', function() {
+				initWidth(this);
 				var name = $(this).attr('name');
 				var pattern = $(this).attr('pattern');
 				var value = $(this).val() || '';
