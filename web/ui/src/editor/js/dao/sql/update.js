@@ -32,7 +32,7 @@
 		})
 		$input.val(model.table);
 		$li.append($input);
-		that.bindLiEvent($li, model, false);
+		that.bindLiEvent($li, model, true);
 
 		var $btn = $('<a class="mglr-10 coos-pointer color-green">添加更新字段</a>');
 		$li.append($btn);
@@ -44,6 +44,22 @@
 			that.changeModel();
 		});
 
+		let table = that.getTableByName(model.table);
+		if (table && table.columns && table.columns.length > 0) {
+			var $btn = $('<a class="mglr-10 coos-pointer color-green">自动导入表字段</a>');
+			$li.append($btn);
+			$btn.click(function() {
+				that.recordHistory();
+				coos.trimArray(columns);
+
+				table.columns.forEach(one => {
+					var column = {};
+					column.name = one.name;
+					columns.push(column);
+				});
+				that.changeModel();
+			});
+		}
 
 		$(columns).each(function(index, column) {
 			var $li = $('<li class="pdl-10"/>');
@@ -112,7 +128,6 @@
 			that.bindLiEvent($subUl, column, false);
 		});
 
-		var table = that.getTableByName(model.table);
 		wheres.is_update = true;
 		that.appendWhereLi($ul, wheres, table);
 

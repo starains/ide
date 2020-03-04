@@ -3,6 +3,7 @@ package com.teamide.ide.protect.processor.repository.generater;
 import java.util.List;
 
 import com.teamide.app.AppContext;
+import com.teamide.app.bean.BeanBean;
 import com.teamide.app.bean.ControlBean;
 import com.teamide.app.bean.DaoBean;
 import com.teamide.app.bean.DictionaryBean;
@@ -20,6 +21,7 @@ public class AppGenerater extends Generater {
 		generateResource();
 		generateFactory();
 		generateDictionary();
+		generateBean();
 		generateDao();
 		generateService();
 		generateController();
@@ -86,4 +88,12 @@ public class AppGenerater extends Generater {
 		}
 	}
 
+	public void generateBean() throws Exception {
+		List<BeanBean> beans = context.get(BeanBean.class);
+		for (BeanBean bean : beans) {
+			BeanGenerater generater = new BeanGenerater(bean, param, app, context);
+			generater.generate();
+
+		}
+	}
 }

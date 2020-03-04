@@ -42,6 +42,14 @@
             placeholder="默认：基础包名.factory"
           ></el-input>
         </el-form-item>
+        <el-form-item label="Bean包名" prop="beanpackage">
+          <el-input
+            v-model="form.beanpackage"
+            type="text"
+            autocomplete="off"
+            placeholder="默认：基础包名.bean"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="Controller包名" prop="controllerpackage">
           <el-input
             v-model="form.controllerpackage"
@@ -126,6 +134,7 @@ export default {
         javapath: "",
         resourcepath: "",
         codepackage: "",
+        beanpackage: "",
         controllerpackage: "",
         basepackage: "",
         daopackage: "",

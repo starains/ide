@@ -10,6 +10,8 @@ public class AppOption {
 
 	private String basepackage;
 
+	private String beanpackage;
+
 	private String factorypackage;
 
 	private String dictionarypackage;
@@ -25,6 +27,14 @@ public class AppOption {
 	private String jdbcdirectorypath;
 
 	private boolean usespringannotation;
+
+	public String getBeanpackage() {
+		return beanpackage;
+	}
+
+	public void setBeanpackage(String beanpackage) {
+		this.beanpackage = beanpackage;
+	}
 
 	public String getFactorypackage() {
 		return factorypackage;

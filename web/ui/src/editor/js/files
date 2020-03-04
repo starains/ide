@@ -18,6 +18,9 @@ database/html.js
 table/index.js
 table/html.js
 
+bean/index.js
+bean/html.js
+
 dao/index.js
 dao/html.js
 dao/test.js

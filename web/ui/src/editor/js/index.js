@@ -270,6 +270,9 @@ window.app = app;
 		case "JEXL":
 			editor = new coos.Editor.Jexl(options);
 			break;
+		case "BEAN":
+			editor = new coos.Editor.Bean(options);
+			break;
 		default:
 			editor = new coos.Editor(options);
 			break;
