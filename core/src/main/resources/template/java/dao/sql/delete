@@ -11,6 +11,7 @@ import #{$app_factory.$package}.#{$app_factory.$classname};
 import com.teamide.db.bean.*;
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
+import com.teamide.annotation.*;
 
 #ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Service;
@@ -30,11 +31,14 @@ public class #{$classname} {
 	/**
 	 * 执行
 	 */
+	#ifStart($usespringannotation == true)#
+	@DataSource()
+	#ifEnd#
 	#ifStart($is_batch == true)#
-	public List<Map<String, Object>> invoke(JSON json, JSONObject data) throws Exception {
+	public List<Map<String, Object>> invoke(JSON json, @VariableData JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($is_batch == false)#
-	public Map<String, Object> invoke(JSONObject data) throws Exception {
+	public Map<String, Object> invoke(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
 		#ifStart($datarule != null)#
 		JSONObject cache = (JSONObject)data.clone();

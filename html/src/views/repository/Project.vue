@@ -859,6 +859,7 @@ export default {
 .repository-project-tree .el-tree {
   min-width: 100%;
   background: transparent;
+  padding-bottom: 100px;
 }
 .el-tree .el-tree-node__children {
   overflow: visible !important;

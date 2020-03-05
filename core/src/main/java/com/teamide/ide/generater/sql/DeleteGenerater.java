@@ -27,6 +27,7 @@ public class DeleteGenerater extends SqlGenerater {
 		content.append(getTab(tab)).append("sql.append(\"" + sql + "\");").append("\n");
 
 		content.append(getTab(tab)).append("// 组合条件语句").append("\n");
+		ignoreWhereTablealias(delete.getWheres());
 		appendWhere(tab, delete.getWheres());
 
 		if (delete.getAppends() != null && delete.getAppends().size() > 0) {

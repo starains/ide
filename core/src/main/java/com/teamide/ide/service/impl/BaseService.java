@@ -24,7 +24,7 @@ public class BaseService<T> extends TService<T> implements IBaseService<T> {
 
 	public BaseService() {
 
-		super(IDEFactory.getService().getDao().getDataSourceFactory());
+		super(IDEFactory.getService().getDao());
 	}
 
 	@Override

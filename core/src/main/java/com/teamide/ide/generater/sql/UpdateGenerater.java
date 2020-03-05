@@ -37,6 +37,7 @@ public class UpdateGenerater extends SqlGenerater {
 
 		content.append("\n");
 		content.append(getTab(tab)).append("// 组合条件语句").append("\n");
+		ignoreWhereTablealias(update.getWheres());
 		appendWhere(tab, update.getWheres());
 
 		if (update.getAppends() != null && update.getAppends().size() > 0) {

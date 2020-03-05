@@ -1,6 +1,7 @@
 package #{$package};
 
 import com.teamide.*;
+import com.teamide.factory.*;
 import com.teamide.bean.*;
 import com.teamide.dao.IDao;
 import com.teamide.exception.*;
@@ -16,27 +17,37 @@ import org.apache.commons.jexl3.JexlException;
 import org.slf4j.Logger;
 
 import com.alibaba.fastjson.*;
+#ifStart($usespringannotation == true)#
+import org.springframework.stereotype.Component;
+#ifEnd#
 
 /**
  * AppFactory
  * 应用工厂
  */
 @SuppressWarnings("unused")
-public class #{$classname} {
+#ifStart($usespringannotation == true)#
+@Component("teamide-factory")
+#ifEnd#
+public class #{$classname} extends BaseFactory{
 	
 	static Logger logger = LogUtil.get();
-
+	
+	static final #{$classname} TEAMIDE_FACTORY = new #{$classname}();
+	
 	/**
 	 * 实例化数据库工厂类，传入默认jdbc，和数据库配置目录，配置目录可以通过文件名直接访问
 	 */
-	static DatabaseFactory DATABASE_FACTORY = new DatabaseFactory("jdbc", "databases");
+	public DatabaseFactory createDatabaseFactory() {
+		return new DatabaseFactory("jdbc", "databases");
+	}
 
 	/**
 	 * 获取默认jdbc实例化的Dao，可以传入data，根据data属性值实现动态数据源
 	 */
 	public static IDao getDao(JSONObject data) throws Exception {
 
-		return DATABASE_FACTORY.newDao(data);
+		return TEAMIDE_FACTORY.newDao(data);
 	}
 
 	/**
@@ -44,18 +55,18 @@ public class #{$classname} {
 	 */
 	public static IService getService(JSONObject data) throws Exception {
 
-		return DATABASE_FACTORY.newService(data);
+		return TEAMIDE_FACTORY.newService(data);
 	}
 	
 	#forStart($databases, $database)#
 	public static IDao getDaoFor#{$database.name}(JSONObject data) throws Exception {
 
-		return DATABASE_FACTORY.newDao("#{$database.name}", data);
+		return TEAMIDE_FACTORY.newDao("#{$database.name}", data);
 	}
 
 	public static IService getServiceFor#{$database.name}(JSONObject data) throws Exception {
 
-		return DATABASE_FACTORY.newService("#{$database.name}", data);
+		return TEAMIDE_FACTORY.newService("#{$database.name}", data);
 	}
 	#forEnd#
 

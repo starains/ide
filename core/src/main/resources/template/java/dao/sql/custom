@@ -17,6 +17,7 @@ import com.teamide.bean.PageResultBean;
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
+import com.teamide.annotation.*;
 
 #ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Service;
@@ -36,17 +37,20 @@ public class #{$classname} {
 	/**
 	 * 执行
 	 */
+	#ifStart($usespringannotation == true)#
+	@DataSource()
+	#ifEnd#
 	#ifStart($customsqltype == 'SELECT_ONE')#
-	public Map<String, Object> invoke(JSONObject data) throws Exception {
+	public Map<String, Object> invoke(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($customsqltype == 'SELECT_LIST')#
-	public List<Map<String, Object>> invoke(JSONObject data) throws Exception {
+	public List<Map<String, Object>> invoke(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($customsqltype == 'SELECT_PAGE')#
-	public PageResultBean<Map<String, Object>> invoke(JSONObject data) throws Exception {
+	public PageResultBean<Map<String, Object>> invoke(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($customsqltype == null)#
-	public Map<String, Object> invoke(JSONObject data) throws Exception {
+	public Map<String, Object> invoke(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
 		
 		#ifStart($database == null)#

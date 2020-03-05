@@ -269,4 +269,23 @@ public abstract class SqlGenerater extends CodeGenerater {
 		return sql;
 
 	}
+
+	protected void ignoreWhereTablealias(List<Where> wheres) {
+		if (wheres != null) {
+			for (Where where : wheres) {
+				ignoreWhereTablealias(where);
+			}
+		}
+	}
+
+	protected void ignoreWhereTablealias(Where where) {
+		if (where != null) {
+			where.setTablealias(null);
+			if (where.getWheres() != null) {
+				for (PieceWhere pieceWhere : where.getWheres()) {
+					ignoreWhereTablealias(pieceWhere);
+				}
+			}
+		}
+	}
 }

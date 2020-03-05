@@ -7,13 +7,12 @@ import java.util.Set;
 
 import javax.websocket.Session;
 
-import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
-import com.teamide.db.DataSourceFactory;
 import com.teamide.db.TableUtil;
 import com.teamide.db.bean.Database;
-import com.teamide.factory.DatabaseFactory;
+import com.teamide.factory.DataSourceFactory;
 import com.teamide.service.IService;
+import com.teamide.service.impl.Service;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.configure.IDEOptions;
@@ -87,25 +86,14 @@ public class IDEFactory {
 
 	public static final String getRealtablename(Class<?> clazz, Map<String, Object> data) throws Exception {
 
-		return TableUtil.getRealtablename(clazz, data, getService().getDao().getDataSourceFactory());
-	}
-
-	public static DataSourceFactory getDSFactory() {
-
-		try {
-			if (getDatabase() != null) {
-				return DataSourceFactory.create(getDatabase());
-			}
-		} catch (Exception e) {
-		}
-		return null;
+		return TableUtil.getRealtablename(clazz, data, getService().getDao().getDBDataSource());
 	}
 
 	public static IService getService() {
 
 		try {
 			if (getDatabase() != null) {
-				return DatabaseFactory.newService(getDatabase(), new JSONObject());
+				return new Service(DataSourceFactory.getDBDataSource(getDatabase()));
 			}
 		} catch (Exception e) {
 		}
