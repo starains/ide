@@ -110,8 +110,16 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 
 				for (SubSelect subSelect : sqlProcess.getSelect().getSubselects()) {
 					if (subSelect.getSelect() != null) {
+						String $name = subSelect.getName();
+						if (StringUtil.isTrimEmpty($name)) {
+							continue;
+						}
+						$name = $name.trim();
 						JSONObject $subselect = (JSONObject) JSON.toJSON(subSelect);
 						$subselects.add($subselect);
+						$subselect.put("$database", getDatabase(subSelect.getSelect()));
+						$subselect.put("$name", $name);
+						$subselect.put("$method", $name.substring(0, 1).toUpperCase() + $name.substring(1));
 						SelectGenerater subSlectGenerater = new SelectGenerater(getAppFactoryClassname(),
 								subSelect.getSelect());
 						$subselect.put("$content", subSlectGenerater.generate(2));

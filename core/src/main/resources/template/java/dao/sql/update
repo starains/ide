@@ -16,6 +16,7 @@ import com.teamide.annotation.*;
 
 #ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 #ifEnd#
 
 /**
@@ -27,7 +28,15 @@ import org.springframework.stereotype.Service;
 @Service
 #ifEnd#
 public class #{$classname} {
-	
+
+	#ifStart($usespringannotation == true)#
+	@Autowired
+	#{$app_factory.$classname} factory;
+	#ifEnd#
+	#ifStart($usespringannotation == false)#
+	#{$app_factory.$classname} factory = #{$app_factory.$classname}.TEAMIDE_FACTORY;
+	#ifEnd#
+
 	/**
 	 * 执行
 	 */
@@ -48,10 +57,10 @@ public class #{$classname} {
 		json = (JSON) JSON.toJSON(#{$app_factory.$classname}.getValueByJexlScript("#{$datarule}", cache));
 		#ifEnd#
 		#ifStart($database == null)#
-		IDao dao = #{$app_factory.$classname}.getDao(data);
+		IDao dao = factory.getThreadLocalDao(data);
 		#ifEnd#
 		#ifStart($database != null)#
-		IDao dao = #{$app_factory.$classname}.getDaoFor#{$database.name}(data);
+		IDao dao = factory.getThreadLocalDao("#{$database.name}", data);
 		#ifEnd#
 		
 		#ifStart($is_batch == true)#
