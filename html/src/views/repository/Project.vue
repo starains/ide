@@ -358,6 +358,28 @@ export default {
           });
         }
       }
+      let model = source.getModelTypeByPath(data.path);
+      if (model) {
+        let project = source.getProjectByPath(data.path);
+        menus.push({
+          header: "模型"
+        });
+        if (model.value == "TABLE") {
+          let databases = [];
+          databases.push("");
+
+          databases.forEach(database => {
+            menus.push({
+              text: "导入" + database + "已有表",
+              onClick() {
+                source.tableImportForm
+                  .show(project.app, { databasename: database ,parent:data})
+                  .then(res => {});
+              }
+            });
+          });
+        }
+      }
       menus.push({
         header: "文件"
       });
@@ -518,7 +540,10 @@ export default {
         })
         .then(res => {
           if (res.errcode == 0) {
-            coos.success("删除成功！");
+            if (file.isNew) {
+            } else {
+              coos.success("删除成功！");
+            }
             let index = file.parent.files.indexOf(file);
             file.parent.files.splice(index, 1);
           } else {
@@ -549,6 +574,12 @@ export default {
       let new_name = $input.val();
 
       if (coos.isEmpty(new_name)) {
+        if (file.isNew) {
+          file.toRename = false;
+          this.toRename = false;
+          this.remove(file);
+          return;
+        }
         coos.error("文件名称不能为空！");
         $input.focus();
         return;

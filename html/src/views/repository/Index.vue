@@ -45,6 +45,7 @@
       <RunnerForm ref="runner-form"></RunnerForm>
       <BranchCreate ref="branch-create"></BranchCreate>
       <AppOptionForm ref="app-option-form"></AppOptionForm>
+      <TableImport ref="table-import"></TableImport>
     </div>
   </div>
 </template>
@@ -65,6 +66,7 @@ import StarterForm from "@/views/repository/components/starter/StarterForm";
 import RunnerForm from "@/views/repository/components/runner/RunnerForm";
 import BranchCreate from "@/views/repository/components/branch/BranchCreate";
 import AppOptionForm from "@/views/repository/components/app/AppOptionForm";
+import TableImport from "@/views/repository/components/table/TableImport";
 
 export default {
   props: ["repository"],
@@ -82,7 +84,8 @@ export default {
     StarterForm,
     RunnerForm,
     BranchCreate,
-    AppOptionForm
+    AppOptionForm,
+    TableImport
   },
   data() {
     return { source: source };
@@ -100,6 +103,7 @@ export default {
     source.runnerForm = this.$refs["runner-form"];
     source.branchCreateForm = this.$refs["branch-create"];
     source.appOptionForm = this.$refs["app-option-form"];
+    source.tableImportForm = this.$refs["table-import"];
   }
 };
 </script>

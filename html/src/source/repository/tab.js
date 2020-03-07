@@ -24,6 +24,31 @@ source.repository.activeTab = null;
         }
     };
 
+    source.getModelTypeByPath = function (path) {
+        let project = source.getProjectByPath(path);
+
+        let model = null;
+        if (project.app) {
+
+            if (project.app.path_model_type) {
+                Object.keys(project.app.path_model_type).forEach(model_path => {
+                    let m = project.app.path_model_type[model_path];
+                    if (m.isDirectory) {
+                        if (model_path == path || path.startsWith(model_path + '/')) {
+                            model = m;
+                        }
+                    } else {
+                        if (model_path == path) {
+                            model = m;
+                        }
+                    }
+                });
+            }
+
+        }
+        return model;
+    }
+
     source.buildFileEditor = function (file_date) {
         if (file_date == null) {
             return;
@@ -101,20 +126,17 @@ source.repository.activeTab = null;
                     data.path = project.app.localpath;
                     data.name = file_date.model.bean.name;
                     source.service.data.doTest(data).then(result => {
-                        var value = result.value;
                         callback && callback(result);
                     });
                 }
             },
             toText(data, callback) {
                 source.service.data.toText(data).then(result => {
-                    var value = result.value;
                     callback && callback(result);
                 });
             },
             toModel(data, callback) {
                 source.service.data.toModel(data).then(result => {
-                    var value = result.value;
                     callback && callback(result);
                 });
             }, load(callback) {

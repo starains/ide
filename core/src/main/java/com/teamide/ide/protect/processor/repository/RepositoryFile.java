@@ -152,7 +152,7 @@ public class RepositoryFile extends RepositoryBase {
 		return callChange(folder);
 	}
 
-	public File create(final String parentPath, String name, boolean isFile) throws Exception {
+	public File create(final String parentPath, String name, boolean isFile, String content) throws Exception {
 
 		this.param.getLog().info("file create,  parentPath:" + parentPath + ",  name:" + name);
 		String path = parentPath + "/" + name;
@@ -184,6 +184,9 @@ public class RepositoryFile extends RepositoryBase {
 
 		if (isFile) {
 			file.createNewFile();
+			if (!StringUtil.isEmpty(content)) {
+				FileUtil.write(content.getBytes(), file);
+			}
 		} else {
 			file.mkdir();
 		}

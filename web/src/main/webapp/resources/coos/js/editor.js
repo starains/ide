@@ -1266,6 +1266,33 @@ window.app = app;
 			that.changeModel();
 		});
 
+
+		var $btn = $('<a class="mglr-10 coos-pointer color-green">导入已存在表字段</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			if (that.project && that.project.app) {
+				let data = {};
+				data.type = "LOAD_DATABASE_TABLES";
+				data.path = that.project.app.localpath;
+				data.name = model.database;
+				data.tablename = model.name;source.service.data.doTest(data).then(result => {
+					var value = result.value;
+					if (value == null) {
+						coos.info('数据库没有该表存在！')
+					} else {
+						that.recordHistory();
+						model.comment = value.comment;
+						model.columns = value.columns;
+						model.indexs = value.indexs;
+						that.changeModel();
+					}
+
+				});
+			}
+
+
+		});
+
 		$(columns).each(function(index, column) {
 			var $li = $('<li class="pdl-10"/>');
 			$ul.append($li);
@@ -1312,6 +1339,11 @@ window.app = app;
 
 			if (coos.isTrue(column.primarykey)) {
 				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="primarykey"  >主键</a>');
+				if (coos.isTrue(column.autoincrement)) {
+					$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="autoincrement"  >是自增</a>');
+				} else {
+					$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="autoincrement" >非自增</a>');
+				}
 			} else {
 				$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="primarykey" >非主键</a>');
 			}
@@ -1367,7 +1399,73 @@ window.app = app;
 
 		});
 
+		model.indexs = model.indexs || [];
+		let columnIndexs = model.indexs;
+		$li = $('<li />');
+		$ul.append($li);
+		$li.append('<span class="pdr-10">索引</span>');
+		var $btn = $('<a class="mglr-10 coos-pointer color-green">添加索引</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			var columnIndex = {};
+			columnIndexs.push(columnIndex);
+			columnIndex.name = "";
+			that.changeModel();
+		});
 
+		$(columnIndexs).each(function(index, columnIndex) {
+			var $li = $('<li class="pdl-10"/>');
+			$ul.append($li);
+
+			$li.append('<span class="pdlr-10">名称：</span>');
+			var $input = $('<input class="input" name="name" required/>');
+			$input.val(columnIndex.name);
+			$li.append($input);
+
+			$li.append('<span class="pdlr-10">表字段：</span>');
+			var $input = $('<input class="input" name="column" />');
+			$input.val(columnIndex.column);
+			$li.append($input);
+
+			$li.append('<span class="pdlr-10">类型：</span>');
+			var $input = $('<input class="input" name="type" />');
+			$input.val(columnIndex.type);
+			$li.append($input);
+
+			that.bindLiEvent($li, columnIndex, false);
+
+			var $btn = $('<a class="mgl-10 coos-pointer color-red">删除</a>');
+			$li.append($btn);
+			$btn.click(function() {
+				that.recordHistory();
+				columnIndexs.splice(columnIndexs.indexOf(columnIndex), 1);
+				that.changeModel();
+			});
+
+			var $btn = $('<a class="mgl-10 coos-pointer color-orange">上移</a>');
+			$li.append($btn);
+			$btn.click(function() {
+				var index = columnIndexs.indexOf(columnIndex);
+				if (index > 0) {
+					that.recordHistory();
+					columnIndexs[index] = columnIndexs.splice(index - 1, 1, columnIndexs[index])[0];
+					that.changeModel();
+				}
+			});
+
+			var $btn = $('<a class="mgl-10 coos-pointer color-orange">下移</a>');
+			$li.append($btn);
+			$btn.click(function() {
+				var index = columnIndexs.indexOf(columnIndex);
+				if (index < columnIndexs.length - 1) {
+					that.recordHistory();
+					columnIndexs[index] = columnIndexs.splice(index + 1, 1, columnIndexs[index])[0];
+					that.changeModel();
+				}
+			});
+
+		});
 	};
 })();
 (function() {

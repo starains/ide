@@ -1,6 +1,7 @@
 package com.teamide.ide.controller.handler;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +12,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.app.Application;
 import com.teamide.app.ApplicationFactory;
+import com.teamide.app.application.base.ApplicationDatabase;
 import com.teamide.app.bean.DaoBean;
 import com.teamide.app.bean.DatabaseBean;
 import com.teamide.app.bean.ServiceBean;
+import com.teamide.app.bean.TableBean;
 import com.teamide.app.enums.BeanModelType;
 import com.teamide.app.enums.ColumnType;
 import com.teamide.app.enums.ComparisonOperator;
@@ -23,6 +26,9 @@ import com.teamide.app.enums.SqlType;
 import com.teamide.app.util.ModelFileUtil;
 import com.teamide.bean.Status;
 import com.teamide.client.ClientHandler;
+import com.teamide.db.DBDataSource;
+import com.teamide.db.bean.Database;
+import com.teamide.db.bean.Table;
 import com.teamide.http.Method;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.configure.IDEConfigure;
@@ -397,6 +403,31 @@ public class DataHandler {
 				application.installDatabases();
 				application.installTables();
 				result = Status.SUCCESS();
+			} else if (type.equalsIgnoreCase("LOAD_DATABASE_TABLES")) {
+
+				Status status = Status.SUCCESS();
+				Database database = application.getDatabase(name);
+				if (database != null) {
+					DBDataSource dbDataSource = DBDataSource.create(database);
+
+					String tablename = json.getString("tablename");
+					if (StringUtil.isNotEmpty(tablename)) {
+						Table table = dbDataSource.getDialect().getTable(dbDataSource.getDataSource(), tablename);
+						if (table != null) {
+							status.setValue(ApplicationDatabase.formatToTableBean(table));
+						}
+					} else {
+						List<Table> tables = dbDataSource.getDialect().getTables(dbDataSource.getDataSource());
+						List<TableBean> list = new ArrayList<TableBean>();
+						for (Table table : tables) {
+							list.add(ApplicationDatabase.formatToTableBean(table));
+						}
+						status.setValue(list);
+					}
+					dbDataSource.destroy();
+				}
+
+				result = status;
 			} else if (type.equalsIgnoreCase("DAO")) {
 				DataParam param = new DataParam((JSON) JSON.parse(data));
 				DaoBean dao = application.getContext().get(DaoBean.class, name);

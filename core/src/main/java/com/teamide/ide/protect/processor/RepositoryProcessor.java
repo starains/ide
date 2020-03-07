@@ -71,8 +71,9 @@ public class RepositoryProcessor extends SpaceProcessor {
 		case FILE_CREATE:
 			String parentPath = data.getString("parentPath");
 			String name = data.getString("name");
+			String content = data.getString("content");
 			boolean isFile = data.getBooleanValue("isFile");
-			new RepositoryFile(param).create(parentPath, name, isFile);
+			new RepositoryFile(param).create(parentPath, name, isFile, content);
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
@@ -113,7 +114,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			break;
 		case FILE_SAVE:
 			path = data.getString("path");
-			String content = data.getString("content");
+			content = data.getString("content");
 			new RepositoryFile(param).save(path, content);
 
 			spaceEventBean.set("path", path);
