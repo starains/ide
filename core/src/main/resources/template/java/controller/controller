@@ -1,13 +1,5 @@
 package #{$package};
 
-#ifStart($usespringannotation == false)#
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-
-#ifEnd#
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +7,6 @@ import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.*;
 
-import com.teamide.*;
 import com.teamide.bean.*;
 import com.teamide.util.*;
 
@@ -24,11 +15,9 @@ import com.teamide.client.ClientSession;
 import com.teamide.exception.*;
 import com.teamide.param.DataParam;
 
-#ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-#ifEnd#
 
 #forStart($imports, $import)#
 import #{$import};
@@ -41,57 +30,35 @@ import #{$property.$package}.#{$property.$classname};
 #forEnd#
 
 @SuppressWarnings("unused")
-#ifStart($usespringannotation == true)#
 @Controller
 #ifStart($requestmapping != null)#
 @RequestMapping("#{$requestmapping}")
 #ifEnd#
 public class #{$classname} {
-#ifEnd#
-#ifStart($usespringannotation == false)#
-@WebServlet(urlPatterns = "#{$requestmapping}")
-public class #{$classname} extends HttpServlet {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-#ifEnd#
-	
 	#forStart($propertys, $property)#
+	
 	// #{$property.$comment}
-		#ifStart($usespringannotation == true)#
 	@Autowired
 	#{$property.$classname} #{$property.$name};
-		#ifEnd#
-		#ifStart($usespringannotation == false)#
-	#{$property.$classname} #{$property.$name} = new #{$property.$classname}();
-		#ifEnd#
 	#forEnd#
-
 	#forStart($methods, $method)#
 	
 	/**
 	 * #{$method.name}
 	 * 说明：#{$method.comment}
 	 */
-	#ifStart($usespringannotation == true)#
-		#ifStart($method.requestmethod == null)#
+	#ifStart($method.requestmethod == null)#
 	@RequestMapping("#{$method.$requestmapping}")
-		#ifEnd#
-		#ifStart($method.requestmethod != null)#
-	@RequestMapping(path = "#{$method.$requestmapping}", method = {RequestMethod.#{$method.requestmethod}})
-		#ifEnd#
-	@ResponseBody
-		#ifStart($method.$userrequestbody == true)#
-	public Object #{$method.name}(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
-		#ifEnd#
-		#ifStart($method.$userrequestbody == false)#
-	public Object #{$method.name}(HttpServletRequest request, HttpServletResponse response) {
-		#ifEnd#
 	#ifEnd#
-	#ifStart($usespringannotation == false)#
-	public void invoke(HttpServletRequest request, HttpServletResponse response) {
+	#ifStart($method.requestmethod != null)#
+	@RequestMapping(path = "#{$method.$requestmapping}", method = {RequestMethod.#{$method.requestmethod}})
+	#ifEnd#
+	@ResponseBody
+	#ifStart($method.$userrequestbody == true)#
+	public Object #{$method.name}(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
+	#ifEnd#
+	#ifStart($method.$userrequestbody == false)#
+	public Object #{$method.name}(HttpServletRequest request, HttpServletResponse response) {
 	#ifEnd#
 		Object result = null;
 		Exception exception = null;

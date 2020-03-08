@@ -12,38 +12,30 @@ import #{$app_factory.$package}.#{$app_factory.$classname};
 import #{$import};
 #forEnd#
 
-#ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-#ifEnd#
+
 #forStart($propertys, $property)#
 import #{$property.$package}.#{$property.$classname};
 #forEnd#
+
 /**
  * Service
  * #{$comment}
  */
-
 #ifStart($result_classname.startsWith('JSON') || $result_classname.startsWith('Object') == true)#
 @SuppressWarnings({"unused"})
 #ifEnd#
 #ifStart($result_classname.startsWith('JSON') == false && $result_classname.startsWith('Object') == false)#
 @SuppressWarnings({"unused", "unchecked"})
 #ifEnd#
-#ifStart($usespringannotation == true)#
 @Service
-#ifEnd#
 public class #{$classname} {
 	
 	#forStart($propertys, $property)#
 	//#{$property.$comment}
-	#ifStart($usespringannotation == true)#
 	@Autowired
 	#{$property.$classname} #{$property.$name};
-	#ifEnd#
-	#ifStart($usespringannotation == false)#
-	#{$property.$classname} #{$property.$name} = new #{$property.$classname}();
-	#ifEnd#
 	#forEnd#
 		
 	/**

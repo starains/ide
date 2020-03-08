@@ -7,6 +7,7 @@ import com.teamide.exception.*;
 import com.alibaba.fastjson.*;
 
 import #{$app_factory.$package}.#{$app_factory.$classname};
+import #{$dao_component.$package}.#{$dao_component.$classname};
 
 import com.teamide.db.bean.*;
 #ifStart($sqlType == 'SELECT_PAGE')#
@@ -19,35 +20,27 @@ import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.annotation.*;
 
-#ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-#ifEnd#
 
 /**
  * SQL Dao 查询
  * #{$comment}
  */
 @SuppressWarnings("unused")
-#ifStart($usespringannotation == true)#
 @Service
-#ifEnd#
 public class #{$classname} {
 
-	#ifStart($usespringannotation == true)#
 	@Autowired
 	#{$app_factory.$classname} factory;
-	#ifEnd#
-	#ifStart($usespringannotation == false)#
-	#{$app_factory.$classname} factory = #{$app_factory.$classname}.TEAMIDE_FACTORY;
-	#ifEnd#
+	
+	@Autowired
+	#{$dao_component.$classname} dao;
 
 	/**
 	 * 执行
 	 */
-	#ifStart($usespringannotation == true)#
 	@DataSource()
-	#ifEnd#
 	#ifStart($sqlType == 'SELECT_ONE')#
 	public Map<String, Object> invoke(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
@@ -57,13 +50,6 @@ public class #{$classname} {
 	#ifStart($sqlType == 'SELECT_PAGE')#
 	public PageResultBean<Map<String, Object>> invoke(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
-		
-		#ifStart($database == null)#
-		IDao dao = factory.getThreadLocalDao(data);
-		#ifEnd#
-		#ifStart($database != null)#
-		IDao dao = factory.getThreadLocalDao("#{$database.name}", data);
-		#ifEnd#
 		
 		// 组合SQL Param
 		#ifStart($sqlType == 'SELECT_ONE')#
@@ -192,13 +178,6 @@ public class #{$classname} {
 	 */
 	@DataSource()
 	public Object query#{$subselect.$method}(@VariableData JSONObject data) throws Exception {
-		
-		#ifStart($subselect.$database == null)#
-		IDao dao = factory.getThreadLocalDao(data);
-		#ifEnd#
-		#ifStart($subselect.$database != null)#
-		IDao dao = factory.getThreadLocalDao("#{$database.name}", data);
-		#ifEnd#
 		
 		// 用于暂存字段取到的值
 		Object value = null;

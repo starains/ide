@@ -29,11 +29,7 @@ public class ServiceGenerater extends CodeGenerater {
 	}
 
 	public String getPackage() {
-		String pack = app.getOption().getServicepackage();
-		if (StringUtil.isEmpty(pack)) {
-			pack = getBasePackage() + ".service";
-		}
-		return pack;
+		return getServicePackage();
 	}
 
 	@Override

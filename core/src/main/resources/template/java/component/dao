@@ -1,0 +1,130 @@
+package #{$package};
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.teamide.dao.IDao;
+import com.teamide.dao.impl.Dao;
+import com.teamide.db.DBUtil;
+import com.teamide.db.bean.SqlValuesList;
+import com.teamide.db.dialect.Dialect;
+import com.teamide.db.dialect.impl.MysqlDialect;
+
+@Component("iteamide-dao")
+public class #{$classname} extends Dao implements IDao {
+
+	@Autowired
+	DataSource dataSource;
+
+	public #{$classname}() {
+
+	}
+
+	public #{$classname}(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+	
+	private Dialect dialect = new MysqlDialect();
+
+	static final ThreadLocal<Connection> THREAD_LOCAL = new ThreadLocal<Connection>();
+
+	public static void set(Connection connection) {
+		THREAD_LOCAL.set(connection);
+	}
+
+	public static Connection get() {
+		return THREAD_LOCAL.get();
+	}
+
+	public static void remove() {
+		THREAD_LOCAL.remove();
+	}
+
+	@Override
+	public Dialect getDialect() {
+		return dialect;
+	}
+
+	@Override
+	public DataSource getDataSource() {
+		return this.dataSource;
+	}
+
+	@Override
+	public Connection getConnection() throws SQLException {
+		return getDataSource().getConnection();
+	}
+
+	@Override
+	public int batchExecute(List<String> sqls) throws SQLException {
+
+		Connection conn = get();
+		if (conn == null) {
+			return super.batchExecute(sqls);
+		}
+		try {
+			batchLog(sqls);
+			int res = DBUtil.batchExecute(conn, sqls);
+			return res;
+		} catch (Exception e) {
+			batchError(sqls);
+			throw e;
+		} finally {
+		}
+	}
+
+	protected int execute(String sql, List<Object> values, List<Object> keyValues) throws SQLException {
+		Connection conn = get();
+		if (conn == null) {
+			return super.execute(sql, values, keyValues);
+		}
+		try {
+			log(sql, values);
+			int res = DBUtil.execute(conn, sql, values, keyValues);
+			return res;
+		} catch (SQLException e) {
+			error(sql, values);
+			throw e;
+		} finally {
+		}
+	}
+
+	public int batchExecute(String sql, List<List<Object>> valuesList) throws SQLException {
+		Connection conn = get();
+		if (conn == null) {
+			return super.batchExecute(sql, valuesList);
+		}
+		try {
+			batchLog(sql, valuesList);
+			int res = DBUtil.batchExecute(conn, sql, valuesList);
+			return res;
+		} catch (Exception e) {
+			batchError(sql, valuesList);
+			throw e;
+		} finally {
+		}
+	}
+
+	public int batchExecute(SqlValuesList sqlValuesList, List<List<Object>> keyValuesList) throws SQLException {
+		Connection conn = get();
+		if (conn == null) {
+			return super.batchExecute(sqlValuesList, keyValuesList);
+		}
+		try {
+			batchLog(sqlValuesList);
+			int res = DBUtil.batchExecute(getConnection(), sqlValuesList, keyValuesList);
+			return res;
+		} catch (SQLException e) {
+			batchError(sqlValuesList);
+			throw e;
+		} finally {
+		}
+	}
+
+}

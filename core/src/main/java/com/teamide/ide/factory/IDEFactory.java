@@ -86,7 +86,7 @@ public class IDEFactory {
 
 	public static final String getRealtablename(Class<?> clazz, Map<String, Object> data) throws Exception {
 
-		return TableUtil.getRealtablename(clazz, data, getService().getDao().getDBDataSource());
+		return TableUtil.getRealtablename(clazz, data, getService().getDBDataSource());
 	}
 
 	public static IService getService() {

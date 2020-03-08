@@ -24,47 +24,128 @@ public abstract class Generater {
 	public abstract void generate() throws Exception;
 
 	public File getJavaFolder() {
-		return param.getFile(app.getOption().getJavapath());
+		String javadirectory = null;
+		if (context.getJava() != null) {
+			javadirectory = context.getJava().getJavadirectory();
+		}
+		if (StringUtil.isEmpty(javadirectory)) {
+			javadirectory = "src/main/java";
+		}
+
+		return param.getFile(javadirectory);
 	}
 
 	public File getResourceFolder() {
-		return param.getFile(app.getOption().getResourcepath());
+		String resourcesdirectory = null;
+		if (context.getJava() != null) {
+			resourcesdirectory = context.getJava().getResourcesdirectory();
+		}
+		if (StringUtil.isEmpty(resourcesdirectory)) {
+			resourcesdirectory = "src/main/resources";
+		}
+
+		return param.getFile(resourcesdirectory);
 	}
 
-	public String getAppFactoryPackage() {
-		String pack = app.getOption().getFactorypackage();
+	public String getFactoryPackage() {
+		String pack = null;
+		if (context.getJava() != null) {
+			pack = context.getJava().getFactorypackage();
+		}
 		if (StringUtil.isEmpty(pack)) {
 			pack = getBasePackage() + ".factory";
 		}
 		return pack;
 	}
 
-	public boolean isUsespringannotation() {
-		return app.getOption().isUsespringannotation();
+	public String getComponentPackage() {
+		String pack = null;
+		if (context.getJava() != null) {
+			pack = context.getJava().getComponentpackage();
+		}
+		if (StringUtil.isEmpty(pack)) {
+			pack = getBasePackage() + ".component";
+		}
+		return pack;
 	}
 
-	public String getJdbcPath() {
-		String path = app.getOption().getJdbcpath();
-		if (StringUtil.isEmpty(path)) {
-			path = "jdbc.properties";
+	public String getControllerPackage() {
+		String pack = null;
+		if (context.getJava() != null) {
+			pack = context.getJava().getControllerpackage();
 		}
-		return path;
+		if (StringUtil.isEmpty(pack)) {
+			pack = getBasePackage() + ".controller";
+		}
+		return pack;
 	}
 
-	public String getJdbcDirectoryPath() {
-		String path = app.getOption().getJdbcdirectorypath();
-		if (StringUtil.isEmpty(path)) {
-			path = "jdbcs";
+	public String getDaoPackage() {
+		String pack = null;
+		if (context.getJava() != null) {
+			pack = context.getJava().getDaopackage();
 		}
-		return path;
+		if (StringUtil.isEmpty(pack)) {
+			pack = getBasePackage() + ".dao";
+		}
+		return pack;
+	}
+
+	public String getServicePackage() {
+		String pack = null;
+		if (context.getJava() != null) {
+			pack = context.getJava().getServicepackage();
+		}
+		if (StringUtil.isEmpty(pack)) {
+			pack = getBasePackage() + ".service";
+		}
+		return pack;
+	}
+
+	public String getDictionaryPackage() {
+		String pack = null;
+		if (context.getJava() != null) {
+			pack = context.getJava().getDictionarypackage();
+		}
+		if (StringUtil.isEmpty(pack)) {
+			pack = getBasePackage() + ".dictionary";
+		}
+		return pack;
+	}
+
+	public String getBeanPackage() {
+		String pack = null;
+		if (context.getJava() != null) {
+			pack = context.getJava().getBeanpackage();
+		}
+		if (StringUtil.isEmpty(pack)) {
+			pack = getBasePackage() + ".bean";
+		}
+		return pack;
 	}
 
 	public String getAppFactoryClassname() {
 		return "AppFactory";
 	}
 
+	public String getDaoComponentClassname() {
+		return "DaoComponent";
+	}
+
+	public String getTransactionComponentClassname() {
+		return "TransactionComponent";
+	}
+
 	public String getBasePackage() {
-		return app.getOption().getBasepackage();
+		String basepackage = null;
+		if (context.getJava() != null) {
+			basepackage = context.getJava().getBasepackage();
+		}
+		if (StringUtil.isEmpty(basepackage)) {
+			basepackage = "com.teamide.app";
+		}
+
+		return basepackage;
 	}
 
 	public String packageToPath(String pack) {

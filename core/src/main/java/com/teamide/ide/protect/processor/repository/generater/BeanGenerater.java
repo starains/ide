@@ -26,11 +26,7 @@ public class BeanGenerater extends CodeGenerater {
 	}
 
 	public String getPackage() {
-		String pack = app.getOption().getBeanpackage();
-		if (StringUtil.isEmpty(pack)) {
-			pack = getBasePackage() + ".bean";
-		}
-		return pack;
+		return getBeanPackage();
 	}
 
 	public String getClassName() {

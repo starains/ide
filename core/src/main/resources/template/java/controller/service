@@ -1,14 +1,5 @@
 package #{$package};
 
-#ifStart($usespringannotation == false)#
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-
-import com.teamide.util.ResponseUtil;
-#ifEnd#
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,11 +12,9 @@ import com.teamide.param.DataParam;
 
 import #{$app_factory.$package}.#{$app_factory.$classname};
 
-#ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-#ifEnd#
 
 #forStart($imports, $import)#
 import #{$import};
@@ -34,38 +23,13 @@ import #{$import};
 import #{$service.$package}.#{$service.$classname};
 
 @SuppressWarnings("unused")
-#ifStart($usespringannotation == true)#
 @Controller
 public class #{$classname} {
-#ifEnd#
-#ifStart($usespringannotation == false)#
-@WebServlet(urlPatterns = "#{$requestmapping}")
-public class #{$classname} extends HttpServlet {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-#ifEnd#
 	
 	//#{$service.$comment}
-	#ifStart($usespringannotation == true)#
 	@Autowired
 	#{$service.$classname} #{$service.$propertyname};
-	#ifEnd#
-	#ifStart($usespringannotation == false)#
-	#{$service.$classname} #{$service.$propertyname} = new #{$service.$classname}();
-	#ifEnd#
 
-	#ifStart($usespringannotation == false)#
-	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		invoke(request, response);
-	}
-	#ifEnd#
-	
-	#ifStart($usespringannotation == true)#
 	#ifStart($service.$requestmethod == null)#
 	@RequestMapping("#{$requestmapping}")
 	#ifEnd#
@@ -74,10 +38,6 @@ public class #{$classname} extends HttpServlet {
 	#ifEnd#
 	@ResponseBody
 	public Object invoke(HttpServletRequest request, HttpServletResponse response) {
-	#ifEnd#
-	#ifStart($usespringannotation == false)#
-	public void invoke(HttpServletRequest request, HttpServletResponse response) {
-	#ifEnd#
 		Object result = null;
 		Exception exception = null;
 		try {
@@ -94,12 +54,8 @@ public class #{$classname} extends HttpServlet {
 		} catch (Exception e) {
 			exception = e;
 		}
-		#ifStart($usespringannotation == true)#
+		
 		return #{$app_factory.$classname}.toStatus(result, exception);
-		#ifEnd#
-		#ifStart($usespringannotation == false)#
-		ResponseUtil.outJSON(response, #{$app_factory.$classname}.toStatus(result, exception));
-		#ifEnd#
 	}
 
 }

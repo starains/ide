@@ -10,7 +10,6 @@ import com.teamide.app.bean.DictionaryBean;
 import com.teamide.app.bean.DictionaryOptionBean;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
-import com.teamide.util.StringUtil;
 
 public class DictionaryGenerater extends CodeGenerater {
 
@@ -23,11 +22,7 @@ public class DictionaryGenerater extends CodeGenerater {
 	}
 
 	public String getPackage() {
-		String pack = app.getOption().getDictionarypackage();
-		if (StringUtil.isEmpty(pack)) {
-			pack = getBasePackage() + ".dictionary";
-		}
-		return pack;
+		return getDictionaryPackage();
 	}
 
 	@Override

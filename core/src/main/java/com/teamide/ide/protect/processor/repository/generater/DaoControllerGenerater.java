@@ -23,10 +23,7 @@ public class DaoControllerGenerater extends CodeGenerater {
 	}
 
 	public String getPackage() {
-		String pack = app.getOption().getControllerpackage();
-		if (StringUtil.isEmpty(pack)) {
-			pack = getBasePackage() + ".controller";
-		}
+		String pack = getControllerPackage();
 		pack += ".dao";
 		return pack;
 	}

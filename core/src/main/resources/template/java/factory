@@ -12,64 +12,45 @@ import com.teamide.service.IService;
 import com.teamide.util.LogUtil;
 
 import java.util.Map;
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 import org.apache.commons.jexl3.JexlException;
 import org.slf4j.Logger;
 
 import com.alibaba.fastjson.*;
-#ifStart($usespringannotation == true)#
 import org.springframework.stereotype.Component;
-#ifEnd#
+
+import #{$dao_component.$package}.#{$dao_component.$classname};
 
 /**
  * AppFactory
  * 应用工厂
  */
 @SuppressWarnings("unused")
-#ifStart($usespringannotation == true)#
 @Component("teamide-factory")
-#ifEnd#
 public class #{$classname} extends BaseFactory{
 	
 	static Logger logger = LogUtil.get();
 	
-	static final #{$classname} TEAMIDE_FACTORY = new #{$classname}();
-	
-	/**
-	 * 实例化数据库工厂类，传入默认jdbc，和数据库配置目录，配置目录可以通过文件名直接访问
-	 */
-	public DatabaseFactory createDatabaseFactory() {
-		return new DatabaseFactory("jdbc", "databases");
-	}
+	static #{$classname} TEAMIDE_FACTORY = new #{$classname}();
 
-	/**
-	 * 获取默认jdbc实例化的Dao，可以传入data，根据data属性值实现动态数据源
-	 */
-	public static IDao getDao(JSONObject data) throws Exception {
-
-		return TEAMIDE_FACTORY.newDao(data);
-	}
-
-	/**
-	 * 获取默认jdbc实例化的Service，可以传入data，根据data属性值实现动态数据源
-	 */
-	public static IService getService(JSONObject data) throws Exception {
-
-		return TEAMIDE_FACTORY.newService(data);
+	public #{$classname}() {
+		TEAMIDE_FACTORY = this;
 	}
 	
-	#forStart($databases, $database)#
-	public static IDao getDaoFor#{$database.name}(JSONObject data) throws Exception {
+	@Resource
+	private DynamicDataSourceFactory dynamicDataSourceFactory;
 
-		return TEAMIDE_FACTORY.newDao("#{$database.name}", data);
+	public static IDao getDao(JSONObject json) throws Exception {
+		DataSource dataSource = TEAMIDE_FACTORY.dynamicDataSourceFactory.getDataSource(null, json);
+		return new #{$dao_component.$classname}(dataSource);
 	}
 
-	public static IService getServiceFor#{$database.name}(JSONObject data) throws Exception {
-
-		return TEAMIDE_FACTORY.newService("#{$database.name}", data);
+	public static IDao getDao(String name, JSONObject json) throws Exception {
+		DataSource dataSource = TEAMIDE_FACTORY.dynamicDataSourceFactory.getDataSource(name, json);
+		return new #{$dao_component.$classname}(dataSource);
 	}
-	#forEnd#
-
 
 	/**
 	 * jexl表达式处理器，解析字符表达式，得到结果

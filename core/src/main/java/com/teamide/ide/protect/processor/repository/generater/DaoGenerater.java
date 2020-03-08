@@ -17,11 +17,7 @@ public class DaoGenerater extends SQLDaoGenerater {
 	}
 
 	public String getPackage() {
-		String pack = app.getOption().getDaopackage();
-		if (StringUtil.isEmpty(pack)) {
-			pack = getBasePackage() + ".dao";
-		}
-		return pack;
+		return getDaoPackage();
 	}
 
 	@Override

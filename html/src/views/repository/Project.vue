@@ -149,12 +149,19 @@ export default {
         });
 
         if (data.app != null) {
-          appModelMenu.menus.push({
-            text: "生成源码",
-            onClick() {
-              source.appGenerateSourceCode(data);
-            }
-          });
+          if (data.app.context.JAVA == null) {
+            appModelMenu.menus.push({
+              text: "请在模型目录创建java文件，配置源码相关设置",
+              onClick() {}
+            });
+          } else {
+            appModelMenu.menus.push({
+              text: "生成源码",
+              onClick() {
+                source.appGenerateSourceCode(data);
+              }
+            });
+          }
           appModelMenu.menus.push({
             text: "生成库表",
             onClick() {
@@ -358,26 +365,64 @@ export default {
           });
         }
       }
-      let model = source.getModelTypeByPath(data.path);
-      if (model) {
-        let project = source.getProjectByPath(data.path);
+      let project = source.getProjectByPath(data.path);
+      if (
+        project &&
+        project.app &&
+        (project.app.path == data.path ||
+          data.path.startsWith(project.app.path + "/"))
+      ) {
         menus.push({
           header: "模型"
         });
-        if (model.value == "TABLE") {
-          let databases = [];
-          databases.push("");
-
-          databases.forEach(database => {
+        let model = source.getModelTypeByPath(data.path);
+        if (project.app.path == data.path) {
+          if (project.app.context.JAVA == null) {
             menus.push({
-              text: "导入" + database + "已有表",
+              text: "请在模型目录创建java文件，配置源码相关设置",
+              onClick() {}
+            });
+          } else {
+            menus.push({
+              text: "生成源码",
               onClick() {
-                source.tableImportForm
-                  .show(project.app, { databasename: database ,parent:data})
-                  .then(res => {});
+                source.appGenerateSourceCode(project);
               }
             });
+          }
+          menus.push({
+            text: "生成库表",
+            onClick() {
+              let param = {};
+              param.path = project.app.localpath;
+              param.type = "DATABASE";
+              source.service.data.doTest(param).then(result => {
+                if (result.errcode == 0) {
+                  coos.success("库表创建成功！");
+                } else {
+                  coos.error(result.errmsg);
+                }
+              });
+            }
           });
+        }
+
+        if (model) {
+          if (model.value == "TABLE") {
+            let databases = [];
+            databases.push("");
+
+            databases.forEach(database => {
+              menus.push({
+                text: "导入" + database + "已有表",
+                onClick() {
+                  source.tableImportForm
+                    .show(project.app, { databasename: database, parent: data })
+                    .then(res => {});
+                }
+              });
+            });
+          }
         }
       }
       menus.push({

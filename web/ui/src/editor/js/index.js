@@ -273,6 +273,9 @@ window.app = app;
 		case "BEAN":
 			editor = new coos.Editor.Bean(options);
 			break;
+		case "JAVA":
+			editor = new coos.Editor.Java(options);
+			break;
 		default:
 			editor = new coos.Editor(options);
 			break;

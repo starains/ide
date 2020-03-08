@@ -4,7 +4,6 @@ import com.teamide.app.AppContext;
 import com.teamide.app.bean.DictionaryBean;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
-import com.teamide.util.StringUtil;
 
 public class DictionaryControllerGenerater extends CodeGenerater {
 
@@ -17,10 +16,7 @@ public class DictionaryControllerGenerater extends CodeGenerater {
 	}
 
 	public String getPackage() {
-		String pack = app.getOption().getControllerpackage();
-		if (StringUtil.isEmpty(pack)) {
-			pack = getBasePackage() + ".controller";
-		}
+		String pack = getControllerPackage();
 		pack += ".dictionary";
 		return pack;
 	}

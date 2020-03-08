@@ -23,8 +23,7 @@ public class BaseService<T> extends TService<T> implements IBaseService<T> {
 	public final static SimpleDateFormat PURE_DATETIME_FORMAT = new SimpleDateFormat(PURE_DATETIME_PATTERN);
 
 	public BaseService() {
-
-		super(IDEFactory.getService().getDao());
+		super(IDEFactory.getService().getDBDataSource());
 	}
 
 	@Override

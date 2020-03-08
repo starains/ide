@@ -12,7 +12,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.app.AppContext;
 import com.teamide.app.bean.Bean;
 import com.teamide.app.bean.DaoBean;
-import com.teamide.app.bean.DictionaryBean;
 import com.teamide.app.bean.ServiceBean;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
@@ -71,12 +70,16 @@ public abstract class CodeGenerater extends Generater {
 		data.put("$propertyname", this.className.substring(0, 1).toLowerCase() + this.className.substring(1));
 
 		JSONObject $app_factory = new JSONObject();
-
-		$app_factory.put("$package", getAppFactoryPackage());
+		$app_factory.put("$package", getFactoryPackage());
 		$app_factory.put("$classname", getAppFactoryClassname());
 		data.put("$app_factory", $app_factory);
+
+		JSONObject $dao_component = new JSONObject();
+		$dao_component.put("$package", getComponentPackage());
+		$dao_component.put("$classname", getDaoComponentClassname());
+		data.put("$dao_component", $dao_component);
+
 		data.put("$imports", imports);
-		data.put("$usespringannotation", isUsespringannotation());
 		buildData();
 	}
 
@@ -168,9 +171,6 @@ public abstract class CodeGenerater extends Generater {
 			}
 			if (bean instanceof ServiceBean) {
 				classname += "Service";
-			}
-			if (bean instanceof DictionaryBean) {
-				classname += "Dictionary";
 			}
 		}
 

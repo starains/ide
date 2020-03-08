@@ -32,11 +32,7 @@ public class ControllerGenerater extends CodeGenerater {
 	}
 
 	public String getPackage() {
-		String pack = app.getOption().getControllerpackage();
-		if (StringUtil.isEmpty(pack)) {
-			pack = getBasePackage() + ".controller";
-		}
-		return pack;
+		return getControllerPackage();
 	}
 
 	public String getClassName() {

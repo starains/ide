@@ -19,14 +19,12 @@ public class FactoryGenerater extends CodeGenerater {
 	}
 
 	public String getPackage() {
-		return getAppFactoryPackage();
+		return getFactoryPackage();
 	}
 
 	@Override
 	public void buildData() {
 
-		data.put("$package", getAppFactoryPackage());
-		data.put("$classname", getAppFactoryClassname());
 		JSONArray $databases = new JSONArray();
 		data.put("$databases", $databases);
 		List<DatabaseBean> databases = context.get(DatabaseBean.class);
@@ -38,7 +36,7 @@ public class FactoryGenerater extends CodeGenerater {
 	}
 
 	public String getClassName() {
-		return "AppFactory";
+		return getAppFactoryClassname();
 	}
 
 	@Override
