@@ -277,6 +277,13 @@ source.repository.starterActive = "0";
                 if (starter.logs[log.index]) {
                     starter.logs[log.index].show = true;
                     starter.logs[log.index].line = log.line;
+                    if (log.line) {
+                        if (log.line.indexOf(' ERROR ') >= 0 || log.line.indexOf(':ERROR:') >= 0) {
+                            starter.logs[log.index].level = 'ERROR';
+                        } else if (log.line.indexOf(' WARN ') >= 0 || log.line.indexOf(':WARN:') >= 0 || log.line.indexOf(':WARN :') >= 0) {
+                            starter.logs[log.index].level = 'WARN';
+                        }
+                    }
                 } else {
                     log.show = true;
                     starter.logs.push(log);
