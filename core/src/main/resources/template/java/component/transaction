@@ -35,7 +35,6 @@ public class #{$classname} extends DataSourceTransactionManager {
 		try {
 			Method method = transaction.getClass().getMethod("getConnectionHolder", new Class<?>[0]);
 			ConnectionHolder holder = (ConnectionHolder) method.invoke(transaction, new Object[0]);
-
 			Connection connection = holder.getConnection();
 			DaoComponent.set(connection);
 		} catch (Exception e) {
@@ -46,7 +45,6 @@ public class #{$classname} extends DataSourceTransactionManager {
 	@Override
 	protected void doCommit(DefaultTransactionStatus status) {
 		super.doCommit(status);
-		DaoComponent.remove();
 	}
 
 	@Override

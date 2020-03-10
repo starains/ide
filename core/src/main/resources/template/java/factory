@@ -1,55 +1,47 @@
 package #{$package};
 
-import com.teamide.*;
 import com.teamide.factory.*;
 import com.teamide.bean.*;
 import com.teamide.dao.IDao;
 import com.teamide.exception.*;
-import com.teamide.factory.DatabaseFactory;
 import com.teamide.jexl.JexlProcessor;
 import com.teamide.jexl.SqlJexlResolver;
-import com.teamide.service.IService;
 import com.teamide.util.LogUtil;
 
 import java.util.Map;
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 
 import org.apache.commons.jexl3.JexlException;
 import org.slf4j.Logger;
 
 import com.alibaba.fastjson.*;
-import org.springframework.stereotype.Component;
 
-import #{$dao_component.$package}.#{$dao_component.$classname};
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * AppFactory
  * 应用工厂
  */
-@SuppressWarnings("unused")
 @Component("teamide-factory")
 public class #{$classname} extends BaseFactory{
 	
 	static Logger logger = LogUtil.get();
 	
-	static #{$classname} TEAMIDE_FACTORY = new #{$classname}();
+	static #{$classname} FACTORY = new #{$classname}();
 
 	public #{$classname}() {
-		TEAMIDE_FACTORY = this;
+		FACTORY = this;
 	}
 	
-	@Resource
-	private DynamicDataSourceFactory dynamicDataSourceFactory;
+	@Autowired
+	private DynamicDataSourceFactory dynamicFactory;
 
 	public static IDao getDao(JSONObject json) throws Exception {
-		DataSource dataSource = TEAMIDE_FACTORY.dynamicDataSourceFactory.getDataSource(null, json);
-		return new #{$dao_component.$classname}(dataSource);
+		return FACTORY.dynamicFactory.newDao(null, json);
 	}
 
 	public static IDao getDao(String name, JSONObject json) throws Exception {
-		DataSource dataSource = TEAMIDE_FACTORY.dynamicDataSourceFactory.getDataSource(name, json);
-		return new #{$dao_component.$classname}(dataSource);
+		return FACTORY.dynamicFactory.newDao(name, json);
 	}
 
 	/**

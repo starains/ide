@@ -44,11 +44,11 @@ public class AppGenerater extends Generater {
 
 	public void generateComponent() throws Exception {
 
-		Generater generater = new ComponentDaoGenerater(param, app, context);
-		generater.generate();
-
-		generater = new ComponentTransactionGenerater(param, app, context);
-		generater.generate();
+//		Generater generater = new ComponentDaoGenerater(param, app, context);
+//		generater.generate();
+//
+//		generater = new ComponentTransactionGenerater(param, app, context);
+//		generater.generate();
 
 	}
 
