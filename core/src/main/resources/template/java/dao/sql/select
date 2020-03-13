@@ -1,3 +1,4 @@
+#ifStart($only_content == false)#
 package #{$package};
 
 import java.util.*;
@@ -36,35 +37,38 @@ public class #{$classname} {
 	
 	@Autowired
 	#{$dao_component.$classname} dao;
+#ifEnd#
 
 	/**
-	 * 执行
+	 * 执行 
+	 * #{$method_name}
+	 * #{$comment}
 	 */
 	@DataSource()
 	#ifStart($sqlType == 'SELECT_ONE')#
-	public Map<String, Object> invoke(@VariableData JSONObject data) throws Exception {
+	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($sqlType == 'SELECT_LIST')#
-	public List<Map<String, Object>> invoke(@VariableData JSONObject data) throws Exception {
+	public List<Map<String, Object>> #{$method_name}(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($sqlType == 'SELECT_PAGE')#
-	public PageResultBean<Map<String, Object>> invoke(@VariableData JSONObject data) throws Exception {
+	public PageResultBean<Map<String, Object>> #{$method_name}(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
 		
 		// 组合SQL Param
 		#ifStart($sqlType == 'SELECT_ONE')#
-		SqlParam sqlParam = buildSqlParam(data);
+		SqlParam sqlParam = #{$build_name}(data);
 		Map<String, Object> result = dao.queryOne(sqlParam);
 		#ifEnd#
 		#ifStart($sqlType == 'SELECT_LIST')#
-		SqlParam sqlParam = buildSqlParam(data);
+		SqlParam sqlParam = #{$build_name}(data);
 		List<Map<String, Object>> result = dao.queryList(sqlParam);
 		#ifEnd#
 		#ifStart($sqlType == 'SELECT_PAGE')#
-		PageSqlParam pageSqlParam = buildSqlParam(data);
+		PageSqlParam pageSqlParam = #{$build_name}(data);
 		PageResultBean<Map<String, Object>> result = dao.queryPage(pageSqlParam);
 		#ifEnd#
-		format(result, data);
+		#{$format_name}(result, data);
 		return result;
 	}
 	
@@ -72,10 +76,10 @@ public class #{$classname} {
 	 * 组合SQL
 	 */
 	#ifStart($sqlType == 'SELECT_PAGE')#
-	public PageSqlParam buildSqlParam(JSONObject data) throws Exception {
+	public PageSqlParam #{$build_name}(JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($sqlType != 'SELECT_PAGE')#
-	public SqlParam buildSqlParam(JSONObject data) throws Exception {
+	public SqlParam #{$build_name}(JSONObject data) throws Exception {
 	#ifEnd#
 		// 用于暂存字段取到的值
 		Object value = null;
@@ -132,12 +136,12 @@ public class #{$classname} {
 	/**
 	 * 格式化分页结果
 	 */
-	public void format(PageResultBean<Map<String, Object>> result, JSONObject data) throws Exception {
+	public void #{$format_name}(PageResultBean<Map<String, Object>> result, JSONObject data) throws Exception {
 		if(result == null) {
 			return;
 		}
 		for(Map<String, Object> one : result.getValue()){
-			format(one, data);
+			#{$format_name}(one, data);
 		}
 	}
 	#ifEnd#
@@ -145,12 +149,12 @@ public class #{$classname} {
 	/**
 	 * 格式化列表结果
 	 */
-	public void format(List<Map<String, Object>> result, JSONObject data) throws Exception {
+	public void #{$format_name}(List<Map<String, Object>> result, JSONObject data) throws Exception {
 		if(result == null) {
 			return;
 		}
 		for(Map<String, Object> one : result){
-			format(one, data);
+			#{$format_name}(one, data);
 		}
 	}
 	#ifEnd#
@@ -158,17 +162,20 @@ public class #{$classname} {
 	/**
 	 * 格式化单条结果
 	 */
-	public void format(Map<String, Object> result, @VariableData JSONObject data) throws Exception {
+	public void #{$format_name}(Map<String, Object> result, @VariableData JSONObject data) throws Exception {
 		if(result == null) {
 			return;
 		}
-		#forStart($subselects, $subselect, $index)#
 		JSONObject json = new JSONObject();
 		if(data != null){
 			json.putAll(data);
 		}
 		json.putAll(result);
-		result.put("#{$subselect.$name}", query#{$subselect.$method}(json));
+		#forStart($formats, $format, $index)#
+		result.put("#{$format.$key}", #{$app_factory.$classname}.getValueByJexlScript("#{$format.formatvalue}", json));
+		#forEnd#
+		#forStart($subselects, $subselect, $index)#
+		result.put("#{$subselect.$name}", #{$query_name}#{$subselect.$method}(json));
 		#forEnd#
 	}
 	
@@ -177,7 +184,7 @@ public class #{$classname} {
 	 * 子查询
 	 */
 	@DataSource()
-	public Object query#{$subselect.$method}(@VariableData JSONObject data) throws Exception {
+	public Object #{$query_name}#{$subselect.$method}(@VariableData JSONObject data) throws Exception {
 		
 		// 用于暂存字段取到的值
 		Object value = null;
@@ -211,4 +218,6 @@ public class #{$classname} {
 		#ifEnd#
 	}
 	#forEnd#
+#ifStart($only_content == false)#
 }
+#ifEnd#

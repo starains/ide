@@ -1,0 +1,66 @@
+package #{$package};
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
+import com.teamide.bean.*;
+import com.teamide.client.ClientHandler;
+import com.teamide.client.ClientSession;
+import com.teamide.exception.BaseException;
+import com.teamide.param.DataParam;
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
+import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+#forStart($imports, $import)#
+import #{$import};
+#forEnd#
+
+import #{$dao.$package}.#{$dao.$classname};
+
+@SuppressWarnings("unused")
+@Controller
+public class #{$classname} {
+
+	//#{$dao.$comment}
+	@Autowired
+	#{$dao.$classname} #{$dao.$propertyname};
+	
+	#ifStart($dao.$requestmethod == null)#
+	@RequestMapping("#{$requestmapping}")
+	#ifEnd#
+	#ifStart($dao.$requestmethod != null)#
+	@RequestMapping(path = "#{$requestmapping}", method = { RequestMethod.#{$dao.$requestmethod }})
+	#ifEnd#
+	@ResponseBody
+	public Object invoke(HttpServletRequest request, HttpServletResponse response) {
+		Object result = null;
+		Exception exception = null;
+		try {
+			ClientSession session = ClientHandler.getSession(request);
+			DataParam param = new DataParam(request, session);
+
+			JSONObject data = new JSONObject();
+			if (param.getData() != null) {
+				data = (JSONObject) param.getData();
+			}
+			JSONObject variableCache = param.toVariableCache(data);
+			
+			#ifStart($dao.$is_batch == true)#
+			result = #{$dao.$propertyname}.invoke(data, variableCache);
+			#ifEnd#
+			#ifStart($dao.$is_batch != true)#
+			result = #{$dao.$propertyname}.invoke(variableCache);
+			#ifEnd#
+		} catch (Exception e) {
+			exception = e;
+		}
+		
+		return #{$app_factory.$classname}.toStatus(result, exception);
+	}
+
+}

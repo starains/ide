@@ -1,0 +1,130 @@
+package #{$package};
+
+import java.util.*;
+import com.teamide.util.*;
+import com.teamide.exception.*;
+
+import com.alibaba.fastjson.*;
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
+#forStart($imports, $import)#
+import #{$import};
+#forEnd#
+
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
+#forStart($propertys, $property)#
+import #{$property.$package}.#{$property.$classname};
+#forEnd#
+
+/**
+ * Service
+ * #{$comment}
+ */
+#ifStart($result_classname.startsWith('JSON') || $result_classname.startsWith('Object') == true)#
+@SuppressWarnings({"unused"})
+#ifEnd#
+#ifStart($result_classname.startsWith('JSON') == false && $result_classname.startsWith('Object') == false)#
+@SuppressWarnings({"unused", "unchecked"})
+#ifEnd#
+@Service
+public class #{$classname} {
+	
+	#forStart($propertys, $property)#
+	//#{$property.$comment}
+	@Autowired
+	#{$property.$classname} #{$property.$name};
+	#forEnd#
+		
+	/**
+	 * 执行服务
+	 */
+	public #{$result_classname} invoke(JSONObject variableCache) throws Exception {
+		if(variableCache == null) {
+			variableCache = new JSONObject();
+		}
+		JSONObject invokeCache = new JSONObject();
+		
+		variableCache.put("$result", invokeCache);
+		
+		#ifStart($start != null)#
+		#{$start.$method}(variableCache, invokeCache);
+		#ifEnd#
+		
+		#ifStart($result_name != null)#
+		#{$result_classname} result = (#{$result_classname}) invokeCache.get("#{$result_name}");
+		#ifEnd#
+		#ifStart($result_name == null && $has_last_result == true)#
+		#{$result_classname} result = (#{$result_classname}) invokeCache.get("$last_result");
+		#ifEnd#
+		#ifStart($result_name == null && $has_last_result == false)#
+		#{$result_classname} result = invokeCache;
+		#ifEnd#
+		
+		return result;
+	}
+	#forStart($processs, $one)#
+	
+	/**
+	 * #{$one.name}
+	 * 说明：#{$one.text}
+	 */
+	private void #{$one.$method}(JSONObject variableCache, JSONObject invokeCache) throws Exception {
+	
+		// 用于暂存字段取到的值
+		Object value = null;
+#{$one.$variable_content}
+#{$one.$validate_content}
+		#ifStart($one.type == 'DECISION' && $one.$conditions != null)#
+		#forStart($one.$conditions, $condition)#
+		if(ObjectUtil.isTrue(#{$app_factory.$classname}.getValueByJexlScript("#{$condition.condition}", variableCache))){
+			//#{$condition.$next.text}
+			#{$condition.$next.$method}(variableCache, invokeCache);
+		}
+		#forEnd#
+		#ifEnd#
+		#ifStart($one.$dao != null)#
+		//#{$one.$dao.$comment}
+		#ifStart($one.$dao.$is_batch != true)#
+		#{$one.$dao.$result_classname} result = #{$one.$dao.$propertyname}.invoke(variableCache);
+		#ifEnd#
+		#ifStart($one.$dao.$is_batch == true)#
+		JSON json = variableCache;
+		#ifStart($one.$datarule != null)#
+			json = (JSON) JSON.toJSON(#{$app_factory.$classname}.getValueByJexlScript("#{$one.$datarule}", variableCache));
+		#ifEnd#
+		#{$one.$dao.$result_classname} result = #{$one.$dao.$propertyname}.invoke(json, variableCache);
+		#ifEnd#
+		#ifStart($one.resultname != null)#
+		invokeCache.put("#{$one.resultname}", result);
+		#ifEnd#
+		#ifStart($one.resultname == null)#
+		invokeCache.put("#{$one.name}", result);
+		#ifEnd#
+		invokeCache.put("$last_result", result);
+		#ifEnd#
+		#ifStart($one.$service != null)#
+		//#{$one.$service.$comment}
+		#{$one.$service.$result_classname} result = #{$one.$service.$propertyname}.invoke(variableCache);
+		#ifStart($one.resultname != null)#
+		invokeCache.put("#{$one.resultname}", result);
+		#ifEnd#
+		#ifStart($one.resultname == null)#
+		invokeCache.put("#{$one.name}", result);
+		#ifEnd#
+		invokeCache.put("$last_result", result);
+		#ifEnd#
+		#ifStart($one.type != 'DECISION' && $one.$next != null)#
+		//#{$one.$next.text}
+		#{$one.$next.$method}(variableCache, invokeCache);
+		#ifEnd#
+		#ifStart($one.type == 'ERROR_END')#
+		// 抛出异常
+		throw new BaseException("#{$one.$errcode}", "#{$one.$errmsg}");
+		#ifEnd#
+	}
+	#forEnd#
+	
+}

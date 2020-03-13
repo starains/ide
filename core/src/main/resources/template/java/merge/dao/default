@@ -1,0 +1,43 @@
+package #{$package};
+
+import java.util.*;
+import com.teamide.util.*;
+import com.teamide.exception.*;
+
+import com.alibaba.fastjson.*;
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
+import #{$dao_component.$package}.#{$dao_component.$classname};
+
+import com.teamide.db.bean.*;
+#ifStart($sqlType == 'SELECT_PAGE')#
+import com.teamide.bean.PageResultBean;
+#ifEnd#
+#ifStart($sqlType != 'SELECT_PAGE')#
+#ifEnd#
+
+import com.teamide.dao.IDao;
+import com.teamide.param.DataParam;
+import com.teamide.annotation.*;
+
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * SQL Dao
+ * #{$comment}
+ */
+@SuppressWarnings("unused")
+@Service
+public class #{$classname} {
+
+	@Autowired
+	#{$app_factory.$classname} factory;
+	
+	@Autowired
+	#{$dao_component.$classname} dao;
+#forStart($list, $one)#
+
+#{$one.$content}
+#forEnd#
+}

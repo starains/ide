@@ -28,7 +28,7 @@
       href="https://gitee.com/teamide/base"
       class="coos-link color-green"
       target="_blank"
-    >https://gitee.com/teamide/base</a>，请自行下载引入。<br/>
+    >https://gitee.com/teamide/base</a>，请自行下载引入。
     teamide.base不定期更新，更新最新代码使用！
 			</strong>
 			<el-form class="col-12" :model="form" status-icon :rules="rules" ref="form" label-width="150px" size="mini">
@@ -44,10 +44,16 @@
 					  <span class="color-grey-4">配置资源文件目录，默认：src/main/resources</span>
 					</el-form-item>
 				</div>
-				<div class="col-6">
+				<div class="col-12">
 					<el-form-item class label="基础包名" prop="basepackage">
 					  <el-input type="text" v-model="form.basepackage" autocomplete="off" @change="change($event,'basepackage')" placeholder="默认：com.teamide.app"></el-input>
 					  <span class="color-grey-4">配置基础包，生成的源码在基础包下相应位置，默认：com.teamide.app</span>
+					</el-form-item>
+				</div>
+				<div class="col-12">
+					<el-form-item class label="合并目录" prop="mergedirectory">
+					  <el-switch v-model="form.mergedirectory" autocomplete="off" @change="change($event,'mergedirectory')" ></el-switch>
+					  <span class="color-grey-4">如果选中合并，则合并代码到一个文件中，例如：user/insert、user/update，生成的Dao为user/userDao，里边有insert和update方法</span>
 					</el-form-item>
 				</div>
 				<div class="col-6">

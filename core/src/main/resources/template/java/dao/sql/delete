@@ -1,3 +1,4 @@
+#ifStart($only_content == false)#
 package #{$package};
 
 import java.util.*;
@@ -30,16 +31,17 @@ public class #{$classname} {
 	
 	@Autowired
 	#{$dao_component.$classname} dao;
+#ifEnd#
 
 	/**
 	 * 执行
 	 */
 	@DataSource()
 	#ifStart($is_batch == true)#
-	public List<Map<String, Object>> invoke(JSON json, @VariableData JSONObject data) throws Exception {
+	public List<Map<String, Object>> #{$method_name}(JSON json, @VariableData JSONObject data) throws Exception {
 	#ifEnd#
 	#ifStart($is_batch == false)#
-	public Map<String, Object> invoke(@VariableData JSONObject data) throws Exception {
+	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception {
 	#ifEnd#
 		#ifStart($datarule != null)#
 		JSONObject cache = (JSONObject)data.clone();
@@ -63,7 +65,7 @@ public class #{$classname} {
 			JSONObject one = (JSONObject)data.clone();
 			one.putAll(list.getJSONObject(i));
 			one.put("$index", i);
-			SqlParam sqlParam = buildSqlParam(one);
+			SqlParam sqlParam = #{$build_name}(one);
 			sqlParamList.add(sqlParam);
 		}
 		int result = dao.batchExecute(sqlParamList);
@@ -74,7 +76,7 @@ public class #{$classname} {
 		return params;
 		#ifEnd#
 		#ifStart($is_batch == false)#
-		SqlParam sqlParam = buildSqlParam(data);
+		SqlParam sqlParam = #{$build_name}(data);
 		int result = dao.execute(sqlParam);
 		
 		return sqlParam.getParam();
@@ -84,7 +86,7 @@ public class #{$classname} {
 	/**
 	 * 组合SQL
 	 */
-	public SqlParam buildSqlParam(JSONObject data) throws Exception {
+	public SqlParam #{$build_name}(JSONObject data) throws Exception {
 		// 用于暂存字段取到的值
 		Object value = null;
 		// SQL执行用到的参数，SQL中使用“:key”作占位符
@@ -109,4 +111,6 @@ public class #{$classname} {
 		SqlParam sqlParam = new SqlParam(realSql, param);
 		return sqlParam;
 	}
+#ifStart($only_content == false)#
 }
+#ifEnd#

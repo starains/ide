@@ -933,8 +933,13 @@ window.app = app;
 			<div class="color-grey pdl-20">$script_md5.MD5()：MD5加密。示例：$script_md5.MD5(value（必填）)</div>
 			<div class="color-grey pdl-20">$script_json.to_json()：转为JSON。示例：$script_json.to_json(value（必填）)</div>
 			<div class="color-grey pdl-20">$script_tree.to_tree()：转为Tree结构。示例：$script_tree.to_tree(value（必填）,"id"（ID名称非必填）,"parentid"（父ID名称非必填）,"children"（子名称非必填）)</div>
+			<div class="color-grey pdl-20">$script_base64.encode()：Base64加密。示例：$script_base64.encode(value（必填）)</div>
+			<div class="color-grey pdl-20">$script_base64.decode()：Base64解密。示例：$script_base64.decode(value（必填）)</div>
+			<div class="color-grey pdl-20">$script_aes.encode()：AES加密。示例：$script_aes.encode(value（必填）, key（必填）)</div>
+			<div class="color-grey pdl-20">$script_aes.decode()：AES解密。示例：$script_aes.decode(value（必填）, key（必填）)</div>
+			<div class="color-grey pdl-20">$script_util.toStar()：替换星号。示例：$script_util.toStar(value（必填）, start（必填）, end（必填）)</div>
 		<div class="color-grey">4：使用说明：</div>
-			<div class="color-grey pdl-20">$user.user：可以取到登录用户ID</div>
+			<div class="color-grey pdl-20">$data.xxx：取到请求的参数</div>
 	</div>
 	`;
 	var setJexlScript = function(text, callback) {
@@ -1123,7 +1128,7 @@ window.app = app;
       href="https://gitee.com/teamide/base"
       class="coos-link color-green"
       target="_blank"
-    >https://gitee.com/teamide/base</a>，请自行下载引入。<br/>
+    >https://gitee.com/teamide/base</a>，请自行下载引入。
     teamide.base不定期更新，更新最新代码使用！
 			</strong>
 			<el-form class="col-12" :model="form" status-icon :rules="rules" ref="form" label-width="150px" size="mini">
@@ -1139,10 +1144,16 @@ window.app = app;
 					  <span class="color-grey-4">配置资源文件目录，默认：src/main/resources</span>
 					</el-form-item>
 				</div>
-				<div class="col-6">
+				<div class="col-12">
 					<el-form-item class label="基础包名" prop="basepackage">
 					  <el-input type="text" v-model="form.basepackage" autocomplete="off" @change="change($event,'basepackage')" placeholder="默认：com.teamide.app"></el-input>
 					  <span class="color-grey-4">配置基础包，生成的源码在基础包下相应位置，默认：com.teamide.app</span>
+					</el-form-item>
+				</div>
+				<div class="col-12">
+					<el-form-item class label="合并目录" prop="mergedirectory">
+					  <el-switch v-model="form.mergedirectory" autocomplete="off" @change="change($event,'mergedirectory')" ></el-switch>
+					  <span class="color-grey-4">如果选中合并，则合并代码到一个文件中，例如：user/insert、user/update，生成的Dao为user/userDao，里边有insert和update方法</span>
 					</el-form-item>
 				</div>
 				<div class="col-6">

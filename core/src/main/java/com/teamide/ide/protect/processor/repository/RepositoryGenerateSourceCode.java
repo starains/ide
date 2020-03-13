@@ -2,8 +2,8 @@ package com.teamide.ide.protect.processor.repository;
 
 import com.teamide.app.source.FileSource;
 import com.teamide.app.source.Source;
+import com.teamide.ide.generater.AppGenerater;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.protect.processor.repository.generater.AppGenerater;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
 import com.teamide.ide.protect.processor.repository.project.ProjectAppLoader;
 
