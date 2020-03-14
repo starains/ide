@@ -52,6 +52,27 @@
     };
     source.do = function (type, data) {
         return new Promise((resolve, reject) => {
+
+            if (type == 'FILE_RENAME' || type == 'FILE_MOVE') {
+                let project = null;
+                data = data || {};
+                if (data.path) {
+                    project = source.getProjectByPath(data.path);
+                }
+                if (project) {
+                    if (project.app && project.app.path_model_type) {
+                        let model = null;
+                        Object.keys(project.app.path_model_type).forEach(key => {
+                            if (data.path && data.path.startsWith(key)) {
+                                model = project.app.path_model_type[key];
+                                model.apppath = project.app.path;
+                                model.path = key;
+                            }
+                        });
+                        data.model = model;
+                    }
+                }
+            }
             source.server.do(type, data).then(res => {
                 resolve && resolve(res);
                 if (res.errcode == 0) {

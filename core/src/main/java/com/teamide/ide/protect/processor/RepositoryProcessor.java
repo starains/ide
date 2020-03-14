@@ -84,7 +84,11 @@ public class RepositoryProcessor extends SpaceProcessor {
 		case FILE_MOVE:
 			String path = data.getString("path");
 			String to = data.getString("to");
-			new RepositoryFile(param).move(path, to);
+			JSONObject model = null;
+			if (data.get("model") != null) {
+				model = data.getJSONObject("model");
+			}
+			new RepositoryFile(param).move(path, to, model);
 
 			spaceEventBean.set("path", path);
 			spaceEventBean.set("to", to);
@@ -124,7 +128,11 @@ public class RepositoryProcessor extends SpaceProcessor {
 		case FILE_RENAME:
 			path = data.getString("path");
 			name = data.getString("name");
-			new RepositoryFile(param).rename(path, name);
+			model = null;
+			if (data.get("model") != null) {
+				model = data.getJSONObject("model");
+			}
+			new RepositoryFile(param).rename(path, name, model);
 
 			spaceEventBean.set("path", path);
 			spaceEventBean.set("name", name);
