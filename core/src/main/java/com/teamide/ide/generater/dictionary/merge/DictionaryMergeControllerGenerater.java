@@ -23,7 +23,7 @@ public class DictionaryMergeControllerGenerater extends BaseMergeGenerater {
 
 	public String getPackage() {
 		String pack = getControllerPackage();
-		pack += ".dictionary";
+		pack += "";
 		return pack;
 	}
 

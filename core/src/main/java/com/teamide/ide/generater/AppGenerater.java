@@ -131,7 +131,7 @@ public class AppGenerater extends Generater {
 			Map<String, List<DictionaryBean>> map = new HashMap<String, List<DictionaryBean>>();
 			for (DictionaryBean dictionary : dictionarys) {
 				String name = dictionary.getName();
-				String directory = "base";
+				String directory = "dictionary";
 				if (name.indexOf("/") > 0) {
 					directory = name.substring(0, name.lastIndexOf("/"));
 				}

@@ -118,11 +118,29 @@ public class ControllerGenerater extends BaseGenerater {
 							if (dao != null) {
 								DaoGenerater daoGenerater = new DaoGenerater(dao, param, app, context);
 								daoGenerater.init();
+								String $propertyname = daoGenerater.data.getString("$propertyname");
+								String $classname = daoGenerater.data.getString("$classname");
+								String $package = daoGenerater.data.getString("$package");
+								if (isMergedirectory()) {
+									$propertyname = daoGenerater.data.getString("$merge_propertyname");
+									$classname = daoGenerater.data.getString("$merge_classname");
+									$package = daoGenerater.data.getString("$merge_package");
+								}
+								boolean find = false;
+								for (int n = 0; n < $propertys.size(); n++) {
+									JSONObject $property = $propertys.getJSONObject(n);
+									if ($property.getString("$name").equals($propertyname)) {
+										find = true;
+									}
+								}
 								JSONObject $property = new JSONObject();
-								$property.put("$classname", daoGenerater.data.get("$classname"));
-								$property.put("$name", daoGenerater.data.get("$propertyname"));
-								$property.put("$package", daoGenerater.data.get("$package"));
-								$propertys.add($property);
+								$property.put("$package", $package);
+								$property.put("$classname", $classname);
+								$property.put("$name", $propertyname);
+								if (!find) {
+									$propertys.add($property);
+								}
+
 								$process.put("$property", $property);
 							}
 						} else if (process.getType().equalsIgnoreCase("SERVICE")) {
@@ -130,11 +148,30 @@ public class ControllerGenerater extends BaseGenerater {
 							if (service != null) {
 								ServiceGenerater serviceGenerater = new ServiceGenerater(service, param, app, context);
 								serviceGenerater.init();
+
+								String $propertyname = serviceGenerater.data.getString("$propertyname");
+								String $classname = serviceGenerater.data.getString("$classname");
+								String $package = serviceGenerater.data.getString("$package");
+								if (isMergedirectory()) {
+									$propertyname = serviceGenerater.data.getString("$merge_propertyname");
+									$classname = serviceGenerater.data.getString("$merge_classname");
+									$package = serviceGenerater.data.getString("$merge_package");
+								}
+								boolean find = false;
+								for (int n = 0; n < $propertys.size(); n++) {
+									JSONObject $property = $propertys.getJSONObject(n);
+									if ($property.getString("$name").equals($propertyname)) {
+										find = true;
+									}
+								}
 								JSONObject $property = new JSONObject();
-								$property.put("$classname", serviceGenerater.data.get("$classname"));
-								$property.put("$name", serviceGenerater.data.get("$propertyname"));
-								$property.put("$package", serviceGenerater.data.get("$package"));
-								$propertys.add($property);
+								$property.put("$package", $package);
+								$property.put("$classname", $classname);
+								$property.put("$name", $propertyname);
+								if (!find) {
+									$propertys.add($property);
+								}
+
 								$process.put("$property", $property);
 							}
 						}
