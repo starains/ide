@@ -48,10 +48,10 @@ public abstract class BaseMergeGenerater extends Generater {
 		File javaFolder = getJavaFolder();
 
 		String pack = getPackage();
-		String codepath = getCodePath();
 		String className = getClassName();
-		if (!StringUtil.isEmpty(codepath)) {
-//			pack += "." + codepath.replaceAll("/", ".");
+		String codepackage = getFolderPackage(directory);
+		if (!StringUtil.isEmpty(codepackage)) {
+			pack += "." + codepackage;
 		}
 		String path = packageToPath(pack);
 		String filePath = path + "/" + className + ".java";
@@ -81,6 +81,7 @@ public abstract class BaseMergeGenerater extends Generater {
 				}
 			}
 		}
+		data.put("$only_content", false);
 		data.put("$datas", $datas);
 		data.put("$package", this.pack);
 		data.put("$classname", this.className);
@@ -107,17 +108,22 @@ public abstract class BaseMergeGenerater extends Generater {
 			return;
 		}
 		param.getLog().info("generate " + this.pack + "." + this.className + " code.");
+		init();
 		String content = build();
 		if (!file.exists() && !file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
 		}
 
-		FileUtil.write(content.getBytes(), file);
+		StringBuffer code = new StringBuffer();
+		code.append(Generater.HEAD_NOTE).append("\n");
+		code.append(Generater.HEAD_REMARK).append("\n");
+		code.append(content);
+
+		FileUtil.write(code.toString().getBytes(), file);
 	}
 
 	public String build() throws Exception {
 		param.getLog().info("build " + this.pack + "." + this.className + " code.");
-		init();
 		String template = getTemplate();
 		InputStream templateStream = ResourceUtil.load(template);
 		if (templateStream == null) {
@@ -141,10 +147,6 @@ public abstract class BaseMergeGenerater extends Generater {
 	public abstract String getTemplate() throws Exception;
 
 	public abstract String getPackage();
-
-	public String getCodePath() {
-		return directory;
-	}
 
 	public String getClassName() {
 		String classname = "";

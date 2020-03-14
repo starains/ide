@@ -116,7 +116,7 @@ public class UpdateGenerater extends SqlGenerater {
 
 		String name = StringUtil.trim(column.getName());
 
-		String placeKey = base.getPlaceKey(column.getName());
+		String placeKey = base.getPlaceKey(column.getName(), keyCache);
 		placeKey = StringUtil.trim(placeKey);
 		StringBuffer sql = new StringBuffer();
 		sql.append(name).append("=").append(":" + placeKey).append(",");

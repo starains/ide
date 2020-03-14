@@ -29,6 +29,70 @@ public abstract class Generater {
 
 	public abstract void generate() throws Exception;
 
+	public String toHump(String name) {
+		if (StringUtil.isEmpty(name)) {
+			return name;
+		}
+		String[] chars = name.split("");
+		String result = "";
+		for (int i = 0; i < chars.length; i++) {
+			if (StringUtil.isEmpty(chars[i])) {
+				continue;
+			}
+			if (chars[i].equals("/") || chars[i].equals("\\")) {
+				continue;
+			}
+			if (result.length() == 0) {
+				result += chars[i];
+			} else {
+				if (chars[i - 1].equals("/") || chars[i - 1].equals("\\")) {
+					result += chars[i].toUpperCase();
+				} else {
+					result += chars[i];
+				}
+			}
+		}
+		return result;
+	}
+
+	public String getFolderByName(String name) {
+		if (name.indexOf("/") > 0) {
+			return name.substring(0, name.lastIndexOf("/"));
+		}
+		return "";
+	}
+
+	public String getFolderPackage(String folder) {
+		String pack = "";
+		int level = -1;
+		if (context.getJava() != null) {
+			if (StringUtil.isNotEmpty(context.getJava().getDirectorypackagelevel())) {
+				try {
+					level = Integer.valueOf(context.getJava().getDirectorypackagelevel());
+				} catch (Exception e) {
+
+				}
+			}
+		}
+		if (!StringUtil.isEmpty(folder)) {
+			String[] folders = folder.split("/");
+			if (level < 0 || level > folders.length) {
+				level = folders.length;
+			}
+			for (int i = 0; i < level; i++) {
+				String f = folders[i];
+				if (StringUtil.isEmpty(f)) {
+					continue;
+				}
+				if (StringUtil.isNotEmpty(pack)) {
+					pack += ".";
+				}
+				pack += f;
+			}
+		}
+		return pack;
+	}
+
 	public File getJavaFolder() {
 		String javadirectory = null;
 		if (context.getJava() != null) {

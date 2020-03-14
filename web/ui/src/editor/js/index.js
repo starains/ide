@@ -187,7 +187,7 @@ window.app = app;
 		if (coos.isEmpty(callBuild) || coos.isTrue(callBuild)) {
 			this.buildDesignView();
 		}
-		coos.trimObject(this.model, [ undefined, null, "" ], true);
+		this.trimModel(this.model);
 		var data = {
 			model : this.model,
 			type : this.type,
@@ -196,7 +196,50 @@ window.app = app;
 		this.lastModel = $.extend(true, {}, this.model);
 		this.onChange('model', true);
 	};
-
+	Editor.prototype.trimModel = function(value, obj, key) {
+		let isNull = false;
+		if (coos.isEmpty(value)) {
+			isNull = true;
+		} else if (coos.isArray(value)) {
+			if (value.length == 0) {
+				isNull = true;
+			}
+		} else if (coos.isObject(value)) {
+			if (Object.keys(value).length == 0) {
+				isNull = true;
+			}
+		}
+		if (isNull) {
+			if (obj) {
+				if (coos.isArray(obj)) {
+					//obj.splice(obj.indexOf(value), 1);
+				} else {
+					delete obj[key];
+				}
+			}
+		} else {
+			if (coos.isArray(value)) {
+				value.forEach(o => {
+					this.trimModel(o, value);
+				});
+				if (value.length == 0) {
+					if (obj) {
+						delete obj[key];
+					}
+				}
+			} else if (coos.isObject(value)) {
+				for (var key in value) {
+					var keyValue = value[key];
+					this.trimModel(keyValue, value, key);
+				}
+				if (Object.keys(value).length == 0) {
+					if (obj) {
+						delete obj[key];
+					}
+				}
+			}
+		}
+	};
 
 	Editor.prototype.changeCode = function(content) {
 		if (coos.isEmpty(content) && coos.isEmpty(this.file.content)) {

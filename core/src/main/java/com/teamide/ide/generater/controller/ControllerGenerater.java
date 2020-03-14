@@ -65,10 +65,18 @@ public class ControllerGenerater extends BaseGenerater {
 				$method.put("$$requestmethod", $requestmethod);
 				$method.put("$userrequestbody", ObjectUtil.isTrue(method.getUserrequestbody()));
 				VariableGenerater variableGenerater = new VariableGenerater(getAppFactoryClassname());
-				$method.put("$variable_content", variableGenerater.generate(3, method.getVariables()));
+				StringBuffer $variable_content = variableGenerater.generate(3, method.getVariables());
+				if (StringUtil.isEmpty($variable_content)) {
+					$variable_content = null;
+				}
+				$method.put("$variable_content", $variable_content);
 
 				ValidateGenerater validateGenerater = new ValidateGenerater(getAppFactoryClassname());
-				$method.put("$validate_content", validateGenerater.generate(3, method.getValidates()));
+				StringBuffer $validate_content = validateGenerater.generate(3, method.getValidates());
+				if (StringUtil.isEmpty($validate_content)) {
+					$validate_content = null;
+				}
+				$method.put("$validate_content", $validate_content);
 
 				JSONArray $processs = new JSONArray();
 				$method.put("$processs", $processs);
@@ -91,10 +99,18 @@ public class ControllerGenerater extends BaseGenerater {
 							$process.put("$ifrule", ifrule);
 						}
 						variableGenerater = new VariableGenerater(getAppFactoryClassname());
-						$process.put("$variable_content", variableGenerater.generate(tab, process.getVariables()));
+						$variable_content = variableGenerater.generate(tab, process.getVariables());
+						if (StringUtil.isEmpty($variable_content)) {
+							$variable_content = null;
+						}
+						$process.put("$variable_content", $variable_content);
 
 						validateGenerater = new ValidateGenerater(getAppFactoryClassname());
-						$process.put("$validate_content", validateGenerater.generate(tab, process.getValidates()));
+						$validate_content = validateGenerater.generate(tab, process.getValidates());
+						if (StringUtil.isEmpty($validate_content)) {
+							$validate_content = null;
+						}
+						$process.put("$validate_content", $validate_content);
 
 						$process.put("$property", null);
 						if (process.getType().equalsIgnoreCase("DAO")) {

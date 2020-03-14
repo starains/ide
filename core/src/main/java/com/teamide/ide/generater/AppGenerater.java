@@ -24,7 +24,6 @@ import com.teamide.ide.generater.dao.merge.DaoMergeGenerater;
 import com.teamide.ide.generater.dictionary.DictionaryControllerGenerater;
 import com.teamide.ide.generater.dictionary.DictionaryGenerater;
 import com.teamide.ide.generater.dictionary.merge.DictionaryMergeControllerGenerater;
-import com.teamide.ide.generater.dictionary.merge.DictionaryMergeGenerater;
 import com.teamide.ide.generater.factory.FactoryGenerater;
 import com.teamide.ide.generater.resources.ResourcesGenerater;
 import com.teamide.ide.generater.service.ServiceControllerGenerater;
@@ -34,11 +33,25 @@ import com.teamide.ide.generater.service.merge.ServiceMergeGenerater;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
 import com.teamide.util.FileUtil;
+import com.teamide.util.StringUtil;
 
 public class AppGenerater extends Generater {
 
 	public AppGenerater(RepositoryProcessorParam param, AppBean app, AppContext context) {
 		super(param, app, context);
+	}
+
+	public void removeDirectory(File parent) throws Exception {
+		if (parent.listFiles().length == 0) {
+			parent.delete();
+		} else {
+			File[] fs = parent.listFiles();
+			for (File f : fs) {
+				if (f.isDirectory()) {
+					removeDirectory(f);
+				}
+			}
+		}
 	}
 
 	public void removeOld() throws Exception {
@@ -67,6 +80,7 @@ public class AppGenerater extends Generater {
 					if (line != null) {
 						if (line.indexOf(Generater.HEAD_NOTE) >= 0) {
 							file.delete();
+							removeDirectory(file.getParentFile());
 						}
 					}
 				}
@@ -114,16 +128,33 @@ public class AppGenerater extends Generater {
 
 		if (isMergedirectory()) {
 			List<DictionaryBean> dictionarys = context.get(DictionaryBean.class);
-			if (dictionarys.size() > 0) {
-				DictionaryMergeGenerater generater = new DictionaryMergeGenerater("dictionary", dictionarys, param, app,
-						context);
-				generater.generate();
+			Map<String, List<DictionaryBean>> map = new HashMap<String, List<DictionaryBean>>();
+			for (DictionaryBean dictionary : dictionarys) {
+				String name = dictionary.getName();
+				String directory = "base";
+				if (name.indexOf("/") > 0) {
+					directory = name.substring(0, name.lastIndexOf("/"));
+				}
+				List<DictionaryBean> directoryDictionarys = map.get(directory);
+				if (directoryDictionarys == null) {
+					directoryDictionarys = new ArrayList<DictionaryBean>();
+					map.put(directory, directoryDictionarys);
+				}
+				directoryDictionarys.add(dictionary);
 
-				DictionaryMergeControllerGenerater controller = new DictionaryMergeControllerGenerater("", dictionarys,
-						param, app, context);
+			}
+			for (DictionaryBean dictionary : dictionarys) {
+				DictionaryGenerater generater = new DictionaryGenerater(dictionary, param, app, context);
+				generater.generate();
+			}
+			for (String directory : map.keySet()) {
+				List<DictionaryBean> directoryDictionarys = map.get(directory);
+				DictionaryMergeControllerGenerater controller = new DictionaryMergeControllerGenerater(directory,
+						directoryDictionarys, param, app, context);
 				controller.generate();
 			}
 		} else {
+
 			List<DictionaryBean> dictionarys = context.get(DictionaryBean.class);
 			for (DictionaryBean dictionary : dictionarys) {
 				DictionaryGenerater generater = new DictionaryGenerater(dictionary, param, app, context);
@@ -161,9 +192,17 @@ public class AppGenerater extends Generater {
 				DaoMergeGenerater generater = new DaoMergeGenerater(directory, directoryDaos, param, app, context);
 				generater.generate();
 
-				DaoMergeControllerGenerater controller = new DaoMergeControllerGenerater(directory, directoryDaos,
-						param, app, context);
-				controller.generate();
+				List<DaoBean> controllerDaos = new ArrayList<DaoBean>();
+				for (DaoBean directoryDao : directoryDaos) {
+					if (StringUtil.isNotEmpty(directoryDao.getRequestmapping())) {
+						controllerDaos.add(directoryDao);
+					}
+				}
+				if (controllerDaos.size() > 0) {
+					DaoMergeControllerGenerater controller = new DaoMergeControllerGenerater(directory, controllerDaos,
+							param, app, context);
+					controller.generate();
+				}
 			}
 
 		} else {
@@ -204,9 +243,18 @@ public class AppGenerater extends Generater {
 						context);
 				generater.generate();
 
-				ServiceMergeControllerGenerater controller = new ServiceMergeControllerGenerater(directory,
-						directoryServices, param, app, context);
-				controller.generate();
+				List<ServiceBean> controllerServices = new ArrayList<ServiceBean>();
+				for (ServiceBean directoryService : directoryServices) {
+					if (StringUtil.isNotEmpty(directoryService.getRequestmapping())) {
+						controllerServices.add(directoryService);
+					}
+				}
+				if (controllerServices.size() > 0) {
+					ServiceMergeControllerGenerater controller = new ServiceMergeControllerGenerater(directory,
+							controllerServices, param, app, context);
+					controller.generate();
+				}
+
 			}
 
 		} else {

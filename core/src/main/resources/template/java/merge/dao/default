@@ -1,3 +1,4 @@
+#ifStart($only_content == false)#
 package #{$package};
 
 import java.util.*;
@@ -36,8 +37,11 @@ public class #{$classname} {
 	
 	@Autowired
 	#{$dao_component.$classname} dao;
+#ifEnd#
 #forStart($list, $one)#
 
 #{$one.$content}
 #forEnd#
+#ifStart($only_content == false)#
 }
+#ifEnd#

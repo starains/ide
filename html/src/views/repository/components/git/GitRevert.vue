@@ -15,6 +15,7 @@
         :label-width="labelWidth"
         class
         :size="size"
+        @submit.native.prevent
       >
         <el-form-item label="选择" prop="not_staged">
           <div class="coos-row col-8">

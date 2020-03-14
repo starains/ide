@@ -617,7 +617,9 @@ export default {
     blurInput(file) {
       let $input = $(this.$el).find("[id='input-" + file.path + "']");
       let new_name = $input.val();
-
+      if (new_name != null) {
+        new_name = new_name.trim();
+      }
       if (coos.isEmpty(new_name)) {
         if (file.isNew) {
           file.toRename = false;

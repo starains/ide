@@ -1,7 +1,9 @@
 package com.teamide.ide.generater.code.sql;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.teamide.app.enums.ComparisonOperator;
 import com.teamide.app.process.dao.sql.Abstract;
@@ -15,6 +17,8 @@ import com.teamide.util.StringUtil;
 public abstract class SqlGenerater extends CodeGenerater {
 
 	protected final Abstract base;
+
+	protected final Map<String, Integer> keyCache = new HashMap<String, Integer>();;
 
 	public SqlGenerater(String factory_classname, Abstract base) {
 		super(factory_classname);
@@ -120,7 +124,7 @@ public abstract class SqlGenerater extends CodeGenerater {
 			whereName += name;
 		}
 
-		String placeKey = base.getPlaceKey(where.getName());
+		String placeKey = base.getPlaceKey(where.getName(), keyCache);
 		placeKey = StringUtil.trim(placeKey);
 
 		String comparisonoperator = StringUtil.trim(where.getComparisonoperator());

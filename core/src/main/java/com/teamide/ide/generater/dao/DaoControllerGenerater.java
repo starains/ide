@@ -35,6 +35,7 @@ public class DaoControllerGenerater extends BaseGenerater {
 
 	@Override
 	public void buildData() {
+		data.put("$method_name", "invoke");
 
 		DaoGenerater daoGenerater = new DaoGenerater(dao, param, app, context);
 		daoGenerater.init();

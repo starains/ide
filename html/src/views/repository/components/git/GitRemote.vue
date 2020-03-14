@@ -9,6 +9,7 @@
         :size="size"
         append-to-body
         zIndex="100"
+        @submit.native.prevent
       >
         <el-form-item label="设置远程名称" prop="gitRemoteName">
           <el-input v-model="form.gitRemoteName" type="text" autocomplete="off"></el-input>

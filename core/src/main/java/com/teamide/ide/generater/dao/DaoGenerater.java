@@ -27,6 +27,7 @@ public class DaoGenerater extends SQLDaoGenerater {
 				buildSQLData();
 			}
 		}
+		data.put("$method_name", "invoke");
 		data.put("$requestmethod", null);
 		if (StringUtil.isNotEmpty(dao.getRequestmethod())) {
 			data.put("$requestmethod", dao.getRequestmethod());

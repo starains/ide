@@ -1,3 +1,4 @@
+#ifStart($only_content == false)#
 package #{$package};
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class #{$classname} {
 	//#{$dao.$comment}
 	@Autowired
 	#{$dao.$classname} #{$dao.$propertyname};
+#ifEnd#
 	
 	#ifStart($dao.$requestmethod == null)#
 	@RequestMapping("#{$requestmapping}")
@@ -37,7 +39,7 @@ public class #{$classname} {
 	@RequestMapping(path = "#{$requestmapping}", method = { RequestMethod.#{$dao.$requestmethod }})
 	#ifEnd#
 	@ResponseBody
-	public Object invoke(HttpServletRequest request, HttpServletResponse response) {
+	public Object #{$method_name}(HttpServletRequest request, HttpServletResponse response) {
 		Object result = null;
 		Exception exception = null;
 		try {
@@ -51,10 +53,10 @@ public class #{$classname} {
 			JSONObject variableCache = param.toVariableCache(data);
 			
 			#ifStart($dao.$is_batch == true)#
-			result = #{$dao.$propertyname}.invoke(data, variableCache);
+			result = #{$dao.$propertyname}.#{$dao.$method_name}(data, variableCache);
 			#ifEnd#
 			#ifStart($dao.$is_batch != true)#
-			result = #{$dao.$propertyname}.invoke(variableCache);
+			result = #{$dao.$propertyname}.#{$dao.$method_name}(variableCache);
 			#ifEnd#
 		} catch (Exception e) {
 			exception = e;
@@ -63,4 +65,6 @@ public class #{$classname} {
 		return #{$app_factory.$classname}.toStatus(result, exception);
 	}
 
+#ifStart($only_content == false)#
 }
+#ifEnd#

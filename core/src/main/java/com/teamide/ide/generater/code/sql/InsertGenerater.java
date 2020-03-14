@@ -115,7 +115,7 @@ public class InsertGenerater extends SqlGenerater {
 		content.append(getTab(tab));
 		content.append("if(value != null) {").append("\n");
 
-		String placeKey = base.getPlaceKey(column.getName());
+		String placeKey = base.getPlaceKey(column.getName(), keyCache);
 		placeKey = StringUtil.trim(placeKey);
 
 		content.append(getTab(tab + 1));

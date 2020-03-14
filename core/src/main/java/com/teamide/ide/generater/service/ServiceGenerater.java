@@ -12,6 +12,7 @@ import com.teamide.app.enums.ServiceProcessType;
 import com.teamide.app.process.ServiceProcess;
 import com.teamide.app.process.service.DaoProcess;
 import com.teamide.app.process.service.ErrorEndProcess;
+import com.teamide.app.process.service.SubServiceProcess;
 import com.teamide.bean.PageResultBean;
 import com.teamide.exception.Errcode;
 import com.teamide.ide.generater.BaseGenerater;
@@ -46,6 +47,7 @@ public class ServiceGenerater extends BaseGenerater {
 				break;
 			}
 		}
+		data.put("$method_name", "invoke");
 		data.put("$start", null);
 		data.put("$end", null);
 		data.put("$result_name", null);
@@ -68,28 +70,38 @@ public class ServiceGenerater extends BaseGenerater {
 
 		JSONObject $process = (JSONObject) JSONObject.toJSON(process);
 		String method = process.getName().replaceAll("\\.", "_");
+
+		method = toHump(method);
+
 		$process.put("$method", method);
 
 		VariableGenerater variableGenerater = new VariableGenerater(getAppFactoryClassname());
-		$process.put("$variable_content", variableGenerater.generate(2, process.getVariables()));
+		StringBuffer $variable_content = variableGenerater.generate(2, process.getVariables());
+		if (StringUtil.isEmpty($variable_content)) {
+			$variable_content = null;
+		}
+		$process.put("$variable_content", $variable_content);
 
 		ValidateGenerater validateGenerater = new ValidateGenerater(getAppFactoryClassname());
-		$process.put("$validate_content", validateGenerater.generate(2, process.getValidates()));
+		StringBuffer $validate_content = validateGenerater.generate(2, process.getValidates());
+		if (StringUtil.isEmpty($validate_content)) {
+			$validate_content = null;
+		}
+		$process.put("$validate_content", $validate_content);
 
 		if (data.get("$process_" + process.getName()) != null) {
 			return;
 		}
 		data.put("$process_" + process.getName(), $process);
-		$processs.add($process);
-
-		appendProcessTos($processs, process, $process, $propertys);
-
 		if (ServiceProcessType.START.getValue().equalsIgnoreCase(process.getType())) {
 			data.put("$start", $process);
-		}
-		if (ServiceProcessType.END.getValue().equalsIgnoreCase(process.getType())) {
+		} else if (ServiceProcessType.END.getValue().equalsIgnoreCase(process.getType())) {
 			data.put("$end", $process);
+		} else {
+			$processs.add($process);
 		}
+
+		appendProcessTos($processs, process, $process, $propertys);
 
 		if (ServiceProcessType.DAO.getValue().equalsIgnoreCase(process.getType())) {
 			DaoProcess daoProcess = (DaoProcess) process;
@@ -99,6 +111,7 @@ public class ServiceGenerater extends BaseGenerater {
 				daoGenerater.init();
 
 				JSONObject $dao = daoGenerater.data;
+				$dao.put("$method_name", "invoke");
 				String $propertyname = $dao.getString("$propertyname");
 				boolean find = false;
 				for (int i = 0; i < $propertys.size(); i++) {
@@ -140,6 +153,48 @@ public class ServiceGenerater extends BaseGenerater {
 				data.put("$has_last_result", true);
 			}
 			String datarule = StringUtil.trim(daoProcess.getData());
+			$process.put("$datarule", null);
+			if (!StringUtil.isEmpty(datarule)) {
+				$process.put("$datarule", datarule);
+			}
+		} else if (ServiceProcessType.SUB_SERVICE.getValue().equalsIgnoreCase(process.getType())) {
+			SubServiceProcess subServiceProcess = (SubServiceProcess) process;
+			ServiceBean service = context.get(ServiceBean.class, subServiceProcess.getServicename());
+			if (service != null) {
+				ServiceGenerater serviceGenerater = new ServiceGenerater(service, param, app, context);
+				serviceGenerater.init();
+
+				JSONObject $service = serviceGenerater.data;
+				$service.put("$method_name", "invoke");
+				String $propertyname = $service.getString("$propertyname");
+				boolean find = false;
+				for (int i = 0; i < $propertys.size(); i++) {
+					JSONObject $property = $propertys.getJSONObject(i);
+					if ($property.getString("$name").equals($propertyname)) {
+						find = true;
+					}
+				}
+				if (!find) {
+					JSONObject $property = new JSONObject();
+					$property.put("$comment", $service.getString("$comment"));
+					$property.put("$package", $service.getString("$package"));
+					$property.put("$classname", $service.getString("$classname"));
+					$property.put("$name", $propertyname);
+					$propertys.add($property);
+				}
+				$process.put("$$service", $service);
+
+				// int service_service_count = 0;
+				// for (ServiceProcess p : service.getProcesss()) {
+				// if
+				// (ServiceProcessType.DAO.getValue().equalsIgnoreCase(p.getType()))
+				// {
+				// service_service_count++;
+				// }
+				// }
+				data.put("$has_last_result", true);
+			}
+			String datarule = StringUtil.trim(subServiceProcess.getData());
 			$process.put("$datarule", null);
 			if (!StringUtil.isEmpty(datarule)) {
 				$process.put("$datarule", datarule);

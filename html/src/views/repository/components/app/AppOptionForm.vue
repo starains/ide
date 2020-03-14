@@ -9,6 +9,7 @@
         :size="size"
         append-to-body
         zIndex="100"
+        @submit.native.prevent
       >
         <el-form-item label="模型路径" prop="modelpath">
           <el-input v-model="form.modelpath" type="text" autocomplete="off"></el-input>

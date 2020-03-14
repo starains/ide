@@ -15,6 +15,7 @@
         :label-width="labelWidth"
         class
         :size="size"
+        @submit.native.prevent
       >
         <el-form-item label="未暂存文件" prop="not_staged">
           <div class="coos-row text-right">

@@ -1,3 +1,4 @@
+#ifStart($only_content == false)#
 package #{$package};
 
 import java.util.*;
@@ -23,12 +24,7 @@ import #{$property.$package}.#{$property.$classname};
  * Service
  * #{$comment}
  */
-#ifStart($result_classname.startsWith('JSON') || $result_classname.startsWith('Object') == true)#
 @SuppressWarnings({"unused"})
-#ifEnd#
-#ifStart($result_classname.startsWith('JSON') == false && $result_classname.startsWith('Object') == false)#
-@SuppressWarnings({"unused", "unchecked"})
-#ifEnd#
 @Service
 public class #{$classname} {
 	
@@ -37,11 +33,14 @@ public class #{$classname} {
 	@Autowired
 	#{$property.$classname} #{$property.$name};
 	#forEnd#
-		
+#ifEnd#
 	/**
 	 * 执行服务
 	 */
-	public #{$result_classname} invoke(JSONObject variableCache) throws Exception {
+#ifStart($result_classname.startsWith('JSON') == false && $result_classname.startsWith('Object') == false)#
+	@SuppressWarnings({"unchecked"})
+#ifEnd#
+	public #{$result_classname} #{$method_name}(JSONObject variableCache) throws Exception {
 		if(variableCache == null) {
 			variableCache = new JSONObject();
 		}
@@ -49,8 +48,18 @@ public class #{$classname} {
 		
 		variableCache.put("$result", invokeCache);
 		
+		// 用于暂存字段取到的值
+		Object value = null;
 		#ifStart($start != null)#
-		#{$start.$method}(variableCache, invokeCache);
+#ifStart($start.$variable_content != null)#
+#{$start.$variable_content}
+#ifEnd#
+#ifStart($start.$validate_content != null)#
+#{$start.$validate_content}
+#ifEnd#
+		#ifStart($start.$next != null)#
+		#{$start.$next.$method}(variableCache, invokeCache);
+		#ifEnd#
 		#ifEnd#
 		
 		#ifStart($result_name != null)#
@@ -63,6 +72,17 @@ public class #{$classname} {
 		#{$result_classname} result = invokeCache;
 		#ifEnd#
 		
+		#ifStart($end != null)#
+#ifStart($end.$variable_content != null)#
+#{$end.$variable_content}
+#ifEnd#
+#ifStart($end.$validate_content != null)#
+#{$end.$validate_content}
+#ifEnd#
+		#ifStart($end.$next != null)#
+		#{$end.$next.$method}(variableCache, invokeCache);
+		#ifEnd#
+		#ifEnd#
 		return result;
 	}
 	#forStart($processs, $one)#
@@ -75,8 +95,12 @@ public class #{$classname} {
 	
 		// 用于暂存字段取到的值
 		Object value = null;
+#ifStart($one.$variable_content != null)#
 #{$one.$variable_content}
+#ifEnd#
+#ifStart($one.$validate_content != null)#
 #{$one.$validate_content}
+#ifEnd#
 		#ifStart($one.type == 'DECISION' && $one.$conditions != null)#
 		#forStart($one.$conditions, $condition)#
 		if(ObjectUtil.isTrue(#{$app_factory.$classname}.getValueByJexlScript("#{$condition.condition}", variableCache))){
@@ -88,14 +112,14 @@ public class #{$classname} {
 		#ifStart($one.$dao != null)#
 		//#{$one.$dao.$comment}
 		#ifStart($one.$dao.$is_batch != true)#
-		#{$one.$dao.$result_classname} result = #{$one.$dao.$propertyname}.invoke(variableCache);
+		#{$one.$dao.$result_classname} result = #{$one.$dao.$propertyname}.#{$one.$dao.$method_name}(variableCache);
 		#ifEnd#
 		#ifStart($one.$dao.$is_batch == true)#
 		JSON json = variableCache;
 		#ifStart($one.$datarule != null)#
 			json = (JSON) JSON.toJSON(#{$app_factory.$classname}.getValueByJexlScript("#{$one.$datarule}", variableCache));
 		#ifEnd#
-		#{$one.$dao.$result_classname} result = #{$one.$dao.$propertyname}.invoke(json, variableCache);
+		#{$one.$dao.$result_classname} result = #{$one.$dao.$propertyname}.#{$one.$dao.$method_name}(json, variableCache);
 		#ifEnd#
 		#ifStart($one.resultname != null)#
 		invokeCache.put("#{$one.resultname}", result);
@@ -107,7 +131,7 @@ public class #{$classname} {
 		#ifEnd#
 		#ifStart($one.$service != null)#
 		//#{$one.$service.$comment}
-		#{$one.$service.$result_classname} result = #{$one.$service.$propertyname}.invoke(variableCache);
+		#{$one.$service.$result_classname} result = #{$one.$service.$propertyname}.#{$one.$service.$method_name}(variableCache);
 		#ifStart($one.resultname != null)#
 		invokeCache.put("#{$one.resultname}", result);
 		#ifEnd#
@@ -116,7 +140,7 @@ public class #{$classname} {
 		#ifEnd#
 		invokeCache.put("$last_result", result);
 		#ifEnd#
-		#ifStart($one.type != 'DECISION' && $one.$next != null)#
+		#ifStart($one.type != 'DECISION' && $one.$next != null && $one.$next.type != 'END')#
 		//#{$one.$next.text}
 		#{$one.$next.$method}(variableCache, invokeCache);
 		#ifEnd#
@@ -127,4 +151,6 @@ public class #{$classname} {
 	}
 	#forEnd#
 	
+#ifStart($only_content == false)#
 }
+#ifEnd#

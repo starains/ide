@@ -2,9 +2,12 @@ package com.teamide.ide.generater.dictionary.merge;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.teamide.app.AppContext;
 import com.teamide.app.bean.DictionaryBean;
 import com.teamide.ide.generater.BaseMergeGenerater;
+import com.teamide.ide.generater.dictionary.DictionaryControllerGenerater;
 import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.protect.processor.repository.project.AppBean;
 
@@ -30,6 +33,42 @@ public class DictionaryMergeControllerGenerater extends BaseMergeGenerater {
 
 	@Override
 	public void buildData() {
+
+		JSONArray $dictionarys = new JSONArray();
+		data.put("$dictionarys", $dictionarys);
+		JSONArray list = new JSONArray();
+
+		for (DictionaryBean dictionary : dictionarys) {
+			DictionaryControllerGenerater generater = new DictionaryControllerGenerater(dictionary, param, app,
+					context);
+			generater.init();
+			try {
+				String name = dictionary.getName();
+				if (name.indexOf("/") > 0) {
+					name = name.substring(name.lastIndexOf("/") + 1);
+				}
+				generater.data.put("$method_name", name);
+
+				if (generater.data.get("$dictionary") != null) {
+					JSONObject $dictionary = generater.data.getJSONObject("$dictionary");
+					String $method_name = $dictionary.getString("$name");
+					if ($method_name.indexOf("/") > 0) {
+						$method_name = $method_name.substring($method_name.lastIndexOf("/") + 1);
+					}
+					$dictionary.put("$method_name", $method_name);
+
+					$dictionarys.add($dictionary);
+				}
+				generater.data.put("$only_content", true);
+				String content = generater.build();
+				JSONObject data = generater.data;
+				data.put("$content", content);
+				list.add(data);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		data.put("$list", list);
 
 	}
 

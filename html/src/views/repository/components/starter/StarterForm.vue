@@ -9,6 +9,7 @@
         :size="size"
         append-to-body
         zIndex="100"
+        @submit.native.prevent
       >
         <el-form-item>
           <small class="pdb-10 color-red" style="line-height: 14px;">

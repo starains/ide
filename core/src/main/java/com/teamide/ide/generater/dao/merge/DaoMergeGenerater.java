@@ -36,13 +36,12 @@ public class DaoMergeGenerater extends BaseMergeGenerater {
 			try {
 				String name = dao.getName();
 				if (name.indexOf("/") > 0) {
-					name = name.substring(name.lastIndexOf("/"));
+					name = name.substring(name.lastIndexOf("/") + 1);
 				}
-				String name_ = name.substring(0, 1).toUpperCase() + name.substring(1);
 				generater.data.put("$method_name", name);
-				generater.data.put("$build_name", "buildSqlParam" + name_);
-				generater.data.put("$format_name", "format" + name_);
-				generater.data.put("$query_name", "query" + name_);
+				generater.data.put("$build_name", name + "BuildSqlParam");
+				generater.data.put("$format_name", name + "Format");
+				generater.data.put("$query_name", name + "Query");
 
 				generater.data.put("$only_content", true);
 				String content = generater.build();

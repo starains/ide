@@ -84,7 +84,6 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 		}
 		data.put("$sqlType", sqlProcess.getSqlType());
 
-		data.put("$method_name", "invoke");
 		data.put("$build_name", "buildSqlParam");
 		data.put("$format_name", "format");
 		data.put("$query_name", "query");

@@ -28,6 +28,7 @@ public class DictionaryControllerGenerater extends BaseGenerater {
 
 	@Override
 	public void buildData() {
+		data.put("$method_name", "invoke");
 
 		DictionaryGenerater dictionaryGenerater = new DictionaryGenerater(dictionary, param, app, context);
 		dictionaryGenerater.init();

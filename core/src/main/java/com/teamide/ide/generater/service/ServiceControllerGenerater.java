@@ -36,6 +36,7 @@ public class ServiceControllerGenerater extends BaseGenerater {
 
 	@Override
 	public void buildData() {
+		data.put("$method_name", "invoke");
 
 		ServiceGenerater serviceGenerater = new ServiceGenerater(service, param, app, context);
 		serviceGenerater.init();

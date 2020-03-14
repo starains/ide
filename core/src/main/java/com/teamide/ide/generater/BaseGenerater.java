@@ -43,8 +43,9 @@ public abstract class BaseGenerater extends Generater {
 		String pack = getPackage();
 		String codepath = getCodePath();
 		String className = getClassName();
-		if (!StringUtil.isEmpty(codepath)) {
-			pack += "." + codepath.replaceAll("/", ".");
+		String codepackage = getFolderPackage(codepath);
+		if (!StringUtil.isEmpty(codepackage)) {
+			pack += "." + codepackage;
 		}
 		String path = packageToPath(pack);
 		String filePath = path + "/" + className + ".java";
@@ -70,6 +71,15 @@ public abstract class BaseGenerater extends Generater {
 		data.put("$result_classname", "JSONObject");
 		data.put("$propertyname", this.className.substring(0, 1).toLowerCase() + this.className.substring(1));
 
+		String mergePackage = getMergePackage();
+		String mergeClassname = getMergeClassName();
+		if (!StringUtil.isEmpty(mergeClassname)) {
+			data.put("$merge_package", mergePackage);
+			data.put("$merge_classname", mergeClassname);
+			data.put("$merge_propertyname", mergeClassname.substring(0, 1).toLowerCase() + mergeClassname.substring(1));
+
+		}
+
 		JSONObject $app_factory = new JSONObject();
 		$app_factory.put("$package", getFactoryPackage());
 		$app_factory.put("$classname", getAppFactoryClassname());
@@ -82,6 +92,58 @@ public abstract class BaseGenerater extends Generater {
 
 		data.put("$imports", imports);
 		buildData();
+	}
+
+	public String getMergePackage() {
+		String pack = getPackage();
+		if (bean != null) {
+			String name = bean.getName();
+			String folder = "base";
+			if (name.indexOf("/") > 0) {
+				folder = getFolderByName(name);
+			}
+			String codepackage = getFolderPackage(folder);
+			if (!StringUtil.isEmpty(codepackage)) {
+				pack += "." + codepackage;
+			}
+		}
+		return pack;
+	}
+
+	public String getMergeClassName() {
+		String classname = "";
+		if (bean != null) {
+			String name = bean.getName();
+			String folder = "base";
+			if (name.indexOf("/") > 0) {
+				folder = getFolderByName(name);
+			}
+			String[] chars = folder.split("");
+			String result = "";
+			for (int i = 0; i < chars.length; i++) {
+				if (chars[i].equals("/") || chars[i].equals("\\")) {
+					continue;
+				}
+				if (i == 0) {
+					result += chars[i].toUpperCase();
+				} else {
+					if (chars[i - 1].equals("/") || chars[i - 1].equals("\\")) {
+						result += chars[i].toUpperCase();
+					} else {
+						result += chars[i];
+					}
+				}
+			}
+			classname = result;
+			if (bean instanceof DaoBean) {
+				classname += "Dao";
+			}
+			if (bean instanceof ServiceBean) {
+				classname += "Service";
+			}
+		}
+
+		return classname;
 	}
 
 	protected List<String> imports = new ArrayList<String>();

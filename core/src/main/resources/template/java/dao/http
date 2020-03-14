@@ -1,3 +1,4 @@
+#ifStart($only_content == false)#
 package #{$package};
 
 import com.alibaba.fastjson.*;
@@ -8,10 +9,13 @@ import com.alibaba.fastjson.*;
  */
 @SuppressWarnings("unused")
 public class #{$classname} {
+#ifEnd#
 	
 	public $result_classname invoke(JSONObject data) {
 		$result_classname result = new $result_classname();
 		
 		return result;
 	}
+#ifStart($only_content == false)#
 }
+#ifEnd#

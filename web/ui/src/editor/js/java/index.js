@@ -56,6 +56,12 @@
 					  <span class="color-grey-4">如果选中合并，则合并代码到一个文件中，例如：user/insert、user/update，生成的Dao为user/userDao，里边有insert和update方法</span>
 					</el-form-item>
 				</div>
+				<div class="col-12">
+					<el-form-item class label="目录包名级别" prop="directorypackagelevel">
+					  <el-input type="text" v-model="form.directorypackagelevel" autocomplete="off" @change="change($event,'directorypackagelevel')" placeholder="默认：根据目录名称生成报名"></el-input>
+					  <span class="color-grey-4">模型目录名称生成包名级别，如写1则只生成一级报名，子目录下文件都放在该包名下。默认根据模型的目录名称生成包名</span>
+					</el-form-item>
+				</div>
 				<div class="col-6">
 					<el-form-item class label="TeamIDE基础包名" prop="teamidepackage">
 					  <el-input type="text" v-model="form.teamidepackage" autocomplete="off" @change="change($event,'teamidepackage')" placeholder="默认：基础包名.teamide"></el-input>

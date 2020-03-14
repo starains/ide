@@ -3,6 +3,7 @@ package com.teamide.ide.protect.processor.param;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
@@ -253,6 +254,16 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		}
 		return new File(getSourceFolder(), path);
 
+	}
+
+	public boolean sourceContains(File file) throws IOException {
+		File sourceFolder = getSourceFolder();
+		String canonicalParent = sourceFolder.getCanonicalPath();
+		String canonicalChild = file.getCanonicalPath();
+		if (canonicalParent.equalsIgnoreCase(canonicalChild)) {
+			return false;
+		}
+		return canonicalChild.regionMatches(true, 0, canonicalParent, 0, canonicalParent.length());
 	}
 
 	public File getProjectFolder(String projectPath) {

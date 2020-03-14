@@ -9,6 +9,7 @@
         :size="size"
         append-to-body
         zIndex="100"
+        @submit.native.prevent
       >
         <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username" type="text" autocomplete="off"></el-input>

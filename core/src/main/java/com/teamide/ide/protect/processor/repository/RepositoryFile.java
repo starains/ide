@@ -63,6 +63,14 @@ public class RepositoryFile extends RepositoryBase {
 			throw new Exception("源文件不存在！");
 		}
 		File file = this.param.getFile(path);
+
+		if (!this.param.sourceContains(sourceFile)) {
+			throw new Exception(source + " is not in the source directory.");
+		}
+		if (!this.param.sourceContains(file)) {
+			throw new Exception(path + " is not in the source directory.");
+		}
+
 		if (file.exists()) {
 			throw new Exception("文件已存在！");
 		}
@@ -104,6 +112,9 @@ public class RepositoryFile extends RepositoryBase {
 			content = "";
 		}
 		File file = this.param.getFile(path);
+		if (!this.param.sourceContains(file)) {
+			throw new Exception(path + " is not in the source directory.");
+		}
 		FileUtil.write(content.getBytes(), file);
 		return callChange(file.getParentFile());
 
@@ -122,6 +133,12 @@ public class RepositoryFile extends RepositoryBase {
 		File newFile = new File(oldFile.getParentFile(), name);
 		if (newFile.exists()) {
 			throw new Exception("文件[" + newFile.getName() + "]已存在！");
+		}
+		if (!this.param.sourceContains(oldFile)) {
+			throw new Exception(path + " is not in the source directory.");
+		}
+		if (!this.param.sourceContains(newFile)) {
+			throw new Exception(name + " is not in the source directory.");
 		}
 
 		File parent = newFile.getParentFile();
@@ -160,6 +177,9 @@ public class RepositoryFile extends RepositoryBase {
 			path = name;
 		}
 		File file = this.param.getFile(path);
+		if (!this.param.sourceContains(file)) {
+			throw new Exception(name + " is not in the source directory.");
+		}
 		if (file.exists()) {
 			if (isFile) {
 				throw new Exception("文件[" + name + "]已存在.");
@@ -200,6 +220,9 @@ public class RepositoryFile extends RepositoryBase {
 		this.param.getLog().info("file delete,  path:" + path);
 
 		File file = this.param.getFile(path);
+		if (!this.param.sourceContains(file)) {
+			throw new Exception(path + " is not in the source directory.");
+		}
 		File folder = file.getParentFile();
 		if (file.exists()) {
 			if (file.isDirectory()) {
@@ -218,6 +241,12 @@ public class RepositoryFile extends RepositoryBase {
 
 		File file = this.param.getFile(path);
 		File toFolder = this.param.getFile(to);
+		if (!this.param.sourceContains(file)) {
+			throw new Exception(path + " is not in the source directory.");
+		}
+		if (!this.param.sourceContains(toFolder)) {
+			throw new Exception(to + " is not in the source directory.");
+		}
 		File folder = toFolder;
 		if (file.exists()) {
 			if (!toFolder.exists()) {

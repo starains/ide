@@ -1,3 +1,4 @@
+#ifStart($only_content == false)#
 package #{$package};
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,48 +20,24 @@ import org.springframework.web.bind.annotation.*;
 #forStart($imports, $import)#
 import #{$import};
 #forEnd#
-
-import #{$dao.$package}.#{$dao.$classname};
+#forStart($propertys, $property)#
+import #{$property.$package}.#{$property.$classname};
+#forEnd#
 
 @SuppressWarnings("unused")
 @Controller
 public class #{$classname} {
-
-	//#{$dao.$comment}
-	@Autowired
-	#{$dao.$classname} #{$dao.$propertyname};
 	
-	#ifStart($dao.$requestmethod == null)#
-	@RequestMapping("#{$requestmapping}")
-	#ifEnd#
-	#ifStart($dao.$requestmethod != null)#
-	@RequestMapping(path = "#{$requestmapping}", method = { RequestMethod.#{$dao.$requestmethod }})
-	#ifEnd#
-	@ResponseBody
-	public Object invoke(HttpServletRequest request, HttpServletResponse response) {
-		Object result = null;
-		Exception exception = null;
-		try {
-			ClientSession session = ClientHandler.getSession(request);
-			DataParam param = new DataParam(request, session);
+	#forStart($propertys, $property)#
+	//#{$property.$comment}
+	@Autowired
+	#{$property.$classname} #{$property.$name};
+	#forEnd#
+#ifEnd#
+#forStart($list, $one)#
 
-			JSONObject data = new JSONObject();
-			if (param.getData() != null) {
-				data = (JSONObject) param.getData();
-			}
-			JSONObject variableCache = param.toVariableCache(data);
-			
-			#ifStart($dao.$is_batch == true)#
-			result = #{$dao.$propertyname}.invoke(data, variableCache);
-			#ifEnd#
-			#ifStart($dao.$is_batch != true)#
-			result = #{$dao.$propertyname}.invoke(variableCache);
-			#ifEnd#
-		} catch (Exception e) {
-			exception = e;
-		}
-		
-		return #{$app_factory.$classname}.toStatus(result, exception);
-	}
-
+#{$one.$content}
+#forEnd#
+#ifStart($only_content == false)#
 }
+#ifEnd#

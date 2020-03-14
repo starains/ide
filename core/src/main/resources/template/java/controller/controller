@@ -1,3 +1,4 @@
+#ifStart($only_content == false)#
 package #{$package};
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ public class #{$classname} {
 	@Autowired
 	#{$property.$classname} #{$property.$name};
 	#forEnd#
+#ifEnd#
 	#forStart($methods, $method)#
 	
 	/**
@@ -78,12 +80,20 @@ public class #{$classname} {
 			JSONObject variableCache = param.toVariableCache(data);
 			// 用于暂存字段取到的值
 			Object value = null;
+#ifStart($method.$variable_content != null)#
 #{$method.$variable_content}
+#ifEnd#
+#ifStart($method.$validate_content != null)#
 #{$method.$validate_content}
+#ifEnd#
 			#forStart($method.$processs, $process)#
 			#ifStart($process.$ifrule == null)#
+#ifStart($process.$variable_content != null)#
 #{$process.$variable_content}
+#ifEnd#
+#ifStart($process.$validate_content != null)#
 #{$process.$validate_content}
+#ifEnd#
 				#ifStart($process.$property != null)#
 			result = #{$process.$property.$name}.invoke(variableCache);
 				#ifEnd#
@@ -106,4 +116,6 @@ public class #{$classname} {
 	}
 	#forEnd#
 
+#ifStart($only_content == false)#
 }
+#ifEnd#

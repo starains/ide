@@ -1,3 +1,4 @@
+#ifStart($only_content == false)#
 package #{$package};
 
 import com.alibaba.fastjson.*;
@@ -9,9 +10,12 @@ import com.alibaba.fastjson.*;
 @SuppressWarnings("unused")
 @org.springframework.stereotype.Service
 public class #{$classname} {
+#ifEnd#
 	
 	public Object invoke(JSONObject data) {
 		
 		return null;
 	}
+#ifStart($only_content == false)#
 }
+#ifEnd#

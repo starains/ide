@@ -16,6 +16,7 @@
         :label-width="labelWidth"
         class
         :size="size"
+        @submit.native.prevent
       >
         <el-form-item label="本地分支" prop="branchName">
           <el-radio
