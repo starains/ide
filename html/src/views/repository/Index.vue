@@ -30,7 +30,7 @@
         <Tabs :repository="repository"></Tabs>
       </div>
       <div class="repository-contextmenu">
-        <Contextmenu :contextmenu="repository.contextmenu"></Contextmenu>
+        <Contextmenu ref="context-menu" :contextmenu="repository.contextmenu"></Contextmenu>
       </div>
 
       <Starter :repository="repository"></Starter>
@@ -104,6 +104,8 @@ export default {
     source.branchCreateForm = this.$refs["branch-create"];
     source.appOptionForm = this.$refs["app-option-form"];
     source.tableImportForm = this.$refs["table-import"];
+
+    this.repository.contextmenu.callShow = this.$refs["context-menu"].callShow;
   }
 };
 </script>

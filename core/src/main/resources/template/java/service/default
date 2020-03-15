@@ -72,17 +72,6 @@ public class #{$classname} {
 		#{$result_classname} result = invokeCache;
 		#ifEnd#
 		
-		#ifStart($end != null)#
-#ifStart($end.$variable_content != null)#
-#{$end.$variable_content}
-#ifEnd#
-#ifStart($end.$validate_content != null)#
-#{$end.$validate_content}
-#ifEnd#
-		#ifStart($end.$next != null)#
-		#{$end.$next.$method}(variableCache, invokeCache);
-		#ifEnd#
-		#ifEnd#
 		return result;
 	}
 	#forStart($processs, $one)#
@@ -104,8 +93,18 @@ public class #{$classname} {
 		#ifStart($one.type == 'DECISION' && $one.$conditions != null)#
 		#forStart($one.$conditions, $condition)#
 		if(ObjectUtil.isTrue(#{$app_factory.$classname}.getValueByJexlScript("#{$condition.condition}", variableCache))){
+			#ifStart($condition.$next != null && $condition.$next.type != 'END')#
 			//#{$condition.$next.text}
 			#{$condition.$next.$method}(variableCache, invokeCache);
+			#ifEnd#
+			#ifStart($condition.$next != null && $condition.$next.type == 'END')#
+#ifStart($end.$variable_content != null)#
+#{$end.$variable_content}
+#ifEnd#
+#ifStart($end.$validate_content != null)#
+#{$end.$validate_content}
+#ifEnd#
+			#ifEnd#
 		}
 		#forEnd#
 		#ifEnd#
@@ -143,6 +142,14 @@ public class #{$classname} {
 		#ifStart($one.type != 'DECISION' && $one.$next != null && $one.$next.type != 'END')#
 		//#{$one.$next.text}
 		#{$one.$next.$method}(variableCache, invokeCache);
+		#ifEnd#
+		#ifStart($one.type != 'DECISION' && $one.$next != null && $one.$next.type == 'END')#
+#ifStart($end.$variable_content != null)#
+#{$end.$variable_content}
+#ifEnd#
+#ifStart($end.$validate_content != null)#
+#{$end.$validate_content}
+#ifEnd#
 		#ifEnd#
 		#ifStart($one.type == 'ERROR_END')#
 		// 抛出异常

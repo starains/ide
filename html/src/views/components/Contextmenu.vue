@@ -1,7 +1,7 @@
 <template>
   <div
     class="contextmenu-box"
-    :class="{'show' :contextmenu.show }"
+    :class="{'show' :contextmenu.show ,'showbottom' :showbottom }"
     :style="{'top' :contextmenu.top ,'left' :contextmenu.left ,'z-index' :contextmenu.zIndex }"
   >
     <template v-if="contextmenu.menus != null">
@@ -17,12 +17,42 @@ export default {
   props: ["contextmenu"],
   data() {
     return {
+      showbottom: false,
       source: source
     };
   },
   beforeMount() {},
-  watch: {},
-  methods: {},
+  watch: {
+    "contextmenu.show"(show) {
+      if (show == true) {
+        this.showbottom = false;
+        let event = window.event;
+        if (event) {
+          let pageY = event.pageY;
+        }
+      }
+    }
+  },
+  methods: {
+    callShow(event) {
+      event = event || window.event;
+      let pageX = event.pageX;
+      let pageY = event.pageY;
+      this.contextmenu.show = true;
+      this.contextmenu.left = pageX + "px";
+      this.contextmenu.top = pageY + "px";
+      this.showbottom = false;
+
+      this.$nextTick(() => {
+        let bottomHeight = $(window).height() - pageY;
+        let menuHeight = $(this.$el).outerHeight();
+        if (bottomHeight < menuHeight + 30) {
+          this.showbottom = true;
+          this.contextmenu.top = pageY - menuHeight + "px";
+        }
+      });
+    }
+  },
   mounted() {
     $(document).on("click", "html", e => {
       this.contextmenu.show = false;

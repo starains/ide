@@ -502,9 +502,7 @@ export default {
         });
       }
       this.repository.contextmenu.menus = menus;
-      this.repository.contextmenu.show = true;
-      this.repository.contextmenu.left = event.pageX + "px";
-      this.repository.contextmenu.top = event.pageY + "px";
+      this.repository.contextmenu.callShow(event);
       event.preventDefault();
     },
     nodeExpand(data, node) {
