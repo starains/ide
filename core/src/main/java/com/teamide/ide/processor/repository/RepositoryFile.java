@@ -239,13 +239,30 @@ public class RepositoryFile extends RepositoryBase {
 		if (not_exists.size() > 0) {
 			folder = not_exists.get(not_exists.size() - 1).getParentFile();
 		}
+		List<File> files = null;
+		if (oldFile.isDirectory()) {
+			files = FileUtil.loadAllFiles(oldFile.getAbsolutePath());
+		}
 		if (oldFile.getParent().equals(newFile.getParent())) {
 			oldFile.renameTo(newFile);
 		} else {
 			FileUtil.write(FileUtil.read(oldFile), newFile);
 			FileUtils.forceDelete(oldFile);
 		}
-		modelRename(oldFile, newFile, model);
+		if (files == null) {
+			modelRename(oldFile, newFile, model);
+		} else {
+			String oldPath = oldFile.getAbsolutePath();
+			String newPath = newFile.getAbsolutePath();
+			for (File f : files) {
+				String fPath = f.getAbsolutePath();
+				fPath = fPath.replace(oldPath, newPath);
+				File toF = new File(fPath);
+				if (toF.exists() && toF.isFile()) {
+					modelRename(f, toF, model);
+				}
+			}
+		}
 		return callChange(folder);
 	}
 
@@ -320,9 +337,16 @@ public class RepositoryFile extends RepositoryBase {
 		this.param.getLog().info("file move,  path:" + path + ",  to:" + to);
 
 		File file = this.param.getFile(path);
-		File toFolder = this.param.getFile(to);
 		if (!this.param.sourceContains(file)) {
 			throw new Exception(path + " is not in the source directory.");
+		}
+		File toFolder = this.param.getFile(to);
+		File toFile = new File(toFolder, file.getName());
+		if (!this.param.sourceContains(toFile)) {
+			throw new Exception(this.param.getPath(toFile) + " is not in the source directory.");
+		}
+		if (toFile.exists()) {
+			throw new Exception(this.param.getPath(toFile) + " existed.");
 		}
 		File folder = toFolder;
 		if (file.exists()) {
@@ -331,9 +355,20 @@ public class RepositoryFile extends RepositoryBase {
 			}
 			if (file.isFile()) {
 				FileUtils.moveFileToDirectory(file, toFolder, false);
-				modelRename(file, new File(toFolder, file.getName()), model);
+				modelRename(file, toFile, model);
 			} else {
+				List<File> files = FileUtil.loadAllFiles(file.getAbsolutePath());
 				FileUtils.moveDirectoryToDirectory(file, toFolder, false);
+				String oldPath = file.getAbsolutePath();
+				String newPath = toFile.getAbsolutePath();
+				for (File f : files) {
+					String fPath = f.getAbsolutePath();
+					fPath = fPath.replace(oldPath, newPath);
+					File toF = new File(fPath);
+					if (toF.exists() && toF.isFile()) {
+						modelRename(f, toF, model);
+					}
+				}
 			}
 			folder = callChange(toFolder);
 		}
