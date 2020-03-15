@@ -43,12 +43,34 @@ public class ServiceMergeGenerater extends BaseMergeGenerater {
 				generater.data.put("$method_name", name);
 
 				JSONArray $processs = generater.data.getJSONArray("$processs");
+				if (generater.data.get("$start") != null) {
+					if (generater.data.getJSONObject("$start").get("$next") != null) {
+						JSONObject $next = generater.data.getJSONObject("$start").getJSONObject("$next");
+						String $next_method = $next.getString("$method");
+						$next_method = name + $next_method.substring(0, 1).toUpperCase() + $next_method.substring(1);
+						$next.put("$method", $next_method);
+					}
+				}
+				if (generater.data.get("$end") != null) {
+					if (generater.data.getJSONObject("$end").get("$next") != null) {
+						JSONObject $next = generater.data.getJSONObject("$end").getJSONObject("$next");
+						String $next_method = $next.getString("$method");
+						$next_method = name + $next_method.substring(0, 1).toUpperCase() + $next_method.substring(1);
+						$next.put("$method", $next_method);
+					}
+				}
 				for (int i = 0; i < $processs.size(); i++) {
 					JSONObject $process = $processs.getJSONObject(i);
 					String $method = $process.getString("$method");
 					$method = name + $method.substring(0, 1).toUpperCase() + $method.substring(1);
 					$process.put("$method", $method);
 
+					if ($process.get("$next") != null) {
+						JSONObject $next = $process.getJSONObject("$next");
+						String $next_method = $next.getString("$method");
+						$next_method = name + $next_method.substring(0, 1).toUpperCase() + $next_method.substring(1);
+						$next.put("$method", $next_method);
+					}
 					if ($process.get("$dao") != null) {
 						JSONObject $dao = $process.getJSONObject("$dao");
 						String $method_name = $dao.getString("$name");

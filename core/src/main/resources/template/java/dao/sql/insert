@@ -8,9 +8,9 @@ import com.teamide.exception.*;
 import com.alibaba.fastjson.*;
 
 import #{$app_factory.$package}.#{$app_factory.$classname};
-import #{$dao_component.$package}.#{$dao_component.$classname};
 
 import com.teamide.db.bean.*;
+import com.teamide.bean.*;
 
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
@@ -111,7 +111,7 @@ public class #{$classname} {
 	/**
 	 * 组合SQL
 	 */
-	public SqlParam buildSqlParam(JSONObject data) throws Exception {
+	public SqlParam #{$build_name}(JSONObject data) throws Exception {
 		// 用于暂存字段取到的值
 		Object value = null;
 		// SQL执行用到的参数，SQL中使用“:key”作占位符

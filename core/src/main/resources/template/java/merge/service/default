@@ -4,6 +4,7 @@ package #{$package};
 import java.util.*;
 import com.teamide.util.*;
 import com.teamide.exception.*;
+import com.teamide.bean.*;
 
 import com.alibaba.fastjson.*;
 

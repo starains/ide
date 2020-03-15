@@ -8,9 +8,9 @@ import com.teamide.exception.*;
 import com.alibaba.fastjson.*;
 
 import #{$app_factory.$package}.#{$app_factory.$classname};
-import #{$dao_component.$package}.#{$dao_component.$classname};
 
 import com.teamide.db.bean.*;
+import com.teamide.bean.*;
 import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.annotation.*;
@@ -30,7 +30,7 @@ public class #{$classname} {
 	#{$app_factory.$classname} factory;
 	
 	@Autowired
-	#{$dao_component.$classname} dao;
+	IDao dao;
 #ifEnd#
 
 	/**
