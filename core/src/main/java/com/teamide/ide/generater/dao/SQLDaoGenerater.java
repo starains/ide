@@ -21,8 +21,8 @@ import com.teamide.ide.generater.code.sql.DeleteGenerater;
 import com.teamide.ide.generater.code.sql.InsertGenerater;
 import com.teamide.ide.generater.code.sql.SelectGenerater;
 import com.teamide.ide.generater.code.sql.UpdateGenerater;
-import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.protect.processor.repository.project.AppBean;
+import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.repository.project.AppBean;
 import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
 

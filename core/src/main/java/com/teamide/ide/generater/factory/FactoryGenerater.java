@@ -7,8 +7,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.app.AppContext;
 import com.teamide.app.bean.DatabaseBean;
 import com.teamide.ide.generater.BaseGenerater;
-import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.protect.processor.repository.project.AppBean;
+import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.repository.project.AppBean;
 
 public class FactoryGenerater extends BaseGenerater {
 

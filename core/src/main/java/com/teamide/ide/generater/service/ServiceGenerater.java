@@ -19,8 +19,8 @@ import com.teamide.ide.generater.BaseGenerater;
 import com.teamide.ide.generater.code.ValidateGenerater;
 import com.teamide.ide.generater.code.VariableGenerater;
 import com.teamide.ide.generater.dao.DaoGenerater;
-import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.protect.processor.repository.project.AppBean;
+import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.repository.project.AppBean;
 import com.teamide.util.StringUtil;
 
 public class ServiceGenerater extends BaseGenerater {

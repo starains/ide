@@ -3,7 +3,7 @@ package com.teamide.ide.configure;
 import javax.persistence.Column;
 
 import com.teamide.ide.bean.BaseBean;
-import com.teamide.ide.protect.service.ConfigureService;
+import com.teamide.ide.service.impl.ConfigureService;
 
 public class IDEConfigure extends BaseBean {
 

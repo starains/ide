@@ -5,8 +5,8 @@ import com.teamide.app.bean.DaoBean;
 import com.teamide.app.enums.DaoProcessType;
 import com.teamide.app.process.DaoProcess;
 import com.teamide.app.process.dao.DaoSqlProcess;
-import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.protect.processor.repository.project.AppBean;
+import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.repository.project.AppBean;
 import com.teamide.util.StringUtil;
 
 public class DaoGenerater extends SQLDaoGenerater {

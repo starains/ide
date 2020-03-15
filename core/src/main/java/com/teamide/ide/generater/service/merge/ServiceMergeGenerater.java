@@ -8,8 +8,8 @@ import com.teamide.app.AppContext;
 import com.teamide.app.bean.ServiceBean;
 import com.teamide.ide.generater.BaseMergeGenerater;
 import com.teamide.ide.generater.service.ServiceGenerater;
-import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.protect.processor.repository.project.AppBean;
+import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.repository.project.AppBean;
 
 public class ServiceMergeGenerater extends BaseMergeGenerater {
 

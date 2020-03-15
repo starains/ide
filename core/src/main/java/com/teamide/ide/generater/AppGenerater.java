@@ -30,8 +30,8 @@ import com.teamide.ide.generater.service.ServiceControllerGenerater;
 import com.teamide.ide.generater.service.ServiceGenerater;
 import com.teamide.ide.generater.service.merge.ServiceMergeControllerGenerater;
 import com.teamide.ide.generater.service.merge.ServiceMergeGenerater;
-import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.protect.processor.repository.project.AppBean;
+import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.repository.project.AppBean;
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
 

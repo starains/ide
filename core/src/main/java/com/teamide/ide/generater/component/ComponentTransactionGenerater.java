@@ -2,8 +2,8 @@ package com.teamide.ide.generater.component;
 
 import com.teamide.app.AppContext;
 import com.teamide.ide.generater.BaseGenerater;
-import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.protect.processor.repository.project.AppBean;
+import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.repository.project.AppBean;
 
 public class ComponentTransactionGenerater extends BaseGenerater {
 

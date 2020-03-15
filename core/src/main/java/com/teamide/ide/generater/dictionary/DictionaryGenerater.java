@@ -9,8 +9,8 @@ import com.teamide.app.AppContext;
 import com.teamide.app.bean.DictionaryBean;
 import com.teamide.app.bean.DictionaryOptionBean;
 import com.teamide.ide.generater.BaseGenerater;
-import com.teamide.ide.protect.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.protect.processor.repository.project.AppBean;
+import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.repository.project.AppBean;
 
 public class DictionaryGenerater extends BaseGenerater {
 
