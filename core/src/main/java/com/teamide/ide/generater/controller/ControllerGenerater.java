@@ -122,6 +122,13 @@ public class ControllerGenerater extends BaseGenerater {
 								String $classname = daoGenerater.data.getString("$classname");
 								String $package = daoGenerater.data.getString("$package");
 								if (isMergedirectory()) {
+
+									String $method_name = daoGenerater.data.getString("$name");
+									if ($method_name.indexOf("/") > 0) {
+										$method_name = $method_name.substring($method_name.lastIndexOf("/") + 1);
+									}
+									daoGenerater.data.put("$method_name", $method_name);
+
 									$propertyname = daoGenerater.data.getString("$merge_propertyname");
 									$classname = daoGenerater.data.getString("$merge_classname");
 									$package = daoGenerater.data.getString("$merge_package");
@@ -142,6 +149,7 @@ public class ControllerGenerater extends BaseGenerater {
 								}
 
 								$process.put("$property", $property);
+								$process.put("$dao", daoGenerater.data);
 							}
 						} else if (process.getType().equalsIgnoreCase("SERVICE")) {
 							ServiceBean service = context.get(ServiceBean.class, process.getServicename());
@@ -153,6 +161,12 @@ public class ControllerGenerater extends BaseGenerater {
 								String $classname = serviceGenerater.data.getString("$classname");
 								String $package = serviceGenerater.data.getString("$package");
 								if (isMergedirectory()) {
+
+									String $method_name = serviceGenerater.data.getString("$name");
+									if ($method_name.indexOf("/") > 0) {
+										$method_name = $method_name.substring($method_name.lastIndexOf("/") + 1);
+									}
+									serviceGenerater.data.put("$method_name", $method_name);
 									$propertyname = serviceGenerater.data.getString("$merge_propertyname");
 									$classname = serviceGenerater.data.getString("$merge_classname");
 									$package = serviceGenerater.data.getString("$merge_package");
@@ -173,6 +187,7 @@ public class ControllerGenerater extends BaseGenerater {
 								}
 
 								$process.put("$property", $property);
+								$process.put("$service", serviceGenerater.data);
 							}
 						}
 					}

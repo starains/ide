@@ -95,7 +95,12 @@ public class #{$classname} {
 #{$process.$validate_content}
 #ifEnd#
 				#ifStart($process.$property != null)#
-			result = #{$process.$property.$name}.invoke(variableCache);
+				#ifStart($process.$dao != null)#
+			result = #{$process.$property.$name}.#{$process.$dao.$method_name}(variableCache);
+				#ifEnd#
+				#ifStart($process.$service != null)#
+			result = #{$process.$property.$name}.#{$process.$service.$method_name}(variableCache);
+				#ifEnd#
 				#ifEnd#
 			#ifEnd#
 			#ifStart($process.$ifrule != null)#
@@ -103,7 +108,12 @@ public class #{$classname} {
 #{$process.$variable_content}
 #{$process.$validate_content}
 				#ifStart($process.$property != null)#
-				result = #{$process.$property.$name}.invoke(variableCache);
+					#ifStart($process.$dao != null)#
+				result = #{$process.$property.$name}.#{$process.$dao.$method_name}(variableCache);
+					#ifEnd#
+					#ifStart($process.$service != null)#
+				result = #{$process.$property.$name}.#{$process.$service.$method_name}(variableCache);
+					#ifEnd#
 				#ifEnd#
 			}
 			#ifEnd#
