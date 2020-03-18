@@ -20,7 +20,13 @@ import com.teamide.ide.generater.code.sql.CustomGenerater;
 import com.teamide.ide.generater.code.sql.DeleteGenerater;
 import com.teamide.ide.generater.code.sql.InsertGenerater;
 import com.teamide.ide.generater.code.sql.SelectGenerater;
+import com.teamide.ide.generater.code.sql.SqlGenerater;
 import com.teamide.ide.generater.code.sql.UpdateGenerater;
+import com.teamide.ide.generater.code.sql.mapper.CustomMapperGenerater;
+import com.teamide.ide.generater.code.sql.mapper.DeleteMapperGenerater;
+import com.teamide.ide.generater.code.sql.mapper.InsertMapperGenerater;
+import com.teamide.ide.generater.code.sql.mapper.SelectMapperGenerater;
+import com.teamide.ide.generater.code.sql.mapper.UpdateMapperGenerater;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.repository.project.AppBean;
 import com.teamide.util.ObjectUtil;
@@ -101,8 +107,16 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			datarule = sqlProcess.getSelect().getData();
 			data.put("$database", getDatabase(sqlProcess.getSelect()));
 
-			SelectGenerater selectGenerater = new SelectGenerater(getAppFactoryClassname(), sqlProcess.getSelect());
-			data.put("$content", selectGenerater.generate(2));
+			SqlGenerater sqlGenerater = new SelectGenerater(getAppFactoryClassname(), sqlProcess.getSelect());
+			data.put("$content", sqlGenerater.generate(2));
+
+			sqlGenerater = new SelectMapperGenerater(getAppFactoryClassname(), sqlProcess.getSelect());
+			data.put("$content_mapper", sqlGenerater.generate(2));
+
+			SelectMapperGenerater selectMapperGenerater = new SelectMapperGenerater(getAppFactoryClassname(),
+					sqlProcess.getSelect());
+			data.put("$content_count_mapper", selectMapperGenerater.generateCountSql(2));
+
 			JSONArray formats = new JSONArray();
 			Select select = sqlProcess.getSelect();
 			if (select.getColumns() != null) {
@@ -152,8 +166,11 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			datarule = sqlProcess.getInsert().getData();
 			data.put("$database", getDatabase(sqlProcess.getInsert()));
 
-			InsertGenerater insertGenerater = new InsertGenerater(getAppFactoryClassname(), sqlProcess.getInsert());
-			data.put("$content", insertGenerater.generate(2));
+			SqlGenerater sqlGenerater = new InsertGenerater(getAppFactoryClassname(), sqlProcess.getInsert());
+			data.put("$content", sqlGenerater.generate(2));
+
+			sqlGenerater = new InsertMapperGenerater(getAppFactoryClassname(), sqlProcess.getInsert());
+			data.put("$content_mapper", sqlGenerater.generate(2));
 
 			String $autoincrement_key = null;
 			if (sqlProcess.getInsert() != null && sqlProcess.getInsert().getColumns() != null) {
@@ -172,15 +189,21 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			datarule = sqlProcess.getUpdate().getData();
 			data.put("$database", getDatabase(sqlProcess.getUpdate()));
 
-			UpdateGenerater updateGenerater = new UpdateGenerater(getAppFactoryClassname(), sqlProcess.getUpdate());
-			data.put("$content", updateGenerater.generate(2));
+			SqlGenerater sqlGenerater = new UpdateGenerater(getAppFactoryClassname(), sqlProcess.getUpdate());
+			data.put("$content", sqlGenerater.generate(2));
+
+			sqlGenerater = new UpdateMapperGenerater(getAppFactoryClassname(), sqlProcess.getUpdate());
+			data.put("$content_mapper", sqlGenerater.generate(2));
 
 		} else if (sqlProcess.getSqlType().indexOf("DELETE") >= 0) {
 			datarule = sqlProcess.getDelete().getData();
 			data.put("$database", getDatabase(sqlProcess.getDelete()));
 
-			DeleteGenerater deleteGenerater = new DeleteGenerater(getAppFactoryClassname(), sqlProcess.getDelete());
-			data.put("$content", deleteGenerater.generate(2));
+			SqlGenerater sqlGenerater = new DeleteGenerater(getAppFactoryClassname(), sqlProcess.getDelete());
+			data.put("$content", sqlGenerater.generate(2));
+
+			sqlGenerater = new DeleteMapperGenerater(getAppFactoryClassname(), sqlProcess.getDelete());
+			data.put("$content_mapper", sqlGenerater.generate(2));
 
 		} else if (sqlProcess.getSqlType().indexOf("CUSTOM") >= 0) {
 			datarule = sqlProcess.getCustomSql().getData();
@@ -199,8 +222,15 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 
 			data.put("$customsqltype", customSql.getCustomsqltype());
 
-			CustomGenerater customGenerater = new CustomGenerater(getAppFactoryClassname(), sqlProcess.getCustomSql());
-			data.put("$content", customGenerater.generate(2));
+			SqlGenerater sqlGenerater = new CustomGenerater(getAppFactoryClassname(), sqlProcess.getCustomSql());
+			data.put("$content", sqlGenerater.generate(2));
+
+			sqlGenerater = new CustomMapperGenerater(getAppFactoryClassname(), sqlProcess.getCustomSql());
+			data.put("$content_mapper", sqlGenerater.generate(2));
+
+			CustomMapperGenerater customMapperGenerater = new CustomMapperGenerater(getAppFactoryClassname(),
+					sqlProcess.getCustomSql());
+			data.put("$content_count_mapper", customMapperGenerater.generateCountSql(2));
 
 			if (StringUtil.isNotEmpty(sqlProcess.getCustomSql().getCustomsqltype())) {
 				if (sqlProcess.getCustomSql().getCustomsqltype().indexOf("PAGE") >= 0) {

@@ -4,17 +4,17 @@
 <mapper namespace="#{$package}.#{$classname}">
 #ifEnd#
 	<!-- #{$comment} -->
-	#ifStart($sqlType == 'SELECT_ONE')#
+	#ifStart($customsqltype == 'SELECT_ONE')#
 	<select id="#{$method_name}" >
 #{$content_mapper}
 	</select>
 	#ifEnd#
-	#ifStart($sqlType == 'SELECT_LIST')#
+	#ifStart($customsqltype == 'SELECT_LIST')#
 	<select id="#{$method_name}" >
 #{$content_mapper}
 	</select>
 	#ifEnd#
-	#ifStart($sqlType == 'SELECT_PAGE')#
+	#ifStart($customsqltype == 'SELECT_PAGE')#
 	<select id="#{$method_name}" >
 #{$content_mapper}
 	</select>
@@ -22,6 +22,11 @@
 	<select id="#{$method_name}ForCount" >
 #{$content_count_mapper}
 	</select>
+	#ifEnd#
+	#ifStart($customsqltype == null)#
+	<execute id="#{$method_name}" >
+#{$content_mapper}
+	</execute>
 	#ifEnd#
 #ifStart($only_content == false)#
 </mapper>

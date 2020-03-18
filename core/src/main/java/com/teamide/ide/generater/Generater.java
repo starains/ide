@@ -105,7 +105,7 @@ public abstract class Generater {
 		return param.getFile(javadirectory);
 	}
 
-	public File getResourceFolder() {
+	public File getResourcesFolder() {
 		String resourcesdirectory = null;
 		if (context.getJava() != null) {
 			resourcesdirectory = context.getJava().getResourcesdirectory();
@@ -115,6 +115,14 @@ public abstract class Generater {
 		}
 
 		return param.getFile(resourcesdirectory);
+	}
+
+	public boolean isUsemybatis() {
+		Boolean usemybatis = null;
+		if (context.getJava() != null) {
+			usemybatis = context.getJava().getUsemybatis();
+		}
+		return ObjectUtil.isTrue(usemybatis);
 	}
 
 	public boolean isMergedirectory() {

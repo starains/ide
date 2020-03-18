@@ -3,10 +3,10 @@
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
 <mapper namespace="#{$package}.#{$classname}">
 #ifEnd#
-	<!-- #{$comment} -->
-	<insert id="#{$method_name}" >
-#{$content_mapper}
-	</insert>
+#forStart($list, $one)#
+
+#{$one.$content}
+#forEnd#
 #ifStart($only_content == false)#
 </mapper>
 #ifEnd#

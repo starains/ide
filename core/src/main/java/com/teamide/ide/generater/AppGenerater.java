@@ -20,7 +20,9 @@ import com.teamide.ide.generater.controller.ControllerGenerater;
 import com.teamide.ide.generater.dao.DaoControllerGenerater;
 import com.teamide.ide.generater.dao.DaoGenerater;
 import com.teamide.ide.generater.dao.DaoImplGenerater;
+import com.teamide.ide.generater.dao.DaoMapperGenerater;
 import com.teamide.ide.generater.dao.merge.DaoImplMergeGenerater;
+import com.teamide.ide.generater.dao.merge.DaoMapperMergeGenerater;
 import com.teamide.ide.generater.dao.merge.DaoMergeControllerGenerater;
 import com.teamide.ide.generater.dao.merge.DaoMergeGenerater;
 import com.teamide.ide.generater.dictionary.DictionaryControllerGenerater;
@@ -196,6 +198,11 @@ public class AppGenerater extends Generater {
 				Generater generater = new DaoMergeGenerater(directory, directoryDaos, param, app, context);
 				generater.generate();
 
+				if (isUsemybatis()) {
+					generater = new DaoMapperMergeGenerater(directory, directoryDaos, param, app, context);
+					generater.generate();
+				}
+
 				generater = new DaoImplMergeGenerater(directory, directoryDaos, param, app, context);
 				generater.generate();
 
@@ -216,6 +223,11 @@ public class AppGenerater extends Generater {
 			for (DaoBean dao : daos) {
 				Generater generater = new DaoGenerater(dao, param, app, context);
 				generater.generate();
+
+				if (isUsemybatis()) {
+					generater = new DaoMapperGenerater(dao, param, app, context);
+					generater.generate();
+				}
 
 				generater = new DaoImplGenerater(dao, param, app, context);
 				generater.generate();

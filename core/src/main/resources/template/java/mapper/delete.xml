@@ -5,7 +5,7 @@
 #ifEnd#
 	<!-- #{$comment} -->
 	<delete id="#{$method_name}" >
-		#{$content}
+#{$content_mapper}
 	</delete>
 #ifStart($only_content == false)#
 </mapper>

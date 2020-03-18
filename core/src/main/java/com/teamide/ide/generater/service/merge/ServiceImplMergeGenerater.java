@@ -9,12 +9,9 @@ import com.teamide.ide.processor.repository.project.AppBean;
 
 public class ServiceImplMergeGenerater extends ServiceMergeGenerater {
 
-	protected final List<ServiceBean> services;
-
 	public ServiceImplMergeGenerater(String directory, List<ServiceBean> services, RepositoryProcessorParam param,
 			AppBean app, AppContext context) {
 		super(directory, services, param, app, context);
-		this.services = services;
 	}
 
 	@Override

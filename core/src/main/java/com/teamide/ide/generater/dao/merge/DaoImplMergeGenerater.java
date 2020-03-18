@@ -9,12 +9,9 @@ import com.teamide.ide.processor.repository.project.AppBean;
 
 public class DaoImplMergeGenerater extends DaoMergeGenerater {
 
-	protected final List<DaoBean> daos;
-
 	public DaoImplMergeGenerater(String directory, List<DaoBean> daos, RepositoryProcessorParam param, AppBean app,
 			AppContext context) {
 		super(directory, daos, param, app, context);
-		this.daos = daos;
 	}
 
 	@Override

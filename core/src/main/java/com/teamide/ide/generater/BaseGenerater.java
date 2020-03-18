@@ -38,17 +38,20 @@ public abstract class BaseGenerater extends Generater {
 		super(param, app, context);
 		this.bean = bean;
 
-		File javaFolder = getJavaFolder();
+		this.pack = getCodePackage();
+		this.className = getClassName();
+		this.file = getFile();
 
+	}
+
+	public File getFile() {
+
+		File javaFolder = getJavaFolder();
 		String pack = getCodePackage();
 		String className = getClassName();
 		String filePath = getFilePath(pack, className);
 		File file = new File(javaFolder, filePath);
-
-		this.pack = pack;
-		this.className = className;
-		this.file = file;
-
+		return file;
 	}
 
 	public String getCodePackage() {
@@ -180,8 +183,13 @@ public abstract class BaseGenerater extends Generater {
 		}
 
 		StringBuffer code = new StringBuffer();
-		code.append(Generater.HEAD_NOTE).append("\n");
-		code.append(Generater.HEAD_REMARK).append("\n");
+		if (file.getName().endsWith(".xml")) {
+			code.append("<!-- " + Generater.HEAD_NOTE + " -->").append("\n");
+			code.append("<!-- " + Generater.HEAD_REMARK + " -->").append("\n");
+		} else {
+			code.append(Generater.HEAD_NOTE).append("\n");
+			code.append(Generater.HEAD_REMARK).append("\n");
+		}
 		code.append(content);
 
 		FileUtil.write(code.toString().getBytes(), file);

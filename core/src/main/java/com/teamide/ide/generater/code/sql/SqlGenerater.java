@@ -18,7 +18,9 @@ public abstract class SqlGenerater extends CodeGenerater {
 
 	protected final Abstract base;
 
-	protected final Map<String, Integer> keyCache = new HashMap<String, Integer>();;
+	protected final Map<String, Integer> keyCache = new HashMap<String, Integer>();
+
+	public abstract StringBuffer generate(int tab);
 
 	public SqlGenerater(String factory_classname, Abstract base) {
 		super(factory_classname);

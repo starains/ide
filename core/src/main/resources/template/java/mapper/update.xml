@@ -5,7 +5,7 @@
 #ifEnd#
 	<!-- #{$comment} -->
 	<update id="#{$method_name}" >
-		#{$content}
+#{$content_mapper}
 	</update>
 #ifStart($only_content == false)#
 </mapper>
