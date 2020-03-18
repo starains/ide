@@ -7,31 +7,18 @@ import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 
-import #{$app_factory.$package}.#{$app_factory.$classname};
-
 import com.teamide.db.bean.*;
 import com.teamide.bean.*;
-
-import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.annotation.*;
-
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * SQL Dao 新增
  * #{$comment}
  */
 @SuppressWarnings("unused")
-@Service
-public class #{$classname} {
+public interface #{$classname} {
 
-	@Autowired
-	#{$app_factory.$classname} factory;
-	
-	@Autowired
-	IDao dao;
 #ifEnd#
 
 	/**
@@ -39,114 +26,11 @@ public class #{$classname} {
 	 */
 	@DataSource()
 	#ifStart($is_batch == true)#
-	public List<Map<String, Object>> #{$method_name}(JSON json, @VariableData JSONObject data) throws Exception {
+	public List<Map<String, Object>> #{$method_name}(JSON json, @VariableData JSONObject data) throws Exception;
 	#ifEnd#
 	#ifStart($is_batch == false)#
-	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception {
+	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception;
 	#ifEnd#
-		#ifStart($datarule != null)#
-		JSONObject cache = (JSONObject)data.clone();
-		if (json != null && !(json instanceof JSONArray)) {
-			cache.putAll((JSONObject) JSON.toJSON(json));
-		}
-		json = (JSON) JSON.toJSON(#{$app_factory.$classname}.getValueByJexlScript("#{$datarule}", cache));
-		#ifEnd#
-		
-		#ifStart($is_batch == true)#
-		SqlParamList sqlParamList = new SqlParamList();
-		JSONArray list = new JSONArray();
-		if(json != null) {
-			if (json instanceof JSONArray) {
-				list = (JSONArray) JSON.toJSON(json);
-			} else {
-				list.add(JSON.toJSON(json));
-			}
-		}
-		for(int i = 0; i < list.size(); i++){
-			JSONObject one = (JSONObject)data.clone();
-			one.putAll(list.getJSONObject(i));
-			one.put("$index", i);
-			SqlParam sqlParam = #{$build_name}(one);
-			sqlParamList.add(sqlParam);
-		}
-		#ifStart($autoincrement_key == null)#
-		int result = dao.batchExecute(sqlParamList);
-		#ifEnd#
-		#ifStart($autoincrement_key != null)#
-		List<List<Object>> keyValuesList = new ArrayList<List<Object>>();
-		int result = dao.batchExecute(sqlParamList, keyValuesList);
-		for (int i = 0; i < sqlParamList.size(); i++) {
-			SqlParam sqlParam = sqlParamList.get(i);
-			if (i < keyValuesList.size()) {
-				List<Object> keyValues = keyValuesList.get(i);
-				if (keyValues.size() > 0) {
-					sqlParam.getParam().put("#{$autoincrement_key}", keyValues.get(0));
-				}
-			}
-		}
-		#ifEnd#
-		List<Map<String, Object>> params = new ArrayList<Map<String, Object>>();
-		for (int i = 0; i < sqlParamList.size(); i++) {
-			params.add(sqlParamList.get(i).getParam());
-		}
-		return params;
-		#ifEnd#
-		#ifStart($is_batch == false)#
-		SqlParam sqlParam = #{$build_name}(data);
-		#ifStart($autoincrement_key == null)#
-		int result = dao.execute(sqlParam);
-		#ifEnd#
-		#ifStart($autoincrement_key != null)#
-		List<Object> keyValues = new ArrayList<Object>();
-		int result = dao.execute(sqlParam, keyValues);
-		if(keyValues.size() > 0){
-			sqlParam.getParam().put("#{$autoincrement_key}", keyValues.get(0));
-		}
-		#ifEnd#
-		
-		return sqlParam.getParam();
-		#ifEnd#
-	}
-	
-	/**
-	 * 组合SQL
-	 */
-	public SqlParam #{$build_name}(JSONObject data) throws Exception {
-		// 用于暂存字段取到的值
-		Object value = null;
-		// SQL执行用到的参数，SQL中使用“:key”作占位符
-		Map<String, Object> param = new HashMap<String, Object>();
-		
-		// SQL语句
-		StringBuffer sql = new StringBuffer();
-		// 新增语句字段SQL
-		StringBuffer columnSql = new StringBuffer();
-		// 新增语句字段映射值SQL
-		StringBuffer valueSql = new StringBuffer();
-		// SQL 追加语句
-		StringBuffer appendSql = new StringBuffer();
-		
-#{$content}
-
-		// 去除结尾“,”
-		if(columnSql.toString().endsWith(",")){
-			columnSql.setLength(columnSql.length() - 1);
-		}
-		if(valueSql.toString().endsWith(",")){
-			valueSql.setLength(valueSql.length() - 1);
-		}
-	
-		// 拼接新增SQL语句
-		sql.append("(").append(columnSql).append(")");
-		sql.append(" VALUES (").append(valueSql).append(")");
-		// 拼接追加SQL语句
-		sql.append(" ").append(appendSql);
-		
-		// 解析SQL表达式，获得真实SQL
-		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
-		SqlParam sqlParam = new SqlParam(realSql, param);
-		return sqlParam;
-	}
 #ifStart($only_content == false)#
 }
 #ifEnd#

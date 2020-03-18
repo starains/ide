@@ -8,6 +8,7 @@ import com.teamide.app.AppContext;
 import com.teamide.app.bean.ServiceBean;
 import com.teamide.ide.generater.BaseMergeGenerater;
 import com.teamide.ide.generater.service.ServiceGenerater;
+import com.teamide.ide.generater.service.ServiceImplGenerater;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.repository.project.AppBean;
 
@@ -26,6 +27,15 @@ public class ServiceMergeGenerater extends BaseMergeGenerater {
 	}
 
 	@Override
+	public String getClassName() {
+		return "I" + super.getClassName();
+	}
+
+	public boolean isImpl() {
+		return false;
+	}
+
+	@Override
 	public void buildData() {
 
 		JSONArray $propertys = new JSONArray();
@@ -33,7 +43,12 @@ public class ServiceMergeGenerater extends BaseMergeGenerater {
 		JSONArray list = new JSONArray();
 
 		for (ServiceBean service : services) {
-			ServiceGenerater generater = new ServiceGenerater(service, param, app, context);
+			ServiceGenerater generater;
+			if (isImpl()) {
+				generater = new ServiceImplGenerater(service, param, app, context);
+			} else {
+				generater = new ServiceGenerater(service, param, app, context);
+			}
 			generater.init();
 			try {
 				String name = service.getName();

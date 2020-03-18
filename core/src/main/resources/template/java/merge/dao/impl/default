@@ -7,19 +7,32 @@ import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
 import com.teamide.db.bean.*;
 import com.teamide.bean.*;
+
+import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.annotation.*;
 
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import #{$i_package}.#{$i_classname};
 
 /**
  * SQL Dao
  * #{$comment}
  */
 @SuppressWarnings("unused")
-public interface #{$classname} {
+@Service
+public class #{$classname} implements #{$i_classname} {
 
+	@Autowired
+	#{$app_factory.$classname} factory;
+	
+	@Autowired
+	IDao dao;
 #ifEnd#
 #forStart($list, $one)#
 

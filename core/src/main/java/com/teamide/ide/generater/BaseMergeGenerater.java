@@ -47,20 +47,32 @@ public abstract class BaseMergeGenerater extends Generater {
 
 		File javaFolder = getJavaFolder();
 
-		String pack = getPackage();
 		String className = getClassName();
-		String codepackage = getFolderPackage(directory);
-		if (!StringUtil.isEmpty(codepackage)) {
-			pack += "." + codepackage;
-		}
-		String path = packageToPath(pack);
-		String filePath = path + "/" + className + ".java";
+		String pack = getCodePackage();
+
+		String filePath = getFilePath(pack, className);
 		File file = new File(javaFolder, filePath);
 
 		this.pack = pack;
 		this.className = className;
 		this.file = file;
 
+	}
+
+	public String getCodePackage() {
+
+		String pack = getPackage();
+		String codepackage = getFolderPackage(directory);
+		if (!StringUtil.isEmpty(codepackage)) {
+			pack += "." + codepackage;
+		}
+		return pack;
+	}
+
+	public String getFilePath(String pack, String name) {
+		String path = packageToPath(pack);
+		String filePath = path + "/" + name + ".java";
+		return filePath;
 	}
 
 	public void init() {
@@ -71,12 +83,15 @@ public abstract class BaseMergeGenerater extends Generater {
 			for (Object one : beans) {
 				if (one instanceof DaoBean) {
 					DaoGenerater generater = new DaoGenerater((DaoBean) one, param, app, context);
+					generater.init();
 					$datas.add(generater.data);
 				} else if (one instanceof ServiceBean) {
 					ServiceGenerater generater = new ServiceGenerater((ServiceBean) one, param, app, context);
+					generater.init();
 					$datas.add(generater.data);
 				} else if (one instanceof DictionaryBean) {
 					DictionaryGenerater generater = new DictionaryGenerater((DictionaryBean) one, param, app, context);
+					generater.init();
 					$datas.add(generater.data);
 				}
 			}

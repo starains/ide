@@ -40,21 +40,32 @@ public abstract class BaseGenerater extends Generater {
 
 		File javaFolder = getJavaFolder();
 
-		String pack = getPackage();
-		String codepath = getCodePath();
+		String pack = getCodePackage();
 		String className = getClassName();
-		String codepackage = getFolderPackage(codepath);
-		if (!StringUtil.isEmpty(codepackage)) {
-			pack += "." + codepackage;
-		}
-		String path = packageToPath(pack);
-		String filePath = path + "/" + className + ".java";
+		String filePath = getFilePath(pack, className);
 		File file = new File(javaFolder, filePath);
 
 		this.pack = pack;
 		this.className = className;
 		this.file = file;
 
+	}
+
+	public String getCodePackage() {
+
+		String pack = getPackage();
+		String codepath = getCodePath();
+		String codepackage = getFolderPackage(codepath);
+		if (!StringUtil.isEmpty(codepackage)) {
+			pack += "." + codepackage;
+		}
+		return pack;
+	}
+
+	public String getFilePath(String pack, String name) {
+		String path = packageToPath(pack);
+		String filePath = path + "/" + name + ".java";
+		return filePath;
 	}
 
 	public void init() {
@@ -69,14 +80,14 @@ public abstract class BaseGenerater extends Generater {
 		data.put("$package", this.pack);
 		data.put("$classname", this.className);
 		data.put("$result_classname", "JSONObject");
-		data.put("$propertyname", this.className.substring(0, 1).toLowerCase() + this.className.substring(1));
+		data.put("$propertyname", getPropertyname());
 
 		String mergePackage = getMergePackage();
 		String mergeClassname = getMergeClassName();
 		if (!StringUtil.isEmpty(mergeClassname)) {
 			data.put("$merge_package", mergePackage);
 			data.put("$merge_classname", mergeClassname);
-			data.put("$merge_propertyname", mergeClassname.substring(0, 1).toLowerCase() + mergeClassname.substring(1));
+			data.put("$merge_propertyname", getMergePropertyname());
 
 		}
 
@@ -92,6 +103,18 @@ public abstract class BaseGenerater extends Generater {
 
 		data.put("$imports", imports);
 		buildData();
+	}
+
+	public String getPropertyname() {
+		return this.className.substring(0, 1).toLowerCase() + this.className.substring(1);
+	}
+
+	public String getMergePropertyname() {
+		String mergeClassname = getMergeClassName();
+		if (StringUtil.isEmpty(mergeClassname)) {
+			return "";
+		}
+		return mergeClassname.substring(0, 1).toLowerCase() + mergeClassname.substring(1);
 	}
 
 	public String getMergePackage() {

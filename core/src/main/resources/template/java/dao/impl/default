@@ -2,17 +2,20 @@
 package #{$package};
 
 import com.alibaba.fastjson.*;
+import #{$i_package}.#{$i_classname};
 
 /**
  * Default Dao
  * #{$comment}
  */
 @SuppressWarnings("unused")
-public interface #{$classname} {
+public class #{$classname} implements #{$i_classname} {
 #ifEnd#
 	
-	public Object invoke(JSONObject data) ;
-	
+	public Object invoke(JSONObject data) {
+		
+		return null;
+	}
 #ifStart($only_content == false)#
 }
 #ifEnd#

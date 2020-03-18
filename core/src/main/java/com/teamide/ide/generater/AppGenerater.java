@@ -19,6 +19,8 @@ import com.teamide.ide.generater.bean.BeanGenerater;
 import com.teamide.ide.generater.controller.ControllerGenerater;
 import com.teamide.ide.generater.dao.DaoControllerGenerater;
 import com.teamide.ide.generater.dao.DaoGenerater;
+import com.teamide.ide.generater.dao.DaoImplGenerater;
+import com.teamide.ide.generater.dao.merge.DaoImplMergeGenerater;
 import com.teamide.ide.generater.dao.merge.DaoMergeControllerGenerater;
 import com.teamide.ide.generater.dao.merge.DaoMergeGenerater;
 import com.teamide.ide.generater.dictionary.DictionaryControllerGenerater;
@@ -28,6 +30,8 @@ import com.teamide.ide.generater.factory.FactoryGenerater;
 import com.teamide.ide.generater.resources.ResourcesGenerater;
 import com.teamide.ide.generater.service.ServiceControllerGenerater;
 import com.teamide.ide.generater.service.ServiceGenerater;
+import com.teamide.ide.generater.service.ServiceImplGenerater;
+import com.teamide.ide.generater.service.merge.ServiceImplMergeGenerater;
 import com.teamide.ide.generater.service.merge.ServiceMergeControllerGenerater;
 import com.teamide.ide.generater.service.merge.ServiceMergeGenerater;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
@@ -59,7 +63,7 @@ public class AppGenerater extends Generater {
 		List<File> files = FileUtil.loadAllFiles(folder.getAbsolutePath());
 		for (File file : files) {
 			if (file.isFile()) {
-				if (file.getName().endsWith(".java")) {
+				if (file.getName().endsWith(".java") || file.getName().endsWith(".xml")) {
 					BufferedReader reader = null;
 					InputStreamReader input = null;
 					String line = null;
@@ -189,7 +193,10 @@ public class AppGenerater extends Generater {
 
 			for (String directory : map.keySet()) {
 				List<DaoBean> directoryDaos = map.get(directory);
-				DaoMergeGenerater generater = new DaoMergeGenerater(directory, directoryDaos, param, app, context);
+				Generater generater = new DaoMergeGenerater(directory, directoryDaos, param, app, context);
+				generater.generate();
+
+				generater = new DaoImplMergeGenerater(directory, directoryDaos, param, app, context);
 				generater.generate();
 
 				List<DaoBean> controllerDaos = new ArrayList<DaoBean>();
@@ -199,20 +206,22 @@ public class AppGenerater extends Generater {
 					}
 				}
 				if (controllerDaos.size() > 0) {
-					DaoMergeControllerGenerater controller = new DaoMergeControllerGenerater(directory, controllerDaos,
-							param, app, context);
-					controller.generate();
+					generater = new DaoMergeControllerGenerater(directory, controllerDaos, param, app, context);
+					generater.generate();
 				}
 			}
 
 		} else {
 			List<DaoBean> daos = context.get(DaoBean.class);
 			for (DaoBean dao : daos) {
-				DaoGenerater generater = new DaoGenerater(dao, param, app, context);
+				Generater generater = new DaoGenerater(dao, param, app, context);
 				generater.generate();
 
-				DaoControllerGenerater controller = new DaoControllerGenerater(dao, param, app, context);
-				controller.generate();
+				generater = new DaoImplGenerater(dao, param, app, context);
+				generater.generate();
+
+				generater = new DaoControllerGenerater(dao, param, app, context);
+				generater.generate();
 			}
 		}
 
@@ -239,8 +248,10 @@ public class AppGenerater extends Generater {
 
 			for (String directory : map.keySet()) {
 				List<ServiceBean> directoryServices = map.get(directory);
-				ServiceMergeGenerater generater = new ServiceMergeGenerater(directory, directoryServices, param, app,
-						context);
+				Generater generater = new ServiceMergeGenerater(directory, directoryServices, param, app, context);
+				generater.generate();
+
+				generater = new ServiceImplMergeGenerater(directory, directoryServices, param, app, context);
 				generater.generate();
 
 				List<ServiceBean> controllerServices = new ArrayList<ServiceBean>();
@@ -250,9 +261,8 @@ public class AppGenerater extends Generater {
 					}
 				}
 				if (controllerServices.size() > 0) {
-					ServiceMergeControllerGenerater controller = new ServiceMergeControllerGenerater(directory,
-							controllerServices, param, app, context);
-					controller.generate();
+					generater = new ServiceMergeControllerGenerater(directory, controllerServices, param, app, context);
+					generater.generate();
 				}
 
 			}
@@ -260,11 +270,14 @@ public class AppGenerater extends Generater {
 		} else {
 			List<ServiceBean> services = context.get(ServiceBean.class);
 			for (ServiceBean service : services) {
-				ServiceGenerater generater = new ServiceGenerater(service, param, app, context);
+				Generater generater = new ServiceGenerater(service, param, app, context);
 				generater.generate();
 
-				ServiceControllerGenerater controller = new ServiceControllerGenerater(service, param, app, context);
-				controller.generate();
+				generater = new ServiceImplGenerater(service, param, app, context);
+				generater.generate();
+
+				generater = new ServiceControllerGenerater(service, param, app, context);
+				generater.generate();
 			}
 		}
 

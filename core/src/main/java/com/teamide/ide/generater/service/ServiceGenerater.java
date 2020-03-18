@@ -36,6 +36,34 @@ public class ServiceGenerater extends BaseGenerater {
 	}
 
 	@Override
+	public String getClassName() {
+		return "I" + super.getClassName();
+	}
+
+	@Override
+	public String getMergeClassName() {
+		String className = super.getMergeClassName();
+		if (StringUtil.isNotEmpty(className)) {
+			className = "I" + className;
+		}
+		return className;
+	}
+
+	@Override
+	public String getPropertyname() {
+		return this.className.substring(1, 2).toLowerCase() + this.className.substring(2);
+	}
+
+	@Override
+	public String getMergePropertyname() {
+		String mergeClassname = getMergeClassName();
+		if (StringUtil.isEmpty(mergeClassname)) {
+			return "";
+		}
+		return mergeClassname.substring(1, 2).toLowerCase() + mergeClassname.substring(2);
+	}
+
+	@Override
 	public void buildData() {
 		JSONArray $processs = new JSONArray();
 		JSONArray $propertys = new JSONArray();
@@ -162,7 +190,6 @@ public class ServiceGenerater extends BaseGenerater {
 			ServiceBean service = context.get(ServiceBean.class, subServiceProcess.getServicename());
 			if (service != null) {
 				ServiceGenerater serviceGenerater = new ServiceGenerater(service, param, app, context);
-				serviceGenerater.init();
 
 				JSONObject $service = serviceGenerater.data;
 				$service.put("$method_name", "invoke");

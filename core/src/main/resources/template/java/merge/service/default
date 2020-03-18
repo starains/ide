@@ -4,35 +4,19 @@ package #{$package};
 import java.util.*;
 import com.teamide.util.*;
 import com.teamide.exception.*;
-import com.teamide.bean.*;
 
 import com.alibaba.fastjson.*;
-
-import #{$app_factory.$package}.#{$app_factory.$classname};
-
-#forStart($imports, $import)#
-import #{$import};
-#forEnd#
-
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-#forStart($propertys, $property)#
-import #{$property.$package}.#{$property.$classname};
-#forEnd#
+import com.teamide.bean.*;
+import com.teamide.param.DataParam;
+import com.teamide.annotation.*;
 
 /**
  * Service
  * #{$comment}
  */
 @SuppressWarnings({"unused"})
-@Service
-public class #{$classname} {
+public interface #{$classname} {
 	
-	#forStart($propertys, $property)#
-	//#{$property.$comment}
-	@Autowired
-	#{$property.$classname} #{$property.$name};
-	#forEnd#
 #ifEnd#
 #forStart($list, $one)#
 

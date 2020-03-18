@@ -8,6 +8,7 @@ import com.teamide.app.AppContext;
 import com.teamide.app.bean.DaoBean;
 import com.teamide.ide.generater.BaseMergeGenerater;
 import com.teamide.ide.generater.dao.DaoGenerater;
+import com.teamide.ide.generater.dao.DaoImplGenerater;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.repository.project.AppBean;
 
@@ -26,12 +27,26 @@ public class DaoMergeGenerater extends BaseMergeGenerater {
 	}
 
 	@Override
+	public String getClassName() {
+		return "I" + super.getClassName();
+	}
+
+	public boolean isImpl() {
+		return false;
+	}
+
+	@Override
 	public void buildData() {
 
 		JSONArray list = new JSONArray();
 
 		for (DaoBean dao : daos) {
-			DaoGenerater generater = new DaoGenerater(dao, param, app, context);
+			DaoGenerater generater;
+			if (isImpl()) {
+				generater = new DaoImplGenerater(dao, param, app, context);
+			} else {
+				generater = new DaoGenerater(dao, param, app, context);
+			}
 			generater.init();
 			try {
 				String name = dao.getName();

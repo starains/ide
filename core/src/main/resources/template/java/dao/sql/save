@@ -7,59 +7,22 @@ import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 
-import #{$app_factory.$package}.#{$app_factory.$classname};
-
 import com.teamide.db.bean.*;
 import com.teamide.bean.*;
-
-import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.annotation.*;
-
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * SQL Dao
  * #{$comment}
  */
 @SuppressWarnings("unused")
-@Service
-public class #{$classname} {
+public interface #{$classname} {
 
-	@Autowired
-	#{$app_factory.$classname} factory;
-	
-	@Autowired
-	IDao dao;
 #ifEnd#
 
 	@DataSource()
-	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception {
-		
-		SqlParam sqlParam = #{$build_name}(data);
-		
-		dao.execute(sqlParam);
-		
-		return sqlParam.getParam();
-	}
-	
-	/**
-	 * 组合SQL
-	 */
-	public SqlParam #{$build_name}(JSONObject data) throws Exception {
-		// 用于暂存字段取到的值
-		Object value = null;
-		// SQL执行用到的参数，SQL中使用“:key”作占位符
-		Map<String, Object> param = new HashMap<String, Object>();
-		// SQL语句
-		StringBuffer sql = new StringBuffer();
-		
-		// 解析SQL表达式，获得真实SQL
-		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
-		SqlParam sqlParam = new SqlParam(realSql, param);
-		return sqlParam;
-	}
+	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception;
 #ifStart($only_content == false)#
 }
 #ifEnd#

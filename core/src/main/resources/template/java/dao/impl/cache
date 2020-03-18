@@ -1,0 +1,24 @@
+#ifStart($only_content == false)#
+package #{$package};
+
+import com.alibaba.fastjson.*;
+import #{$i_package}.#{$i_classname};
+
+/**
+ * Cache Dao
+ * #{$comment}
+ */
+@SuppressWarnings("unused")
+public class #{$classname} implements #{$i_classname} {
+#ifEnd#
+	
+	public $result_classname invoke(DataParam data) {
+		$result_classname result = new $result_classname();
+		
+		
+		
+		return result;
+	}
+#ifStart($only_content == false)#
+}
+#ifEnd#

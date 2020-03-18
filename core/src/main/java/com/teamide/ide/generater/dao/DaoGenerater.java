@@ -20,6 +20,34 @@ public class DaoGenerater extends SQLDaoGenerater {
 	}
 
 	@Override
+	public String getClassName() {
+		return "I" + super.getClassName();
+	}
+
+	@Override
+	public String getMergeClassName() {
+		String className = super.getMergeClassName();
+		if (StringUtil.isNotEmpty(className)) {
+			className = "I" + className;
+		}
+		return className;
+	}
+
+	@Override
+	public String getPropertyname() {
+		return this.className.substring(1, 2).toLowerCase() + this.className.substring(2);
+	}
+
+	@Override
+	public String getMergePropertyname() {
+		String mergeClassname = getMergeClassName();
+		if (StringUtil.isEmpty(mergeClassname)) {
+			return "";
+		}
+		return mergeClassname.substring(1, 2).toLowerCase() + mergeClassname.substring(2);
+	}
+
+	@Override
 	public void buildData() {
 		DaoProcess daoProcess = dao.getProcess();
 		if (daoProcess != null) {

@@ -8,16 +8,11 @@ import com.alibaba.fastjson.*;
  * #{$comment}
  */
 @SuppressWarnings("unused")
-public class #{$classname} {
+public interface #{$classname} {
 #ifEnd#
 	
-	public $result_classname invoke(DataParam data) {
-		$result_classname result = new $result_classname();
-		
-		
-		
-		return result;
-	}
+	public $result_classname invoke(DataParam data) ;
+	
 #ifStart($only_content == false)#
 }
 #ifEnd#

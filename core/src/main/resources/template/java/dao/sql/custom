@@ -7,31 +7,18 @@ import com.teamide.exception.*;
 
 import com.alibaba.fastjson.*;
 
-import #{$app_factory.$package}.#{$app_factory.$classname};
-
 import com.teamide.db.bean.*;
 import com.teamide.bean.*;
-
-import com.teamide.dao.IDao;
 import com.teamide.param.DataParam;
 import com.teamide.annotation.*;
-
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * SQL Dao 自定义
  * #{$comment}
  */
 @SuppressWarnings("unused")
-@Service
-public class #{$classname} {
+public interface #{$classname} {
 	
-	@Autowired
-	#{$app_factory.$classname} factory;
-	
-	@Autowired
-	IDao dao;
 #ifEnd#
 	
 	/**
@@ -39,91 +26,18 @@ public class #{$classname} {
 	 */
 	@DataSource()
 	#ifStart($customsqltype == 'SELECT_ONE')#
-	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception {
+	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception;
 	#ifEnd#
 	#ifStart($customsqltype == 'SELECT_LIST')#
-	public List<Map<String, Object>> #{$method_name}(@VariableData JSONObject data) throws Exception {
+	public List<Map<String, Object>> #{$method_name}(@VariableData JSONObject data) throws Exception;
 	#ifEnd#
 	#ifStart($customsqltype == 'SELECT_PAGE')#
-	public PageResultBean<Map<String, Object>> #{$method_name}(@VariableData JSONObject data) throws Exception {
+	public PageResultBean<Map<String, Object>> #{$method_name}(@VariableData JSONObject data) throws Exception;
 	#ifEnd#
 	#ifStart($customsqltype == null)#
-	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception {
-	#ifEnd#
-		
-		// 组合SQL Param
-		#ifStart($customsqltype == 'SELECT_ONE')#
-		SqlParam sqlParam = #{$build_name}(data);
-		
-		return dao.queryOne(sqlParam);
-		#ifEnd#
-		#ifStart($customsqltype == 'SELECT_LIST')#
-		SqlParam sqlParam = #{$build_name}(data);
-		
-		return dao.queryList(sqlParam);
-		#ifEnd#
-		#ifStart($customsqltype == 'SELECT_PAGE')#
-		PageSqlParam pageSqlParam = #{$build_name}(data);
-		
-		return dao.queryPage(pageSqlParam);
-		#ifEnd#
-		#ifStart($customsqltype == null)#
-		SqlParam sqlParam = #{$build_name}(data);
-		int result = dao.execute(sqlParam);
-		
-		return sqlParam.getParam();
-		#ifEnd#
-	}
-	
-	/**
-	 * 组合SQL
-	 */
-	#ifStart($customsqltype == 'SELECT_PAGE')#
-	public PageSqlParam #{$build_name}(JSONObject data) {
-	#ifEnd#
-	#ifStart($customsqltype != 'SELECT_PAGE')#
-	public SqlParam #{$build_name}(JSONObject data) throws Exception {
-	#ifEnd#
-		// 用于暂存字段取到的值
-		Object value = null;
-		// SQL执行用到的参数，SQL中使用“:key”作占位符
-		Map<String, Object> param = new HashMap<String, Object>();
-		
-		if(data != null){
-			param.putAll(data);
-		}
-		
-		// SQL语句
-		StringBuffer sql = new StringBuffer();
-	#ifStart($customsqltype == 'SELECT_PAGE')#
-		// 分页查询的统计语句
-		StringBuffer countSql = new StringBuffer();
+	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception;
 	#ifEnd#
 	
-#{$content}
-
-		#ifStart($customsqltype == 'SELECT_PAGE')#
-		
-		// 解析SQL表达式，获得真实SQL
-		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
-		String realCountSql = #{$app_factory.$classname}.resolveSqlJexl(countSql.toString(), param, data);
-		PageSqlParam pageSqlParam = new PageSqlParam(realSql, realCountSql, param);
-		// 获取页码和每页数量
-		int pagesize = data.getIntValue("_pagesize");
-		int pageindex = data.getIntValue("_pageindex");
-		pageSqlParam.setPagesize(pagesize);
-		pageSqlParam.setPageindex(pageindex);
-		
-		return pageSqlParam;
-		#ifEnd#
-		#ifStart($customsqltype != 'SELECT_PAGE')#
-		
-		// 解析SQL表达式，获得真实SQL
-		String realSql = #{$app_factory.$classname}.resolveSqlJexl(sql.toString(), param, data);
-		SqlParam sqlParam = new SqlParam(realSql, param);
-		return sqlParam;
-		#ifEnd#
-	}
 #ifStart($only_content == false)#
 }
 #ifEnd#
