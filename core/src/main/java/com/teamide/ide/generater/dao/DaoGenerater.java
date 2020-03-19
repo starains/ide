@@ -73,16 +73,34 @@ public class DaoGenerater extends SQLDaoGenerater {
 
 				DaoSqlProcess sqlProcess = (DaoSqlProcess) dao.getProcess();
 				if (sqlProcess.getSqlType().indexOf("SELECT") >= 0) {
+					if (isUsemybatis()) {
+						return "template/java/dao/mapper/select";
+					}
 					return "template/java/dao/sql/select";
 				} else if (sqlProcess.getSqlType().indexOf("INSERT") >= 0) {
+					if (isUsemybatis()) {
+						return "template/java/dao/mapper/insert";
+					}
 					return "template/java/dao/sql/insert";
 				} else if (sqlProcess.getSqlType().indexOf("UPDATE") >= 0) {
+					if (isUsemybatis()) {
+						return "template/java/dao/mapper/update";
+					}
 					return "template/java/dao/sql/update";
 				} else if (sqlProcess.getSqlType().indexOf("DELETE") >= 0) {
+					if (isUsemybatis()) {
+						return "template/java/dao/mapper/delete";
+					}
 					return "template/java/dao/sql/delete";
 				} else if (sqlProcess.getSqlType().indexOf("CUSTOM") >= 0) {
+					if (isUsemybatis()) {
+						return "template/java/dao/mapper/custom";
+					}
 					return "template/java/dao/sql/custom";
 				} else if (sqlProcess.getSqlType().indexOf("SAVE") >= 0) {
+					if (isUsemybatis()) {
+						return "template/java/dao/mapper/save";
+					}
 					return "template/java/dao/sql/save";
 				} else {
 					throw new Exception("sql type [" + sqlProcess.getSqlType() + "] template does not exist.");

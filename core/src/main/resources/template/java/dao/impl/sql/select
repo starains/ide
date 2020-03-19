@@ -64,7 +64,9 @@ public class #{$classname} implements #{$i_classname} {
 		PageSqlParam pageSqlParam = #{$build_name}(data);
 		PageResultBean<Map<String, Object>> result = dao.queryPage(pageSqlParam);
 		#ifEnd#
+		#ifStart($formats.size() > 0 || $subselects.size() > 0)#
 		#{$format_name}(result, data);
+		#ifEnd#
 		return result;
 	}
 	
@@ -128,6 +130,7 @@ public class #{$classname} implements #{$i_classname} {
 		#ifEnd#
 	}
 	
+	#ifStart($formats.size() > 0 || $subselects.size() > 0)#
 	#ifStart($sqlType == 'SELECT_PAGE')#
 	/**
 	 * 格式化分页结果
@@ -214,6 +217,7 @@ public class #{$classname} implements #{$i_classname} {
 		#ifEnd#
 	}
 	#forEnd#
+	#ifEnd#
 #ifStart($only_content == false)#
 }
 #ifEnd#

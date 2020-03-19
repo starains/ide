@@ -12,15 +12,17 @@ public class CustomGenerater extends SqlGenerater {
 		this.custom = custom;
 	}
 
-	public StringBuffer generate(int tab) {
+	public void doGenerate(int tab) {
 
 		if (StringUtil.isEmpty(custom.getSql())) {
-			return content;
+			return;
 		}
 		String[] sqls = custom.getSql().split("\n");
 
 		for (String sql : sqls) {
 			content.append(getTab(tab)).append("sql.append(\"" + sql + "\");").append("\n");
+
+			content_mapper.append(getTab(tab)).append(getFormatSql(sql)).append("\n");
 		}
 
 		if (custom.getCustomsqltype() != null && custom.getCustomsqltype().indexOf("PAGE") >= 0) {
@@ -29,12 +31,13 @@ public class CustomGenerater extends SqlGenerater {
 
 				for (String countsql : countsqls) {
 					content.append(getTab(tab)).append("countSql.append(\"" + countsql + "\");").append("\n");
+
+					content_count_mapper.append(getTab(tab)).append(getFormatSql(countsql)).append("\n");
 				}
 
 			}
 		}
 
-		return content;
 	}
 
 }

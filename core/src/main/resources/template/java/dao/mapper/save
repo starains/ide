@@ -1,0 +1,48 @@
+#ifStart($only_content == false)#
+package #{$package};
+
+import java.util.*;
+import com.teamide.util.*;
+import com.teamide.exception.*;
+
+import com.alibaba.fastjson.*;
+
+import com.teamide.db.bean.*;
+import com.teamide.bean.*;
+import com.teamide.param.DataParam;
+import com.teamide.annotation.*;
+
+import org.springframework.stereotype.Repository;
+
+/**
+ * SQL Dao
+ * #{$comment}
+ */
+@SuppressWarnings("unused")
+public interface #{$classname} extends #{$classname}Method {
+
+	@Repository
+	public interface #{$classname}Mapper extends #{$classname}Method {
+	
+	}
+
+}
+#ifEnd#
+
+
+#ifStart($only_content == false)#
+
+/**
+ * SQL Dao
+ * #{$comment}
+ */
+@Repository
+interface #{$classname}Method {
+
+#ifEnd#
+
+	@DataSource()
+	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception;
+#ifStart($only_content == false)#
+}
+#ifEnd#

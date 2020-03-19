@@ -61,7 +61,7 @@ public class AppGenerater extends Generater {
 	}
 
 	public void removeOld() throws Exception {
-		File folder = getJavaFolder();
+		File folder = param.getFile("src");
 		List<File> files = FileUtil.loadAllFiles(folder.getAbsolutePath());
 		for (File file : files) {
 			if (file.isFile()) {
@@ -73,6 +73,22 @@ public class AppGenerater extends Generater {
 						input = new InputStreamReader(new FileInputStream(file), "UTF-8");
 						reader = new BufferedReader(input);
 						line = reader.readLine();
+						if (line != null) {
+							if (line.indexOf(Generater.HEAD_NOTE) >= 0) {
+								file.delete();
+								removeDirectory(file.getParentFile());
+							} else {
+								if (file.getName().endsWith(".xml")) {
+									line = reader.readLine();
+									if (line != null) {
+										if (line.indexOf(Generater.HEAD_NOTE) >= 0) {
+											file.delete();
+											removeDirectory(file.getParentFile());
+										}
+									}
+								}
+							}
+						}
 					} catch (Exception e) {
 					} finally {
 						if (input != null) {
@@ -83,12 +99,6 @@ public class AppGenerater extends Generater {
 						}
 					}
 
-					if (line != null) {
-						if (line.indexOf(Generater.HEAD_NOTE) >= 0) {
-							file.delete();
-							removeDirectory(file.getParentFile());
-						}
-					}
 				}
 			}
 		}

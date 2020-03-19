@@ -9,6 +9,7 @@ import com.teamide.app.process.DaoProcess;
 import com.teamide.app.process.dao.DaoSqlProcess;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.repository.project.AppBean;
+import com.teamide.util.StringUtil;
 
 public class DaoMapperGenerater extends DaoGenerater {
 
@@ -20,8 +21,12 @@ public class DaoMapperGenerater extends DaoGenerater {
 	public File getFile() {
 
 		File resourcesFolder = getResourcesFolder();
-		String name = this.bean.getName();
-		File file = new File(resourcesFolder, "mapper/" + name + ".xml");
+		String codepackage = getFolderPackage(getCodePath());
+		String folder = "";
+		if (!StringUtil.isEmpty(codepackage)) {
+			folder = codepackage.replaceAll("\\.", "/");
+		}
+		File file = new File(resourcesFolder, "mybatis/mappers/" + folder + "/" + getClassName() + "Mapper.xml");
 		return file;
 	}
 

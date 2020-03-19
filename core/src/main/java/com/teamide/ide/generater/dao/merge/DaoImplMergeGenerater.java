@@ -40,7 +40,9 @@ public class DaoImplMergeGenerater extends DaoMergeGenerater {
 
 	@Override
 	public String getTemplate() throws Exception {
-
+		if (isUsemybatis()) {
+			return "template/java/merge/dao/impl/mapper/default";
+		}
 		return "template/java/merge/dao/impl/default";
 	}
 

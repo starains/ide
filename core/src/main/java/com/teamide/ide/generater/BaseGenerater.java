@@ -184,11 +184,12 @@ public abstract class BaseGenerater extends Generater {
 
 		StringBuffer code = new StringBuffer();
 		if (file.getName().endsWith(".xml")) {
+			code.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>").append("\n");
 			code.append("<!-- " + Generater.HEAD_NOTE + " -->").append("\n");
 			code.append("<!-- " + Generater.HEAD_REMARK + " -->").append("\n");
 		} else {
-			code.append(Generater.HEAD_NOTE).append("\n");
-			code.append(Generater.HEAD_REMARK).append("\n");
+			code.append("/* " + Generater.HEAD_NOTE + " */").append("\n");
+			code.append("/** " + Generater.HEAD_REMARK + " **/").append("\n");
 		}
 		code.append(content);
 

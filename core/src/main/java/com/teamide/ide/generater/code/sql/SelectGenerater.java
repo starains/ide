@@ -23,7 +23,7 @@ public class SelectGenerater extends SqlGenerater {
 		this.select = select;
 	}
 
-	public StringBuffer generate(int tab) {
+	public void doGenerate(int tab) {
 		StringBuffer sql = new StringBuffer();
 
 		sql.append("SELECT ");
@@ -34,12 +34,19 @@ public class SelectGenerater extends SqlGenerater {
 		content.append(getTab(tab)).append("// 组合查询字段语句").append("\n");
 		content.append(getTab(tab)).append("sql.append(\"" + sql + "\");").append("\n");
 
+		content_mapper.append(getTab(tab)).append(sql).append("\n");
+		content_count_mapper.append(getTab(tab)).append(sql).append("\n");
+
 		List<StringBuffer> selectColumnSqls = getSelectColumns();
 		for (StringBuffer selectColumnSql : selectColumnSqls) {
 			content.append(getTab(tab)).append("sql.append(\"" + selectColumnSql + "\");").append("\n");
+
+			content_mapper.append(getTab(tab)).append(selectColumnSql).append("\n");
 		}
 
 		appendConditionColumns(tab);
+
+		content_count_mapper.append(getTab(tab)).append(" COUNT(1) ").append("\n");
 
 		content.append("\n");
 		content.append(getTab(tab)).append("// 组合查询SQL From语句").append("\n");
@@ -85,7 +92,6 @@ public class SelectGenerater extends SqlGenerater {
 			appendAppends(tab, select.getAppends());
 		}
 
-		return content;
 	}
 
 	public List<StringBuffer> getSelectColumns() {
@@ -167,14 +173,21 @@ public class SelectGenerater extends SqlGenerater {
 			content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\"" + column.getIfrule()
 					+ "\", data))) {").append("\n");
 
+			content_mapper.append(getTab(tab));
+			content_mapper.append("<if test=\"" + getFormatIfrule(column.getIfrule()) + "\" >").append("\n");
+
 			StringBuffer sql = new StringBuffer();
 			sql.append(",");
 			sql.append(getColumnSql(column));
 
 			content.append(getTab(tab + 1)).append("sql.append(\"" + sql + "\");").append("\n");
 
+			content_mapper.append(getTab(tab + 1)).append(sql).append("\n");
+
 			content.append(getTab(tab));
 			content.append("}").append("\n");
+
+			content_mapper.append(getTab(tab)).append("</if>").append("\n");
 		}
 
 	}
@@ -193,8 +206,20 @@ public class SelectGenerater extends SqlGenerater {
 				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
 						+ from.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
+
+				content_mapper.append(getTab(tab));
+				content_mapper.append("<if test=\"" + getFormatIfrule(from.getIfrule()) + "\" >").append("\n");
+				content_mapper.append(getTab(tab + 1));
+
+				content_count_mapper.append(getTab(tab));
+				content_count_mapper.append("<if test=\"" + getFormatIfrule(from.getIfrule()) + "\" >").append("\n");
+				content_count_mapper.append(getTab(tab + 1));
+
 			} else {
 				content.append(getTab(tab));
+
+				content_mapper.append(getTab(tab));
+				content_count_mapper.append(getTab(tab));
 			}
 
 			StringBuffer sql = new StringBuffer();
@@ -206,9 +231,14 @@ public class SelectGenerater extends SqlGenerater {
 
 			content.append("fromSql.append(\"" + sql + "\");").append("\n");
 
+			content_mapper.append(sql).append("\n");
+			content_count_mapper.append(sql).append("\n");
+
 			if (StringUtil.isNotTrimEmpty(from.getIfrule())) {
-				content.append(getTab(tab));
-				content.append("}").append("\n");
+				content.append(getTab(tab)).append("}").append("\n");
+
+				content_mapper.append(getTab(tab)).append("</if>").append("\n");
+				content_count_mapper.append(getTab(tab)).append("</if>").append("\n");
 			}
 
 			isFirst = false;
@@ -246,8 +276,20 @@ public class SelectGenerater extends SqlGenerater {
 				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
 						+ leftJoin.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
+
+				content_mapper.append(getTab(tab));
+				content_mapper.append("<if test=\"" + getFormatIfrule(leftJoin.getIfrule()) + "\" >").append("\n");
+				content_mapper.append(getTab(tab + 1));
+
+				content_count_mapper.append(getTab(tab));
+				content_count_mapper.append("<if test=\"" + getFormatIfrule(leftJoin.getIfrule()) + "\" >")
+						.append("\n");
+				content_count_mapper.append(getTab(tab + 1));
 			} else {
 				content.append(getTab(tab));
+
+				content_mapper.append(getTab(tab));
+				content_count_mapper.append(getTab(tab));
 			}
 
 			StringBuffer sql = new StringBuffer();
@@ -259,9 +301,14 @@ public class SelectGenerater extends SqlGenerater {
 
 			content.append("fromSql.append(\"" + sql + "\");").append("\n");
 
+			content_mapper.append(sql).append("\n");
+			content_count_mapper.append(sql).append("\n");
+
 			if (StringUtil.isNotTrimEmpty(leftJoin.getIfrule())) {
-				content.append(getTab(tab));
-				content.append("}").append("\n");
+				content.append(getTab(tab)).append("}").append("\n");
+
+				content_mapper.append(getTab(tab)).append("</if>").append("\n");
+				content_count_mapper.append(getTab(tab)).append("</if>").append("\n");
 			}
 
 			isFirst = false;
@@ -309,8 +356,19 @@ public class SelectGenerater extends SqlGenerater {
 				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
 						+ group.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
+
+				content_mapper.append(getTab(tab));
+				content_mapper.append("<if test=\"" + getFormatIfrule(group.getIfrule()) + "\" >").append("\n");
+				content_mapper.append(getTab(tab + 1));
+
+				content_count_mapper.append(getTab(tab));
+				content_count_mapper.append("<if test=\"" + getFormatIfrule(group.getIfrule()) + "\" >").append("\n");
+				content_count_mapper.append(getTab(tab + 1));
 			} else {
 				content.append(getTab(tab));
+
+				content_mapper.append(getTab(tab));
+				content_count_mapper.append(getTab(tab));
 			}
 
 			StringBuffer sql = new StringBuffer();
@@ -322,9 +380,14 @@ public class SelectGenerater extends SqlGenerater {
 
 			content.append("groupSql.append(\"" + sql + "\");").append("\n");
 
+			content_mapper.append(sql).append("\n");
+			content_count_mapper.append(sql).append("\n");
+
 			if (StringUtil.isNotTrimEmpty(group.getIfrule())) {
-				content.append(getTab(tab));
-				content.append("}").append("\n");
+				content.append(getTab(tab)).append("}").append("\n");
+
+				content_mapper.append(getTab(tab)).append("</if>").append("\n");
+				content_count_mapper.append(getTab(tab)).append("</if>").append("\n");
 			}
 
 			isFirst = false;
@@ -365,8 +428,15 @@ public class SelectGenerater extends SqlGenerater {
 				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
 						+ having.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
+
+				content_mapper.append(getTab(tab));
+				content_mapper.append("<if test=\"" + getFormatIfrule(having.getIfrule()) + "\" >").append("\n");
+				content_mapper.append(getTab(tab + 1));
+
 			} else {
 				content.append(getTab(tab));
+
+				content_mapper.append(getTab(tab));
 			}
 
 			StringBuffer sql = new StringBuffer();
@@ -378,9 +448,12 @@ public class SelectGenerater extends SqlGenerater {
 
 			content.append("sql.append(\"" + sql + "\");").append("\n");
 
+			content_mapper.append(sql).append("\n");
+
 			if (StringUtil.isNotTrimEmpty(having.getIfrule())) {
-				content.append(getTab(tab));
-				content.append("}").append("\n");
+				content.append(getTab(tab)).append("}").append("\n");
+
+				content_mapper.append(getTab(tab)).append("</if>").append("\n");
 			}
 
 			isFirst = false;
@@ -419,8 +492,15 @@ public class SelectGenerater extends SqlGenerater {
 				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
 						+ order.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
+
+				content_mapper.append(getTab(tab));
+				content_mapper.append("<if test=\"" + getFormatIfrule(order.getIfrule()) + "\" >").append("\n");
+				content_mapper.append(getTab(tab + 1));
+
 			} else {
 				content.append(getTab(tab));
+
+				content_mapper.append(getTab(tab));
 			}
 
 			StringBuffer sql = new StringBuffer();
@@ -432,9 +512,12 @@ public class SelectGenerater extends SqlGenerater {
 
 			content.append("sql.append(\"" + sql + "\");").append("\n");
 
+			content_mapper.append(sql).append("\n");
+
 			if (StringUtil.isNotTrimEmpty(order.getIfrule())) {
-				content.append(getTab(tab));
-				content.append("}").append("\n");
+				content.append(getTab(tab)).append("}").append("\n");
+
+				content_mapper.append(getTab(tab)).append("</if>").append("\n");
 			}
 
 			isFirst = false;
@@ -478,8 +561,15 @@ public class SelectGenerater extends SqlGenerater {
 				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
 						+ union.getIfrule() + "\", data))) {").append("\n");
 				content.append(getTab(tab + 1));
+
+				content_mapper.append(getTab(tab));
+				content_mapper.append("<if test=\"" + getFormatIfrule(union.getIfrule()) + "\" >").append("\n");
+				content_mapper.append(getTab(tab + 1));
+
 			} else {
 				content.append(getTab(tab));
+
+				content_mapper.append(getTab(tab));
 			}
 
 			StringBuffer sql = new StringBuffer();
@@ -491,9 +581,12 @@ public class SelectGenerater extends SqlGenerater {
 
 			content.append("sql.append(\"" + sql + "\");").append("\n");
 
+			content_mapper.append(sql).append("\n");
+
 			if (StringUtil.isNotTrimEmpty(union.getIfrule())) {
-				content.append(getTab(tab));
-				content.append("}").append("\n");
+				content.append(getTab(tab)).append("}").append("\n");
+
+				content_mapper.append(getTab(tab)).append("</if>").append("\n");
 			}
 
 			isFirst = false;

@@ -12,7 +12,7 @@ public class DeleteGenerater extends SqlGenerater {
 		this.delete = delete;
 	}
 
-	public StringBuffer generate(int tab) {
+	public void doGenerate(int tab) {
 		StringBuffer sql = new StringBuffer();
 
 		sql.append("DELETE FROM ");
@@ -26,6 +26,8 @@ public class DeleteGenerater extends SqlGenerater {
 		content.append(getTab(tab)).append("// 删除语句").append("\n");
 		content.append(getTab(tab)).append("sql.append(\"" + sql + "\");").append("\n");
 
+		content_mapper.append(getTab(tab)).append(sql).append("\n");
+
 		content.append(getTab(tab)).append("// 组合条件语句").append("\n");
 		ignoreWhereTablealias(delete.getWheres());
 		appendWhere(tab, delete.getWheres());
@@ -37,8 +39,8 @@ public class DeleteGenerater extends SqlGenerater {
 		}
 
 		content.append("\n");
+		content_mapper.append("\n");
 
-		return content;
 	}
 
 }

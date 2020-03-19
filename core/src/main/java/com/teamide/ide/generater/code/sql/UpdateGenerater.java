@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.teamide.app.process.dao.sql.Update;
 import com.teamide.app.process.dao.sql.UpdateColumn;
+import com.teamide.bean.VariableBean;
 import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
+import com.teamide.variable.VariableValidate;
 
 public class UpdateGenerater extends SqlGenerater {
 
@@ -16,7 +18,7 @@ public class UpdateGenerater extends SqlGenerater {
 		this.update = update;
 	}
 
-	public StringBuffer generate(int tab) {
+	public void doGenerate(int tab) {
 		StringBuffer sql = new StringBuffer();
 
 		sql.append("UPDATE  ");
@@ -26,14 +28,19 @@ public class UpdateGenerater extends SqlGenerater {
 			sql.append(table);
 			sql.append(" ");
 		}
+
 		sql.append("SET ");
 
 		content.append(getTab(tab)).append("// 组合更新语句").append("\n");
 		content.append(getTab(tab)).append("sql.append(\"" + sql + "\");").append("\n");
+		content_mapper.append(getTab(tab)).append(sql).append("\n");
 
 		content.append("\n");
 		content.append(getTab(tab)).append("// 组合更新字段").append("\n");
+
+		content_mapper.append(getTab(tab - 1)).append("<trim suffixOverrides=\",\">").append("\n");
 		appendColumn(tab);
+		content_mapper.append(getTab(tab - 1)).append("</trim>").append("\n");
 
 		content.append("\n");
 		content.append(getTab(tab)).append("// 组合条件语句").append("\n");
@@ -46,7 +53,6 @@ public class UpdateGenerater extends SqlGenerater {
 			appendAppends(tab, update.getAppends());
 		}
 
-		return content;
 	}
 
 	public void appendColumn(int tab) {
@@ -63,6 +69,9 @@ public class UpdateGenerater extends SqlGenerater {
 				content.append(getTab(tab));
 				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
 						+ column.getIfrule() + "\", data))) {").append("\n");
+
+				content_mapper.append(getTab(tab));
+				content_mapper.append("<if test=\"" + getFormatIfrule(column.getIfrule()) + "\" >").append("\n");
 				t++;
 			} else {
 			}
@@ -70,6 +79,8 @@ public class UpdateGenerater extends SqlGenerater {
 
 			if (StringUtil.isNotTrimEmpty(column.getIfrule())) {
 				content.append(getTab(tab)).append("}").append("\n");
+
+				content_mapper.append(getTab(tab)).append("</if>").append("\n");
 			}
 
 		}
@@ -80,7 +91,38 @@ public class UpdateGenerater extends SqlGenerater {
 		if (ObjectUtil.isTrue(column.getCustom())) {
 			String customsql = column.getCustomsql();
 			content.append(getTab(tab)).append("sql.append(\"" + customsql + "\");").append("\n");
+
+			content_mapper.append(getTab(tab)).append(getFormatSql(customsql)).append("\n");
 			return;
+		}
+
+		String name = StringUtil.trim(column.getName());
+
+		String placeKey = base.getPlaceKey(name, keyCache);
+		placeKey = StringUtil.trim(placeKey);
+
+		if (StringUtil.isNotTrimEmpty(column.getValuer()) || StringUtil.isNotTrimEmpty(column.getValue())
+				|| StringUtil.isNotTrimEmpty(column.getDefaultvalue())) {
+
+			VariableBean variable = new VariableBean();
+			variable.setValuer(column.getValuer());
+			variable.setValue(column.getValue());
+			variable.setDefaultvalue(column.getDefaultvalue());
+			variable.setName(placeKey);
+			variables.add(variable);
+		} else {
+			if (!placeKey.equals(name)) {
+				VariableBean variable = new VariableBean();
+				variable.setValue(name);
+				variable.setName(placeKey);
+				variables.add(variable);
+			}
+		}
+		if (ObjectUtil.isTrue(column.getRequired())) {
+			VariableValidate validate = new VariableValidate();
+			validate.setRequired(true);
+			validate.setValue(placeKey);
+			validates.add(validate);
 		}
 
 		if (StringUtil.isNotTrimEmpty(column.getValuer())) {
@@ -114,15 +156,20 @@ public class UpdateGenerater extends SqlGenerater {
 		content.append(getTab(tab));
 		content.append("if(value != null) {").append("\n");
 
-		String name = StringUtil.trim(column.getName());
+		if (!ObjectUtil.isTrue(column.getRequired())) {
+			content_mapper.append(getTab(tab));
+			content_mapper.append("<if test=\"" + placeKey + " != null\">").append("\n");
 
-		String placeKey = base.getPlaceKey(column.getName(), keyCache);
-		placeKey = StringUtil.trim(placeKey);
+		}
+
 		StringBuffer sql = new StringBuffer();
 		sql.append(name).append("=").append(":" + placeKey).append(",");
 
 		content.append(getTab(tab + 1));
 		content.append("setSql.append(\"" + sql + "\");").append("\n");
+
+		content_mapper.append(getTab(tab + 1));
+		content_mapper.append(name).append("=").append("#{" + placeKey + "}").append(",").append("\n");
 
 		content.append(getTab(tab + 1));
 		content.append("param.put(\"" + placeKey + "\", value);").append("\n");
@@ -137,6 +184,11 @@ public class UpdateGenerater extends SqlGenerater {
 		}
 
 		content.append(getTab(tab)).append("}").append("\n");
+
+		if (!ObjectUtil.isTrue(column.getRequired())) {
+			content_mapper.append(getTab(tab));
+			content_mapper.append("</if>").append("\n");
+		}
 
 	}
 }

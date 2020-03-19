@@ -11,6 +11,7 @@ import com.teamide.ide.generater.dao.DaoGenerater;
 import com.teamide.ide.generater.dao.DaoMapperGenerater;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.repository.project.AppBean;
+import com.teamide.util.StringUtil;
 
 public class DaoMapperMergeGenerater extends DaoMergeGenerater {
 
@@ -23,7 +24,12 @@ public class DaoMapperMergeGenerater extends DaoMergeGenerater {
 	public File getFile() {
 
 		File resourcesFolder = getResourcesFolder();
-		File file = new File(resourcesFolder, "mapper/" + directory + ".xml");
+		String codepackage = getFolderPackage(directory);
+		String folder = "";
+		if (!StringUtil.isEmpty(codepackage)) {
+			folder = codepackage.replaceAll("\\.", "/");
+		}
+		File file = new File(resourcesFolder, "mybatis/mappers/" + folder + "/" + getClassName() + "Mapper.xml");
 		return file;
 	}
 
