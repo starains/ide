@@ -1161,6 +1161,12 @@ window.app = app;
 					  <span class="color-grey-4">模型目录名称生成包名级别，如写1则只生成一级报名，子目录下文件都放在该包名下。默认根据模型的目录名称生成包名</span>
 					</el-form-item>
 				</div>
+				<div class="col-12">
+					<el-form-item class label="使用Mybatis" prop="usemybatis">
+					  <el-switch v-model="form.usemybatis" autocomplete="off" @change="change($event,'usemybatis')" ></el-switch>
+					  <span class="color-grey-4">如果选中，则生成mapper目录，创建Mybatis的增删改查xml</span>
+					</el-form-item>
+				</div>
 				<div class="col-6">
 					<el-form-item class label="TeamIDE基础包名" prop="teamidepackage">
 					  <el-input type="text" v-model="form.teamidepackage" autocomplete="off" @change="change($event,'teamidepackage')" placeholder="默认：基础包名.teamide"></el-input>
