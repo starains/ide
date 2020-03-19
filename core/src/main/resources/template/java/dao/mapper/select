@@ -23,12 +23,12 @@ public interface #{$classname} extends #{$classname}Method {
 
 	#ifStart($sqlType == 'SELECT_PAGE')#
 	public PageResultBean<Map<String, Object>> #{$method_name}(@VariableData JSONObject data) throws Exception;
+	
 	#ifEnd#	
 	@Repository
 	public interface #{$classname}Mapper extends #{$classname}Method {
 	
 	}
-
 }
 #ifEnd#
 

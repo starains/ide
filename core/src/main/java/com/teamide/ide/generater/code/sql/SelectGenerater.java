@@ -349,6 +349,12 @@ public class SelectGenerater extends SqlGenerater {
 		content.append(getTab(tab));
 		content.append("groupSql.append(\" GROUP BY \");").append("\n");
 
+		content_mapper.append(getTab(tab));
+		content_mapper.append(" GROUP BY ").append("\n");
+
+		content_count_mapper.append(getTab(tab));
+		content_count_mapper.append(" GROUP BY ").append("\n");
+
 		for (Group group : groups) {
 
 			if (StringUtil.isNotTrimEmpty(group.getIfrule())) {
@@ -420,6 +426,8 @@ public class SelectGenerater extends SqlGenerater {
 		content.append(getTab(tab));
 		content.append("sql.append(\" HAVING \");").append("\n");
 
+		content_mapper.append(getTab(tab));
+		content_mapper.append(" HAVING ").append("\n");
 		boolean isFirst = true;
 		for (Having having : havings) {
 
@@ -484,6 +492,10 @@ public class SelectGenerater extends SqlGenerater {
 		}
 		content.append(getTab(tab));
 		content.append("sql.append(\" ORDER BY \");").append("\n");
+
+		content_mapper.append(getTab(tab));
+		content_mapper.append(" ORDER BY ").append("\n");
+
 		boolean isFirst = true;
 		for (Order order : orders) {
 
@@ -553,6 +565,9 @@ public class SelectGenerater extends SqlGenerater {
 
 		content.append(getTab(tab));
 		content.append("groupSql.append(\" UNION \");").append("\n");
+
+		content_mapper.append(getTab(tab));
+		content_mapper.append(" UNION ").append("\n");
 		boolean isFirst = true;
 		for (Union union : unions) {
 

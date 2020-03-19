@@ -1,25 +1,25 @@
 #ifStart($only_content == false)#
-<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
-<mapper namespace="#{$package}.#{$classname}.#{$classname}Mapper">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="#{$package}.#{$classname}$#{$classname}Mapper">
 #ifEnd#
 	<!-- #{$comment} -->
 	#ifStart($customsqltype == 'SELECT_ONE')#
-	<select id="#{$method_name}" parameterType="Map" resultMap="Map">
+	<select id="#{$method_name}" parameterType="Map" resultType="java.util.HashMap">
 #{$content_mapper}
 	</select>
 	#ifEnd#
 	#ifStart($customsqltype == 'SELECT_LIST')#
-	<select id="#{$method_name}" parameterType="Map" resultMap="List">
+	<select id="#{$method_name}" parameterType="Map" resultType="java.util.HashMap">
 #{$content_mapper}
 	</select>
 	#ifEnd#
 	#ifStart($customsqltype == 'SELECT_PAGE')#
 	<!-- #{$comment} 查询分页列表 -->
-	<select id="#{$method_name}ForList" parameterType="Map" resultMap="List">
+	<select id="#{$method_name}ForList" parameterType="Map" resultType="java.util.HashMap">
 #{$content_mapper}
 	</select>
 	<!-- #{$comment} 统计 -->
-	<select id="#{$method_name}ForCount" parameterType="Map" resultMap="Map">
+	<select id="#{$method_name}ForCount" parameterType="Map" resultType="java.lang.Integer">
 #{$content_count_mapper}
 	</select>
 	#ifEnd#
