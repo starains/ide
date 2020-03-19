@@ -377,8 +377,8 @@ public abstract class SqlGenerater extends CodeGenerater {
 
 			content.append("appendSql.append(\"" + sql + "\");").append("\n");
 
-			content_mapper.append(sql).append("\n");
-			content_count_mapper.append(sql).append("\n");
+			content_mapper.append(getFormatSql(sql.toString())).append("\n");
+			content_count_mapper.append(getFormatSql(sql.toString())).append("\n");
 
 			if (StringUtil.isNotTrimEmpty(append.getIfrule())) {
 				content.append(getTab(tab));
@@ -400,7 +400,7 @@ public abstract class SqlGenerater extends CodeGenerater {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" ");
 		if (StringUtil.isNotEmpty(append.getSql())) {
-			sql.append(getFormatSql(append.getSql()));
+			sql.append(append.getSql());
 		}
 		return sql;
 
