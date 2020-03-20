@@ -116,6 +116,7 @@ public class IDEServer implements Runnable {
 				if (event.getType().equals(Lifecycle.CONFIGURE_START_EVENT)) {
 					context.getResources().setCachingAllowed(false);
 
+					context.getServletContext().addListener(new ApplicationInitializer());
 					context.getServletContext().addListener(new SessionListener());
 
 					URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();

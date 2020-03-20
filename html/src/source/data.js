@@ -262,6 +262,11 @@
                     });
                 });
             }
+        } else if (type == 'DEPLOY_SERVERS') {
+            if (status.value) {
+                status.value.forEach(one => {
+                });
+            }
         }
         let model = source.getModel(type);
         if (model == null) {

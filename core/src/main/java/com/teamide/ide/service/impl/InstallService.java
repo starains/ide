@@ -17,6 +17,8 @@ import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.configure.IDEOptions;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.factory.IDEFactory;
+import com.teamide.ide.handler.DeployServerHandler;
+import com.teamide.ide.handler.SpaceHandler;
 import com.teamide.ide.service.IConfigureService;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.IRoleService;
@@ -107,6 +109,9 @@ public class InstallService implements IInstallService {
 
 		IRoleService roleService = new RoleService();
 		roleService.addUserSuperRole(user.getId());
+
+		DeployServerHandler.reloadServers();
+		SpaceHandler.reloadSpaces();
 		return true;
 	}
 

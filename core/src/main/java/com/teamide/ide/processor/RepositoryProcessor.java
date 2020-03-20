@@ -8,8 +8,6 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
-import com.teamide.ide.bean.RunnerClientBean;
-import com.teamide.ide.bean.RunnerServerBean;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceRepositoryOpenBean;
 import com.teamide.ide.enums.OptionType;
@@ -23,13 +21,11 @@ import com.teamide.ide.processor.repository.RepositoryGit;
 import com.teamide.ide.processor.repository.RepositoryLoad;
 import com.teamide.ide.processor.repository.RepositoryLog;
 import com.teamide.ide.processor.repository.RepositoryMaven;
-import com.teamide.ide.processor.repository.RepositoryRunner;
+import com.teamide.ide.processor.repository.RepositoryDeployer;
 import com.teamide.ide.processor.repository.RepositoryStarter;
 import com.teamide.ide.processor.repository.project.ProjectAppLoader;
 import com.teamide.ide.processor.repository.project.ProjectLoader;
 import com.teamide.ide.processor.repository.starter.StarterHandler;
-import com.teamide.ide.service.impl.RunnerClientService;
-import com.teamide.ide.service.impl.RunnerServerService;
 import com.teamide.ide.service.impl.SpaceRepositoryOpenService;
 
 public class RepositoryProcessor extends SpaceProcessor {
@@ -466,29 +462,29 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 			break;
 
-		case RUNNER_LOG_CLEAN:
+		case DEPLOYER_LOG_CLEAN:
 			token = data.getString("token");
-			value = new RepositoryRunner(param).logClean(token);
+			value = new RepositoryDeployer(param).logClean(token);
 
 			spaceEventBean.set("token", token);
 			appendEvent(spaceEventBean);
 			break;
-		case RUNNER_REMOVE:
+		case DEPLOYER_REMOVE:
 			token = data.getString("token");
-			value = new RepositoryRunner(param).remove(token);
+			value = new RepositoryDeployer(param).remove(token);
 
 			spaceEventBean.set("token", token);
 			appendEvent(spaceEventBean);
 			break;
-		case RUNNER_DEPLOY:
+		case DEPLOYER_DEPLOY:
 
 			token = data.getString("token");
 			if (!StringUtil.isEmpty(token)) {
-				value = new RepositoryRunner(param).deploy(token);
+				value = new RepositoryDeployer(param).deploy(token);
 			} else {
 				path = data.getString("path");
 				option = data.getJSONObject("option");
-				value = new RepositoryRunner(param).deploy(path, option);
+				value = new RepositoryDeployer(param).deploy(path, option);
 
 				spaceEventBean.set("path", path);
 				spaceEventBean.set("option", option);
@@ -498,22 +494,22 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("token", token);
 			appendEvent(spaceEventBean);
 			break;
-		case RUNNER_START:
+		case DEPLOYER_START:
 
 			token = data.getString("token");
-			value = new RepositoryRunner(param).start(token);
+			value = new RepositoryDeployer(param).start(token);
 
 			spaceEventBean.set("token", token);
 			appendEvent(spaceEventBean);
 			break;
-		case RUNNER_STOP:
+		case DEPLOYER_STOP:
 			token = data.getString("token");
-			value = new RepositoryRunner(param).stop(token);
+			value = new RepositoryDeployer(param).stop(token);
 
 			spaceEventBean.set("token", token);
 			appendEvent(spaceEventBean);
 			break;
-		case SET_RUNNER_OPTION:
+		case SET_DEPLOYER_OPTION:
 			path = data.getString("path");
 			option = data.getJSONObject("option");
 			name = option.getString("name");
@@ -523,7 +519,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("option", option);
 			appendEvent(spaceEventBean);
 			break;
-		case DELETE_RUNNER_OPTION:
+		case DELETE_DEPLOYER_OPTION:
 			path = data.getString("path");
 			option = data.getJSONObject("option");
 			name = option.getString("name");
@@ -531,45 +527,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 			spaceEventBean.set("path", path);
 			spaceEventBean.set("option", option);
-			appendEvent(spaceEventBean);
-			break;
-		case RUNNER_SERVER_DELETE:
-
-			String id = data.getString("id");
-			if (!StringUtil.isEmpty(id)) {
-				new RunnerServerService().delete(id);
-			}
-
-			spaceEventBean.set("id", id);
-			appendEvent(spaceEventBean);
-			break;
-		case RUNNER_SERVER_SAVE:
-			RunnerServerBean runnerServerBean = data.toJavaObject(RunnerServerBean.class);
-			if (param.getSession().getUser() != null) {
-				runnerServerBean.setUserid(param.getSession().getUser().getId());
-			}
-			value = new RunnerServerService().save(param.getSession(), runnerServerBean);
-
-			spaceEventBean.set(data);
-			appendEvent(spaceEventBean);
-			break;
-		case RUNNER_CLIENT_DELETE:
-			id = data.getString("id");
-			if (!StringUtil.isEmpty(id)) {
-				new RunnerClientService().delete(id);
-			}
-
-			spaceEventBean.set("id", id);
-			appendEvent(spaceEventBean);
-			break;
-		case RUNNER_CLIENT_SAVE:
-			RunnerClientBean runnerClientBean = data.toJavaObject(RunnerClientBean.class);
-			if (param.getSession().getUser() != null) {
-				runnerClientBean.setUserid(param.getSession().getUser().getId());
-			}
-			value = new RunnerClientService().save(param.getSession(), runnerClientBean);
-
-			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 			break;
 		case APP_SET_OPTION:
@@ -713,42 +670,24 @@ public class RepositoryProcessor extends SpaceProcessor {
 			value = res;
 			break;
 
-		case RUNNER_SERVERS:
-
-			Map<String, Object> p = new HashMap<String, Object>();
-			p.put("userid", this.param.getSession().getUser().getId());
-
-			RunnerServerService runnerServerService = new RunnerServerService();
-
-			value = runnerServerService.queryList(p);
-			break;
-		case RUNNER_CLIENTS:
-
-			p = new HashMap<String, Object>();
-			p.put("userid", this.param.getSession().getUser().getId());
-
-			RunnerClientService runnerClientService = new RunnerClientService();
-
-			value = runnerClientService.queryList(p);
-			break;
-		case RUNNER_LOG:
+		case DEPLOYER_LOG:
 			token = data.getString("token");
 
 			start = data.getIntValue("start");
 			end = data.getIntValue("end");
 			timestamp = data.getString("timestamp");
-			value = param.getRunnerLog(token).read(start, end, timestamp);
+			value = param.getDeployerLog(token).read(start, end, timestamp);
 			break;
-		case RUNNER_STATUS:
+		case DEPLOYER_STATUS:
 			token = data.getString("token");
-			value = new RepositoryRunner(param).status(token);
+			value = new RepositoryDeployer(param).status(token);
 			break;
-		case RUNNER_OPTIONS:
+		case DEPLOYER_OPTIONS:
 			path = data.getString("path");
 			value = param.getOptions(path, OptionType.DEPLOYER);
 			break;
-		case RUNNERS:
-			value = new RepositoryRunner(param).loadRunners();
+		case DEPLOYERS:
+			value = new RepositoryDeployer(param).loadDeployers();
 			break;
 		case APP:
 			path = data.getString("path");

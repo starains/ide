@@ -5,7 +5,7 @@ public class TableInfoConstant {
 	public static final String USER_INFO = "USER_INFO";
 
 	public static final String USER_PREFERENCE = "USER_PREFERENCE";
-	
+
 	public static final String ROLE_INFO = "ROLE_INFO";
 
 	public static final String CONFIGURE_INFO = "CONFIGURE_INFO";
@@ -20,9 +20,7 @@ public class TableInfoConstant {
 
 	public static final String SPACE = "SPACE";
 
-	public static final String RUNNER_SERVER = "RUNNER_SERVER";
-
-	public static final String RUNNER_CLIENT = "RUNNER_CLIENT";
+	public static final String DEPLOY_SERVER = "DEPLOY_SERVER";
 
 	public static final String SPACE_TEAM = "SPACE_TEAM";
 

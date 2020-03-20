@@ -7,6 +7,7 @@ import com.teamide.util.StringUtil;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.IDEShare;
 import com.teamide.ide.bean.ConfigureBean;
+import com.teamide.ide.bean.DeployServerBean;
 import com.teamide.ide.bean.EnvironmentBean;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.UserBean;
@@ -14,11 +15,13 @@ import com.teamide.ide.bean.UserPreferenceBean;
 import com.teamide.ide.processor.enums.ProcessorType;
 import com.teamide.ide.processor.param.ProcessorParam;
 import com.teamide.ide.service.IConfigureService;
+import com.teamide.ide.service.IDeployServerService;
 import com.teamide.ide.service.IEnvironmentService;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.ILoginService;
 import com.teamide.ide.service.IUserService;
 import com.teamide.ide.service.impl.ConfigureService;
+import com.teamide.ide.service.impl.DeployServerService;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.service.impl.InstallService;
 import com.teamide.ide.service.impl.LoginService;
@@ -106,6 +109,25 @@ public class Processor extends ProcessorLoad {
 			environmentService = new EnvironmentService();
 			environment = data.toJavaObject(EnvironmentBean.class);
 			environmentService.update(this.param.getSession(), environment);
+
+			break;
+
+		case DEPLOY_SERVER_CREATE:
+			IDeployServerService deployServerService = new DeployServerService();
+			DeployServerBean deployServer = data.toJavaObject(DeployServerBean.class);
+			deployServerService.insert(this.param.getSession(), deployServer);
+
+			break;
+		case DEPLOY_SERVER_DELETE:
+			deployServerService = new DeployServerService();
+			deployServer = deployServerService.get(data.getString("id"));
+			deployServerService.delete(this.param.getSession(), deployServer);
+
+			break;
+		case DEPLOY_SERVER_UPDATE:
+			deployServerService = new DeployServerService();
+			deployServer = data.toJavaObject(DeployServerBean.class);
+			deployServerService.update(this.param.getSession(), deployServer);
 
 			break;
 		}

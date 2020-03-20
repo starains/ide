@@ -14,6 +14,8 @@ public enum ModelType {
 
 	JDBC("JDBC", "驱动", ModelDataType.ONE),
 
+	DEPLOY_SERVERS("DEPLOY_SERVERS", "部署服务器", ModelDataType.LIST),
+
 	ENVIRONMENTS("ENVIRONMENTS", "环境", ModelDataType.LIST),
 
 	MASTER_SPACES("MASTER_SPACES", "管理的空间", ModelDataType.PAGE),

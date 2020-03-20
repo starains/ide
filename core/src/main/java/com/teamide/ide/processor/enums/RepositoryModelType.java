@@ -36,17 +36,13 @@ public enum RepositoryModelType {
 
 	STARTER_LOG("STARTER_LOG", "库", ModelDataType.ONE),
 
-	RUNNER_SERVERS("RUNNER_SERVERS", "库", ModelDataType.ONE),
+	DEPLOYER_LOG("DEPLOYER_LOG", "库", ModelDataType.ONE),
 
-	RUNNER_CLIENTS("RUNNER_CLIENTS", "库", ModelDataType.ONE),
+	DEPLOYER_STATUS("DEPLOYER_STATUS", "库", ModelDataType.ONE),
 
-	RUNNER_LOG("RUNNER_LOG", "库", ModelDataType.ONE),
+	DEPLOYER_OPTIONS("DEPLOYER_OPTIONS", "库", ModelDataType.ONE),
 
-	RUNNER_STATUS("RUNNER_STATUS", "库", ModelDataType.ONE),
-
-	RUNNER_OPTIONS("RUNNER_OPTIONS", "库", ModelDataType.ONE),
-
-	RUNNERS("RUNNERS", "库", ModelDataType.ONE),
+	DEPLOYERS("DEPLOYERS", "库", ModelDataType.ONE),
 
 	APP("APP", "库", ModelDataType.ONE),
 

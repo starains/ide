@@ -28,6 +28,12 @@ public enum ProcessorType {
 
 	PREFERENCE("PREFERENCE", "偏好"),
 
+	DEPLOY_SERVER_CREATE("DEPLOY_SERVER_CREATE", "部署服务器创建"),
+
+	DEPLOY_SERVER_UPDATE("DEPLOY_SERVER_UPDATE", "部署服务器修改"),
+
+	DEPLOY_SERVER_DELETE("DEPLOY_SERVER_DELETE", "部署服务器删除"),
+
 	;
 
 	private ProcessorType(String value, String text) {

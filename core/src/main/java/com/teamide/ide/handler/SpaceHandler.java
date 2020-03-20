@@ -28,7 +28,14 @@ public class SpaceHandler {
 
 	static final Object LOAD_SPACES_LOCK = new Object();
 
-	static void loadSpaces() {
+	public static void reloadSpaces() {
+		SPACE_CACHE.clear();
+		SPACE_TEAMS_CACHE.clear();
+		loadSpaces();
+
+	}
+
+	public static void loadSpaces() {
 		if (SPACE_CACHE.size() > 0) {
 			return;
 		}

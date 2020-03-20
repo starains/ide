@@ -31,7 +31,10 @@
               <router-link to="/configure">系统设置</router-link>
             </li>
             <li class>
-              <router-link to="/environment">环境配置</router-link>
+              <router-link to="/environment">TeamIDE环境配置</router-link>
+            </li>
+            <li class>
+              <router-link to="/deploy/server">部署服务器配置</router-link>
             </li>
           </ul>
         </li>

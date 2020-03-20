@@ -1,20 +1,26 @@
 package com.teamide.ide.processor;
 
+import java.util.List;
+
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.client.ClientSession;
+import com.teamide.ide.bean.DeployServerBean;
 import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.bean.UserPreferenceBean;
 import com.teamide.ide.configure.IDEOptions;
+import com.teamide.ide.handler.DeployServerHandler;
 import com.teamide.ide.handler.SpaceHandler;
 import com.teamide.ide.handler.UserHandler;
 import com.teamide.ide.processor.enums.ModelType;
 import com.teamide.ide.processor.param.ProcessorParam;
 import com.teamide.ide.service.IConfigureService;
+import com.teamide.ide.service.IDeployServerService;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.ide.service.IUserService;
 import com.teamide.ide.service.impl.ConfigureService;
+import com.teamide.ide.service.impl.DeployServerService;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.service.impl.InstallService;
 import com.teamide.ide.service.impl.SpaceService;
@@ -98,6 +104,15 @@ public class ProcessorLoad extends ProcessorBase {
 		case ENVIRONMENTS:
 			EnvironmentService environmentService = new EnvironmentService();
 			value = environmentService.queryList(param);
+			break;
+		case DEPLOY_SERVERS:
+			IDeployServerService deployServerService = new DeployServerService();
+			List<DeployServerBean> servers = deployServerService.queryList(param);
+			for (DeployServerBean server : servers) {
+				DeployServerBean s = DeployServerHandler.get(server.getId());
+				servers.set(servers.indexOf(server), s);
+			}
+			value = servers;
 			break;
 		case MASTER_SPACES:
 			ISpaceService spaceService = new SpaceService();

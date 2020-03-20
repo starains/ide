@@ -53,12 +53,12 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		return RepositoryLog.get(getLogName(), getLogFolder());
 	}
 
-	public RepositoryLog getRunnerLog(String token) {
+	public RepositoryLog getDeployerLog(String token) {
 
-		return RepositoryLog.get(getRunnerLogName(token), getRunnerLogFolder());
+		return RepositoryLog.get(getDeployerLogName(token), getDeployerLogFolder());
 	}
 
-	public String getRunnerLogName(String token) {
+	public String getDeployerLogName(String token) {
 		if (StringUtil.isEmpty(token)) {
 			throw new RuntimeException("token is null.");
 		}
@@ -71,9 +71,9 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		return getSpace().getName();
 	}
 
-	public File getRunnerLogFolder() {
+	public File getDeployerLogFolder() {
 
-		return new File(getLogFolder(), "runner");
+		return new File(getLogFolder(), "deployer");
 	}
 
 	public File getLogFolder() {
@@ -81,14 +81,14 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		return new File(getBranchFolder(), "log");
 	}
 
-	public File getRunnerFolder() {
+	public File getDeployerFolder() {
 
-		return new File(getBranchFolder(), "runner");
+		return new File(getBranchFolder(), "deployer");
 
 	}
 
-	public File getTokenRunnerFolder(String token) {
-		File folder = getRunnerFolder();
+	public File getTokenDeployerFolder(String token) {
+		File folder = getDeployerFolder();
 		if (!StringUtil.isEmpty(token)) {
 			folder = new File(folder, token);
 		}
