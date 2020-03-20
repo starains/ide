@@ -12,12 +12,12 @@ import com.teamide.app.process.dao.sql.Abstract;
 import com.teamide.app.process.dao.sql.AppendCustomSql;
 import com.teamide.app.process.dao.sql.PieceWhere;
 import com.teamide.app.process.dao.sql.Where;
-import com.teamide.bean.VariableBean;
+import com.teamide.app.variable.Variable;
+import com.teamide.app.variable.VariableBean;
+import com.teamide.app.variable.VariableValidate;
 import com.teamide.ide.generater.code.CodeGenerater;
 import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
-import com.teamide.variable.Variable;
-import com.teamide.variable.VariableValidate;
 
 public abstract class SqlGenerater extends CodeGenerater {
 

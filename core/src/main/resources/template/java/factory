@@ -23,25 +23,22 @@ import org.springframework.stereotype.Component;
  * 应用工厂
  */
 @Component("teamide-factory")
-public class #{$classname} extends BaseFactory{
+public class #{$classname} {
 	
 	static Logger logger = LogUtil.get();
-	
-	static #{$classname} FACTORY = new #{$classname}();
 
 	public #{$classname}() {
-		FACTORY = this;
 	}
 	
 	@Autowired
 	private DynamicDataSourceFactory dynamicFactory;
 
-	public static IDao getDao(JSONObject json) throws Exception {
-		return FACTORY.dynamicFactory.newDao(null, json);
+	public IDao getDao(JSONObject json) throws Exception {
+		return dynamicFactory.newDao(null, json);
 	}
 
-	public static IDao getDao(String name, JSONObject json) throws Exception {
-		return FACTORY.dynamicFactory.newDao(name, json);
+	public IDao getDao(String name, JSONObject json) throws Exception {
+		return dynamicFactory.newDao(name, json);
 	}
 
 	/**

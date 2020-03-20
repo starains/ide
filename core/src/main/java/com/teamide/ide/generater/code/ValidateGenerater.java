@@ -2,10 +2,10 @@ package com.teamide.ide.generater.code;
 
 import java.util.List;
 
+import com.teamide.app.variable.VariableValidate;
 import com.teamide.exception.Errcode;
 import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
-import com.teamide.variable.VariableValidate;
 
 public class ValidateGenerater extends CodeGenerater {
 

@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.teamide.app.process.dao.sql.Update;
 import com.teamide.app.process.dao.sql.UpdateColumn;
-import com.teamide.bean.VariableBean;
+import com.teamide.app.variable.VariableBean;
+import com.teamide.app.variable.VariableValidate;
 import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
-import com.teamide.variable.VariableValidate;
 
 public class UpdateGenerater extends SqlGenerater {
 

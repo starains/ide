@@ -2,8 +2,8 @@ package com.teamide.ide.generater.code;
 
 import java.util.List;
 
+import com.teamide.app.variable.Variable;
 import com.teamide.util.StringUtil;
-import com.teamide.variable.Variable;
 
 public class VariableGenerater extends CodeGenerater {
 

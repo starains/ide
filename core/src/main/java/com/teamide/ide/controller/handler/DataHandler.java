@@ -24,6 +24,7 @@ import com.teamide.app.enums.DaoProcessType;
 import com.teamide.app.enums.ServiceProcessType;
 import com.teamide.app.enums.SqlType;
 import com.teamide.app.util.ModelFileUtil;
+import com.teamide.app.variable.enums.ValueType;
 import com.teamide.bean.Status;
 import com.teamide.client.ClientHandler;
 import com.teamide.db.DBDataSource;
@@ -52,7 +53,6 @@ import com.teamide.util.IDGenerateUtil;
 import com.teamide.util.RequestUtil;
 import com.teamide.util.ResponseUtil;
 import com.teamide.util.StringUtil;
-import com.teamide.variable.enums.ValueType;
 
 public class DataHandler {
 
