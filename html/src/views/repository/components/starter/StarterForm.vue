@@ -20,7 +20,22 @@
           </small>
         </el-form-item>
         <el-form-item label="名称" prop="name">
-          <el-input v-model="form.name" type="text" autocomplete="off"></el-input>
+          <el-input
+            v-model="form.name"
+            type="text"
+            :readonly="is_update?'readonly':''"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item label="运行服务器">
+          <el-radio v-model="form.serverid" label>本地运行</el-radio>
+          <el-radio
+            v-for="one in source.data.DEPLOY_SERVERS"
+            :key="one.id"
+            v-model="form.serverid"
+            :label="one.id"
+          >{{one.name}}</el-radio>
         </el-form-item>
 
         <el-form-item label="语言" prop="language">
@@ -61,7 +76,7 @@
           <el-form-item label="运行模式" :prop="form.language == 'JAVA'?'mode':''">
             <el-radio v-model="form.mode" label="MAIN">Main</el-radio>
             <el-radio v-model="form.mode" label="TOMCAT">Tomcat</el-radio>
-            <el-radio v-model="form.mode" label="JAR" disabled="disabled">Jar</el-radio>
+            <el-radio v-model="form.mode" label="JAR">Jar</el-radio>
           </el-form-item>
 
           <el-form-item
@@ -179,9 +194,11 @@ export default {
       size: "mini",
       source: source,
       show_form: false,
+      is_update: false,
       form: {
         name: "",
         language: "",
+        serverid: "",
         mode: "",
         jar: "",
         main: "",
@@ -300,6 +317,11 @@ export default {
       }
       for (var key in data) {
         this.form[key] = data[key];
+      }
+      if (coos.isEmpty(data.name)) {
+        this.is_update = true;
+      } else {
+        this.is_update = false;
       }
       return new Promise((resolve, reject) => {
         this.resolve = resolve;

@@ -29,7 +29,7 @@ public class DefaultStarterProcess extends StarterProcess {
 			if (pidFile != null) {
 				command = command.replaceAll("\\$STARTER_PID_PATH", pidFile.getAbsolutePath());
 			}
-			command = command.replaceAll("\\$SOURCE_PATH", param.param.getSourceFolder().getAbsolutePath());
+			command = command.replaceAll("\\$PROJECT_PATH", this.param.projectFolder.getAbsolutePath());
 		}
 		return command;
 	}
@@ -61,7 +61,7 @@ public class DefaultStarterProcess extends StarterProcess {
 
 	@Override
 	public File getWorkFolder() {
-		return this.param.param.getSourceFolder();
+		return this.param.projectFolder;
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class DefaultStarterProcess extends StarterProcess {
 		Process process = Runtime.getRuntime().exec(cmd);
 
 		PrintWriter writer = new PrintWriter(process.getOutputStream());
-		writer.println("cd " + this.param.param.getSourceFolder());
+		writer.println("cd " + this.param.projectFolder);
 		writer.println(command);
 		writer.flush();
 		writer.close();

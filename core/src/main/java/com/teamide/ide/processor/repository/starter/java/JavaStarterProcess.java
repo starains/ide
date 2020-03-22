@@ -11,7 +11,6 @@ import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.EnvironmentBean;
 import com.teamide.ide.maven.MavenUtil;
 import com.teamide.ide.processor.repository.hanlder.RepositoryHanlder;
-import com.teamide.ide.processor.repository.starter.StarterHandler;
 import com.teamide.ide.processor.repository.starter.StarterParam;
 import com.teamide.ide.processor.repository.starter.StarterProcess;
 import com.teamide.ide.service.impl.EnvironmentService;
@@ -139,10 +138,9 @@ public abstract class JavaStarterProcess extends StarterProcess {
 		mavenUtil.setLibPath(libFolder.getAbsolutePath());
 		lib_folders.add(libFolder);
 
-		boolean flag = mavenUtil.doPackage(param.projectFolder, null, StarterHandler.getStarterLog(param.token),
-				getMavenEnvp());
+		boolean flag = mavenUtil.doPackage(param.projectFolder, null, this.param.getStarterLog(), getMavenEnvp());
 		if (!flag) {
-			StarterHandler.getStarterLog(param.token).error("maven package error.");
+			this.param.getStarterLog().error("maven package error.");
 			throw new Exception("maven package error.");
 		}
 

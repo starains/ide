@@ -2,6 +2,7 @@ package com.teamide.ide.processor.repository.starter;
 
 public class StarterOption {
 	private String name;
+	private String serverid;
 	private String language;
 	private String mode;
 	private String jar;
@@ -22,6 +23,14 @@ public class StarterOption {
 	private String startcommand;
 	private String stopcommand;
 	private String pidfile;
+
+	public String getServerid() {
+		return serverid;
+	}
+
+	public void setServerid(String serverid) {
+		this.serverid = serverid;
+	}
 
 	public String getStopcommand() {
 		return stopcommand;

@@ -34,7 +34,6 @@
       </div>
 
       <Starter :repository="repository"></Starter>
-      <Runner :repository="repository"></Runner>
 
       <GitCertificate ref="git-certificate"></GitCertificate>
       <GitRemote ref="git-remote"></GitRemote>
@@ -42,7 +41,6 @@
       <GitPush ref="git-push"></GitPush>
       <GitRevert ref="git-revert"></GitRevert>
       <StarterForm ref="starter-form"></StarterForm>
-      <RunnerForm ref="runner-form"></RunnerForm>
       <BranchCreate ref="branch-create"></BranchCreate>
       <AppOptionForm ref="app-option-form"></AppOptionForm>
       <TableImport ref="table-import"></TableImport>
@@ -54,7 +52,6 @@
 import Project from "@/views/repository/Project";
 import Tabs from "@/views/repository/Tabs";
 import Starter from "@/views/repository/Starter";
-import Runner from "@/views/repository/Runner";
 import Contextmenu from "@/views/components/Contextmenu";
 
 import GitCertificate from "@/views/repository/components/git/GitCertificate";
@@ -63,7 +60,6 @@ import GitPlus from "@/views/repository/components/git/GitPlus";
 import GitPush from "@/views/repository/components/git/GitPush";
 import GitRevert from "@/views/repository/components/git/GitRevert";
 import StarterForm from "@/views/repository/components/starter/StarterForm";
-import RunnerForm from "@/views/repository/components/runner/RunnerForm";
 import BranchCreate from "@/views/repository/components/branch/BranchCreate";
 import AppOptionForm from "@/views/repository/components/app/AppOptionForm";
 import TableImport from "@/views/repository/components/table/TableImport";
@@ -74,7 +70,6 @@ export default {
     Project,
     Tabs,
     Starter,
-    Runner,
     Contextmenu,
     GitCertificate,
     GitRemote,
@@ -82,7 +77,6 @@ export default {
     GitPush,
     GitRevert,
     StarterForm,
-    RunnerForm,
     BranchCreate,
     AppOptionForm,
     TableImport
@@ -100,7 +94,6 @@ export default {
     source.gitPushForm = this.$refs["git-push"];
     source.gitRevertForm = this.$refs["git-revert"];
     source.starterForm = this.$refs["starter-form"];
-    source.runnerForm = this.$refs["runner-form"];
     source.branchCreateForm = this.$refs["branch-create"];
     source.appOptionForm = this.$refs["app-option-form"];
     source.tableImportForm = this.$refs["table-import"];

@@ -8,9 +8,10 @@ import java.io.InputStreamReader;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
-import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.EnvironmentBean;
+import com.teamide.ide.handler.StarterHandler;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.repository.RepositoryLog;
 import com.teamide.ide.processor.repository.starter.StarterProcess;
 import com.teamide.ide.processor.repository.starter.java.JavaInternalStarterProcess;
 import com.teamide.ide.processor.repository.starter.java.JavaJarStarterProcess;
@@ -22,8 +23,6 @@ import com.teamide.ide.service.impl.EnvironmentService;
 public class StarterParam {
 
 	public final String token;
-
-	public final RepositoryProcessorParam param;
 
 	public final File starterFolder;
 
@@ -45,6 +44,10 @@ public class StarterParam {
 
 	public final File projectFolder;
 
+	public final String spaceid;
+
+	public final String branch;
+
 	public final JSONObject starterJSON;
 
 	public final StarterOption option;
@@ -53,12 +56,11 @@ public class StarterParam {
 
 	public final StarterProcess starterProcess;
 
-	public StarterParam(ClientSession session, String token) {
-		this.token = token;
-		this.starterFolder = StarterHandler.getStarterFolder(token);
+	public StarterParam(File starterFolder) {
+		this.starterFolder = starterFolder;
 		this.starterServerFolder = new File(this.starterFolder, "server");
+		this.starterJSONFile = new File(this.starterFolder, StarterHandler.JSON_FILE_NAME);
 
-		this.starterJSONFile = StarterHandler.getStarterJSONFile(token);
 		this.starterEventFile = new File(this.starterFolder, "starter.event");
 		this.starterStatusFile = new File(this.starterFolder, "starter.status");
 		this.starterTimestampFile = new File(this.starterFolder, "starter.timestamp");
@@ -66,29 +68,29 @@ public class StarterParam {
 
 		this.starterStartShellFile = new File(this.starterFolder, "starter.start.shell");
 		this.starterStopShellFile = new File(this.starterFolder, "starter.stop.shell");
-
-		JSONObject starterJSON = StarterHandler.readJSON(token);
-		StarterOption option = null;
-		File projectFolder = null;
-		RepositoryProcessorParam param = null;
-		if (starterJSON != null) {
-			if (starterJSON.getJSONObject("option") != null) {
-				option = starterJSON.getJSONObject("option").toJavaObject(StarterOption.class);
-			}
-			String spaceid = starterJSON.getString("spaceid");
-			String branch = starterJSON.getString("branch");
-			String path = starterJSON.getString("path");
-			if (!StringUtil.isEmpty(spaceid)) {
-				param = new RepositoryProcessorParam(session, spaceid, branch);
-				projectFolder = new File(param.getSourceFolder(), path);
-			}
+		JSONObject starterJSON = readJSON();
+		if (starterJSON == null || starterJSON.isEmpty()) {
+			throw new RuntimeException(starterFolder + " starter json is null.");
 		}
 
-		this.param = param;
+		this.token = starterJSON.getString("token");
+
+		StarterOption option = null;
+		File projectFolder = null;
+		if (starterJSON.getJSONObject("option") != null) {
+			option = starterJSON.getJSONObject("option").toJavaObject(StarterOption.class);
+		}
+		this.spaceid = starterJSON.getString("spaceid");
+		this.branch = starterJSON.getString("branch");
+		String path = starterJSON.getString("path");
+		if (!StringUtil.isEmpty(spaceid)) {
+			RepositoryProcessorParam param = new RepositoryProcessorParam(null, spaceid, branch);
+			projectFolder = param.getFile(path);
+		}
+
 		this.option = option;
 		this.starterJSON = starterJSON;
 		this.projectFolder = projectFolder;
-
 		EnvironmentBean environment = null;
 		if (this.option != null) {
 			String environmentid = this.option.getEnvironmentid();
@@ -116,9 +118,9 @@ public class StarterParam {
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
 				if (isError) {
-					StarterHandler.getStarterLog(token).error(line);
+					getStarterLog().error(line);
 				} else {
-					StarterHandler.getStarterLog(token).info(line);
+					getStarterLog().info(line);
 				}
 			}
 		} catch (Exception e) {
@@ -217,12 +219,35 @@ public class StarterParam {
 		try {
 			if (starterTimestampFile.exists()) {
 				String value = new String(FileUtil.read(starterTimestampFile));
-				return Long.valueOf(value);
+				if (StringUtil.isNotEmpty(value)) {
+					return Long.valueOf(value);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return 0;
 
+	}
+
+	public File getStarterLogFolder() {
+		return new File(starterFolder, "log");
+	}
+
+	public RepositoryLog getStarterLog() {
+
+		return RepositoryLog.get("starter", starterFolder);
+	}
+
+	public JSONObject readJSON() {
+		if (starterJSONFile.exists()) {
+			try {
+				String content = new String(FileUtil.read(starterJSONFile));
+				return JSONObject.parseObject(content);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 }

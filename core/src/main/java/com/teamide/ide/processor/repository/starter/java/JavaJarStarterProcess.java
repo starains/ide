@@ -53,7 +53,7 @@ public class JavaJarStarterProcess extends JavaStarterProcess {
 
 	@Override
 	public File getWorkFolder() throws Exception {
-		return this.param.param.getSourceFolder();
+		return this.param.projectFolder;
 	}
 
 	@Override

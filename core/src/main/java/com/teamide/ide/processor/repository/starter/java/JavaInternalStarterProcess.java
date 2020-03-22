@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.teamide.ide.constant.IDEConstant;
-import com.teamide.ide.processor.repository.starter.StarterHandler;
 import com.teamide.ide.processor.repository.starter.StarterParam;
 import com.teamide.ide.shell.Shell;
 import com.teamide.ide.shell.java.JavaShell;
@@ -28,7 +27,7 @@ public class JavaInternalStarterProcess extends JavaStarterProcess {
 	@Override
 	public String getStartShell() throws Exception {
 
-		StarterHandler.getStarterLog(param.token).info("tomcat root " + param.starterServerFolder.toURI().getPath());
+		param.getStarterLog().info("tomcat root " + param.starterServerFolder.toURI().getPath());
 
 		File appFolder = getAppFolder(param.starterServerFolder);
 

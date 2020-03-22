@@ -57,7 +57,7 @@ public class NodeStarterProcess extends StarterProcess {
 
 	@Override
 	public File getWorkFolder() {
-		return this.param.param.getSourceFolder();
+		return this.param.projectFolder;
 	}
 
 	@Override

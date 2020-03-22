@@ -115,6 +115,14 @@ public class MavenUtil {
 		}
 		if (StringUtil.isNotEmpty(maven_home)) {
 			System.setProperty("maven.home", maven_home);
+		} else {
+			if (StringUtil.isNotEmpty(System.getenv("M3_HOME"))) {
+				System.setProperty("maven.home", System.getenv("M3_HOME"));
+			} else if (StringUtil.isNotEmpty(System.getenv("M2_HOME"))) {
+				System.setProperty("maven.home", System.getenv("M2_HOME"));
+			} else if (StringUtil.isNotEmpty(System.getenv("MAVEN_HOME"))) {
+				System.setProperty("maven.home", System.getenv("MAVEN_HOME"));
+			}
 		}
 
 		InvocationRequest request = new DefaultInvocationRequest();

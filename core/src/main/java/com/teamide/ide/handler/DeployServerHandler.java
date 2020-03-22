@@ -13,7 +13,7 @@ public class DeployServerHandler {
 
 	static final Map<String, DeployServerThread> CACHE = new HashMap<String, DeployServerThread>();
 
-	static final Object LOAD_SPACES_LOCK = new Object();
+	static final Object LOAD_LOCK = new Object();
 
 	public static void reloadServers() {
 		CACHE.clear();
@@ -25,7 +25,7 @@ public class DeployServerHandler {
 		if (CACHE.size() > 0) {
 			return;
 		}
-		synchronized (LOAD_SPACES_LOCK) {
+		synchronized (LOAD_LOCK) {
 			if (CACHE.size() > 0) {
 				return;
 			}

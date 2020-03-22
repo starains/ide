@@ -44,7 +44,9 @@
                 <template v-if="item.status == 'STARTED_TERMINAL'">
                   <a class="color-green starter-status">终端启动成功</a>
                 </template>
-
+                <template v-if="item.status == 'DEPLOYED'">
+                  <a class="color-green starter-status">终端部署成功</a>
+                </template>
                 <template v-if="item.status == 'STARTING'">
                   <a class="color-green starter-status">启动中</a>
                 </template>
@@ -61,14 +63,19 @@
                   <a class="color-red starter-status">终端销毁中...</a>
                 </template>
                 <template v-if="item.status == 'DESTROYED'">
-                  <a class="color-red starter-status">终端销毁成功</a>
+                  <a class="color-red starter-status">终端已销毁</a>
                 </template>
 
                 <template v-if="item.now_timestamp - item.starter_timestamp > 5000">
                   <a class="color-red starter-status">终端已停止，请移除</a>
                 </template>
                 <template
-                  v-if="item.status == 'STOPPED' || item.status == 'DESTROYED' || item.status == 'STARTED_TERMINAL'"
+                  v-if="item.status == 'STOPPED' || item.status == 'DEPLOYED' || item.status == 'DESTROYED' || item.status == 'STARTED_TERMINAL'"
+                >
+                  <a class="coos-btn coos-btn-xs bg-green" @click="source.deployStarter(item)">重新部署</a>
+                </template>
+                <template
+                  v-if="item.status == 'STOPPED' || item.status == 'DEPLOYED' || item.status == 'STARTED_TERMINAL'"
                 >
                   <a class="coos-btn coos-btn-xs bg-green" @click="source.startStarter(item)">启动</a>
                 </template>
@@ -84,7 +91,9 @@
                 >
                   <a class="coos-btn coos-btn-xs bg-orange" @click="source.destroyStarter(item)">销毁</a>
                 </template>
-                <template v-if="item.status == 'DESTROYED' || item.now_timestamp - item.starter_timestamp > 5000">
+                <template
+                  v-if="item.status == 'DESTROYED' || item.now_timestamp - item.starter_timestamp > 5000"
+                >
                   <a class="coos-btn coos-btn-xs bg-orange" @click="source.removeStarter(item)">移除</a>
                 </template>
               </template>

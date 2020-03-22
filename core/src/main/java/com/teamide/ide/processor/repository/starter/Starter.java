@@ -6,25 +6,24 @@ import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.FileUtil;
-import com.teamide.client.ClientSession;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.enums.TerminalEvent;
 
 public class Starter extends StarterParam {
 
-	public Starter(ClientSession session, String token) {
-		super(session, token);
+	public Starter(File starterFolder) {
+		super(starterFolder);
 	}
 
 	public void onChange(File folder) throws Exception {
-		StarterHandler.getStarterLog(token).info("on change:" + folder.toURI().getPath());
+		getStarterLog().info("on change:" + folder.toURI().getPath());
 		doCompile();
 	}
 
 	protected void installServer() throws Exception {
 
 		writeStatus("INSTALL_SERVER");
-		StarterHandler.getStarterLog(token).info("starter install server");
+		getStarterLog().info("starter install server");
 		if (starterServerFolder.exists()) {
 			FileUtils.deleteDirectory(starterServerFolder);
 		}
@@ -61,8 +60,8 @@ public class Starter extends StarterParam {
 		if (shell == null) {
 			shell = "";
 		}
-		StarterHandler.getStarterLog(token).info("install start shell");
-		StarterHandler.getStarterLog(token).info(shell.toString());
+		getStarterLog().info("install start shell");
+		getStarterLog().info(shell.toString());
 		FileUtil.write(shell.toString().getBytes(), starterStartShellFile);
 	}
 
@@ -78,8 +77,8 @@ public class Starter extends StarterParam {
 		if (shell == null) {
 			shell = "";
 		}
-		StarterHandler.getStarterLog(token).info("install stop shell");
-		StarterHandler.getStarterLog(token).info(shell.toString());
+		getStarterLog().info("install stop shell");
+		getStarterLog().info(shell.toString());
 		FileUtil.write(shell.toString().getBytes(), starterStopShellFile);
 	}
 
@@ -88,45 +87,55 @@ public class Starter extends StarterParam {
 			installStarer();
 		} catch (Exception e) {
 			e.printStackTrace();
-			StarterHandler.getStarterLog(token).error(e.getMessage());
+			getStarterLog().error(e.getMessage());
 			writeStatus("INSTALL_STARER_ERROR");
 		}
 		writeEvent(TerminalEvent.DESTROY.getValue());
 	}
 
-	public void start() {
+	public void install() {
 		try {
 			installStarer();
 		} catch (Exception e) {
 			e.printStackTrace();
-			StarterHandler.getStarterLog(token).error(e.getMessage());
+			getStarterLog().error(e.getMessage());
 			writeStatus("INSTALL_STARER_ERROR");
 		}
 		try {
 			installServer();
 		} catch (Exception e) {
 			e.printStackTrace();
-			StarterHandler.getStarterLog(token).error(e.getMessage());
+			getStarterLog().error(e.getMessage());
 			writeStatus("INSTALL_SERVER_ERROR");
 		}
 		try {
 			compile();
 		} catch (Exception e) {
 			e.printStackTrace();
-			StarterHandler.getStarterLog(token).error(e.getMessage());
+			getStarterLog().error(e.getMessage());
 			writeStatus("COMPILE_ERROR");
 		}
 		try {
 			installShell();
 		} catch (Exception e) {
 			e.printStackTrace();
-			StarterHandler.getStarterLog(token).error(e.getMessage());
+			getStarterLog().error(e.getMessage());
 			writeStatus("INSTALL_SHELL_ERROR");
 		}
+	}
+
+	public void deploy() {
+		install();
+		writeStatus("DEPLOYED");
+		start();
+	}
+
+	public void start() {
+		install();
 		if (starterJarFile != null && starterJarFile.exists()) {
 			writeEvent(TerminalEvent.START.getValue());
 		} else {
-			StarterHandler.getStarterLog(token).error("starter jar does not exist.");
+			getStarterLog().error("starter jar does not exist.");
 			writeStatus("DESTROYED");
 		}
 
@@ -137,14 +146,19 @@ public class Starter extends StarterParam {
 			installStarer();
 		} catch (Exception e) {
 			e.printStackTrace();
-			StarterHandler.getStarterLog(token).error(e.getMessage());
+			getStarterLog().error(e.getMessage());
 			writeStatus("INSTALL_STARER_ERROR");
 		}
-		writeEvent(TerminalEvent.STOP.getValue());
+		if (starterJarFile != null && starterJarFile.exists()) {
+			writeEvent(TerminalEvent.STOP.getValue());
+		} else {
+			getStarterLog().error("starter jar does not exist.");
+			writeStatus("DESTROYED");
+		}
 	}
 
 	public void remove() {
-		StarterHandler.getStarterLog(token).remove();
+		getStarterLog().remove();
 		try {
 			FileUtils.deleteDirectory(starterFolder);
 		} catch (Exception e) {
@@ -160,7 +174,7 @@ public class Starter extends StarterParam {
 			installed = false;
 		}
 		if (!installed) {
-			StarterHandler.getStarterLog(token).info("install starter start...");
+			getStarterLog().info("install starter start...");
 			writeStatus("INSTALL_STARER");
 			if (!starterFolder.exists()) {
 				starterFolder.mkdirs();
@@ -175,10 +189,10 @@ public class Starter extends StarterParam {
 				startStarter();
 				writeStatus("STARTED_STARTER");
 			} else {
-				StarterHandler.getStarterLog(token).error("plugin starter.jar does not exist.");
+				getStarterLog().error("plugin starter.jar does not exist.");
 			}
 
-			StarterHandler.getStarterLog(token).info("install starter end...");
+			getStarterLog().info("install starter end...");
 		}
 	}
 
@@ -186,7 +200,7 @@ public class Starter extends StarterParam {
 
 	protected void startStarter() throws Exception {
 		// Process process;
-		StarterHandler.getStarterLog(token).info("starting starter...");
+		getStarterLog().info("starting starter...");
 
 		StringBuffer shell = new StringBuffer();
 
@@ -208,7 +222,7 @@ public class Starter extends StarterParam {
 		shell.append(" -jar ");
 		shell.append(starterJarFile.getAbsolutePath());
 		shell.append(" ");
-		StarterHandler.getStarterLog(token).info("starter start shell:" + shell);
+		getStarterLog().info("starter start shell:" + shell);
 
 		if (IDEConstant.IS_OS_WINDOW) {
 			process = Runtime.getRuntime().exec("cmd.exe /c " + shell.toString() + " ");
@@ -231,7 +245,7 @@ public class Starter extends StarterParam {
 			}.start();
 		}
 
-		StarterHandler.getStarterLog(token).info("started starter...");
+		getStarterLog().info("started starter...");
 	}
 
 	public JSONObject getStarterInfo() {

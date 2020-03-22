@@ -38,11 +38,6 @@
             ></a>
           </el-badge>
         </a>
-        <a class title="服务器，可远程部署项目" @click="source.openRunnerBox()">
-          <el-badge :is-dot="repository.runners.length > 0">
-            <a class="coos-icon coos-icon-sever" :class="repository.runner_show?'color-green':''"></a>
-          </el-badge>
-        </a>
       </div>
     </div>
     <el-input placeholder="输入关键字进行过滤" size="mini" v-model="searchText"></el-input>
@@ -201,12 +196,12 @@ export default {
         }
 
         menus.push({
-          header: "项目运行"
+          header: "项目"
         });
-        let starterMenu = { text: "本地项目运行", menus: [] };
+        let starterMenu = { text: "项目部署运行", menus: [] };
         menus.push(starterMenu);
         starterMenu.menus.push({
-          header: "本地项目运行"
+          header: "项目部署运行"
         });
 
         source.repository.starter_options.forEach(one => {
@@ -232,16 +227,16 @@ export default {
             });
             if (startting) {
               oMenu.menus.push({
-                text: "已运行，打开控制台",
+                text: "已部署，打开控制台",
                 onClick() {
                   source.openStarterBox();
                 }
               });
             } else {
               oMenu.menus.push({
-                text: "运行",
+                text: "部署",
                 onClick() {
-                  source.starterStart(data.path, option);
+                  source.starterDeploy(data.path, option);
                 }
               });
             }
@@ -266,64 +261,13 @@ export default {
             });
           }
         });
-
+        starterMenu.menus.push({
+          header: "运行配置"
+        });
         starterMenu.menus.push({
           text: "添加配置",
           onClick() {
             source.starterForm.show(data.path);
-          }
-        });
-
-        let runnerMenu = { text: "部署服务器", menus: [] };
-        menus.push(runnerMenu);
-        runnerMenu.menus.push({
-          header: "项目部署"
-        });
-
-        source.repository.runner_options.forEach(one => {
-          if (
-            (coos.isEmpty(one.path) && coos.isEmpty(data.path)) ||
-            one.path == data.path
-          ) {
-            let option = {};
-            if (!coos.isEmpty(one.option)) {
-              option = JSON.parse(one.option);
-            }
-            let oMenu = {
-              text: one.name,
-              menus: []
-            };
-            runnerMenu.menus.push(oMenu);
-
-            oMenu.menus.push({
-              text: "运行",
-              onClick() {}
-            });
-            oMenu.menus.push({
-              text: "修改配置",
-              onClick() {
-                source.runnerForm.show(data.path, option);
-              }
-            });
-            oMenu.menus.push({
-              text: "删除配置",
-              onClick() {
-                source
-                  .do("DELETE_RUNNER_OPTION", {
-                    path: data.path,
-                    option: option
-                  })
-                  .then(res => {
-                    source.load("RUNNER_OPTIONS");
-                  });
-              }
-            });
-          }
-        });
-        runnerMenu.menus.push({
-          text: "添加配置",
-          onClick() {
-            source.runnerForm.show(data.path);
           }
         });
 

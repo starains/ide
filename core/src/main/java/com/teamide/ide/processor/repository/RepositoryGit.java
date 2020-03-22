@@ -12,7 +12,9 @@ import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.ReflogEntry;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RemoteConfig;
+import org.eclipse.jgit.transport.TrackingRefUpdate;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import com.alibaba.fastjson.JSON;
@@ -513,7 +515,11 @@ public class RepositoryGit extends RepositoryBase {
 			public void run() {
 				try {
 					// 检查最新版本
-					// worker.fetch(remote);
+					FetchResult fetchResult = worker.fetch(remote);
+					Collection<TrackingRefUpdate> updates = fetchResult.getTrackingRefUpdates();
+					if (updates != null && updates.size() > 0) {
+						throw new Exception("有最新代码需要更新，请先更新代码。");
+					}
 					// List<DiffEntry> diffs = worker.diff(remote,
 					// remoteBranchName);
 					// if (diffs != null && diffs.size() > 0) {

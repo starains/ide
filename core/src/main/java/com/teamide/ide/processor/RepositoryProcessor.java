@@ -11,6 +11,7 @@ import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceRepositoryOpenBean;
 import com.teamide.ide.enums.OptionType;
+import com.teamide.ide.handler.StarterHandler;
 import com.teamide.ide.processor.enums.RepositoryModelType;
 import com.teamide.ide.processor.enums.RepositoryProcessorType;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
@@ -21,11 +22,10 @@ import com.teamide.ide.processor.repository.RepositoryGit;
 import com.teamide.ide.processor.repository.RepositoryLoad;
 import com.teamide.ide.processor.repository.RepositoryLog;
 import com.teamide.ide.processor.repository.RepositoryMaven;
-import com.teamide.ide.processor.repository.RepositoryDeployer;
 import com.teamide.ide.processor.repository.RepositoryStarter;
 import com.teamide.ide.processor.repository.project.ProjectAppLoader;
 import com.teamide.ide.processor.repository.project.ProjectLoader;
-import com.teamide.ide.processor.repository.starter.StarterHandler;
+import com.teamide.ide.processor.repository.starter.Starter;
 import com.teamide.ide.service.impl.SpaceRepositoryOpenService;
 
 public class RepositoryProcessor extends SpaceProcessor {
@@ -406,18 +406,25 @@ public class RepositoryProcessor extends SpaceProcessor {
 			appendEvent(spaceEventBean);
 
 			break;
-		case STARTER_START:
+		case STARTER_DEPLOY:
 			String token = data.getString("token");
 			if (!StringUtil.isEmpty(token)) {
-				new RepositoryStarter(param).start(token);
+				new RepositoryStarter(param).deploy(token);
 			} else {
 				path = data.getString("path");
 				option = data.getJSONObject("option");
-				new RepositoryStarter(param).start(path, option);
+				new RepositoryStarter(param).deploy(path, option);
 
 				spaceEventBean.set("path", path);
 				spaceEventBean.set("option", option);
 			}
+
+			spaceEventBean.set("token", token);
+			appendEvent(spaceEventBean);
+			break;
+		case STARTER_START:
+			token = data.getString("token");
+			new RepositoryStarter(param).start(token);
 
 			spaceEventBean.set("token", token);
 			appendEvent(spaceEventBean);
@@ -462,73 +469,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 			break;
 
-		case DEPLOYER_LOG_CLEAN:
-			token = data.getString("token");
-			value = new RepositoryDeployer(param).logClean(token);
-
-			spaceEventBean.set("token", token);
-			appendEvent(spaceEventBean);
-			break;
-		case DEPLOYER_REMOVE:
-			token = data.getString("token");
-			value = new RepositoryDeployer(param).remove(token);
-
-			spaceEventBean.set("token", token);
-			appendEvent(spaceEventBean);
-			break;
-		case DEPLOYER_DEPLOY:
-
-			token = data.getString("token");
-			if (!StringUtil.isEmpty(token)) {
-				value = new RepositoryDeployer(param).deploy(token);
-			} else {
-				path = data.getString("path");
-				option = data.getJSONObject("option");
-				value = new RepositoryDeployer(param).deploy(path, option);
-
-				spaceEventBean.set("path", path);
-				spaceEventBean.set("option", option);
-
-			}
-
-			spaceEventBean.set("token", token);
-			appendEvent(spaceEventBean);
-			break;
-		case DEPLOYER_START:
-
-			token = data.getString("token");
-			value = new RepositoryDeployer(param).start(token);
-
-			spaceEventBean.set("token", token);
-			appendEvent(spaceEventBean);
-			break;
-		case DEPLOYER_STOP:
-			token = data.getString("token");
-			value = new RepositoryDeployer(param).stop(token);
-
-			spaceEventBean.set("token", token);
-			appendEvent(spaceEventBean);
-			break;
-		case SET_DEPLOYER_OPTION:
-			path = data.getString("path");
-			option = data.getJSONObject("option");
-			name = option.getString("name");
-			value = param.saveOption(path, name, OptionType.DEPLOYER, option);
-
-			spaceEventBean.set("path", path);
-			spaceEventBean.set("option", option);
-			appendEvent(spaceEventBean);
-			break;
-		case DELETE_DEPLOYER_OPTION:
-			path = data.getString("path");
-			option = data.getJSONObject("option");
-			name = option.getString("name");
-			param.deleteOption(path, name, OptionType.DEPLOYER);
-
-			spaceEventBean.set("path", path);
-			spaceEventBean.set("option", option);
-			appendEvent(spaceEventBean);
-			break;
 		case APP_SET_OPTION:
 			path = data.getString("path");
 			option = data.getJSONObject("option");
@@ -556,6 +496,8 @@ public class RepositoryProcessor extends SpaceProcessor {
 			spaceEventBean.set("path", path);
 			appendEvent(spaceEventBean);
 
+			break;
+		default:
 			break;
 		}
 
@@ -653,8 +595,8 @@ public class RepositoryProcessor extends SpaceProcessor {
 			boolean isloadold = data.getBooleanValue("isloadold");
 			res = null;
 			if (!StringUtil.isEmpty(token) && !token.equals("0")) {
-
-				RepositoryLog repositoryLog = StarterHandler.getStarterLog(token);
+				Starter starter = StarterHandler.get(token);
+				RepositoryLog repositoryLog = starter.getStarterLog();
 				if (repositoryLog != null) {
 					res = repositoryLog.read(start, end, timestamp);
 				} else {
@@ -670,25 +612,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			value = res;
 			break;
 
-		case DEPLOYER_LOG:
-			token = data.getString("token");
-
-			start = data.getIntValue("start");
-			end = data.getIntValue("end");
-			timestamp = data.getString("timestamp");
-			value = param.getDeployerLog(token).read(start, end, timestamp);
-			break;
-		case DEPLOYER_STATUS:
-			token = data.getString("token");
-			value = new RepositoryDeployer(param).status(token);
-			break;
-		case DEPLOYER_OPTIONS:
-			path = data.getString("path");
-			value = param.getOptions(path, OptionType.DEPLOYER);
-			break;
-		case DEPLOYERS:
-			value = new RepositoryDeployer(param).loadDeployers();
-			break;
 		case APP:
 			path = data.getString("path");
 			ProjectAppLoader appLoader = new ProjectAppLoader(param);

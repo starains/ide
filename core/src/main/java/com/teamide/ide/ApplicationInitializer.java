@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebListener;
 
 import com.teamide.ide.handler.DeployServerHandler;
 import com.teamide.ide.handler.SpaceHandler;
+import com.teamide.ide.handler.StarterHandler;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.impl.InstallService;
 
@@ -22,6 +23,7 @@ public class ApplicationInitializer implements ServletContextListener {
 		if (installed) {
 			DeployServerHandler.loadServers();
 			SpaceHandler.loadSpaces();
+			StarterHandler.loadStarters();
 		}
 
 	}

@@ -5,7 +5,6 @@ import file from "@/source/repository/file";
 import git from "@/source/repository/git";
 import maven from "@/source/repository/maven";
 import starter from "@/source/repository/starter";
-import runner from "@/source/repository/runner";
 import app from "@/source/repository/app";
 
 source.repository.branchs = [];
@@ -48,10 +47,9 @@ source.repository.fullscreen = false;
         coos.trimList(source.repository.opens);
         coos.trimList(source.repository.open_files);
         source.load('ENVIRONMENTS');
+        source.load('DEPLOY_SERVERS');
         source.load('STARTER_OPTIONS');
         source.load('STARTERS');
-        source.load('RUNNER_OPTIONS');
-        source.load('RUNNER_SERVERS');
         if (value.branchs) {
             value.branchs.forEach(one => {
                 source.repository.branchs.push(one);

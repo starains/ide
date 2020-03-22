@@ -66,6 +66,8 @@ public enum RepositoryProcessorType {
 
 	DELETE_STARTER_OPTION("DELETE_STARTER_OPTION", "删除启动配置"),
 
+	STARTER_DEPLOY("STARTER_DEPLOY", "Starter Deploy"),
+
 	STARTER_START("STARTER_START", "Starter Start"),
 
 	STARTER_STOP("STARTER_STOP", "Starter Stop"),
@@ -75,20 +77,6 @@ public enum RepositoryProcessorType {
 	STARTER_REMOVE("STARTER_REMOVE", "Starter Remove"),
 
 	STARTER_LOG_CLEAN("STARTER_LOG_CLEAN", "Starter Log Clean"),
-
-	DEPLOYER_DEPLOY("DEPLOYER_DEPLOY", "Deployer Deploy"),
-
-	DEPLOYER_START("DEPLOYER_START", "Deployer Start"),
-
-	DEPLOYER_STOP("DEPLOYER_STOP", "Deployer Stop"),
-
-	DEPLOYER_REMOVE("DEPLOYER_REMOVE", "Deployer Remove"),
-
-	DEPLOYER_LOG_CLEAN("DEPLOYER_LOG_CLEAN", "Deployer Log Clean"),
-
-	SET_DEPLOYER_OPTION("SET_DEPLOYER_OPTION", "设置远程部署器配置"),
-
-	DELETE_DEPLOYER_OPTION("DELETE_RUNNER_OPTION", "删除远程部署器配置"),
 
 	APP_SET_OPTION("APP_SET_OPTION", "应用配置"),
 

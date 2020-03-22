@@ -6,6 +6,79 @@ source.repository.starterActive = "0";
 
 (function () {
 
+
+    source.starterDeploy = function (path, option) {
+        source.do('STARTER_DEPLOY', { path: path, option: option }).then((res) => {
+            if (res.errcode == 0) {
+                coos.success('部署命令提交成功，正在部署！');
+                source.load('STARTERS');
+            } else {
+                coos.error(res.errmsg);
+            }
+        });
+    };
+
+    source.deployStarter = function (starter) {
+        if (starter.token != '0') {
+            source.do('STARTER_DEPLOY', { token: starter.token }).then((res) => {
+                if (res.errcode == 0) {
+                    coos.success('部署命令提交成功，正在部署！');
+                } else {
+                    coos.error(res.errmsg);
+                }
+            });
+        }
+    };
+
+    source.startStarter = function (starter) {
+        if (starter.token != '0') {
+            source.do('STARTER_START', { token: starter.token }).then((res) => {
+                if (res.errcode == 0) {
+                    coos.success('启动成功！');
+                } else {
+                    coos.error(res.errmsg);
+                }
+            });
+        }
+    };
+
+    source.stopStarter = function (starter) {
+        if (starter.token != '0') {
+            source.do('STARTER_STOP', { token: starter.token }).then((res) => {
+                if (res.errcode == 0) {
+                    coos.success('停止成功！');
+                } else {
+                    coos.error(res.errmsg);
+                }
+            });
+        }
+    };
+
+    source.destroyStarter = function (starter) {
+        if (starter.token != '0') {
+            source.do('STARTER_DESTROY', { token: starter.token }).then((res) => {
+                if (res.errcode == 0) {
+                    coos.success('销毁成功！');
+                } else {
+                    coos.error(res.errmsg);
+                }
+            });
+        }
+    };
+    source.removeStarter = function (starter) {
+        if (starter.token != '0') {
+            source.do('STARTER_REMOVE', { token: starter.token }).then((res) => {
+                if (res.errcode == 0) {
+                    coos.success('移除成功！');
+                    source.load('STARTERS');
+                } else {
+                    coos.error(res.errmsg);
+                }
+            });
+        }
+    };
+
+
     let status_loading = false;
     source.loadStarterStatus = function () {
         if (status_loading) {
@@ -83,55 +156,6 @@ source.repository.starterActive = "0";
     };
     source.loadStarterStatus();
     source.loadStarterLog();
-
-
-    source.startStarter = function (starter) {
-        if (starter.token != '0') {
-            source.do('STARTER_START', { token: starter.token }).then((res) => {
-                if (res.errcode == 0) {
-                    coos.success('启动成功！');
-                } else {
-                    coos.error(res.errmsg);
-                }
-            });
-        }
-    };
-
-    source.stopStarter = function (starter) {
-        if (starter.token != '0') {
-            source.do('STARTER_STOP', { token: starter.token }).then((res) => {
-                if (res.errcode == 0) {
-                    coos.success('停止成功！');
-                } else {
-                    coos.error(res.errmsg);
-                }
-            });
-        }
-    };
-
-    source.destroyStarter = function (starter) {
-        if (starter.token != '0') {
-            source.do('STARTER_DESTROY', { token: starter.token }).then((res) => {
-                if (res.errcode == 0) {
-                    coos.success('销毁成功！');
-                } else {
-                    coos.error(res.errmsg);
-                }
-            });
-        }
-    };
-    source.removeStarter = function (starter) {
-        if (starter.token != '0') {
-            source.do('STARTER_REMOVE', { token: starter.token }).then((res) => {
-                if (res.errcode == 0) {
-                    coos.success('移除成功！');
-                    source.load('STARTERS');
-                } else {
-                    coos.error(res.errmsg);
-                }
-            });
-        }
-    };
 
 
 
@@ -314,16 +338,6 @@ source.repository.starterActive = "0";
     };
 
 
-    source.starterStart = function (path, option) {
-        source.do('STARTER_START', { path: path, option: option }).then((res) => {
-            if (res.errcode == 0) {
-                coos.success('启动命令提交成功！');
-                source.load('STARTERS');
-            } else {
-                coos.error(res.errmsg);
-            }
-        });
-    };
 })();
 
 export default source;
