@@ -6,8 +6,8 @@ import javax.persistence.Table;
 import com.teamide.ide.constant.TableInfoConstant;
 import com.teamide.ide.enums.DeployServerStatus;
 
-@Table(name = TableInfoConstant.DEPLOY_SERVER)
-public class DeployServerBean extends BaseBean {
+@Table(name = TableInfoConstant.REMOTE)
+public class RemoteBean extends BaseBean {
 
 	@Column(name = "name")
 	private String name;

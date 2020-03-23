@@ -14,52 +14,53 @@ public abstract class Deploy extends DeployParam {
 		super(starterFolder);
 	}
 
-	public abstract void remove();
+	public abstract void remove() throws Exception;
 
-	public abstract void destroy();
+	public abstract void destroy() throws Exception;
 
-	public abstract void start();
+	public abstract void start() throws Exception;
 
-	public abstract void stop();
+	public abstract void stop() throws Exception;
 
-	public abstract void cleanLog();
+	public abstract void cleanLog() throws Exception;
 
-	public abstract void deploy();
+	public abstract void deploy() throws Exception;
 
 	public void install() {
 		try {
-			installStarer();
+			installStarerJar();
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.starter.getLog().error(e.getMessage());
-			this.starter.writeStatus("INSTALL_STARER_ERROR");
+			this.starter.writeDeployStatus("INSTALL_STARER_ERROR");
 		}
 		try {
 			installServer();
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.starter.getLog().error(e.getMessage());
-			this.starter.writeStatus("INSTALL_SERVER_ERROR");
+			this.starter.writeDeployStatus("INSTALL_SERVER_ERROR");
 		}
 		try {
 			compile();
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.starter.getLog().error(e.getMessage());
-			this.starter.writeStatus("COMPILE_ERROR");
+			this.starter.writeDeployStatus("COMPILE_ERROR");
 		}
 		try {
 			installShell();
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.starter.getLog().error(e.getMessage());
-			this.starter.writeStatus("INSTALL_SHELL_ERROR");
+			this.starter.writeDeployStatus("INSTALL_SHELL_ERROR");
 		}
+
 	}
 
 	protected void installServer() throws Exception {
 
-		this.starter.writeStatus("INSTALL_SERVER");
+		this.starter.writeDeployStatus("INSTALL_SERVER");
 		this.starter.getLog().info("starter install server");
 		if (this.starter.starterServerFolder.exists()) {
 			FileUtils.deleteDirectory(this.starter.starterServerFolder);
@@ -72,7 +73,7 @@ public abstract class Deploy extends DeployParam {
 	}
 
 	protected void compile() throws Exception {
-		this.starter.writeStatus("COMPILE");
+		this.starter.writeDeployStatus("COMPILE");
 		doCompile();
 	}
 
@@ -81,12 +82,12 @@ public abstract class Deploy extends DeployParam {
 	}
 
 	protected void installShell() throws Exception {
-		this.starter.writeStatus("INSTALL_SHELL");
+		this.starter.writeDeployStatus("INSTALL_SHELL");
 		installStartShell();
 	}
 
 	protected void installStartShell() throws Exception {
-		this.starter.writeStatus("INSTALL_SHELL");
+		this.starter.writeDeployStatus("INSTALL_SHELL");
 		if (this.starter.starterStartShellFile.exists()) {
 			this.starter.starterStartShellFile.delete();
 		}
@@ -103,7 +104,7 @@ public abstract class Deploy extends DeployParam {
 	}
 
 	protected void installStopShell() throws Exception {
-		this.starter.writeStatus("INSTALL_SHELL");
+		this.starter.writeDeployStatus("INSTALL_SHELL");
 		if (this.starter.starterStopShellFile.exists()) {
 			this.starter.starterStopShellFile.delete();
 		}
@@ -119,7 +120,7 @@ public abstract class Deploy extends DeployParam {
 		FileUtil.write(shell.toString().getBytes(), this.starter.starterStopShellFile);
 	}
 
-	public void installStarer() throws Exception {
+	public void installStarerJar() throws Exception {
 		boolean installed = true;
 		if (!this.starter.starterFolder.exists()) {
 			installed = false;
@@ -129,7 +130,7 @@ public abstract class Deploy extends DeployParam {
 		}
 		if (!installed) {
 			this.starter.getLog().info("install starter start...");
-			this.starter.writeStatus("INSTALL_STARER");
+			this.starter.writeDeployStatus("INSTALL_STARER");
 			if (!this.starter.starterFolder.exists()) {
 				this.starter.starterFolder.mkdirs();
 			}
@@ -139,9 +140,6 @@ public abstract class Deploy extends DeployParam {
 			File jar = new File(IDEConstant.PLUGIN_STARTER_JAR);
 			if (jar != null && jar.exists()) {
 				FileUtils.copyFile(jar, this.starter.starterJarFile);
-				this.starter.writeStatus("STARTING_STARTER");
-				this.starter.startStarter(this.deployInstall.getWorkFolder(), this.deployInstall.getPIDFile());
-				this.starter.writeStatus("STARTED_STARTER");
 			} else {
 				this.starter.getLog().error("plugin starter.jar does not exist.");
 			}
@@ -150,7 +148,21 @@ public abstract class Deploy extends DeployParam {
 		}
 	}
 
-	public JSONObject getStatus() {
-		return this.starter.getStarterInfo();
+	public void checkStartStarter() throws Exception {
+		boolean stoped = true;
+		if (!this.starter.starterFolder.exists()) {
+			stoped = false;
+		}
+		if (this.starter.readTimestamp() < System.currentTimeMillis() - (1000 * 5)) {
+			stoped = false;
+		}
+		if (!stoped) {
+			this.starter.startStarter(this.deployInstall.getWorkFolder(), this.deployInstall.getPIDFile());
+
+		}
 	}
+
+	public abstract JSONObject getStatus() throws Exception;
+
+	public abstract JSONObject read(int start, int end, String timestamp);
 }

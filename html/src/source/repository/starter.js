@@ -187,8 +187,12 @@ source.repository.starterActive = "0";
             if (find == null) {
                 one.logs = [];
                 one.text = '' + one.token;
-                if (one.option) {
-                    one.text = '' + one.option.name;
+                if (one.name) {
+                    one.text = '' + one.name;
+                } else {
+                    if (one.option) {
+                        one.text = '' + one.option.name;
+                    }
                 }
                 source.repository.starters.push(one);
             } else {
@@ -329,6 +333,7 @@ source.repository.starterActive = "0";
         var time = 1000;
         if (starter != null) {
             starter.status = value.status;
+            starter.deploy_status = value.deploy_status;
             starter.starter_timestamp = value.starter_timestamp;
             starter.now_timestamp = value.now_timestamp;
         }

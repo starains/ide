@@ -47,7 +47,7 @@ source.repository.fullscreen = false;
         coos.trimList(source.repository.opens);
         coos.trimList(source.repository.open_files);
         source.load('ENVIRONMENTS');
-        source.load('DEPLOY_SERVERS');
+        source.load('REMOTES');
         source.load('STARTER_OPTIONS');
         source.load('STARTERS');
         if (value.branchs) {

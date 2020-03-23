@@ -2,7 +2,6 @@ package com.teamide.deploer;
 
 import com.teamide.deploer.processor.TaskBean;
 import com.teamide.deploer.processor.TaskProcessor;
-import com.teamide.deploer.util.StringUtil;
 
 public abstract class Listener implements Runnable {
 
@@ -13,22 +12,6 @@ public abstract class Listener implements Runnable {
 	private final Long RECONNECT_TOLONG_SLEEP = 1000 * 30L;
 
 	private Long RECONNECT_COUNT = 0L;
-
-	public final String name;
-	public final String token;
-
-	public Listener(String name, String token) throws Exception {
-		this.name = name;
-		this.token = token;
-
-		if (StringUtil.isEmpty(name)) {
-			throw new Exception("name is null.");
-		}
-		if (StringUtil.isEmpty(token)) {
-			throw new Exception("token is null.");
-		}
-
-	}
 
 	@Override
 	public final void run() {

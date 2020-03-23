@@ -14,11 +14,14 @@ import org.apache.catalina.mbeans.GlobalResourcesLifecycleListener;
 import org.apache.catalina.startup.Tomcat;
 
 import com.teamide.deploer.IDEConstant;
-import com.teamide.deploer.server.servlet.DeployerServlet;
+import com.teamide.deploer.IDEDeployer;
+import com.teamide.deploer.server.servlet.RemoteServlet;
+import com.teamide.deploer.server.servlet.StarterServlet;
+import com.teamide.deploer.util.StringUtil;
 
 public class ServerTomcat {
 
-	private final ServerListener listener;
+	private final IDEDeployer deployer;
 
 	public Tomcat tomcat;
 
@@ -26,17 +29,38 @@ public class ServerTomcat {
 
 	public Context context;
 
-	public ServerTomcat(ServerListener listener) throws Exception {
-		this.listener = listener;
+	private final String host;
+
+	private final int port;
+
+	private final String contextPath;
+
+	public ServerTomcat(IDEDeployer deployer) throws Exception {
+		this.deployer = deployer;
+		if (StringUtil.isEmpty(this.deployer.param.getString("server.host"))) {
+			this.deployer.param.put("server.host", "0.0.0.0");
+		}
+		this.host = this.deployer.param.getString("server.host");
+
+		if (StringUtil.isEmpty(this.deployer.param.getString("server.port"))) {
+			this.deployer.param.put("server.port", "19001");
+		}
+		this.port = this.deployer.param.getIntValue("server.port");
+
+		if (StringUtil.isEmpty(this.deployer.param.getString("server.contextPath"))) {
+			this.deployer.param.put("server.contextPath", "/");
+		}
+		this.contextPath = this.deployer.param.getString("server.contextPath");
+
 		startTomcat();
 	}
 
 	private void startTomcat() throws Exception {
 		tomcat = new Tomcat();// 创建tomcat实例，用来启动tomcat
 
-		tomcat.setHostname(listener.server.getHost());// 设置主机名
+		tomcat.setHostname(host);// 设置主机名
 
-		tomcat.setPort(listener.server.getPort());
+		tomcat.setPort(port);
 
 		tomcat.setBaseDir(IDEConstant.TOMCAT_FOLDER);
 
@@ -61,14 +85,19 @@ public class ServerTomcat {
 		connector.setURIEncoding("UTF-8");// 设置编码
 		// connector.setPort(port);
 
-		DeployerServlet servlet = new DeployerServlet(listener);
-		String contextPath = listener.server.getContextPath();
+		String contextPath = this.contextPath;
 		if (contextPath.equals("/")) {
 			contextPath = "";
 		}
 		context = tomcat.addContext(contextPath, "");
-		Wrapper wrapper = tomcat.addServlet(contextPath, servlet.getClass().getName(), servlet);
-		wrapper.addMapping("/deployer/*");
+
+		RemoteServlet remoteServlet = new RemoteServlet();
+		Wrapper wrapper = tomcat.addServlet(contextPath, remoteServlet.getClass().getName(), remoteServlet);
+		wrapper.addMapping("/remote/*");
+
+		StarterServlet starterServlet = new StarterServlet();
+		wrapper = tomcat.addServlet(contextPath, starterServlet.getClass().getName(), starterServlet);
+		wrapper.addMapping("/starter/*");
 
 		tomcat.start();// 启动tomcat
 

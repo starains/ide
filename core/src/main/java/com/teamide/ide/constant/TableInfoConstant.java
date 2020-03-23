@@ -20,7 +20,7 @@ public class TableInfoConstant {
 
 	public static final String SPACE = "SPACE";
 
-	public static final String DEPLOY_SERVER = "DEPLOY_SERVER";
+	public static final String REMOTE = "REMOTE";
 
 	public static final String SPACE_TEAM = "SPACE_TEAM";
 

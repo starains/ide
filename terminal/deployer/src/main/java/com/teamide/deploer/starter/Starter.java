@@ -23,7 +23,7 @@ public class Starter extends StarterParam {
 			writeEvent(TerminalEvent.START.getValue());
 		} else {
 			getLog().error("starter jar does not exist.");
-			writeStatus("DESTROYED");
+			writeDeployStatus("DESTROYED");
 		}
 	}
 
@@ -32,7 +32,7 @@ public class Starter extends StarterParam {
 			writeEvent(TerminalEvent.STOP.getValue());
 		} else {
 			getLog().error("starter jar does not exist.");
-			writeStatus("DESTROYED");
+			writeDeployStatus("DESTROYED");
 		}
 	}
 
@@ -104,6 +104,7 @@ public class Starter extends StarterParam {
 
 		if (starterJSON != null) {
 			starterJSON.put("status", readStatus());
+			starterJSON.put("deploy_status", readDeployStatus());
 			starterJSON.put("starter_timestamp", readTimestamp());
 			starterJSON.put("now_timestamp", System.currentTimeMillis());
 		}

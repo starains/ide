@@ -14,7 +14,7 @@ public enum ModelType {
 
 	JDBC("JDBC", "驱动", ModelDataType.ONE),
 
-	DEPLOY_SERVERS("DEPLOY_SERVERS", "部署服务器", ModelDataType.LIST),
+	REMOTES("REMOTES", "远端服务器", ModelDataType.LIST),
 
 	ENVIRONMENTS("ENVIRONMENTS", "环境", ModelDataType.LIST),
 

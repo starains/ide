@@ -28,6 +28,8 @@ public class StarterParam {
 
 	public final File starterStatusFile;
 
+	public final File starterDeployStatusFile;
+
 	public final File starterJarFile;
 
 	public final File starterTimestampFile;
@@ -43,6 +45,7 @@ public class StarterParam {
 
 		this.starterEventFile = new File(this.starterFolder, "starter.event");
 		this.starterStatusFile = new File(this.starterFolder, "starter.status");
+		this.starterDeployStatusFile = new File(this.starterFolder, "starter.deploy.status");
 		this.starterTimestampFile = new File(this.starterFolder, "starter.timestamp");
 		this.starterJarFile = new File(this.starterFolder, "starter.jar");
 
@@ -110,10 +113,34 @@ public class StarterParam {
 
 	}
 
+	public String readDeployStatus() {
+
+		try {
+			if (starterDeployStatusFile.exists()) {
+				return new String(FileUtil.read(starterDeployStatusFile));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
 	public String writeStatus(String status) {
 
 		try {
 			FileUtil.write(status.getBytes(), starterStatusFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public String writeDeployStatus(String status) {
+
+		try {
+			FileUtil.write(status.getBytes(), starterDeployStatusFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

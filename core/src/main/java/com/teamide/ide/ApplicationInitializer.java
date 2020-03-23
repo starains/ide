@@ -6,9 +6,9 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import com.teamide.ide.handler.DeployServerHandler;
+import com.teamide.ide.handler.RemoteHandler;
 import com.teamide.ide.handler.SpaceHandler;
-import com.teamide.ide.handler.StarterHandler;
+import com.teamide.ide.handler.DeployHandler;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.impl.InstallService;
 
@@ -21,9 +21,9 @@ public class ApplicationInitializer implements ServletContextListener {
 		boolean installed = installService.installed();
 
 		if (installed) {
-			DeployServerHandler.loadServers();
+			RemoteHandler.loadRemotes();
 			SpaceHandler.loadSpaces();
-			StarterHandler.loadStarters();
+			DeployHandler.loadStarters();
 		}
 
 	}

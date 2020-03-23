@@ -28,12 +28,12 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="运行服务器">
-          <el-radio v-model="form.serverid" label>本地运行</el-radio>
+        <el-form-item label="远程服务器">
+          <el-radio v-model="form.remoteid" label>本地运行</el-radio>
           <el-radio
-            v-for="one in source.data.DEPLOY_SERVERS"
+            v-for="one in source.data.REMOTES"
             :key="one.id"
-            v-model="form.serverid"
+            v-model="form.remoteid"
             :label="one.id"
           >{{one.name}}</el-radio>
         </el-form-item>
@@ -198,7 +198,7 @@ export default {
       form: {
         name: "",
         language: "",
-        serverid: "",
+        remoteid: "",
         mode: "",
         jar: "",
         main: "",

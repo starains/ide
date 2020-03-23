@@ -8,7 +8,7 @@
         </div>
       </div>
       <div class="coos-row pd-10">
-        <el-table :data="source.data.DEPLOY_SERVERS" style="width: 100%">
+        <el-table :data="source.data.REMOTES" style="width: 100%">
           <el-table-column prop="name" label="名称" width="100"></el-table-column>
           <el-table-column prop="token" label="令牌" width="100"></el-table-column>
           <el-table-column prop="mode" label="模式" width="100"></el-table-column>
@@ -68,7 +68,7 @@
 
 <script>
 export default {
-  name: "DeployServerIndex",
+  name: "RemoteIndex",
   data() {
     return {
       source: source,
@@ -143,10 +143,10 @@ export default {
           this.hideForm();
 
           if (coos.isEmpty(data.id)) {
-            source.do("DEPLOY_SERVER_CREATE", data).then(res => {
+            source.do("REMOTE_CREATE", data).then(res => {
               if (res.errcode == 0) {
                 coos.success("新增成功！");
-                source.load("DEPLOY_SERVERS", {});
+                source.load("REMOTES", {});
               } else {
                 coos.error(res.errmsg);
                 window.setTimeout(res => {
@@ -155,10 +155,10 @@ export default {
               }
             });
           } else {
-            source.do("DEPLOY_SERVER_UPDATE", data).then(res => {
+            source.do("REMOTE_UPDATE", data).then(res => {
               if (res.errcode == 0) {
                 coos.success("修改成功！");
-                source.load("DEPLOY_SERVERS", {});
+                source.load("REMOTES", {});
               } else {
                 coos.error(res.errmsg);
               }
@@ -184,10 +184,10 @@ export default {
       coos
         .confirm("确定删除该记录？")
         .then(res => {
-          source.do("DEPLOY_SERVER_DELETE", { id: data.id }).then(res => {
+          source.do("REMOTE_DELETE", { id: data.id }).then(res => {
             if (res.errcode == 0) {
               coos.success("删除成功！");
-              source.load("DEPLOY_SERVERS", {});
+              source.load("REMOTES", {});
             } else {
               coos.error(res.errmsg);
             }
@@ -196,7 +196,7 @@ export default {
         .catch(() => {});
     },
     init() {
-      source.load("DEPLOY_SERVERS", {});
+      source.load("REMOTES", {});
     }
   },
   mounted() {

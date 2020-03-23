@@ -13,10 +13,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.deployer.LocalDeploy;
+import com.teamide.ide.deployer.RemoteDeploy;
 import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 
-public class StarterHandler {
+public class DeployHandler {
 
 	static final Map<String, Deploy> CACHE = new HashMap<String, Deploy>();
 
@@ -89,8 +90,11 @@ public class StarterHandler {
 		if (!new File(starterFolder, "starter.json").exists()) {
 			return;
 		}
-		Deploy starter = new LocalDeploy(starterFolder);
-		CACHE.put(starter.starter.token, starter);
+		Deploy deploy = new LocalDeploy(starterFolder);
+		if (deploy.option != null && StringUtil.isNotEmpty(deploy.option.getRemoteid())) {
+			deploy = new RemoteDeploy(deploy.option.getRemoteid(), starterFolder);
+		}
+		CACHE.put(deploy.starter.token, deploy);
 	}
 
 	public static final String deploy(RepositoryProcessorParam param, String projectPath, String runName)
@@ -130,6 +134,9 @@ public class StarterHandler {
 		json.put("path", path);
 		json.put("option", option);
 		json.put("timestamp", System.currentTimeMillis());
+		if (option != null) {
+			json.put("name", option.get("name"));
+		}
 
 		File starterFolder = getStarterFolder(token);
 

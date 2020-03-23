@@ -13,7 +13,7 @@ import StarIndex from '@/views/star/Index'
 
 import ConfigureIndex from '@/views/configure/Index'
 import EnvironmentIndex from '@/views/environment/Index'
-import DeployServerIndex from '@/views/deployServer/Index'
+import RemoteIndex from '@/views/remote/Index'
 
 
 
@@ -42,9 +42,9 @@ export default new Router({
       component: EnvironmentIndex
     },
     {
-      path: '/deploy/server',
-      name: 'DeployServerIndex',
-      component: DeployServerIndex
+      path: '/remote',
+      name: 'RemoteIndex',
+      component: RemoteIndex
     },
     {
       path: '/space/create',

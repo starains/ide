@@ -34,7 +34,7 @@
               <router-link to="/environment">TeamIDE环境配置</router-link>
             </li>
             <li class>
-              <router-link to="/deploy/server">部署服务器配置</router-link>
+              <router-link to="/remote">远程服务器配置</router-link>
             </li>
           </ul>
         </li>

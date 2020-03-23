@@ -2,7 +2,7 @@ package com.teamide.ide.bean;
 
 public class StarterOption {
 	private String name;
-	private String serverid;
+	private String remoteid;
 	private String language;
 	private String mode;
 	private String jar;
@@ -24,12 +24,12 @@ public class StarterOption {
 	private String stopcommand;
 	private String pidfile;
 
-	public String getServerid() {
-		return serverid;
+	public String getRemoteid() {
+		return remoteid;
 	}
 
-	public void setServerid(String serverid) {
-		this.serverid = serverid;
+	public void setRemoteid(String remoteid) {
+		this.remoteid = remoteid;
 	}
 
 	public String getStopcommand() {
