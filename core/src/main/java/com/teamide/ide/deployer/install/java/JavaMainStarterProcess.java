@@ -1,20 +1,20 @@
-package com.teamide.ide.processor.repository.starter.java;
+package com.teamide.ide.deployer.install.java;
 
 import java.io.File;
 
-import com.teamide.ide.processor.repository.starter.StarterParam;
+import com.teamide.ide.deployer.DeployParam;
 import com.teamide.ide.shell.Shell;
 import com.teamide.ide.shell.java.JavaShell;
 
 public class JavaMainStarterProcess extends JavaStarterProcess {
 
-	public JavaMainStarterProcess(StarterParam param) {
+	public JavaMainStarterProcess(DeployParam param) {
 		super(param);
 	}
 
 	@Override
 	public Shell getShell() {
-		JavaShell shell = new JavaShell(param.starterFolder);
+		JavaShell shell = new JavaShell(param.starter.starterFolder);
 		return shell;
 	}
 

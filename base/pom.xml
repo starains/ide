@@ -6,10 +6,15 @@
 	<version>0.0.1</version>
 	<properties>
 		<release.root>../release/${project.version}</release.root>
+		<teamide.version>0.0.5</teamide.version>
 		<fileupload.version>1.3.3</fileupload.version>
 	</properties>
 	<dependencies>
-
+		<dependency>
+			<groupId>com.teamide</groupId>
+			<artifactId>teamide.base</artifactId>
+			<version>${teamide.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>

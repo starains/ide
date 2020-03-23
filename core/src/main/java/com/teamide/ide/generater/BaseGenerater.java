@@ -175,7 +175,8 @@ public abstract class BaseGenerater extends Generater {
 	protected List<String> imports = new ArrayList<String>();
 
 	public void generate() throws Exception {
-		param.getLog().info("generate " + this.pack + "." + this.className + " code.");
+		// param.getLog().info("generate " + this.pack + "." + this.className +
+		// " code.");
 		init();
 		String content = build();
 		if (!file.exists() && !file.getParentFile().exists()) {
@@ -197,7 +198,8 @@ public abstract class BaseGenerater extends Generater {
 	}
 
 	public String build() throws Exception {
-		param.getLog().info("build " + this.pack + "." + this.className + " code.");
+		// param.getLog().info("build " + this.pack + "." + this.className + "
+		// code.");
 		String template = getTemplate();
 		InputStream templateStream = ResourceUtil.load(template);
 		if (templateStream == null) {

@@ -1,4 +1,4 @@
-package com.teamide.ide.processor.repository.starter.java;
+package com.teamide.ide.deployer.install.java;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.teamide.ide.processor.repository.starter.StarterParam;
+import com.teamide.ide.deployer.DeployParam;
 import com.teamide.ide.shell.Shell;
 import com.teamide.ide.shell.java.JavaShell;
 
@@ -14,11 +14,11 @@ public class JavaTomcatStarterProcess extends JavaStarterProcess {
 
 	private final String tomcat_home;
 
-	public JavaTomcatStarterProcess(StarterParam param) {
+	public JavaTomcatStarterProcess(DeployParam param) {
 		super(param);
 		String tomcat_home = null;
 		if (param.environment != null) {
-			tomcat_home = param.formatToRoot(param.environment.getPath());
+			tomcat_home = param.starter.formatToRoot(param.environment.getPath());
 		}
 
 		this.tomcat_home = tomcat_home;
@@ -26,7 +26,7 @@ public class JavaTomcatStarterProcess extends JavaStarterProcess {
 
 	@Override
 	public Shell getShell() {
-		JavaShell shell = new JavaShell(param.starterFolder);
+		JavaShell shell = new JavaShell(param.starter.starterFolder);
 		return shell;
 	}
 

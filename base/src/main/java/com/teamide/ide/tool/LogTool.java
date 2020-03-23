@@ -1,4 +1,4 @@
-package com.teamide.ide.processor.repository;
+package com.teamide.ide.tool;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +12,7 @@ import com.teamide.util.FileUtil;
 import com.teamide.util.IOUtil;
 import com.teamide.util.StringUtil;
 
-public class RepositoryLog {
+public class LogTool {
 
 	private final String name;
 
@@ -20,21 +20,21 @@ public class RepositoryLog {
 
 	private boolean removed = false;
 
-	public synchronized static RepositoryLog get(String name, File folder) {
+	public synchronized static LogTool get(String name, File folder) {
 		return get(name, folder.getAbsolutePath());
 	}
 
-	public synchronized static RepositoryLog get(String name, String folder) {
-		return new RepositoryLog(name, folder);
+	public synchronized static LogTool get(String name, String folder) {
+		return new LogTool(name, folder);
 	}
 
-	private RepositoryLog(String name, String folder) {
+	private LogTool(String name, String folder) {
 
 		this.name = name;
 		this.folder = folder;
 	}
 
-	public RepositoryLog debug(String message) {
+	public LogTool debug(String message) {
 		if (removed) {
 			return this;
 		}
@@ -42,7 +42,7 @@ public class RepositoryLog {
 		return this;
 	}
 
-	public RepositoryLog info(String message) {
+	public LogTool info(String message) {
 		if (removed) {
 			return this;
 		}
@@ -50,7 +50,7 @@ public class RepositoryLog {
 		return this;
 	}
 
-	public RepositoryLog warn(String message) {
+	public LogTool warn(String message) {
 		if (removed) {
 			return this;
 		}
@@ -58,7 +58,7 @@ public class RepositoryLog {
 		return this;
 	}
 
-	public RepositoryLog error(String message) {
+	public LogTool error(String message) {
 		if (removed) {
 			return this;
 		}

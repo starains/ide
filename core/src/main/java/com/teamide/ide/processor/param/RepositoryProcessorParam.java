@@ -13,8 +13,8 @@ import com.teamide.util.StringUtil;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceRepositoryOptionBean;
 import com.teamide.ide.enums.OptionType;
-import com.teamide.ide.processor.repository.RepositoryLog;
 import com.teamide.ide.service.impl.SpaceRepositoryOptionService;
+import com.teamide.ide.tool.LogTool;
 
 public class RepositoryProcessorParam extends SpaceProcessorParam {
 
@@ -48,14 +48,14 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		return null;
 	}
 
-	public RepositoryLog getLog() {
+	public LogTool getLog() {
 
-		return RepositoryLog.get(getLogName(), getLogFolder());
+		return LogTool.get(getLogName(), getLogFolder());
 	}
 
-	public RepositoryLog getDeployerLog(String token) {
+	public LogTool getDeployerLog(String token) {
 
-		return RepositoryLog.get(getDeployerLogName(token), getDeployerLogFolder());
+		return LogTool.get(getDeployerLogName(token), getDeployerLogFolder());
 	}
 
 	public String getDeployerLogName(String token) {

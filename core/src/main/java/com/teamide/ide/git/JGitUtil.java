@@ -234,10 +234,12 @@ public class JGitUtil {
 	 * @return
 	 * @throws GitAPIException
 	 */
-	public static FetchResult fetch(Git git, String remote) throws GitAPIException {
+	public static FetchResult fetch(Git git, String remote, CredentialsProvider credentialsProvider)
+			throws GitAPIException {
 
 		FetchCommand command = git.fetch();
 		command.setRemote(remote);
+		command.setCredentialsProvider(credentialsProvider);
 		return command.call();
 	}
 

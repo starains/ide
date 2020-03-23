@@ -515,7 +515,7 @@ public class RepositoryGit extends RepositoryBase {
 			public void run() {
 				try {
 					// 检查最新版本
-					FetchResult fetchResult = worker.fetch(remote);
+					FetchResult fetchResult = worker.fetch(remote, getCredentialsProvider(username, password));
 					Collection<TrackingRefUpdate> updates = fetchResult.getTrackingRefUpdates();
 					if (updates != null && updates.size() > 0) {
 						throw new Exception("有最新代码需要更新，请先更新代码。");

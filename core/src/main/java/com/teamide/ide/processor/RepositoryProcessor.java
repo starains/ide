@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceRepositoryOpenBean;
+import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.handler.StarterHandler;
 import com.teamide.ide.processor.enums.RepositoryModelType;
@@ -20,12 +21,10 @@ import com.teamide.ide.processor.repository.RepositoryFile;
 import com.teamide.ide.processor.repository.RepositoryGenerateSourceCode;
 import com.teamide.ide.processor.repository.RepositoryGit;
 import com.teamide.ide.processor.repository.RepositoryLoad;
-import com.teamide.ide.processor.repository.RepositoryLog;
 import com.teamide.ide.processor.repository.RepositoryMaven;
 import com.teamide.ide.processor.repository.RepositoryStarter;
 import com.teamide.ide.processor.repository.project.ProjectAppLoader;
 import com.teamide.ide.processor.repository.project.ProjectLoader;
-import com.teamide.ide.processor.repository.starter.Starter;
 import com.teamide.ide.service.impl.SpaceRepositoryOpenService;
 
 public class RepositoryProcessor extends SpaceProcessor {
@@ -595,10 +594,9 @@ public class RepositoryProcessor extends SpaceProcessor {
 			boolean isloadold = data.getBooleanValue("isloadold");
 			res = null;
 			if (!StringUtil.isEmpty(token) && !token.equals("0")) {
-				Starter starter = StarterHandler.get(token);
-				RepositoryLog repositoryLog = starter.getStarterLog();
-				if (repositoryLog != null) {
-					res = repositoryLog.read(start, end, timestamp);
+				Deploy deploy = StarterHandler.get(token);
+				if (deploy != null) {
+					res = deploy.starter.getLog().read(start, end, timestamp);
 				} else {
 					res = new JSONObject();
 				}

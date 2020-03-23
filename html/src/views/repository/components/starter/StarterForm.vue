@@ -23,7 +23,7 @@
           <el-input
             v-model="form.name"
             type="text"
-            :readonly="is_update?'readonly':''"
+            :readonly="is_update?'readonly':false"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -316,12 +316,19 @@ export default {
         }
       }
       for (var key in data) {
-        this.form[key] = data[key];
+        if (key == "useinternal") {
+          if (coos.isEmpty(data[key])) {
+            data[key] = true;
+          }
+          this.form[key] = coos.isTrue(data[key]);
+        } else {
+          this.form[key] = data[key];
+        }
       }
       if (coos.isEmpty(data.name)) {
-        this.is_update = true;
-      } else {
         this.is_update = false;
+      } else {
+        this.is_update = true;
       }
       return new Promise((resolve, reject) => {
         this.resolve = resolve;

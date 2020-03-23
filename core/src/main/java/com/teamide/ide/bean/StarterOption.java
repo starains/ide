@@ -1,4 +1,4 @@
-package com.teamide.ide.processor.repository.starter;
+package com.teamide.ide.bean;
 
 public class StarterOption {
 	private String name;

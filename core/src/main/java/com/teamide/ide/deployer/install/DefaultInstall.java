@@ -1,4 +1,4 @@
-package com.teamide.ide.processor.repository.starter;
+package com.teamide.ide.deployer.install;
 
 import java.io.File;
 import java.io.InputStream;
@@ -6,11 +6,13 @@ import java.io.PrintWriter;
 
 import com.teamide.util.StringUtil;
 import com.teamide.ide.constant.IDEConstant;
+import com.teamide.ide.deployer.DeployInstall;
+import com.teamide.ide.deployer.DeployParam;
 import com.teamide.ide.shell.Shell;
 
-public class DefaultStarterProcess extends StarterProcess {
+public class DefaultInstall extends DeployInstall {
 
-	public DefaultStarterProcess(StarterParam param) {
+	public DefaultInstall(DeployParam param) {
 		super(param);
 	}
 
@@ -21,7 +23,7 @@ public class DefaultStarterProcess extends StarterProcess {
 
 	public String formatCommand(String command) {
 		if (StringUtil.isNotEmpty(command)) {
-			File logFile = new File(param.starterFolder, "log/starter.log");
+			File logFile = new File(param.starter.starterFolder, "log/starter.log");
 			File pidFile = getPIDFile();
 			if (logFile != null) {
 				command = command.replaceAll("\\$STARTER_LOG_PATH", logFile.getAbsolutePath());
@@ -88,8 +90,8 @@ public class DefaultStarterProcess extends StarterProcess {
 		writer.close();
 		InputStream inputStream = process.getInputStream();
 		InputStream errorStream = process.getErrorStream();
-		this.param.read(inputStream, false);
-		this.param.read(errorStream, true);
+		this.param.starter.read(inputStream, false);
+		this.param.starter.read(errorStream, true);
 		process.destroy();
 	}
 
@@ -100,7 +102,7 @@ public class DefaultStarterProcess extends StarterProcess {
 		}
 		if (param.option != null && !StringUtil.isEmpty(param.option.getStartcommand())) {
 			if (param.option.getStartcommand().indexOf("$STARTER_PID_PATH") >= 0) {
-				return new File(param.starterFolder, "starter.pid");
+				return new File(param.starter.starterFolder, "starter.pid");
 			}
 		}
 		return null;

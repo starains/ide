@@ -1,4 +1,4 @@
-package com.teamide.ide.processor.repository.starter.java;
+package com.teamide.ide.deployer.install.java;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,13 +9,13 @@ import org.apache.maven.shared.utils.io.FileUtils;
 
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.EnvironmentBean;
+import com.teamide.ide.deployer.DeployInstall;
+import com.teamide.ide.deployer.DeployParam;
 import com.teamide.ide.maven.MavenUtil;
 import com.teamide.ide.processor.repository.hanlder.RepositoryHanlder;
-import com.teamide.ide.processor.repository.starter.StarterParam;
-import com.teamide.ide.processor.repository.starter.StarterProcess;
 import com.teamide.ide.service.impl.EnvironmentService;
 
-public abstract class JavaStarterProcess extends StarterProcess {
+public abstract class JavaStarterProcess extends DeployInstall {
 
 	public final List<File> class_folders = new ArrayList<File>();
 
@@ -27,7 +27,7 @@ public abstract class JavaStarterProcess extends StarterProcess {
 
 	private final String maven_home;
 
-	public JavaStarterProcess(StarterParam param) {
+	public JavaStarterProcess(DeployParam param) {
 		super(param);
 		String java_home = null;
 		String maven_home = null;
@@ -51,8 +51,8 @@ public abstract class JavaStarterProcess extends StarterProcess {
 				e.printStackTrace();
 			}
 		}
-		this.java_home = param.formatToRoot(java_home);
-		this.maven_home = param.formatToRoot(maven_home);
+		this.java_home = param.starter.formatToRoot(java_home);
+		this.maven_home = param.starter.formatToRoot(maven_home);
 	}
 
 	public String getJavaEnvp() {
@@ -138,9 +138,9 @@ public abstract class JavaStarterProcess extends StarterProcess {
 		mavenUtil.setLibPath(libFolder.getAbsolutePath());
 		lib_folders.add(libFolder);
 
-		boolean flag = mavenUtil.doPackage(param.projectFolder, null, this.param.getStarterLog(), getMavenEnvp());
+		boolean flag = mavenUtil.doPackage(param.projectFolder, null, this.param.starter.getLog(), getMavenEnvp());
 		if (!flag) {
-			this.param.getStarterLog().error("maven package error.");
+			this.param.starter.getLog().error("maven package error.");
 			throw new Exception("maven package error.");
 		}
 

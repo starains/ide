@@ -1,17 +1,16 @@
-package com.teamide.ide.processor.repository.starter;
+package com.teamide.ide.deployer;
 
 import java.io.File;
 
-import com.teamide.ide.processor.repository.starter.StarterParam;
 import com.teamide.ide.shell.Shell;
 
-public abstract class StarterProcess {
+public abstract class DeployInstall {
 
-	public final StarterParam param;
+	public final DeployParam param;
 
 	public final Shell shell;
 
-	public StarterProcess(StarterParam param) {
+	public DeployInstall(DeployParam param) {
 		this.param = param;
 		this.shell = getShell();
 	}

@@ -1,4 +1,4 @@
-package com.teamide.ide.processor.repository.starter;
+package com.teamide.deploer.starter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,19 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.ide.tool.LogTool;
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
-import com.teamide.ide.bean.EnvironmentBean;
-import com.teamide.ide.handler.StarterHandler;
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.processor.repository.RepositoryLog;
-import com.teamide.ide.processor.repository.starter.StarterProcess;
-import com.teamide.ide.processor.repository.starter.java.JavaInternalStarterProcess;
-import com.teamide.ide.processor.repository.starter.java.JavaJarStarterProcess;
-import com.teamide.ide.processor.repository.starter.java.JavaMainStarterProcess;
-import com.teamide.ide.processor.repository.starter.java.JavaTomcatStarterProcess;
-import com.teamide.ide.processor.repository.starter.node.NodeStarterProcess;
-import com.teamide.ide.service.impl.EnvironmentService;
 
 public class StarterParam {
 
@@ -42,24 +32,14 @@ public class StarterParam {
 
 	public final File starterTimestampFile;
 
-	public final File projectFolder;
-
-	public final String spaceid;
-
-	public final String branch;
-
 	public final JSONObject starterJSON;
 
-	public final StarterOption option;
-
-	public final EnvironmentBean environment;
-
-	public final StarterProcess starterProcess;
+	public final LogTool log;
 
 	public StarterParam(File starterFolder) {
 		this.starterFolder = starterFolder;
 		this.starterServerFolder = new File(this.starterFolder, "server");
-		this.starterJSONFile = new File(this.starterFolder, StarterHandler.JSON_FILE_NAME);
+		this.starterJSONFile = new File(this.starterFolder, "starter.json");
 
 		this.starterEventFile = new File(this.starterFolder, "starter.event");
 		this.starterStatusFile = new File(this.starterFolder, "starter.status");
@@ -72,39 +52,11 @@ public class StarterParam {
 		if (starterJSON == null || starterJSON.isEmpty()) {
 			throw new RuntimeException(starterFolder + " starter json is null.");
 		}
+		this.starterJSON = starterJSON;
 
 		this.token = starterJSON.getString("token");
+		log = LogTool.get("starter", new File(starterFolder, "log"));
 
-		StarterOption option = null;
-		File projectFolder = null;
-		if (starterJSON.getJSONObject("option") != null) {
-			option = starterJSON.getJSONObject("option").toJavaObject(StarterOption.class);
-		}
-		this.spaceid = starterJSON.getString("spaceid");
-		this.branch = starterJSON.getString("branch");
-		String path = starterJSON.getString("path");
-		if (!StringUtil.isEmpty(spaceid)) {
-			RepositoryProcessorParam param = new RepositoryProcessorParam(null, spaceid, branch);
-			projectFolder = param.getFile(path);
-		}
-
-		this.option = option;
-		this.starterJSON = starterJSON;
-		this.projectFolder = projectFolder;
-		EnvironmentBean environment = null;
-		if (this.option != null) {
-			String environmentid = this.option.getEnvironmentid();
-			if (!StringUtil.isEmpty(environmentid)) {
-				try {
-					environment = new EnvironmentService().get(environmentid);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		this.environment = environment;
-
-		this.starterProcess = createStarterProcess();
 	}
 
 	public void read(InputStream stream, boolean isError) {
@@ -118,49 +70,14 @@ public class StarterParam {
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
 				if (isError) {
-					getStarterLog().error(line);
+					log.error(line);
 				} else {
-					getStarterLog().info(line);
+					log.info(line);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private StarterProcess createStarterProcess() {
-		if (option == null) {
-			return null;
-		}
-		StarterProcess process = null;
-		String language = option.getLanguage();
-		switch (String.valueOf(language)) {
-		case "JAVA":
-			String mode = option.getMode();
-			switch (String.valueOf(mode)) {
-			case "MAIN":
-				process = new JavaMainStarterProcess(this);
-				break;
-			case "JAR":
-				process = new JavaJarStarterProcess(this);
-				break;
-			case "TOMCAT":
-				if (option.isUseinternal()) {
-					process = new JavaInternalStarterProcess(this);
-				} else {
-					process = new JavaTomcatStarterProcess(this);
-				}
-				break;
-			}
-			break;
-		case "NODE":
-			process = new NodeStarterProcess(this);
-			break;
-		}
-		if (process == null) {
-			process = new DefaultStarterProcess(this);
-		}
-		return process;
 	}
 
 	public String formatToRoot(String path) {
@@ -234,9 +151,8 @@ public class StarterParam {
 		return new File(starterFolder, "log");
 	}
 
-	public RepositoryLog getStarterLog() {
-
-		return RepositoryLog.get("starter", starterFolder);
+	public LogTool getLog() {
+		return log;
 	}
 
 	public JSONObject readJSON() {

@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.handler.StarterHandler;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.processor.repository.starter.Starter;
 
 public class RepositoryStarter extends RepositoryBase {
 
@@ -37,10 +37,10 @@ public class RepositoryStarter extends RepositoryBase {
 	public JSONObject stop(String token) throws Exception {
 
 		this.param.getLog().info("starter stop,  token:" + token);
-		Starter starter = StarterHandler.get(token);
+		Deploy deploy = StarterHandler.get(token);
 
-		if (starter != null) {
-			starter.stop();
+		if (deploy != null) {
+			deploy.stop();
 		}
 		JSONObject result = new JSONObject();
 		return result;
@@ -50,10 +50,10 @@ public class RepositoryStarter extends RepositoryBase {
 
 		this.param.getLog().info("starter start,  token:" + token);
 
-		Starter starter = StarterHandler.get(token);
+		Deploy deploy = StarterHandler.get(token);
 
-		if (starter != null) {
-			starter.start();
+		if (deploy != null) {
+			deploy.start();
 		}
 		JSONObject result = new JSONObject();
 		return result;
@@ -63,10 +63,10 @@ public class RepositoryStarter extends RepositoryBase {
 
 		this.param.getLog().info("starter destroy,  token:" + token);
 
-		Starter starter = StarterHandler.get(token);
+		Deploy deploy = StarterHandler.get(token);
 
-		if (starter != null) {
-			starter.destroy();
+		if (deploy != null) {
+			deploy.destroy();
 		}
 		JSONObject result = new JSONObject();
 		return result;
@@ -84,10 +84,10 @@ public class RepositoryStarter extends RepositoryBase {
 	public JSONObject logClean(String token) throws Exception {
 
 		this.param.getLog().info("starter log clean,  token:" + token);
-		Starter starter = StarterHandler.get(token);
+		Deploy deploy = StarterHandler.get(token);
 
-		if (starter != null) {
-			starter.getStarterLog().clean();
+		if (deploy != null) {
+			deploy.cleanLog();
 
 		}
 		JSONObject result = new JSONObject();
@@ -95,19 +95,19 @@ public class RepositoryStarter extends RepositoryBase {
 	}
 
 	public JSONObject status(String token) throws Exception {
-		Starter starter = StarterHandler.get(token);
+		Deploy deploy = StarterHandler.get(token);
 
-		if (starter != null) {
-			return starter.getStarterInfo();
+		if (deploy != null) {
+			return deploy.getStatus();
 		}
 		return null;
 	}
 
 	public JSONArray loadStarters() throws Exception {
 		JSONArray res = new JSONArray();
-		List<Starter> starters = StarterHandler.getStarters(this.param);
-		for (Starter starter : starters) {
-			res.add(starter.getStarterInfo());
+		List<Deploy> deploys = StarterHandler.getStarters(this.param);
+		for (Deploy deploy : deploys) {
+			res.add(deploy.getStatus());
 		}
 		return res;
 	}

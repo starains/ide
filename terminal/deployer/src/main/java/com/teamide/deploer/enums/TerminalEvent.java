@@ -1,4 +1,4 @@
-package com.teamide.ide.enums;
+package com.teamide.deploer.enums;
 
 public enum TerminalEvent {
 

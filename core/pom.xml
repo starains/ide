@@ -17,6 +17,12 @@
 
 		<dependency>
 			<groupId>com.teamide</groupId>
+			<artifactId>terminal.deployer</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.teamide</groupId>
 			<artifactId>teamide.app</artifactId>
 			<version>0.0.5</version>
 		</dependency>

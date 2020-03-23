@@ -1,4 +1,4 @@
-package com.teamide.ide.processor.repository.starter.java;
+package com.teamide.ide.deployer.install.java;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,29 +7,29 @@ import java.util.List;
 import java.util.Map;
 
 import com.teamide.ide.constant.IDEConstant;
-import com.teamide.ide.processor.repository.starter.StarterParam;
+import com.teamide.ide.deployer.DeployParam;
 import com.teamide.ide.shell.Shell;
 import com.teamide.ide.shell.java.JavaShell;
 
 public class JavaInternalStarterProcess extends JavaStarterProcess {
 
-	public JavaInternalStarterProcess(StarterParam param) {
+	public JavaInternalStarterProcess(DeployParam param) {
 		super(param);
 
 	}
 
 	@Override
 	public Shell getShell() {
-		JavaShell shell = new JavaShell(param.starterFolder);
+		JavaShell shell = new JavaShell(param.starter.starterFolder);
 		return shell;
 	}
 
 	@Override
 	public String getStartShell() throws Exception {
 
-		param.getStarterLog().info("tomcat root " + param.starterServerFolder.toURI().getPath());
+		param.starter.getLog().info("tomcat root " + param.starter.starterServerFolder.toURI().getPath());
 
-		File appFolder = getAppFolder(param.starterServerFolder);
+		File appFolder = getAppFolder(param.starter.starterServerFolder);
 
 		String hostname = param.option.getHostname();
 		String port = "" + param.option.getPort();
@@ -41,11 +41,11 @@ public class JavaInternalStarterProcess extends JavaStarterProcess {
 		shell.setJava_envp(getJavaEnvp());
 
 		List<File> lib_folders = new ArrayList<File>();
-		lib_folders.add(new File(param.starterServerFolder, "lib"));
+		lib_folders.add(new File(param.starter.starterServerFolder, "lib"));
 		shell.setLib_folders(lib_folders);
 
 		Map<String, String> envps = new HashMap<String, String>();
-		envps.put("SERVER_ROOT", param.starterServerFolder.getAbsolutePath());
+		envps.put("SERVER_ROOT", param.starter.starterServerFolder.getAbsolutePath());
 		envps.put("SERVER_PORT", port);
 		envps.put("SERVER_HOSTNAME", hostname);
 		envps.put("SERVER_CONTEXTPATH", contextpath);
@@ -66,7 +66,7 @@ public class JavaInternalStarterProcess extends JavaStarterProcess {
 	public void compile() throws Exception {
 		super.compile();
 
-		outWebapps(param.starterServerFolder);
+		outWebapps(param.starter.starterServerFolder);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class JavaInternalStarterProcess extends JavaStarterProcess {
 
 	@Override
 	public File getWorkFolder() throws Exception {
-		return param.starterServerFolder;
+		return param.starter.starterServerFolder;
 	}
 
 	@Override

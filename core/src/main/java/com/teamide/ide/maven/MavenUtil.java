@@ -14,7 +14,7 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
-import com.teamide.ide.processor.repository.RepositoryLog;
+import com.teamide.ide.tool.LogTool;
 import com.teamide.util.StringUtil;
 
 public class MavenUtil {
@@ -25,25 +25,25 @@ public class MavenUtil {
 		this.maven_home = maven_home;
 	}
 
-	public boolean doClean(File root, Queue<String> infos, RepositoryLog log) {
+	public boolean doClean(File root, Queue<String> infos, LogTool log) {
 
 		return doClean(root, infos, log, null);
 	}
 
-	public boolean doClean(File root, Queue<String> infos, RepositoryLog log, String envp) {
+	public boolean doClean(File root, Queue<String> infos, LogTool log, String envp) {
 
 		List<String> list = new ArrayList<String>();
 		list.add("clean");
 		return todo(root, list, infos, log, envp);
 	}
 
-	public boolean doCompile(File root, Queue<String> infos, RepositoryLog log) {
+	public boolean doCompile(File root, Queue<String> infos, LogTool log) {
 
 		return doCompile(root, infos, log, null);
 
 	}
 
-	public boolean doCompile(File root, Queue<String> infos, RepositoryLog log, String envp) {
+	public boolean doCompile(File root, Queue<String> infos, LogTool log, String envp) {
 
 		List<String> list = new ArrayList<String>();
 		list.add("clean compile");
@@ -51,36 +51,36 @@ public class MavenUtil {
 
 	}
 
-	public boolean doPackage(File root, Queue<String> infos, RepositoryLog log) {
+	public boolean doPackage(File root, Queue<String> infos, LogTool log) {
 
 		return doPackage(root, infos, log, null);
 	}
 
-	public boolean doPackage(File root, Queue<String> infos, RepositoryLog log, String envp) {
+	public boolean doPackage(File root, Queue<String> infos, LogTool log, String envp) {
 
 		List<String> list = new ArrayList<String>();
 		list.add("clean package");
 		return todo(root, list, infos, log, envp);
 	}
 
-	public boolean doInstall(File root, Queue<String> infos, RepositoryLog log) {
+	public boolean doInstall(File root, Queue<String> infos, LogTool log) {
 
 		return doInstall(root, infos, log, null);
 	}
 
-	public boolean doInstall(File root, Queue<String> infos, RepositoryLog log, String envp) {
+	public boolean doInstall(File root, Queue<String> infos, LogTool log, String envp) {
 
 		List<String> list = new ArrayList<String>();
 		list.add("clean install");
 		return todo(root, list, infos, log, envp);
 	}
 
-	public boolean doDeploy(File root, Queue<String> infos, RepositoryLog log) {
+	public boolean doDeploy(File root, Queue<String> infos, LogTool log) {
 
 		return doDeploy(root, infos, log, null);
 	}
 
-	public boolean doDeploy(File root, Queue<String> infos, RepositoryLog log, String envp) {
+	public boolean doDeploy(File root, Queue<String> infos, LogTool log, String envp) {
 
 		List<String> list = new ArrayList<String>();
 		list.add("clean deploy");
@@ -93,7 +93,7 @@ public class MavenUtil {
 		return webapp_folder;
 	}
 
-	public boolean todo(File root, List<String> list, Queue<String> infos, RepositoryLog log, String envp) {
+	public boolean todo(File root, List<String> list, Queue<String> infos, LogTool log, String envp) {
 		webapp_folder = null;
 		if (root == null) {
 			if (log != null) {

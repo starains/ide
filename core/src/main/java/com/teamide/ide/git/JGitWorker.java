@@ -77,10 +77,10 @@ public class JGitWorker {
 		}
 	}
 
-	public FetchResult fetch(String remote) throws Exception {
+	public FetchResult fetch(String remote, UsernamePasswordCredentialsProvider credentialsProvider) throws Exception {
 
 		try {
-			return JGitUtil.fetch(git, remote);
+			return JGitUtil.fetch(git, remote, credentialsProvider);
 		} finally {
 			close();
 		}

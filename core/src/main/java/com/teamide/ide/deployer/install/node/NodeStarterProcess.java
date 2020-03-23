@@ -1,20 +1,20 @@
-package com.teamide.ide.processor.repository.starter.node;
+package com.teamide.ide.deployer.install.node;
 
 import java.io.File;
 
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.EnvironmentBean;
-import com.teamide.ide.processor.repository.starter.StarterParam;
-import com.teamide.ide.processor.repository.starter.StarterProcess;
+import com.teamide.ide.deployer.DeployInstall;
+import com.teamide.ide.deployer.DeployParam;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.shell.Shell;
 import com.teamide.ide.shell.node.NodeShell;
 
-public class NodeStarterProcess extends StarterProcess {
+public class NodeStarterProcess extends DeployInstall {
 
 	private final String node_home;
 
-	public NodeStarterProcess(StarterParam param) {
+	public NodeStarterProcess(DeployParam param) {
 		super(param);
 		String node_home = null;
 		if (!StringUtil.isEmpty(param.option.getNodeenvironmentid())) {
@@ -27,12 +27,12 @@ public class NodeStarterProcess extends StarterProcess {
 				e.printStackTrace();
 			}
 		}
-		this.node_home = param.formatToRoot(node_home);
+		this.node_home = param.starter.formatToRoot(node_home);
 	}
 
 	@Override
 	public Shell getShell() {
-		NodeShell shell = new NodeShell(param.starterFolder);
+		NodeShell shell = new NodeShell(param.starter.starterFolder);
 		return shell;
 	}
 

@@ -11,13 +11,14 @@ import com.teamide.util.IDGenerateUtil;
 import com.teamide.util.StringUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.constant.IDEConstant;
+import com.teamide.ide.deployer.Deploy;
+import com.teamide.ide.deployer.LocalDeploy;
 import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.processor.repository.starter.Starter;
 
 public class StarterHandler {
 
-	static final Map<String, Starter> CACHE = new HashMap<String, Starter>();
+	static final Map<String, Deploy> CACHE = new HashMap<String, Deploy>();
 
 	static final Object LOAD_LOCK = new Object();
 
@@ -58,7 +59,7 @@ public class StarterHandler {
 		CACHE.remove(token);
 	}
 
-	public static Starter get(String token) throws Exception {
+	public static Deploy get(String token) throws Exception {
 		if (StringUtil.isEmpty(token)) {
 			return null;
 		}
@@ -85,11 +86,11 @@ public class StarterHandler {
 		}
 
 		File starterFolder = getStarterFolder(token);
-		if (!new File(starterFolder, StarterHandler.JSON_FILE_NAME).exists()) {
+		if (!new File(starterFolder, "starter.json").exists()) {
 			return;
 		}
-		Starter starter = new Starter(starterFolder);
-		CACHE.put(starter.token, starter);
+		Deploy starter = new LocalDeploy(starterFolder);
+		CACHE.put(starter.starter.token, starter);
 	}
 
 	public static final String deploy(RepositoryProcessorParam param, String projectPath, String runName)
@@ -98,13 +99,13 @@ public class StarterHandler {
 		if (option == null) {
 			throw new Exception("path [" + projectPath + "] run [" + runName + "] option is null.");
 		}
-		Starter starter = create(param, projectPath, option);
-		deploy(starter.token);
-		return starter.token;
+		Deploy starter = create(param, projectPath, option);
+		deploy(starter.starter.token);
+		return starter.starter.token;
 	}
 
 	public static final void deploy(String token) throws Exception {
-		Starter starter = get(token);
+		Deploy starter = get(token);
 		if (starter != null) {
 			new Thread() {
 				@Override
@@ -120,7 +121,7 @@ public class StarterHandler {
 		}
 	}
 
-	public static Starter create(RepositoryProcessorParam param, String path, JSONObject option) throws Exception {
+	public static Deploy create(RepositoryProcessorParam param, String path, JSONObject option) throws Exception {
 		String token = IDGenerateUtil.generateShort();
 		JSONObject json = new JSONObject();
 		json.put("spaceid", param.getSpaceid());
@@ -132,16 +133,16 @@ public class StarterHandler {
 
 		File starterFolder = getStarterFolder(token);
 
-		FileUtil.write(json.toJSONString().getBytes(), new File(starterFolder, JSON_FILE_NAME));
+		FileUtil.write(json.toJSONString().getBytes(), new File(starterFolder, "starter.json"));
 
 		return get(token);
 	}
 
-	public static List<Starter> getStarters(RepositoryProcessorParam param) throws Exception {
+	public static List<Deploy> getStarters(RepositoryProcessorParam param) throws Exception {
 
-		List<Starter> starters = new ArrayList<Starter>();
+		List<Deploy> starters = new ArrayList<Deploy>();
 		for (String token : CACHE.keySet()) {
-			Starter starter = get(token);
+			Deploy starter = get(token);
 			if (param.getSpaceid().equals(starter.spaceid) && param.getBranch().equals(starter.branch)) {
 				starters.add(starter);
 			}
@@ -149,8 +150,6 @@ public class StarterHandler {
 
 		return starters;
 	}
-
-	public static final String JSON_FILE_NAME = "starter.json";
 
 	public static File getWorkspacesStarterFolder() {
 		return new File(IDEConstant.WORKSPACES_STARTER_FOLDER);
