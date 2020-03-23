@@ -16,11 +16,11 @@ public class IDEConstant {
 
 	public static final String UPDATE_FOLDER = HOME + "update/";
 
-	public static final String WORK_FOLDER = HOME + "work/";
+	public static final String WORKSPACES_FOLDER = HOME + "workspaces/";
 
-	public static final String RUNNER_FOLDER = WORK_FOLDER + "runner/";
+	public static final String WORKSPACES_STARTER_FOLDER = WORKSPACES_FOLDER + "starter/";
 
-	public static final String TOMCAT_FOLDER = WORK_FOLDER + "tomcat/";
+	public static final String TOMCAT_FOLDER = WORKSPACES_FOLDER + "tomcat/";
 
 	public static final String TOMCAT_WORK_FOLDER = TOMCAT_FOLDER + "work/";
 
@@ -28,9 +28,9 @@ public class IDEConstant {
 
 	private static final String getHome() {
 
-		String home = System.getenv("COOS_RUNNER_HOME");
+		String home = System.getenv("TEAMIDE_DEPLOYER_HOME");
 		if (home == null || home.trim().length() == 0) {
-			home = System.getProperty("COOS_RUNNER_HOME");
+			home = System.getProperty("TEAMIDE_DEPLOYER_HOME");
 		}
 		if (home == null || home.trim().length() == 0) {
 			home = System.getProperty("user.dir");
@@ -50,7 +50,7 @@ public class IDEConstant {
 			home = home + "/";
 		}
 
-		System.setProperty("COOS_RUNNER_HOME", home);
+		System.setProperty("TEAMIDE_DEPLOYER_HOME", home);
 		return home;
 	}
 

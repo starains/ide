@@ -355,26 +355,25 @@ public class SelectGenerater extends SqlGenerater {
 		content_count_mapper.append(getTab(tab));
 		content_count_mapper.append(" GROUP BY ").append("\n");
 
+		content.append(getTab(tab));
+		content.append("boolean isGroupFirst = true;").append("\n");
 		for (Group group : groups) {
 
+			int tab_ = tab;
 			if (StringUtil.isNotTrimEmpty(group.getIfrule())) {
 				content.append(getTab(tab));
 				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
 						+ group.getIfrule() + "\", data))) {").append("\n");
-				content.append(getTab(tab + 1));
 
 				content_mapper.append(getTab(tab));
 				content_mapper.append("<if test=\"" + getFormatIfrule(group.getIfrule()) + "\" >").append("\n");
-				content_mapper.append(getTab(tab + 1));
 
 				content_count_mapper.append(getTab(tab));
 				content_count_mapper.append("<if test=\"" + getFormatIfrule(group.getIfrule()) + "\" >").append("\n");
-				content_count_mapper.append(getTab(tab + 1));
-			} else {
-				content.append(getTab(tab));
 
-				content_mapper.append(getTab(tab));
-				content_count_mapper.append(getTab(tab));
+				tab_ = tab + 1;
+			} else {
+
 			}
 
 			StringBuffer sql = new StringBuffer();
@@ -384,9 +383,15 @@ public class SelectGenerater extends SqlGenerater {
 			sql.append(getGroupSql(group));
 			sql.append(" ");
 
-			content.append("groupSql.append(\"" + sql + "\");").append("\n");
+			content.append(getTab(tab_));
+			content.append("groupSql.append(isGroupFirst ? \"\" : \",\").append(\"" + sql + "\");").append("\n");
+			content.append(getTab(tab_));
+			content.append("isGroupFirst = false;").append("\n");
 
+			content_mapper.append(getTab(tab_));
 			content_mapper.append(sql).append("\n");
+
+			content_count_mapper.append(getTab(tab_));
 			content_count_mapper.append(sql).append("\n");
 
 			if (StringUtil.isNotTrimEmpty(group.getIfrule())) {
@@ -496,23 +501,23 @@ public class SelectGenerater extends SqlGenerater {
 		content_mapper.append(getTab(tab));
 		content_mapper.append(" ORDER BY ").append("\n");
 
+		content.append(getTab(tab));
+		content.append("boolean isOrderFirst = true;").append("\n");
+
 		boolean isFirst = true;
 		for (Order order : orders) {
-
+			int tab_ = tab;
 			if (StringUtil.isNotTrimEmpty(order.getIfrule())) {
 				content.append(getTab(tab));
 				content.append("if(ObjectUtil.isTrue(" + factory_classname + ".getValueByJexlScript(\""
 						+ order.getIfrule() + "\", data))) {").append("\n");
-				content.append(getTab(tab + 1));
 
 				content_mapper.append(getTab(tab));
 				content_mapper.append("<if test=\"" + getFormatIfrule(order.getIfrule()) + "\" >").append("\n");
-				content_mapper.append(getTab(tab + 1));
+				tab_ = tab + 1;
 
 			} else {
-				content.append(getTab(tab));
 
-				content_mapper.append(getTab(tab));
 			}
 
 			StringBuffer sql = new StringBuffer();
@@ -522,8 +527,12 @@ public class SelectGenerater extends SqlGenerater {
 			sql.append(getOrderSql(order));
 			sql.append(" ");
 
-			content.append("sql.append(\"" + sql + "\");").append("\n");
+			content.append(getTab(tab_));
+			content.append("sql.append(isOrderFirst ? \"\" : \",\").append(\"" + sql + "\");").append("\n");
+			content.append(getTab(tab_));
+			content.append("isOrderFirst = false;").append("\n");
 
+			content_mapper.append(getTab(tab_));
 			content_mapper.append(sql).append("\n");
 
 			if (StringUtil.isNotTrimEmpty(order.getIfrule())) {

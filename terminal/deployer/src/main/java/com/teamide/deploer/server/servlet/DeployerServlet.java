@@ -18,8 +18,8 @@ import com.teamide.deploer.server.service.RunnerService;
 import com.teamide.deploer.server.service.UploadService;
 import com.teamide.deploer.util.StringUtil;
 
-@WebServlet(urlPatterns = "/runner/*")
-public class RunnerServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/deployer/*")
+public class DeployerServlet extends HttpServlet {
 
 	/**
 	 * 
@@ -28,7 +28,7 @@ public class RunnerServlet extends HttpServlet {
 
 	public final ServerListener listener;
 
-	public RunnerServlet(ServerListener listener) {
+	public DeployerServlet(ServerListener listener) {
 		this.listener = listener;
 	}
 
@@ -54,6 +54,9 @@ public class RunnerServlet extends HttpServlet {
 			result = remove(request, response);
 			break;
 		case "status":
+			result = status(request, response);
+			break;
+		case "log":
 			result = status(request, response);
 			break;
 		case "upload":
@@ -104,6 +107,18 @@ public class RunnerServlet extends HttpServlet {
 	}
 
 	public Object status(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			JSONObject body = getBody(request);
+			String token = body.getString("token");
+			JSONObject option = body.getJSONObject("option");
+			return new RunnerService().status(token, option);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Object log(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			JSONObject body = getBody(request);
 			String token = body.getString("token");

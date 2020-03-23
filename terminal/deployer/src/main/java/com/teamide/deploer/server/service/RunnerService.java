@@ -16,16 +16,16 @@ import com.teamide.deploer.util.StringUtil;
 
 public class RunnerService {
 	public static File getShellFolder(String token) {
-		return new File(IDEConstant.RUNNER_FOLDER, token + "/shell");
+		return new File(IDEConstant.WORKSPACES_STARTER_FOLDER, token + "/shell");
 	}
 
 	public static File getRoot(String token, JSONObject option) {
 		String targetpath = option.getString("targetpath");
 		if (StringUtil.isEmpty(targetpath)) {
 			if (StringUtil.isEmpty(token)) {
-				return new File(IDEConstant.RUNNER_FOLDER, option.getString("name") + "/source");
+				return new File(IDEConstant.WORKSPACES_STARTER_FOLDER, option.getString("name") + "/source");
 			} else {
-				return new File(IDEConstant.RUNNER_FOLDER, token + "/source");
+				return new File(IDEConstant.WORKSPACES_STARTER_FOLDER, token + "/source");
 			}
 		} else {
 			return new File(targetpath);

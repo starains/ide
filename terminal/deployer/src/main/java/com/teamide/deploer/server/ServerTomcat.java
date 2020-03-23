@@ -14,7 +14,7 @@ import org.apache.catalina.mbeans.GlobalResourcesLifecycleListener;
 import org.apache.catalina.startup.Tomcat;
 
 import com.teamide.deploer.IDEConstant;
-import com.teamide.deploer.server.servlet.RunnerServlet;
+import com.teamide.deploer.server.servlet.DeployerServlet;
 
 public class ServerTomcat {
 
@@ -61,14 +61,14 @@ public class ServerTomcat {
 		connector.setURIEncoding("UTF-8");// 设置编码
 		// connector.setPort(port);
 
-		RunnerServlet servlet = new RunnerServlet(listener);
+		DeployerServlet servlet = new DeployerServlet(listener);
 		String contextPath = listener.server.getContextPath();
 		if (contextPath.equals("/")) {
 			contextPath = "";
 		}
 		context = tomcat.addContext(contextPath, "");
 		Wrapper wrapper = tomcat.addServlet(contextPath, servlet.getClass().getName(), servlet);
-		wrapper.addMapping("/runner/*");
+		wrapper.addMapping("/deployer/*");
 
 		tomcat.start();// 启动tomcat
 
