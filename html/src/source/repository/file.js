@@ -116,10 +116,13 @@ source.repository.file_data_map = {};
         file.isMaven = file.maven;
 
         if (parent && !file.isNew) {
-            if (parent.path == '') {
-                file.path = file.name;
-            } else {
-                file.path = parent.path + '/' + file.name;
+
+            if (!parent.isFormatFolder && !file.isFormatFolder) {
+                if (parent.path == '') {
+                    file.path = file.name;
+                } else {
+                    file.path = parent.path + '/' + file.name;
+                }
             }
         }
     };
