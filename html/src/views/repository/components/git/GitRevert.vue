@@ -26,6 +26,10 @@
               autocomplete="off"
             ></el-input>
           </div>
+          <div class="coos-row col-4 text-right">
+            <a class="coos-link color-grey ft-12 mgr-10" @click="checkAll()">全选</a>
+            <a class="coos-link color-grey ft-12" @click="uncheckAll()">取消选中</a>
+          </div>
           <div class="coos-row col-4 text-right"></div>
           <div class="col-12 mgt-5 coos-row file-box coos-scrollbar">
             <div v-show="not_staged.length == 0" class="text-center">暂无数据</div>
@@ -59,8 +63,6 @@ export default {
       size: "mini",
       source: source,
       show_form: false,
-      staged: [],
-      staged_checked: [],
       not_staged: [],
       not_staged_checked: [],
       form: {},
@@ -106,54 +108,26 @@ export default {
       });
     },
     refresh() {
-      coos.trimList(this.staged);
-      coos.trimList(this.staged_checked);
       coos.trimList(this.not_staged);
       coos.trimList(this.not_staged_checked);
-      let added = [];
-      if (source.repository.git.status) {
-        added = source.repository.git.status.added || [];
-      }
-      added.forEach(one => {
-        this.staged.push({
-          path: one,
-          value: one,
-          text: one + "（新增）"
-        });
-      });
-
-      let changed = [];
-      if (source.repository.git.status) {
-        changed = source.repository.git.status.changed || [];
-      }
-      changed.forEach(one => {
-        this.staged.push({
-          path: one,
-          value: one,
-          text: one + "（更改）"
-        });
-      });
-
-      let removed = [];
-      if (source.repository.git.status) {
-        removed = source.repository.git.status.removed || [];
-      }
-      removed.forEach(one => {
-        this.staged.push({
-          path: one,
-          value: one,
-          text: one + "（移除）"
-        });
-      });
-
       this.change_files.forEach(one => {
-        if (this.staged.indexOf(one) < 0) {
+        if (this.not_staged.indexOf(one) < 0) {
           this.not_staged.push(one);
         }
       });
     },
     hideForm() {
       this.show_form = false;
+    },
+    checkAll() {
+      this.not_staged.forEach(one => {
+        if (this.not_staged_checked.indexOf(one.path) < 0) {
+          this.not_staged_checked.push(one.path);
+        }
+      });
+    },
+    uncheckAll() {
+      coos.trimList(this.not_staged_checked);
     },
     formSave() {
       this.$refs["form"].validate(valid => {
@@ -163,14 +137,29 @@ export default {
           this.hideForm();
 
           let paths = [];
+          let deletes = [];
 
           this.not_staged_checked.forEach(one => {
-            paths.push(one);
+            let isAdded = false;
+            this.change_files.forEach(change_file => {
+              if (
+                change_file.status == "untracked" &&
+                change_file.path == one
+              ) {
+                isAdded = true;
+              }
+            });
+            if (isAdded) {
+              deletes.push(one);
+            } else {
+              paths.push(one);
+            }
           });
 
           data.paths = paths;
-          if (paths.length > 0) {
-            source.gitRevert(paths);
+          data.deletes = deletes;
+          if (paths.length > 0 || deletes.length > 0) {
+            source.gitRevert(paths, deletes);
           }
 
           this.resolve && this.resolve(data);

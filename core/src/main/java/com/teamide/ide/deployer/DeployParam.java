@@ -101,4 +101,16 @@ public class DeployParam {
 		}
 		return install;
 	}
+
+	public File getPIDFile() {
+		if (option != null && !StringUtil.isEmpty(option.getPidfile())) {
+			return new File(option.getPidfile());
+		}
+		if (option != null && !StringUtil.isEmpty(option.getStartcommand())) {
+			if (option.getStartcommand().indexOf("$STARTER_PID_PATH") >= 0) {
+				return new File(starter.starterFolder, "starter.pid");
+			}
+		}
+		return new File(starter.starterFolder, "starter.pid");
+	}
 }

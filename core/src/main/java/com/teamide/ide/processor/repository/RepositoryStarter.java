@@ -53,7 +53,18 @@ public class RepositoryStarter extends RepositoryBase {
 		Deploy deploy = DeployHandler.get(token);
 
 		if (deploy != null) {
-			deploy.start();
+			new Thread() {
+
+				@Override
+				public void run() {
+					try {
+						deploy.start();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+			}.start();
 		}
 		JSONObject result = new JSONObject();
 		return result;

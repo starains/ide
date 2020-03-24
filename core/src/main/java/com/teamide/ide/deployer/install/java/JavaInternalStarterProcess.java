@@ -29,7 +29,7 @@ public class JavaInternalStarterProcess extends JavaStarterProcess {
 
 		param.starter.getLog().info("tomcat root " + param.starter.starterServerFolder.toURI().getPath());
 
-		File appFolder = getAppFolder(param.starter.starterServerFolder);
+		File appFolder = getAppFolder(param.starter.starterServerFolder, null);
 
 		String hostname = param.option.getHostname();
 		String port = "" + param.option.getPort();
@@ -63,13 +63,6 @@ public class JavaInternalStarterProcess extends JavaStarterProcess {
 	}
 
 	@Override
-	public void compile() throws Exception {
-		super.compile();
-
-		outWebapps(param.starter.starterServerFolder);
-	}
-
-	@Override
 	public File getServer() throws Exception {
 
 		File tomcat_folder = new File(IDEConstant.PLUGINS_SERVER_FOLDER, param.option.getInternaltomcat());
@@ -80,12 +73,13 @@ public class JavaInternalStarterProcess extends JavaStarterProcess {
 	}
 
 	@Override
-	public File getWorkFolder() throws Exception {
-		return param.starter.starterServerFolder;
+	public File getPIDFile() throws Exception {
+		return shell.getPIDFile();
 	}
 
 	@Override
-	public File getPIDFile() throws Exception {
-		return shell.getPIDFile();
+	public void copyProject() throws Exception {
+
+		outWebapps(param.starter.starterServerFolder);
 	}
 }

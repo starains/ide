@@ -62,11 +62,6 @@ public class DefaultInstall extends DeployInstall {
 	}
 
 	@Override
-	public File getWorkFolder() {
-		return this.param.projectFolder;
-	}
-
-	@Override
 	public void compile() throws Exception {
 		String command = null;
 		if (param.option != null) {
@@ -106,6 +101,12 @@ public class DefaultInstall extends DeployInstall {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void copyProject() throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

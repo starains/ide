@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.deploer.enums.StarterStatus;
 import com.teamide.deploer.enums.TerminalEvent;
 import com.teamide.ide.constant.IDEConstant;
 
@@ -23,7 +24,7 @@ public class Starter extends StarterParam {
 			writeEvent(TerminalEvent.START.getValue());
 		} else {
 			getLog().error("starter jar does not exist.");
-			writeDeployStatus("DESTROYED");
+			writeStatus(StarterStatus.DESTROYED);
 		}
 	}
 
@@ -32,7 +33,7 @@ public class Starter extends StarterParam {
 			writeEvent(TerminalEvent.STOP.getValue());
 		} else {
 			getLog().error("starter jar does not exist.");
-			writeDeployStatus("DESTROYED");
+			writeStatus(StarterStatus.DESTROYED);
 		}
 	}
 
@@ -50,7 +51,7 @@ public class Starter extends StarterParam {
 
 	Process process;
 
-	public void startStarter(File workFolder, File pidFile) throws Exception {
+	public void startStarter() throws Exception {
 		// Process process;
 		getLog().info("starting starter...");
 
@@ -62,13 +63,15 @@ public class Starter extends StarterParam {
 
 		shell.append(" -Dfile.encoding=UTF-8 ");
 		shell.append(" -DSTARTER_HOME=\"").append(starterFolder.getAbsolutePath() + "\"");
-		if (workFolder != null) {
-			shell.append(" -DWORK_HOME=\"").append(workFolder.getAbsolutePath() + "\"");
-		}
-		if (pidFile != null) {
-			shell.append(" -DPID_FILE=\"").append(pidFile.getAbsolutePath() + "\"");
-			shell.append(" -DBACKSTAGE=1");
 
+		if (starterJSON.get("WORK_HOME") != null) {
+			shell.append(" -DWORK_HOME=\"")
+					.append(new File(starterFolder, starterJSON.getString("WORK_HOME")).getAbsolutePath() + "\"");
+		}
+		if (starterJSON.get("PID_FILE") != null) {
+			shell.append(" -DPID_FILE=\"")
+					.append(new File(starterFolder, starterJSON.getString("PID_FILE")).getAbsolutePath() + "\"");
+			shell.append(" -DBACKSTAGE=1");
 		}
 
 		shell.append(" -jar ");
@@ -101,14 +104,15 @@ public class Starter extends StarterParam {
 	}
 
 	public JSONObject getStarterInfo() {
-
-		if (starterJSON != null) {
-			starterJSON.put("status", readStatus());
-			starterJSON.put("deploy_status", readDeployStatus());
-			starterJSON.put("starter_timestamp", readTimestamp());
-			starterJSON.put("now_timestamp", System.currentTimeMillis());
+		JSONObject json = starterJSON;
+		if (json != null) {
+			json = (JSONObject) json.clone();
+			json.put("status", readStatus());
+			json.put("deploy_status", readDeployStatus());
+			json.put("install_status", readInstallStatus());
+			json.put("starter_running", starterRunning());
 		}
 
-		return starterJSON;
+		return json;
 	}
 }

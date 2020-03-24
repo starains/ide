@@ -305,9 +305,14 @@ public class RepositoryProcessor extends SpaceProcessor {
 				repositoryGit.checkout(String.valueOf(one));
 				files.add(loader.load(String.valueOf(one)));
 			}
-			value = files;
 
-			spaceEventBean.set("paths", paths);
+			if (data.get("deletes") != null) {
+				JSONArray deletes = data.getJSONArray("deletes");
+				for (Object one : deletes) {
+					param.getFile(String.valueOf(one)).delete();
+				}
+			}
+
 			appendEvent(spaceEventBean);
 
 			break;
@@ -332,7 +337,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 			new RepositoryGit(param).push(paths, message, gitRemoteName, branchName, gitRemoteBranch, username,
 					password);
-
+			data.remove("paths");
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 

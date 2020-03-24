@@ -34,7 +34,7 @@ source.repository.starterActive = "0";
         if (starter.token != '0') {
             source.do('STARTER_START', { token: starter.token }).then((res) => {
                 if (res.errcode == 0) {
-                    coos.success('启动成功！');
+                    coos.success('启动命令提交成功，正在启动！');
                 } else {
                     coos.error(res.errmsg);
                 }
@@ -334,8 +334,8 @@ source.repository.starterActive = "0";
         if (starter != null) {
             starter.status = value.status;
             starter.deploy_status = value.deploy_status;
-            starter.starter_timestamp = value.starter_timestamp;
-            starter.now_timestamp = value.now_timestamp;
+            starter.install_status = value.install_status;
+            starter.starter_running = value.starter_running;
         }
         window.setTimeout(() => {
             source.loadStarterStatus();

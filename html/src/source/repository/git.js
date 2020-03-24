@@ -190,30 +190,44 @@ source.repository.navs.push(git_branche_nav);
     };
 
 
-    source.gitRevert = function (paths) {
-        if (paths == null || paths.length == 0) {
+    source.gitRevert = function (paths, deletes) {
+        paths = paths || [];
+        deletes = deletes || [];
+        if ((paths.length == 0) && (deletes.length == 0)) {
             return;
         }
-        if (coos.isEmpty(paths[0])) {
+        if (paths.length > 0 && coos.isEmpty(paths[0])) {
             paths[0] = ".";
         }
         let html = '';
         html += '<div class="coos-row">';
-        html += '<div class="coos-row ft-14">确定还原以下路径？</div>';
+        html += '<div class="coos-row ft-14 pdb-10">确定还原以下路径？</div>';
+        html += '<div class="coos-row" style="max-height: 500px;overflow:auto;">';
 
         paths.forEach(one => {
-            html += '<div class="coos-row color-grey ft-13 mgb-5" style="word-wrap: break-word;word-break: normal;">' + one + '</div>';
+            html += '<div class="coos-row color-grey ft-13 mgb-5" style="word-wrap: break-word;word-break: normal;">' + one + '（还原）</div>';
+        });
+        deletes.forEach(one => {
+            html += '<div class="coos-row color-grey ft-13 mgb-5" style="word-wrap: break-word;word-break: normal;">' + one + '（删除）</div>';
         });
 
         html += '</div>';
-        coos.confirm(html, { width: '500px' }).then(res => {
+        html += '</div>';
+        coos.confirm(html, { width: '700px' }).then(res => {
             var data = {};
             data.paths = paths;
+            data.deletes = deletes;
 
             source.do("GIT_REVERT", data).then(res => {
                 if (res.errcode == 0) {
                     coos.success("还原成功！");
-                    let project = source.getProjectByPath(paths[0]);
+                    let path = null;
+                    if (paths.length > 0) {
+                        path = paths[0];
+                    } else {
+                        path = deletes[0];
+                    }
+                    let project = source.getProjectByPath(path);
                     if (project != null) {
                         source.reloadProject(project);
                     }

@@ -1,12 +1,14 @@
-package com.teamide.ide.enums;
+package com.teamide.deploer.enums;
 
 public enum DeployStatus {
 
-	NOT_DEPLOYED("NOT_DEPLOYED", "未部署"),
+	DEPLOYING("DEPLOYING", "安装中"),
 
-	DEPLOYING("DEPLOYING", "部署中"),
+	DEPLOYED("DEPLOYED", "安装完成"),
 
-	DEPLOYED("DEPLOYED", "已部署"),
+	UPLOADING("UPLOADING", "安装中"),
+
+	UPLOADED("UPLOADED", "安装完成"),
 
 	;
 

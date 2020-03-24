@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.deploer.enums.DeployStatus;
+import com.teamide.deploer.enums.InstallStatus;
+import com.teamide.deploer.enums.StarterStatus;
 import com.teamide.ide.tool.LogTool;
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
@@ -28,11 +31,15 @@ public class StarterParam {
 
 	public final File starterStatusFile;
 
-	public final File starterDeployStatusFile;
+	public final File deployStatusFile;
+
+	public final File installStatusFile;
 
 	public final File starterJarFile;
 
 	public final File starterTimestampFile;
+
+	public final File workFolder;
 
 	public final JSONObject starterJSON;
 
@@ -41,11 +48,13 @@ public class StarterParam {
 	public StarterParam(File starterFolder) {
 		this.starterFolder = starterFolder;
 		this.starterServerFolder = new File(this.starterFolder, "server");
+		this.workFolder = new File(this.starterFolder, "work");
 		this.starterJSONFile = new File(this.starterFolder, "starter.json");
 
 		this.starterEventFile = new File(this.starterFolder, "starter.event");
 		this.starterStatusFile = new File(this.starterFolder, "starter.status");
-		this.starterDeployStatusFile = new File(this.starterFolder, "starter.deploy.status");
+		this.deployStatusFile = new File(this.starterFolder, "deploy.status");
+		this.installStatusFile = new File(this.starterFolder, "install.status");
 		this.starterTimestampFile = new File(this.starterFolder, "starter.timestamp");
 		this.starterJarFile = new File(this.starterFolder, "starter.jar");
 
@@ -116,8 +125,8 @@ public class StarterParam {
 	public String readDeployStatus() {
 
 		try {
-			if (starterDeployStatusFile.exists()) {
-				return new String(FileUtil.read(starterDeployStatusFile));
+			if (deployStatusFile.exists()) {
+				return new String(FileUtil.read(deployStatusFile));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -126,10 +135,12 @@ public class StarterParam {
 
 	}
 
-	public String writeStatus(String status) {
+	public String readInstallStatus() {
 
 		try {
-			FileUtil.write(status.getBytes(), starterStatusFile);
+			if (installStatusFile.exists()) {
+				return new String(FileUtil.read(installStatusFile));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -137,10 +148,32 @@ public class StarterParam {
 
 	}
 
-	public String writeDeployStatus(String status) {
+	public String writeStatus(StarterStatus status) {
 
 		try {
-			FileUtil.write(status.getBytes(), starterDeployStatusFile);
+			FileUtil.write(status.getValue().getBytes(), starterStatusFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public String writeDeployStatus(DeployStatus status) {
+
+		try {
+			FileUtil.write(status.getValue().getBytes(), deployStatusFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public String writeInstallStatus(InstallStatus status) {
+
+		try {
+			FileUtil.write(status.getValue().getBytes(), installStatusFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -158,19 +191,22 @@ public class StarterParam {
 
 	}
 
-	public long readTimestamp() {
+	public boolean starterRunning() {
 
 		try {
 			if (starterTimestampFile.exists()) {
 				String value = new String(FileUtil.read(starterTimestampFile));
 				if (StringUtil.isNotEmpty(value)) {
-					return Long.valueOf(value);
+					boolean flag = Long.valueOf(value) >= System.currentTimeMillis() - (1000 * 5);
+					if (flag) {
+						return true;
+					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return 0;
+		return false;
 
 	}
 

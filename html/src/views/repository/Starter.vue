@@ -20,46 +20,69 @@
           <div class>
             <div class="coos-row text-right pdr-10 pdt-5 starter-btns">
               <template v-if="item.option != null">
-                <template v-if="item.deploy_status == 'INSTALL_STARER'">
-                  <a class="color-green starter-status">终端程序安装</a>
+                <template
+                  v-if="item.deploy_status == 'UPLOADING' ||item.deploy_status == 'DEPLOYING' "
+                >
+                  <template v-if="item.deploy_status == 'UPLOADING'">
+                    <a class="color-orange starter-status">启动资源上传中</a>
+                  </template>
+                  <template v-if="item.deploy_status == 'DEPLOYING'">
+                    <a class="color-orange starter-status">启动资源安装中</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_STARER'">
+                    <a class="color-orange starter-status">安装启动器</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_STARER_ERROR'">
+                    <a class="color-red starter-status">安装启动器出错</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_SERVER'">
+                    <a class="color-orange starter-status">安装服务</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_SERVER_ERROR'">
+                    <a class="color-red starter-status">安装服务出错</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_PROJECT_ING'">
+                    <a class="color-orange starter-status">安装工程中</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_PROJECT_ED'">
+                    <a class="color-green starter-status">安装工程成功</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_PROJECT_ERROR'">
+                    <a class="color-red starter-status">安装出错</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_SHELL'">
+                    <a class="color-orange starter-status">生成脚本</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_SHELL_ERROR'">
+                    <a class="color-orange starter-status">生成脚本出错</a>
+                  </template>
                 </template>
-                <template v-if="item.deploy_status == 'STARTING_STARTER'">
-                  <a class="color-green starter-status">终端启动中</a>
-                </template>
-                <template v-if="item.deploy_status == 'STARTED_STARTER'">
-                  <a class="color-green starter-status">终端启动完成</a>
-                </template>
-                <template v-if="item.deploy_status == 'INSTALL_SERVER'">
-                  <a class="color-green starter-status">复制服务</a>
-                </template>
-                <template v-if="item.deploy_status == 'COMPILE'">
-                  <a class="color-green starter-status">编译</a>
-                </template>
-                <template v-if="item.deploy_status == 'INSTALL_SHELL'">
-                  <a class="color-green starter-status">生成Shell</a>
-                </template>
-                <template v-if="item.deploy_status == 'STARTING_TERMINAL'">
-                  <a class="color-green starter-status">终端启动中...</a>
-                </template>
-                <template v-if="item.deploy_status == 'STARTED_TERMINAL'">
-                  <a class="color-green starter-status">终端启动成功</a>
-                </template>
-                <template v-if="item.deploy_status == 'DESTROYING'">
-                  <a class="color-red starter-status">终端销毁中...</a>
-                </template>
-                <template v-if="item.deploy_status == 'DESTROYED'">
-                  <a class="color-red starter-status">终端已销毁</a>
-                </template>
-                <template v-if="item.deploy_status == 'DEPLOYING'">
-                  <a class="color-orange starter-status">终端部署中</a>
-                </template>
-                <template v-if="item.deploy_status == 'DEPLOYED'">
-                  <a class="color-green starter-status">终端部署成功</a>
-                </template>
-
-                <template v-if="item.deploy_status != 'DEPLOYING'">
-                  <template v-if="item.now_timestamp - item.starter_timestamp > 5000">
-                    <a class="color-red starter-status">终端已停止，请移除</a>
+                <template
+                  v-if="item.deploy_status == 'UPLOADED' || item.deploy_status == 'DEPLOYED' "
+                >
+                  <template v-if="item.install_status == 'INSTALL_PROJECT_ING'">
+                    <a class="color-orange starter-status">安装工程中</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_PROJECT_ED'">
+                    <a class="color-green starter-status">安装工程成功</a>
+                  </template>
+                  <template v-if="item.install_status == 'INSTALL_PROJECT_ERROR'">
+                    <a class="color-red starter-status">安装出错</a>
+                  </template>
+                  <template v-if="item.install_status == 'WORK_UPLOADING'">
+                    <a class="color-orange starter-status">启动资源上传中...</a>
+                  </template>
+                  <template v-if="item.install_status == 'WORK_UPLOADED'">
+                    <a class="color-orange starter-status">启动资源上传成功</a>
+                  </template>
+                  <template v-if="item.status == 'DESTROYING'">
+                    <a class="color-orange starter-status">启动器销毁中...</a>
+                  </template>
+                  <template v-if="item.status == 'DESTROYED'">
+                    <a class="color-green starter-status">启动器销毁成功</a>
+                  </template>
+                  <template v-if="!item.starter_running">
+                    <a class="color-red starter-status">启动器已停止，请移除</a>
                   </template>
                   <template v-else>
                     <template v-if="item.status == 'STARTING'">
@@ -71,42 +94,45 @@
                     <template v-if="item.status == 'STOPPING'">
                       <a class="color-red starter-status">停止中</a>
                     </template>
-                    <template v-if="item.status == 'STOPPED'">
+                    <template v-if="item.status == 'STOPPED' || coos.isEmpty(item.status)">
                       <a class="color-red starter-status">已停止</a>
                     </template>
                   </template>
 
                   <template
-                    v-if="item.status == 'STOPPED' || item.deploy_status == 'DEPLOYED' || item.deploy_status == 'DESTROYED' "
+                    v-if="item.install_status == 'WORK_UPLOADED' || item.install_status == 'INSTALL_PROJECT_ED'"
+                  >
+                    <template v-if="item.status == 'STOPPED' || coos.isEmpty(item.status)">
+                      <a class="coos-btn coos-btn-xs bg-green" @click="source.startStarter(item)">启动</a>
+                    </template>
+                    <template v-if="item.status == 'STARTED'">
+                      <a
+                        class="coos-btn coos-btn-xs bg-red"
+                        :class="{'coos-disabled' : item.status != 'STARTED'}"
+                        @click="source.stopStarter(item)"
+                      >停止</a>
+                    </template>
+                  </template>
+
+                  <template
+                    v-if="item.status == 'STOPPED' || item.status == 'DESTROYED' || coos.isEmpty(item.status)"
                   >
                     <a
-                      class="coos-btn coos-btn-xs bg-green"
+                      class="coos-btn coos-btn-xs bg-orange"
                       @click="source.deployStarter(item)"
                     >重新部署</a>
                   </template>
-                  <template v-if="item.status == 'STOPPED' || item.deploy_status == 'DEPLOYED' ">
-                    <a class="coos-btn coos-btn-xs bg-green" @click="source.startStarter(item)">启动</a>
-                  </template>
-                  <template v-if="item.status == 'STARTED'">
-                    <a
-                      class="coos-btn coos-btn-xs bg-red"
-                      :class="{'coos-disabled' : item.status != 'STARTED'}"
-                      @click="source.stopStarter(item)"
-                    >停止</a>
-                  </template>
                   <template
-                    v-if="item.status == 'STARTED' || item.status == 'STOPPED' || item.deploy_status == 'DEPLOYED'"
+                    v-if="item.status == 'STARTED' || item.status == 'STOPPED'|| item.starter_running "
                   >
                     <a
                       class="coos-btn coos-btn-xs bg-orange"
                       @click="source.destroyStarter(item)"
                     >销毁</a>
                   </template>
-                  <template
-                    v-if="item.deploy_status == 'DESTROYED' || item.now_timestamp - item.starter_timestamp > 5000"
-                  >
-                    <a class="coos-btn coos-btn-xs bg-orange" @click="source.removeStarter(item)">移除</a>
-                  </template>
+                </template>
+                <template v-if="item.status == 'DESTROYED'  || !item.starter_running">
+                  <a class="coos-btn coos-btn-xs bg-orange" @click="source.removeStarter(item)">移除</a>
                 </template>
               </template>
               <a class="coos-btn coos-btn-xs bg-orange" @click="source.cleanStarterLog(item)">清理日志</a>

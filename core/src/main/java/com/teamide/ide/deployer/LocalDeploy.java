@@ -3,6 +3,8 @@ package com.teamide.ide.deployer;
 import java.io.File;
 
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.deploer.enums.DeployStatus;
+import com.teamide.deploer.enums.StarterStatus;
 
 public class LocalDeploy extends Deploy {
 
@@ -10,25 +12,34 @@ public class LocalDeploy extends Deploy {
 		super(starterFolder);
 	}
 
-	public void deploy() {
-		this.starter.writeDeployStatus("DEPLOYED");
+	public void deploy() throws Exception {
+		this.starter.writeDeployStatus(DeployStatus.DEPLOYING);
+		install();
+		start();
+		this.starter.writeDeployStatus(DeployStatus.DEPLOYED);
 	}
 
 	public void remove() {
 		this.starter.remove();
 	}
 
-	public void destroy() {
+	public void destroy() throws Exception {
+		checkStartStarter();
 		this.starter.destroy();
 	}
 
 	public void start() throws Exception {
-		install();
+		this.starter.writeStatus(StarterStatus.STARTING);
+
 		checkStartStarter();
+		installProject();
+		deployInstall.copyProject();
 		this.starter.start();
 	}
 
-	public void stop() {
+	public void stop() throws Exception {
+		this.starter.writeStatus(StarterStatus.STOPPING);
+		checkStartStarter();
 		this.starter.stop();
 	}
 

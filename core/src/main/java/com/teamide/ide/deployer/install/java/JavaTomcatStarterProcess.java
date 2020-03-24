@@ -69,18 +69,11 @@ public class JavaTomcatStarterProcess extends JavaStarterProcess {
 		}
 		super.compile();
 
-		outWebapps(new File(tomcat_home));
-
 	}
 
 	@Override
 	public File getServer() throws Exception {
 		return null;
-	}
-
-	@Override
-	public File getWorkFolder() throws Exception {
-		return new File(getTomcatHome());
 	}
 
 	public String getTomcatHome() {
@@ -90,5 +83,10 @@ public class JavaTomcatStarterProcess extends JavaStarterProcess {
 	@Override
 	public File getPIDFile() throws Exception {
 		return shell.getPIDFile();
+	}
+
+	@Override
+	public void copyProject() throws Exception {
+		outWebapps(new File(tomcat_home));
 	}
 }

@@ -40,7 +40,7 @@ public class StarterServlet extends HttpServlet {
 		try {
 			switch (pathInfo) {
 			case "start":
-				starterService.start();
+				starterService.start(request);
 				break;
 			case "stop":
 				starterService.stop();
@@ -59,6 +59,9 @@ public class StarterServlet extends HttpServlet {
 				break;
 			case "cleanLog":
 				starterService.cleanLog();
+				break;
+			case "destroy":
+				starterService.destroy();
 				break;
 			case "deploy":
 				starterService.deploy(request);

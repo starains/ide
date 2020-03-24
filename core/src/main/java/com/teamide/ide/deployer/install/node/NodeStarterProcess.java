@@ -56,11 +56,6 @@ public class NodeStarterProcess extends DeployInstall {
 	}
 
 	@Override
-	public File getWorkFolder() {
-		return this.param.projectFolder;
-	}
-
-	@Override
 	public void compile() throws Exception {
 
 	}
@@ -76,6 +71,12 @@ public class NodeStarterProcess extends DeployInstall {
 
 	public String getNodeHome() {
 		return node_home;
+	}
+
+	@Override
+	public void copyProject() throws Exception {
+		
+		
 	}
 
 }

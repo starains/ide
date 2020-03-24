@@ -21,12 +21,12 @@ public abstract class DeployInstall {
 
 	public abstract File getServer() throws Exception;
 
-	public abstract File getWorkFolder() throws Exception;
-
 	public abstract String getStartShell() throws Exception;
 
 	public abstract String getStopShell() throws Exception;
 
 	public abstract File getPIDFile() throws Exception;
+
+	public abstract void copyProject() throws Exception;
 
 }

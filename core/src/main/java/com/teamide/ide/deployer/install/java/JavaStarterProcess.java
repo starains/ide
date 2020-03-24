@@ -1,8 +1,6 @@
 package com.teamide.ide.deployer.install.java;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.shared.utils.io.FileUtils;
@@ -16,12 +14,6 @@ import com.teamide.ide.processor.repository.hanlder.RepositoryHanlder;
 import com.teamide.ide.service.impl.EnvironmentService;
 
 public abstract class JavaStarterProcess extends DeployInstall {
-
-	public final List<File> class_folders = new ArrayList<File>();
-
-	public final List<File> lib_folders = new ArrayList<File>();
-
-	public File webapp_folder = null;
 
 	private final String java_home;
 
@@ -75,11 +67,11 @@ public abstract class JavaStarterProcess extends DeployInstall {
 		return maven_home;
 	}
 
-	public File getAppFolder(File tomcatFolder) {
+	public File getAppFolder(File tomcatFolder, String name) {
 		File webappsFolder = new File(tomcatFolder, "webapps");
 		String contextpath = getContextpath();
 		if (StringUtil.isEmpty(contextpath)) {
-			contextpath = webapp_folder.getName();
+			contextpath = name;
 		}
 		String outName = contextpath;
 		if (StringUtil.isEmpty(outName) || outName.equals("/")) {
@@ -91,12 +83,16 @@ public abstract class JavaStarterProcess extends DeployInstall {
 	}
 
 	protected void outWebapps(File tomcatFolder) throws Exception {
-		if (webapp_folder != null && webapp_folder.exists()) {
+		File targetWebappFolder = new File(param.starter.workFolder, "webapp");
+		if (targetWebappFolder.exists() && targetWebappFolder.listFiles().length > 0) {
+			targetWebappFolder = targetWebappFolder.listFiles()[0];
+		}
+		if (targetWebappFolder != null && targetWebappFolder.exists()) {
 			if (tomcatFolder == null || !tomcatFolder.exists()) {
 				throw new Exception("tomcat[" + tomcatFolder.getAbsolutePath() + "] does not exist.");
 			}
 
-			File appFolder = getAppFolder(tomcatFolder);
+			File appFolder = getAppFolder(tomcatFolder, targetWebappFolder.getName());
 
 			if (appFolder.exists()) {
 				try {
@@ -109,7 +105,7 @@ public abstract class JavaStarterProcess extends DeployInstall {
 				appFolder.mkdirs();
 			}
 			try {
-				FileUtils.copyDirectoryStructure(webapp_folder, appFolder);
+				FileUtils.copyDirectoryStructure(targetWebappFolder, appFolder);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -118,9 +114,6 @@ public abstract class JavaStarterProcess extends DeployInstall {
 	}
 
 	public void compile() throws Exception {
-		class_folders.clear();
-		lib_folders.clear();
-		webapp_folder = null;
 		Model model = RepositoryHanlder.getPomModel(new File(param.projectFolder, "pom.xml"));
 		if (model != null) {
 			mavenCompileAndPackage(model);
@@ -134,9 +127,7 @@ public abstract class JavaStarterProcess extends DeployInstall {
 		MavenUtil mavenUtil = new MavenUtil(getMavenHome());
 
 		File libFolder = new File(param.projectFolder, "target/lib");
-
 		mavenUtil.setLibPath(libFolder.getAbsolutePath());
-		lib_folders.add(libFolder);
 
 		boolean flag = mavenUtil.doPackage(param.projectFolder, null, this.param.starter.getLog(), getMavenEnvp());
 		if (!flag) {
@@ -144,14 +135,38 @@ public abstract class JavaStarterProcess extends DeployInstall {
 			throw new Exception("maven package error.");
 		}
 
-		File classesFolder = new File(param.projectFolder, "target/classes");
-		if (classesFolder.exists()) {
-			class_folders.add(classesFolder);
-		}
-
 		if (model.getPackaging() != null && model.getPackaging().equals("war")) {
 			if (!StringUtil.isEmpty(mavenUtil.getWebapp_folder())) {
-				webapp_folder = new File(mavenUtil.getWebapp_folder());
+				File webapp_folder = new File(mavenUtil.getWebapp_folder());
+				if (webapp_folder.exists()) {
+
+					File targetWebappFolder = new File(param.starter.workFolder, "webapp");
+					if (targetWebappFolder.exists()) {
+						FileUtils.deleteDirectory(targetWebappFolder);
+					}
+					org.apache.commons.io.FileUtils.moveDirectory(webapp_folder,
+							new File(targetWebappFolder, webapp_folder.getName()));
+
+				}
+			}
+		} else {
+			if (libFolder.exists()) {
+				File targetLibFolder = new File(param.starter.workFolder, "lib");
+				if (targetLibFolder.exists()) {
+					FileUtils.deleteDirectory(targetLibFolder);
+				}
+				org.apache.commons.io.FileUtils.moveDirectory(libFolder, targetLibFolder);
+
+			}
+
+			File classesFolder = new File(param.projectFolder, "target/classes");
+			if (classesFolder.exists()) {
+
+				File targetClassesFolder = new File(param.starter.workFolder, "classes");
+				if (targetClassesFolder.exists()) {
+					FileUtils.deleteDirectory(targetClassesFolder);
+				}
+				org.apache.commons.io.FileUtils.moveDirectory(classesFolder, targetClassesFolder);
 
 			}
 		}

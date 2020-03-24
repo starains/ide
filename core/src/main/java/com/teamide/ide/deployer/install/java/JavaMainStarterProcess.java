@@ -1,6 +1,8 @@
 package com.teamide.ide.deployer.install.java;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.teamide.ide.deployer.DeployParam;
 import com.teamide.ide.shell.Shell;
@@ -24,8 +26,11 @@ public class JavaMainStarterProcess extends JavaStarterProcess {
 		JavaShell shell = (JavaShell) this.shell;
 		shell.setJava_home(getJavaHome());
 		shell.setJava_envp(getJavaEnvp());
-
+		List<File> lib_folders = new ArrayList<File>();
+		lib_folders.add(new File(param.starter.workFolder, "lib"));
 		shell.setLib_folders(lib_folders);
+		List<File> class_folders = new ArrayList<File>();
+		class_folders.add(new File(param.starter.workFolder, "classes"));
 		shell.setClass_folders(class_folders);
 
 		shell.setMain(getMain());
@@ -54,13 +59,12 @@ public class JavaMainStarterProcess extends JavaStarterProcess {
 	}
 
 	@Override
-	public File getWorkFolder() throws Exception {
-		return this.param.projectFolder;
-	}
-
-	@Override
 	public File getPIDFile() throws Exception {
 		return shell.getPIDFile();
 	}
 
+	@Override
+	public void copyProject() throws Exception {
+
+	}
 }
