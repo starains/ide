@@ -1,46 +1,15 @@
 package com.teamide.ide.deployer.install.java;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.maven.shared.utils.io.FileUtils;
 
 import com.teamide.ide.deployer.DeployParam;
-import com.teamide.ide.shell.Shell;
-import com.teamide.ide.shell.java.JavaShell;
 
 public class JavaMainStarterProcess extends JavaStarterProcess {
 
 	public JavaMainStarterProcess(DeployParam param) {
 		super(param);
-	}
-
-	@Override
-	public Shell getShell() {
-		JavaShell shell = new JavaShell(param.starter.starterFolder);
-		return shell;
-	}
-
-	@Override
-	public String getStartShell() throws Exception {
-
-		JavaShell shell = (JavaShell) this.shell;
-		shell.setJava_home(getJavaHome());
-		shell.setJava_envp(getJavaEnvp());
-		List<File> lib_folders = new ArrayList<File>();
-		lib_folders.add(new File(param.starter.workFolder, "lib"));
-		shell.setLib_folders(lib_folders);
-		List<File> class_folders = new ArrayList<File>();
-		class_folders.add(new File(param.starter.workFolder, "classes"));
-		shell.setClass_folders(class_folders);
-
-		shell.setMain(getMain());
-
-		return shell.getShellString();
-	}
-
-	@Override
-	public String getStopShell() throws Exception {
-		return null;
 	}
 
 	@Override
@@ -59,12 +28,24 @@ public class JavaMainStarterProcess extends JavaStarterProcess {
 	}
 
 	@Override
-	public File getPIDFile() throws Exception {
-		return shell.getPIDFile();
-	}
-
-	@Override
 	public void copyProject() throws Exception {
+
+		if (libFolder != null && libFolder.exists()) {
+			File targetLibFolder = new File(param.starter.workFolder, "lib");
+			if (targetLibFolder.exists()) {
+				FileUtils.deleteDirectory(targetLibFolder);
+			}
+			org.apache.commons.io.FileUtils.copyDirectory(libFolder, targetLibFolder);
+		}
+		if (classesFolder != null && classesFolder.exists()) {
+
+			File targetClassesFolder = new File(param.starter.workFolder, "classes");
+			if (targetClassesFolder.exists()) {
+				FileUtils.deleteDirectory(targetClassesFolder);
+			}
+			org.apache.commons.io.FileUtils.copyDirectory(classesFolder, targetClassesFolder);
+
+		}
 
 	}
 }

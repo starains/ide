@@ -56,7 +56,7 @@ public class RemoteDeploy extends Deploy {
 		return request;
 	}
 
-	public void remove() {
+	public void remove() throws Exception {
 		RemoteBean remote = RemoteHandler.get(remoteid);
 		HttpRequest request = getHttpRequest(RemoteHandler.getStarterRemoveUrl(remote));
 		HttpResponse response = request.execute();

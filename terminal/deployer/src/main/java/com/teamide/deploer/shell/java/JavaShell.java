@@ -1,11 +1,11 @@
-package com.teamide.ide.shell.java;
+package com.teamide.deploer.shell.java;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.teamide.ide.shell.Shell;
+import com.teamide.deploer.shell.Shell;
 import com.teamide.util.StringUtil;
 
 public class JavaShell extends Shell {

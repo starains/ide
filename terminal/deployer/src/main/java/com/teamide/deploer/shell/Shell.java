@@ -1,4 +1,4 @@
-package com.teamide.ide.shell;
+package com.teamide.deploer.shell;
 
 import java.io.File;
 import java.util.List;

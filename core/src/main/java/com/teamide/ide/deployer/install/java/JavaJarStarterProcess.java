@@ -1,43 +1,15 @@
 package com.teamide.ide.deployer.install.java;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.maven.shared.utils.io.FileUtils;
 
 import com.teamide.ide.deployer.DeployParam;
-import com.teamide.ide.shell.Shell;
-import com.teamide.ide.shell.java.JavaShell;
 
 public class JavaJarStarterProcess extends JavaStarterProcess {
 
 	public JavaJarStarterProcess(DeployParam param) {
 		super(param);
-	}
-
-	@Override
-	public Shell getShell() {
-		JavaShell shell = new JavaShell(param.starter.starterFolder);
-		return shell;
-	}
-
-	@Override
-	public String getStartShell() throws Exception {
-
-		JavaShell shell = (JavaShell) this.shell;
-		shell.setJava_home(getJavaHome());
-		shell.setJava_envp(getJavaEnvp());
-
-		List<File> lib_folders = new ArrayList<File>();
-		lib_folders.add(new File(param.starter.workFolder, "lib"));
-		shell.setLib_folders(lib_folders);
-		shell.setJar_file(getJarFile());
-
-		return shell.getShellString();
-	}
-
-	@Override
-	public String getStopShell() throws Exception {
-		return null;
 	}
 
 	@Override
@@ -47,6 +19,7 @@ public class JavaJarStarterProcess extends JavaStarterProcess {
 	}
 
 	public File getJarFile() {
+
 		return null;
 	}
 
@@ -56,13 +29,14 @@ public class JavaJarStarterProcess extends JavaStarterProcess {
 	}
 
 	@Override
-	public File getPIDFile() throws Exception {
-		return shell.getPIDFile();
-	}
-
-	@Override
 	public void copyProject() throws Exception {
-
+		if (jarFile != null && jarFile.exists()) {
+			File appJarFile = new File(param.starter.workFolder, "app.jar");
+			if (appJarFile.exists()) {
+				FileUtils.delete(appJarFile);
+			}
+			org.apache.commons.io.FileUtils.copyFile(jarFile, appJarFile);
+		}
 	}
 
 }

@@ -50,12 +50,6 @@
                   <template v-if="item.install_status == 'INSTALL_PROJECT_ERROR'">
                     <a class="color-red starter-status">安装出错</a>
                   </template>
-                  <template v-if="item.install_status == 'INSTALL_SHELL'">
-                    <a class="color-orange starter-status">生成脚本</a>
-                  </template>
-                  <template v-if="item.install_status == 'INSTALL_SHELL_ERROR'">
-                    <a class="color-orange starter-status">生成脚本出错</a>
-                  </template>
                 </template>
                 <template
                   v-if="item.deploy_status == 'UPLOADED' || item.deploy_status == 'DEPLOYED' "
@@ -94,19 +88,15 @@
                     <a class="color-red starter-status">已停止</a>
                   </template>
 
-                  <template
-                    v-if="item.install_status == 'WORK_UPLOADED' || item.install_status == 'INSTALL_PROJECT_ED'"
-                  >
-                    <template v-if="item.status == 'STOPPED' || coos.isEmpty(item.status)">
-                      <a class="coos-btn coos-btn-xs bg-green" @click="source.startStarter(item)">启动</a>
-                    </template>
-                    <template v-if="item.status == 'STARTED'">
-                      <a
-                        class="coos-btn coos-btn-xs bg-red"
-                        :class="{'coos-disabled' : item.status != 'STARTED'}"
-                        @click="source.stopStarter(item)"
-                      >停止</a>
-                    </template>
+                  <template v-if="item.status == 'STOPPED' || coos.isEmpty(item.status)">
+                    <a class="coos-btn coos-btn-xs bg-green" @click="source.startStarter(item)">启动</a>
+                  </template>
+                  <template v-if="item.status == 'STARTED'">
+                    <a
+                      class="coos-btn coos-btn-xs bg-red"
+                      :class="{'coos-disabled' : item.status != 'STARTED'}"
+                      @click="source.stopStarter(item)"
+                    >停止</a>
                   </template>
 
                   <template v-if="item.status == 'STOPPED' ||  coos.isEmpty(item.status)">

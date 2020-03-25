@@ -19,7 +19,7 @@ public class LocalDeploy extends Deploy {
 		this.starter.writeDeployStatus(DeployStatus.DEPLOYED);
 	}
 
-	public void remove() {
+	public void remove() throws Exception {
 		this.starter.remove();
 	}
 
