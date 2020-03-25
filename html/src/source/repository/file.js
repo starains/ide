@@ -52,8 +52,8 @@ source.repository.file_data_map = {};
         source.server.download({ path: path });
 
     };
-    source.uploadRepository = function () {
-        source.uploadForm.show();
+    source.uploadRepository = function (data) {
+        source.uploadForm.show(data);
     };
     source.downloadRepository = function () {
         source.server.download({ type: 'REPOSITORY' });

@@ -11,6 +11,9 @@
         zIndex="100"
         @submit.native.prevent
       >
+        <el-form-item label="传入到目录" prop="parent">
+          <el-input v-model="form.parent"></el-input>
+        </el-form-item>
         <el-form-item label="重复文件" prop="repeat">
           <el-radio v-model="form.repeat" label="IGNORE">忽略</el-radio>
           <el-radio v-model="form.repeat" label="COVER">覆盖</el-radio>
@@ -41,17 +44,17 @@ export default {
       show_form: false,
       is_update: false,
       form: {
+        parent: "",
         repeat: "COVER"
       },
       form_rules: {}
     };
   },
   methods: {
-    show(path, data) {
-      this.showForm(path, data);
+    show(data) {
+      this.showForm(data);
     },
-    showForm(path, data) {
-      this.path = path;
+    showForm(data) {
       data = data || {};
       this.show_form = true;
       for (var key in this.form) {
@@ -64,7 +67,9 @@ export default {
       for (var key in data) {
         this.form[key] = data[key];
       }
-
+      if (coos.isEmpty(this.form.repeat)) {
+        this.form.repeat = "IGNORE";
+      }
       let form = this.form;
       this.$nextTick(res => {
         let $box = window.jQuery(this.$el).find(".dropzone-box");
@@ -83,6 +88,7 @@ export default {
             formData.append("fullPath", file.fullPath);
             formData.append("filesize", file.size);
             formData.append("repeat", form.repeat);
+            formData.append("parent", form.parent);
           },
           success: function(file, response, e) {}
         });

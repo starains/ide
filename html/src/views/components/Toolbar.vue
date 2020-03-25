@@ -39,8 +39,11 @@
                   <span class="coos-pointer">{{branch.name}}</span>
                 </el-dropdown-item>
               </template>
-              <el-dropdown-item v-if="source.space.permission == 'MASTER'">
-                <span @click="toCreateBranch()">新建版本</span>
+              <el-dropdown-item
+                v-if="source.space.permission == 'MASTER'"
+                command="TO_CREATE_BRANCH_EVENT"
+              >
+                <span>新建版本</span>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -147,6 +150,10 @@ export default {
       app.toSpace(space);
     },
     toBranch(branch) {
+      if (branch == "TO_CREATE_BRANCH_EVENT") {
+        this.toCreateBranch();
+        return;
+      }
       app.toBranch(branch);
     },
     onTabClick(tab, event) {},

@@ -432,6 +432,14 @@ export default {
           }
         });
       }
+      if (data.isDirectory) {
+        menus.push({
+          text: "上传",
+          onClick() {
+            source.uploadRepository({ parent: data.path });
+          }
+        });
+      }
       if (data.modified || data.untracked || data.conflicting) {
         menus.push({
           header: "Git"

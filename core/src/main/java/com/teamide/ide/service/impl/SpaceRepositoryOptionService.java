@@ -21,7 +21,9 @@ public class SpaceRepositoryOptionService extends BaseService<SpaceRepositoryOpt
 		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("spaceid", space.getId());
-		param.put("type", type.name());
+		if (type != null) {
+			param.put("type", type.name());
+		}
 		String userid = null;
 		if (session != null && session.getUser() != null) {
 			userid = session.getUser().getId();

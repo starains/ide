@@ -476,6 +476,7 @@ public class RepositoryFile extends RepositoryBase {
 		List<FileItem> fileItems = new ArrayList<FileItem>();
 		String fullPath = null;
 		String repeat = null;
+		String parent = null;
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		if (isMultipart) {
 			Iterator<?> items = upload.parseRequest(request).iterator();
@@ -489,6 +490,8 @@ public class RepositoryFile extends RepositoryBase {
 						fullPath = item.getString();
 					} else if ("repeat".equals(item.getFieldName())) {
 						repeat = item.getString();
+					} else if ("parent".equals(item.getFieldName())) {
+						parent = item.getString();
 					}
 				}
 			}
@@ -499,7 +502,9 @@ public class RepositoryFile extends RepositoryBase {
 			FileItem fileItem = fileItems.get(0);
 
 			File file = param.getFile(fullPath);
-
+			if (StringUtil.isNotEmpty(parent)) {
+				file = param.getFile(parent + "/" + fullPath);
+			}
 			if (file.exists()) {
 				if (StringUtil.isEmpty(repeat) || repeat.equals("IGNORE")) {
 

@@ -65,7 +65,7 @@ public class StarterTerminal implements Runnable {
 
 			shell.append(" java");
 
-			shell.append(" -Xms14m -Xmx14m");
+			shell.append(" -Xms128m -Xmx128m");
 
 			shell.append(" -Dfile.encoding=UTF-8 ");
 			shell.append(" -DSTARTER_ROOT=\"").append(starterRootFolder.getAbsolutePath() + "\"");
