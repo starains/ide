@@ -5,7 +5,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.deploer.enums.InstallStatus;
+import com.teamide.deployer.enums.InstallStatus;
 
 public abstract class Deploy extends DeployParam {
 

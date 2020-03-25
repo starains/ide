@@ -3,8 +3,8 @@ package com.teamide.ide.deployer;
 import java.io.File;
 
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.deploer.enums.DeployStatus;
-import com.teamide.deploer.enums.StarterStatus;
+import com.teamide.deployer.enums.DeployStatus;
+import com.teamide.deployer.enums.StarterStatus;
 
 public class LocalDeploy extends Deploy {
 

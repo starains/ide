@@ -2,7 +2,7 @@ package com.teamide.ide.deployer;
 
 import java.io.File;
 
-import com.teamide.deploer.starter.Starter;
+import com.teamide.deployer.starter.Starter;
 import com.teamide.ide.bean.EnvironmentBean;
 import com.teamide.ide.bean.StarterOption;
 import com.teamide.ide.deployer.install.DefaultInstall;
