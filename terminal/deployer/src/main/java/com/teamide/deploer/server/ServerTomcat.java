@@ -17,7 +17,7 @@ import com.teamide.deploer.IDEConstant;
 import com.teamide.deploer.IDEDeployer;
 import com.teamide.deploer.server.servlet.RemoteServlet;
 import com.teamide.deploer.server.servlet.StarterServlet;
-import com.teamide.deploer.util.StringUtil;
+import com.teamide.util.StringUtil;
 
 public class ServerTomcat {
 

@@ -90,6 +90,11 @@ public class RemoteHandler {
 		return url + "/remote/check";
 	}
 
+	public static String getPluginsUrl(RemoteBean remote) {
+		String url = getServerUrl(remote);
+		return url + "/remote/plugins";
+	}
+
 	public static String getStarterDeployUrl(RemoteBean remote) {
 		String url = getServerUrl(remote);
 		return url + "/starter/deploy";
@@ -98,11 +103,6 @@ public class RemoteHandler {
 	public static String getStarterStartUrl(RemoteBean remote) {
 		String url = getServerUrl(remote);
 		return url + "/starter/start";
-	}
-
-	public static String getStarterDestroyUrl(RemoteBean remote) {
-		String url = getServerUrl(remote);
-		return url + "/starter/destroy";
 	}
 
 	public static String getStarterStopUrl(RemoteBean remote) {

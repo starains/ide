@@ -54,23 +54,11 @@ source.repository.starterActive = "0";
         }
     };
 
-    source.destroyStarter = function (starter) {
-        if (starter.token != '0') {
-            source.do('STARTER_DESTROY', { token: starter.token }).then((res) => {
-                if (res.errcode == 0) {
-                    coos.success('销毁成功！');
-                } else {
-                    coos.error(res.errmsg);
-                }
-            });
-        }
-    };
     source.removeStarter = function (starter) {
         if (starter.token != '0') {
             source.do('STARTER_REMOVE', { token: starter.token }).then((res) => {
                 if (res.errcode == 0) {
-                    coos.success('移除成功！');
-                    source.load('STARTERS');
+                    coos.success('移除命令已提交，正在移除！');
                 } else {
                     coos.error(res.errmsg);
                 }
@@ -187,6 +175,7 @@ source.repository.starterActive = "0";
             if (find == null) {
                 one.logs = [];
                 one.text = '' + one.token;
+                one.removed = false;
                 if (one.name) {
                     one.text = '' + one.name;
                 } else {
@@ -332,10 +321,14 @@ source.repository.starterActive = "0";
         let starter = source.getStarter(value.token);
         var time = 1000;
         if (starter != null) {
-            starter.status = value.status;
-            starter.deploy_status = value.deploy_status;
-            starter.install_status = value.install_status;
-            starter.starter_running = value.starter_running;
+            if (value.removed) {
+                starter.removed = true;
+                source.load('STARTERS');
+            } else {
+                starter.status = value.status;
+                starter.deploy_status = value.deploy_status;
+                starter.install_status = value.install_status;
+            }
         }
         window.setTimeout(() => {
             source.loadStarterStatus();

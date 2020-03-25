@@ -1,5 +1,7 @@
 package com.teamide.deploer;
 
+import java.io.File;
+
 import com.teamide.deploer.processor.TaskBean;
 import com.teamide.deploer.processor.TaskProcessor;
 
@@ -16,6 +18,11 @@ public abstract class Listener implements Runnable {
 	@Override
 	public final void run() {
 		Long wait = CONNECT_SLEEP;
+
+		File starterRootFolder = new File(IDEConstant.WORKSPACES_STARTER_FOLDER);
+		File tempStarterJarFile = new File(IDEConstant.PLUGIN_STARTER_JAR);
+		StarterTerminal starterTerminal = new StarterTerminal(starterRootFolder, tempStarterJarFile);
+		new Thread(starterTerminal).start();
 		while (true) {
 
 			boolean flag = true;

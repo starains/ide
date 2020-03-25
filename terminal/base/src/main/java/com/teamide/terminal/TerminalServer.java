@@ -3,8 +3,8 @@ package com.teamide.terminal;
 import java.io.File;
 
 import com.sun.jna.Platform;
-import com.teamide.terminal.util.FileUtil;
-import com.teamide.terminal.util.StringUtil;
+import com.teamide.util.FileUtil;
+import com.teamide.util.StringUtil;
 
 public class TerminalServer implements Runnable {
 
@@ -20,11 +20,15 @@ public class TerminalServer implements Runnable {
 
 	@Override
 	public void run() {
-		if (param.getTimestampFile() != null) {
-			TerminalServerTimestamp timestamp = new TerminalServerTimestamp(param.getTimestampFile());
-			new Thread(timestamp).start();
-		}
 		while (true) {
+			if (Status.DESTROYED == status) {
+				return;
+			}
+			try {
+				FileUtil.write(String.valueOf(System.currentTimeMillis()).getBytes(), this.param.getTimestampFile());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			try {
 				String event = readEvent();
 				if (!StringUtil.isEmpty(event)) {
@@ -50,38 +54,15 @@ public class TerminalServer implements Runnable {
 				Thread.sleep(time);
 			} catch (Exception e) {
 			}
+
 		}
 
-	}
-
-	public TerminalProcessListener createListener() {
-		return new TerminalProcessListener() {
-			@Override
-			public void onStop() {
-				writePID("");
-				changeStatus(Status.STOPPED);
-			}
-
-			@Override
-			public void onStart(long pid) {
-				writePID("" + pid);
-				changeStatus(Status.STARTED);
-			}
-
-			@Override
-			public void onLog(String line) {
-
-				writeLog(line);
-			}
-
-		};
 	}
 
 	public void start() {
 		changeStatus(Status.STARTING);
 		kill();
 		try {
-
 			String command = readStartShell();
 			if (StringUtil.isNotEmpty(command)) {
 				TerminalProcess process = new TerminalProcess();
@@ -93,17 +74,20 @@ public class TerminalServer implements Runnable {
 					@Override
 					public void onStop() {
 						if (!param.isBackstage()) {
+							writeLog("on stop is not backstage, call STOPPED.");
 							changeStatus(Status.STOPPED);
 							writeStartShellPID("");
 						} else {
-							try {
-								Thread.sleep(1000 * 3);
-								String pid = readPID();
-								if (StringUtil.isEmpty(pid)) {
-									changeStatus(Status.STOPPED);
-								}
-							} catch (Exception e) {
-							}
+							// try {
+							// Thread.sleep(1000 * 10);
+							// String pid = readPID();
+							// if (StringUtil.isEmpty(pid)) {
+							// writeLog("on stop is backstage, sleep 10s, call
+							// STOPPED.");
+							// changeStatus(Status.STOPPED);
+							// }
+							// } catch (Exception e) {
+							// }
 						}
 					}
 
@@ -124,9 +108,21 @@ public class TerminalServer implements Runnable {
 		} catch (Exception e) {
 			writeLog(e.getMessage());
 			e.printStackTrace();
+			writeLog("has Exception," + e.getMessage() + ", call STOPPED.");
 			changeStatus(Status.STOPPED);
 		}
 
+	}
+
+	public void destroy() {
+		changeStatus(Status.DESTROYING);
+		try {
+			executeStop();
+		} catch (Exception e) {
+			writeLog(e.getMessage());
+			e.printStackTrace();
+		}
+		changeStatus(Status.DESTROYED);
 	}
 
 	public void stop() {
@@ -135,6 +131,7 @@ public class TerminalServer implements Runnable {
 		try {
 			executeStop();
 			if (param.isBackstage()) {
+				writeLog("stop , call STOPPED.");
 				changeStatus(Status.STOPPED);
 			}
 		} catch (Exception e) {
@@ -171,19 +168,6 @@ public class TerminalServer implements Runnable {
 		} else {
 			kill();
 		}
-	}
-
-	public void destroy() {
-
-		changeStatus(Status.DESTROYING);
-		try {
-			executeStop();
-		} catch (Exception e) {
-			writeLog(e.getMessage());
-			e.printStackTrace();
-		}
-		changeStatus(Status.DESTROYED);
-		System.exit(1);
 	}
 
 	public void kill() {

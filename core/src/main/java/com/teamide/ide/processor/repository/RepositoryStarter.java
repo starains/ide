@@ -70,24 +70,23 @@ public class RepositoryStarter extends RepositoryBase {
 		return result;
 	}
 
-	public JSONObject destroy(String token) throws Exception {
-
-		this.param.getLog().info("starter destroy,  token:" + token);
-
-		Deploy deploy = DeployHandler.get(token);
-
-		if (deploy != null) {
-			deploy.destroy();
-		}
-		JSONObject result = new JSONObject();
-		return result;
-	}
-
 	public JSONObject remove(String token) throws Exception {
 
 		this.param.getLog().info("starter remove,  token:" + token);
 
-		DeployHandler.remove(token);
+		new Thread() {
+
+			@Override
+			public void run() {
+				try {
+					DeployHandler.remove(token);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+		}.start();
+
 		JSONObject result = new JSONObject();
 		return result;
 	}
@@ -110,8 +109,12 @@ public class RepositoryStarter extends RepositoryBase {
 
 		if (deploy != null) {
 			return deploy.getStatus();
+		} else {
+			JSONObject json = new JSONObject();
+			json.put("token", token);
+			json.put("removed", true);
+			return json;
 		}
-		return null;
 	}
 
 	public JSONArray loadStarters() throws Exception {

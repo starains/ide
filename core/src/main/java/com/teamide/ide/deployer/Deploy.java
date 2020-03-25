@@ -6,7 +6,6 @@ import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.deploer.enums.InstallStatus;
-import com.teamide.ide.constant.IDEConstant;
 import com.teamide.util.FileUtil;
 
 public abstract class Deploy extends DeployParam {
@@ -17,8 +16,6 @@ public abstract class Deploy extends DeployParam {
 
 	public abstract void remove() throws Exception;
 
-	public abstract void destroy() throws Exception;
-
 	public abstract void start() throws Exception;
 
 	public abstract void stop() throws Exception;
@@ -28,13 +25,6 @@ public abstract class Deploy extends DeployParam {
 	public abstract void deploy() throws Exception;
 
 	public void install() throws Exception {
-		try {
-			installStarerJar();
-		} catch (Exception e) {
-			e.printStackTrace();
-			this.starter.getLog().error(e.getMessage());
-			this.starter.writeInstallStatus(InstallStatus.INSTALL_STARER_ERROR);
-		}
 		try {
 			installServer();
 		} catch (Exception e) {
@@ -63,9 +53,13 @@ public abstract class Deploy extends DeployParam {
 		if (pidFile != null) {
 			String path = pidFile.getAbsolutePath().substring(this.starter.starterFolder.getAbsolutePath().length());
 			this.starter.starterJSON.put("PID_FILE", path);
+			this.starter.starterJSON.put("BACKSTAGE", "1");
+
 		} else {
 			this.starter.starterJSON.remove("PID_FILE");
+			this.starter.starterJSON.remove("BACKSTAGE");
 		}
+		this.starter.starterJSON.put("READYED", true);
 		FileUtil.write(this.starter.starterJSON.toJSONString().getBytes(), this.starter.starterJSONFile);
 
 	}
@@ -132,33 +126,6 @@ public abstract class Deploy extends DeployParam {
 		this.starter.getLog().info("install stop shell");
 		this.starter.getLog().info(shell.toString());
 		FileUtil.write(shell.toString().getBytes(), this.starter.starterStopShellFile);
-	}
-
-	public void installStarerJar() throws Exception {
-
-		this.starter.getLog().info("install starter start...");
-		this.starter.writeInstallStatus(InstallStatus.INSTALL_STARER);
-		if (!this.starter.starterFolder.exists()) {
-			this.starter.starterFolder.mkdirs();
-		}
-		if (this.starter.starterJarFile.exists()) {
-			this.starter.starterJarFile.delete();
-		}
-		File jar = new File(IDEConstant.PLUGIN_STARTER_JAR);
-		if (jar != null && jar.exists()) {
-			FileUtils.copyFile(jar, this.starter.starterJarFile);
-		} else {
-			this.starter.getLog().error("plugin starter.jar does not exist.");
-		}
-
-		this.starter.getLog().info("install starter");
-	}
-
-	public void checkStartStarter() throws Exception {
-		if (!this.starter.starterRunning()) {
-			this.starter.startStarter();
-
-		}
 	}
 
 	public abstract JSONObject getStatus() throws Exception;

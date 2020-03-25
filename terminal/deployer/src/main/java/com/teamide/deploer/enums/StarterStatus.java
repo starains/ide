@@ -10,9 +10,9 @@ public enum StarterStatus {
 
 	STOPPED("STOPPED", "停止"),
 
-	DESTROYING("DESTROYING", "销毁"),
+	DESTROYING("DESTROYING", "销毁中"),
 
-	DESTROYED("DESTROYED", "销毁"),
+	DESTROYED("DESTROYED", "已销毁"),
 
 	;
 

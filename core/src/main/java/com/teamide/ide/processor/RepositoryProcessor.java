@@ -442,14 +442,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 			appendEvent(spaceEventBean);
 
 			break;
-		case STARTER_DESTROY:
-			token = data.getString("token");
-			new RepositoryStarter(param).destroy(token);
-
-			spaceEventBean.set("token", token);
-			appendEvent(spaceEventBean);
-
-			break;
 		case STARTER_REMOVE:
 			token = data.getString("token");
 			new RepositoryStarter(param).remove(token);

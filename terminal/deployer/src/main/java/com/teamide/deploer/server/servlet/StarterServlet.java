@@ -13,8 +13,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.Status;
 import com.teamide.deploer.starter.StarterService;
-import com.teamide.deploer.util.StringUtil;
 import com.teamide.util.RequestUtil;
+import com.teamide.util.StringUtil;
 
 @WebServlet(urlPatterns = "/starter/*")
 public class StarterServlet extends HttpServlet {
@@ -59,9 +59,6 @@ public class StarterServlet extends HttpServlet {
 				break;
 			case "cleanLog":
 				starterService.cleanLog();
-				break;
-			case "destroy":
-				starterService.destroy();
 				break;
 			case "deploy":
 				starterService.deploy(request);

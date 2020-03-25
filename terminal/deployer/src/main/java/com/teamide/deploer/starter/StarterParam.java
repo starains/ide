@@ -11,7 +11,6 @@ import com.teamide.deploer.enums.InstallStatus;
 import com.teamide.deploer.enums.StarterStatus;
 import com.teamide.ide.tool.LogTool;
 import com.teamide.util.FileUtil;
-import com.teamide.util.StringUtil;
 
 public class StarterParam {
 
@@ -35,8 +34,6 @@ public class StarterParam {
 
 	public final File installStatusFile;
 
-	public final File starterJarFile;
-
 	public final File starterTimestampFile;
 
 	public final File workFolder;
@@ -56,7 +53,6 @@ public class StarterParam {
 		this.deployStatusFile = new File(this.starterFolder, "deploy.status");
 		this.installStatusFile = new File(this.starterFolder, "install.status");
 		this.starterTimestampFile = new File(this.starterFolder, "starter.timestamp");
-		this.starterJarFile = new File(this.starterFolder, "starter.jar");
 
 		this.starterStartShellFile = new File(this.starterFolder, "starter.start.shell");
 		this.starterStopShellFile = new File(this.starterFolder, "starter.stop.shell");
@@ -188,25 +184,6 @@ public class StarterParam {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-	}
-
-	public boolean starterRunning() {
-
-		try {
-			if (starterTimestampFile.exists()) {
-				String value = new String(FileUtil.read(starterTimestampFile));
-				if (StringUtil.isNotEmpty(value)) {
-					boolean flag = Long.valueOf(value) >= System.currentTimeMillis() - (1000 * 5);
-					if (flag) {
-						return true;
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
 
 	}
 

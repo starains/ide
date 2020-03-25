@@ -41,15 +41,8 @@ public class StarterService {
 	}
 
 	public void stop() throws Exception {
-		checkStartStarter();
 		Starter starter = new Starter(starterFolder);
 		starter.stop();
-	}
-
-	public void destroy() throws Exception {
-		checkStartStarter();
-		Starter starter = new Starter(starterFolder);
-		starter.destroy();
 	}
 
 	public void cleanLog() throws Exception {
@@ -62,16 +55,7 @@ public class StarterService {
 		starter.remove();
 	}
 
-	public void checkStartStarter() throws Exception {
-		Starter starter = new Starter(starterFolder);
-		if (!starter.starterRunning()) {
-			starter.startStarter();
-
-		}
-	}
-
 	public void start(HttpServletRequest request) throws Exception {
-		checkStartStarter();
 		Starter starter = new Starter(starterFolder);
 
 		if (starter.workFolder.exists()) {
@@ -155,7 +139,6 @@ public class StarterService {
 			}
 		}
 		Starter starter = new Starter(starterFolder);
-		checkStartStarter();
 		starter.writeDeployStatus(DeployStatus.DEPLOYED);
 	}
 

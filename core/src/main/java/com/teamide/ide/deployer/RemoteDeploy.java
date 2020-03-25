@@ -66,14 +66,6 @@ public class RemoteDeploy extends Deploy {
 
 	}
 
-	public void destroy() {
-		RemoteBean remote = RemoteHandler.get(remoteid);
-		HttpRequest request = getHttpRequest(RemoteHandler.getStarterDestroyUrl(remote));
-		HttpResponse response = request.execute();
-		String body = response.body();
-		this.starter.getLog().info(body);
-	}
-
 	public void start() throws Exception {
 		installProject();
 

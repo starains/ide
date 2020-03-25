@@ -8,17 +8,13 @@ public class IDEConstant {
 
 	public static final boolean IS_OS_WINDOW = isOSWindow();
 
-	public static final String BIN_FOLDER = HOME + "bin/";
-
-	public static final String CONF_FOLDER = HOME + "conf/";
-
-	public static final String CONF = CONF_FOLDER + "config.properties";
-
-	public static final String UPDATE_FOLDER = HOME + "update/";
+	public static final String PLUGINS_FOLDER = HOME + "plugins/";
 
 	public static final String WORKSPACES_FOLDER = HOME + "workspaces/";
 
 	public static final String WORKSPACES_STARTER_FOLDER = WORKSPACES_FOLDER + "starter/";
+
+	public static final String PLUGIN_STARTER_JAR = PLUGINS_FOLDER + "starter/starter.jar";
 
 	public static final String TOMCAT_FOLDER = WORKSPACES_FOLDER + "tomcat/";
 

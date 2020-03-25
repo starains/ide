@@ -2,7 +2,7 @@ package com.teamide.terminal;
 
 import java.io.File;
 
-import com.teamide.terminal.util.FileUtil;
+import com.teamide.util.FileUtil;
 
 public class TerminalServerTimestamp implements Runnable {
 

@@ -2,7 +2,7 @@ package com.teamide.deploer;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.deploer.server.ServerListener;
-import com.teamide.deploer.util.StringUtil;
+import com.teamide.util.StringUtil;
 
 public class IDEDeployer {
 
@@ -37,6 +37,8 @@ public class IDEDeployer {
 		default:
 			throw new Exception("no listener for model [" + model + "].");
 		}
+		
+		
 
 	}
 

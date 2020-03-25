@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
 import com.teamide.bean.Status;
-import com.teamide.deploer.util.StringUtil;
+import com.teamide.deploer.starter.RemoteService;
+import com.teamide.util.StringUtil;
 
 @WebServlet(urlPatterns = "/remote/*")
 public class RemoteServlet extends HttpServlet {
@@ -31,23 +32,34 @@ public class RemoteServlet extends HttpServlet {
 		if (pathInfo.startsWith("/")) {
 			pathInfo = pathInfo.substring(1);
 		}
-		Object result = null;
-		switch (pathInfo) {
-		case "start":
-			result = Status.SUCCESS();
-			break;
-		case "stop":
-			result = Status.SUCCESS();
-			break;
-		case "status":
-			result = Status.SUCCESS();
-			break;
-		case "log":
-			result = Status.SUCCESS();
-			break;
-		case "check":
-			result = Status.SUCCESS();
-			break;
+
+		Object result = Status.SUCCESS();
+		try {
+
+			switch (pathInfo) {
+			case "start":
+				result = Status.SUCCESS();
+				break;
+			case "stop":
+				result = Status.SUCCESS();
+				break;
+			case "status":
+				result = Status.SUCCESS();
+				break;
+			case "log":
+				result = Status.SUCCESS();
+				break;
+			case "check":
+				result = Status.SUCCESS();
+				break;
+			case "plugins":
+				new RemoteService().plugins(request);
+				break;
+			}
+		} catch (Exception e) {
+			Status status = Status.FAIL();
+			status.setErrmsg(e.getMessage());
+			result = status;
 		}
 		if (result != null) {
 

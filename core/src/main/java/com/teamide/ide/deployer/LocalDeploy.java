@@ -23,15 +23,9 @@ public class LocalDeploy extends Deploy {
 		this.starter.remove();
 	}
 
-	public void destroy() throws Exception {
-		checkStartStarter();
-		this.starter.destroy();
-	}
-
 	public void start() throws Exception {
 		this.starter.writeStatus(StarterStatus.STARTING);
 
-		checkStartStarter();
 		installProject();
 		deployInstall.copyProject();
 		this.starter.start();
@@ -39,7 +33,6 @@ public class LocalDeploy extends Deploy {
 
 	public void stop() throws Exception {
 		this.starter.writeStatus(StarterStatus.STOPPING);
-		checkStartStarter();
 		this.starter.stop();
 	}
 

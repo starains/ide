@@ -10,6 +10,7 @@ import com.teamide.util.FileUtil;
 import com.teamide.util.IDGenerateUtil;
 import com.teamide.util.StringUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.deploer.StarterTerminal;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.deployer.LocalDeploy;
@@ -23,10 +24,17 @@ public class DeployHandler {
 
 	static final Object LOAD_LOCK = new Object();
 
+	static {
+		File starterRootFolder = new File(IDEConstant.WORKSPACES_STARTER_FOLDER);
+		File tempStarterJarFile = new File(IDEConstant.PLUGIN_STARTER_JAR);
+
+		StarterTerminal starterTerminal = new StarterTerminal(starterRootFolder, tempStarterJarFile);
+		new Thread(starterTerminal).start();
+	}
+
 	public static void reloadStarters() {
 		CACHE.clear();
 		loadStarters();
-
 	}
 
 	public static void loadStarters() {

@@ -76,27 +76,22 @@
                     <a class="color-orange starter-status">启动资源上传成功</a>
                   </template>
                   <template v-if="item.status == 'DESTROYING'">
-                    <a class="color-orange starter-status">启动器销毁中...</a>
+                    <a class="color-green starter-status">销毁中</a>
                   </template>
                   <template v-if="item.status == 'DESTROYED'">
-                    <a class="color-green starter-status">启动器销毁成功</a>
+                    <a class="color-green starter-status">已销毁</a>
                   </template>
-                  <template v-if="!item.starter_running">
-                    <a class="color-red starter-status">启动器已停止，请移除</a>
+                  <template v-if="item.status == 'STARTING'">
+                    <a class="color-green starter-status">启动中</a>
                   </template>
-                  <template v-else>
-                    <template v-if="item.status == 'STARTING'">
-                      <a class="color-green starter-status">启动中</a>
-                    </template>
-                    <template v-if="item.status == 'STARTED'">
-                      <a class="color-green starter-status">已启动</a>
-                    </template>
-                    <template v-if="item.status == 'STOPPING'">
-                      <a class="color-red starter-status">停止中</a>
-                    </template>
-                    <template v-if="item.status == 'STOPPED' || coos.isEmpty(item.status)">
-                      <a class="color-red starter-status">已停止</a>
-                    </template>
+                  <template v-if="item.status == 'STARTED'">
+                    <a class="color-green starter-status">已启动</a>
+                  </template>
+                  <template v-if="item.status == 'STOPPING'">
+                    <a class="color-red starter-status">停止中</a>
+                  </template>
+                  <template v-if="item.status == 'STOPPED' || coos.isEmpty(item.status)">
+                    <a class="color-red starter-status">已停止</a>
                   </template>
 
                   <template
@@ -114,24 +109,14 @@
                     </template>
                   </template>
 
-                  <template
-                    v-if="item.status == 'STOPPED' || item.status == 'DESTROYED' || coos.isEmpty(item.status)"
-                  >
+                  <template v-if="item.status == 'STOPPED' ||  coos.isEmpty(item.status)">
                     <a
                       class="coos-btn coos-btn-xs bg-orange"
                       @click="source.deployStarter(item)"
                     >重新部署</a>
                   </template>
-                  <template
-                    v-if="item.status == 'STARTED' || item.status == 'STOPPED'|| item.starter_running "
-                  >
-                    <a
-                      class="coos-btn coos-btn-xs bg-orange"
-                      @click="source.destroyStarter(item)"
-                    >销毁</a>
-                  </template>
                 </template>
-                <template v-if="item.status == 'DESTROYED'  || !item.starter_running">
+                <template v-if="item.status == 'STOPPED' ||  coos.isEmpty(item.status)">
                   <a class="coos-btn coos-btn-xs bg-orange" @click="source.removeStarter(item)">移除</a>
                 </template>
               </template>

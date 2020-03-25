@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 
 import com.sun.jna.Platform;
-import com.teamide.terminal.util.StringUtil;
+import com.teamide.util.StringUtil;
 
 public class TerminalProcess {
 
