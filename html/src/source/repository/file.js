@@ -45,6 +45,14 @@ source.repository.file_data_map = {};
         source.do("FILE_CLOSE", { path: path });
     };
 
+    source.downloadFile = function (path) {
+        if (coos.isEmpty(path)) {
+            return;
+        }
+        source.server.download(path);
+
+    };
+
     source.getFileFromFiles = function (path, files) {
         if (coos.isEmpty(path)) {
             path == null;

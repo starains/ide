@@ -424,6 +424,12 @@ export default {
         });
       }
       if (data.isFile) {
+        menus.push({
+          text: "下载",
+          onClick() {
+            source.downloadFile(data.path);
+          }
+        });
       }
       if (data.modified || data.untracked || data.conflicting) {
         menus.push({

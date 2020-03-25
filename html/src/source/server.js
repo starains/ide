@@ -56,6 +56,11 @@
                 });
             });
         },
+        download(path) {
+            let action = '/api/download/' + source.token + '?path=' + path;
+            let url = _SERVER_URL + action;
+            window.open(url);
+        },
         load(type, data) {
             return new Promise((resolve, reject) => {
                 data = data || {};
