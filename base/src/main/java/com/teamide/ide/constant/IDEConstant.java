@@ -28,6 +28,8 @@ public class IDEConstant {
 
 	public static final String WORKSPACES_DEPLOYER_FOLDER = WORKSPACES_FOLDER + "deployer/";
 
+	public static final String WORKSPACES_TEMP_FOLDER = WORKSPACES_FOLDER + "temp/";
+
 	public static final String SPACE_FOLDER = HOME + "space/";
 
 	public static final String JDBC = CONF_FOLDER + "jdbc.properties";

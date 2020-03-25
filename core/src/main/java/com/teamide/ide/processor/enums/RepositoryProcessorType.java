@@ -22,7 +22,9 @@ public enum RepositoryProcessorType {
 
 	FILE_DELETE("FILE_DELETE", "文件删除"),
 
-	FILE_DOWNLOAD("FILE_DOWNLOAD", "文件下载"),
+	DOWNLOAD("DOWNLOAD", "下载"),
+
+	UPLOAD("UPLOAD", "上传"),
 
 	MAVEN_CLEAN("MAVEN_CLEAN", "Maven Clean"),
 

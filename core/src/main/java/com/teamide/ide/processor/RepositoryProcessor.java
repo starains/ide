@@ -136,9 +136,11 @@ public class RepositoryProcessor extends SpaceProcessor {
 			value = 0;
 
 			break;
-		case FILE_DOWNLOAD:
-			path = data.getString("path");
-			value = new RepositoryFile(param).download(path);
+		case DOWNLOAD:
+			new RepositoryFile(param).download(data);
+			break;
+		case UPLOAD:
+			new RepositoryFile(param).upload(data);
 			break;
 		case FILE_OPEN:
 			path = data.getString("path");

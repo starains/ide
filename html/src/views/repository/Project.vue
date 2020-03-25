@@ -12,7 +12,7 @@
         <a class title="上传">
           <i class="coos-icon coos-icon-cloud-upload" />
         </a>
-        <a class title="下载">
+        <a class title="下载" @click="source.downloadRepository()">
           <i class="coos-icon coos-icon-cloud-download" />
         </a>
         <a class="repository-project-header-line"></a>
@@ -423,7 +423,8 @@ export default {
           }
         });
       }
-      if (data.isFile) {
+
+      if (data.isFile || data.isDirectory) {
         menus.push({
           text: "下载",
           onClick() {

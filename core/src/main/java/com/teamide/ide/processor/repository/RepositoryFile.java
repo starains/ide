@@ -1,8 +1,14 @@
 package com.teamide.ide.processor.repository;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 
@@ -16,8 +22,11 @@ import com.teamide.app.process.ServiceProcess;
 import com.teamide.app.process.service.DaoProcess;
 import com.teamide.app.process.service.SubServiceProcess;
 import com.teamide.app.util.ModelFileUtil;
+import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.util.ZipUtil;
 import com.teamide.util.FileUtil;
+import com.teamide.util.IDGenerateUtil;
 import com.teamide.util.StringUtil;
 
 public class RepositoryFile extends RepositoryBase {
@@ -375,10 +384,81 @@ public class RepositoryFile extends RepositoryBase {
 		return folder;
 	}
 
-	public File download(final String path) throws Exception {
+	public void download(JSONObject data) throws Exception {
+		HttpServletRequest request = (HttpServletRequest) data.get("request");
+		HttpServletResponse response = (HttpServletResponse) data.get("response");
 
-		File file = this.param.getFile(path);
+		String path = request.getParameter("path");
+		String type = request.getParameter("type");
+		String name = null;
+		File file = null;
+		boolean isTemp = false;
+		if (StringUtil.isEmpty(type) || type.equalsIgnoreCase("FILE")) {
+			file = param.getFile(path);
+			name = file.getName();
+		} else if (type.equalsIgnoreCase("REPOSITORY")) {
 
-		return file;
+			File tempFolder = new File(IDEConstant.WORKSPACES_TEMP_FOLDER);
+			name = param.getSpace().getName();
+			file = new File(tempFolder, IDGenerateUtil.generateShort() + "/" + name);
+			FileUtils.copyDirectory(param.getSourceFolder(), file, new FileFilter() {
+				@Override
+				public boolean accept(File pathname) {
+					if (pathname.isDirectory()) {
+						if (pathname.getName().equals(".git")) {
+							return false;
+						} else if (pathname.getName().equals("node_modules")) {
+							return false;
+						}
+					}
+					return true;
+				}
+			});
+
+		}
+
+		if (file != null && file.exists()) {
+			if (file.isDirectory()) {
+				name = name + ".zip";
+			}
+			response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(name, "UTF-8"));
+			response.setCharacterEncoding("UTF-8");
+
+			try {
+				if (file.isFile()) {
+					response.getOutputStream().write(FileUtil.read(file));
+				} else if (file.isDirectory()) {
+					ZipUtil.toZip(file, response.getOutputStream(), true);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				try {
+					response.getOutputStream().close();
+				} catch (Exception e) {
+				}
+				if (isTemp) {
+					try {
+						if (file.isFile()) {
+							FileUtils.forceDelete(file);
+						} else {
+							FileUtils.deleteDirectory(file);
+						}
+					} catch (Exception e) {
+					}
+				}
+			}
+		}
+
+	}
+
+	public void upload(JSONObject data) throws Exception {
+		HttpServletRequest request = (HttpServletRequest) data.get("request");
+		HttpServletResponse response = (HttpServletResponse) data.get("response");
+
+		System.out.println(request);
+		System.out.println(response);
+
 	}
 }

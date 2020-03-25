@@ -56,8 +56,14 @@
                 });
             });
         },
-        download(path) {
-            let action = '/api/download/' + source.token + '?path=' + path;
+        download(data) {
+            let action = '/api/download/' + source.token + '?';
+            if (data.type) {
+                action += '&type=' + data.type;
+            }
+            if (data.path) {
+                action += '&path=' + data.path;
+            }
             let url = _SERVER_URL + action;
             window.open(url);
         },

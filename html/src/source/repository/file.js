@@ -49,7 +49,12 @@ source.repository.file_data_map = {};
         if (coos.isEmpty(path)) {
             return;
         }
-        source.server.download(path);
+        source.server.download({ path: path });
+
+    };
+
+    source.downloadRepository = function () {
+        source.server.download({ type: 'REPOSITORY' });
 
     };
 
