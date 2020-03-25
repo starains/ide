@@ -397,7 +397,7 @@ public class RepositoryFile extends RepositoryBase {
 			file = param.getFile(path);
 			name = file.getName();
 		} else if (type.equalsIgnoreCase("REPOSITORY")) {
-
+			isTemp = true;
 			File tempFolder = new File(IDEConstant.WORKSPACES_TEMP_FOLDER);
 			name = param.getSpace().getName();
 			file = new File(tempFolder, IDGenerateUtil.generateShort() + "/" + name);
