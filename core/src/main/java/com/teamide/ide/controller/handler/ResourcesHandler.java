@@ -103,6 +103,11 @@ public class ResourcesHandler {
 			css.add("resources/plugins/jquery/jquery-ui.css");
 			js.add("resources/plugins/jquery/jquery-ui.js");
 
+			css.add("resources/plugins/dropzone/basic.min.css");
+			css.add("resources/plugins/dropzone/dropzone.min.css");
+			js.add("resources/plugins/dropzone/dropzone.min.js");
+			js.add("resources/plugins/dropzone/dropzone-amd-module.min.js");
+
 			if (hasUI) {
 				// css.add("resources/coos/merge/coos.css?v=" + VERSION);
 				js.add("resources/coos/merge/coos.js");

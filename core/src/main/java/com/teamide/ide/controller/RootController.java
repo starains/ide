@@ -17,6 +17,7 @@ import com.teamide.ide.controller.handler.DataHandler;
 import com.teamide.ide.controller.handler.DownloadHandler;
 import com.teamide.ide.controller.handler.ResourcesHandler;
 import com.teamide.ide.controller.handler.ResourcesMergeHandler;
+import com.teamide.ide.controller.handler.UploadHandler;
 import com.teamide.ide.controller.handler.ListenHandler;
 import com.teamide.ide.controller.handler.WorkspaceHandler;
 import com.teamide.util.RequestUtil;
@@ -42,6 +43,8 @@ public class RootController extends HttpServlet {
 	WorkspaceHandler workspaceHandler = new WorkspaceHandler();
 
 	DownloadHandler downloadHandler = new DownloadHandler();
+
+	UploadHandler uploadHandler = new UploadHandler();
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -97,6 +100,8 @@ public class RootController extends HttpServlet {
 				workspaceHandler.handle(path, request, response);
 			} else if (path.startsWith("/api/download/")) {
 				downloadHandler.handle(path, request, response);
+			} else if (path.startsWith("/api/upload/")) {
+				uploadHandler.handle(path, request, response);
 			} else {
 				if ("GET".equalsIgnoreCase(request.getMethod())) {
 					resourcesHandler.handle("/html/index.html", request, response);

@@ -44,6 +44,7 @@
       <BranchCreate ref="branch-create"></BranchCreate>
       <AppOptionForm ref="app-option-form"></AppOptionForm>
       <TableImport ref="table-import"></TableImport>
+      <UploadForm ref="upload-form"></UploadForm>
     </div>
   </div>
 </template>
@@ -63,6 +64,7 @@ import StarterForm from "@/views/repository/components/starter/StarterForm";
 import BranchCreate from "@/views/repository/components/branch/BranchCreate";
 import AppOptionForm from "@/views/repository/components/app/AppOptionForm";
 import TableImport from "@/views/repository/components/table/TableImport";
+import UploadForm from "@/views/repository/components/UploadForm";
 
 export default {
   props: ["repository"],
@@ -79,6 +81,7 @@ export default {
     StarterForm,
     BranchCreate,
     AppOptionForm,
+    UploadForm,
     TableImport
   },
   data() {
@@ -97,6 +100,7 @@ export default {
     source.branchCreateForm = this.$refs["branch-create"];
     source.appOptionForm = this.$refs["app-option-form"];
     source.tableImportForm = this.$refs["table-import"];
+    source.uploadForm = this.$refs["upload-form"];
 
     this.repository.contextmenu.callShow = this.$refs["context-menu"].callShow;
   }

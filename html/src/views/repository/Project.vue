@@ -9,7 +9,7 @@
             :class="{' el-icon-loading ' : repository.loading,' coos-icon-reload ' : !repository.loading }"
           />
         </a>
-        <a class title="上传">
+        <a class title="上传" @click="source.uploadRepository()">
           <i class="coos-icon coos-icon-cloud-upload" />
         </a>
         <a class title="下载" @click="source.downloadRepository()">

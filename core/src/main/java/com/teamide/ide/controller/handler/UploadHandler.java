@@ -13,7 +13,7 @@ import com.teamide.ide.processor.enums.RepositoryProcessorType;
 import com.teamide.util.LogUtil;
 import com.teamide.util.StringUtil;
 
-public class DownloadHandler {
+public class UploadHandler {
 
 	Logger logger = LogUtil.get();
 
@@ -23,8 +23,8 @@ public class DownloadHandler {
 		data.put("response", response);
 
 		String token = null;
-		if (path.startsWith("/api/download/")) {
-			token = path.substring("/api/download/".length());
+		if (path.startsWith("/api/upload/")) {
+			token = path.substring("/api/upload/".length());
 		}
 		if (StringUtil.isEmpty(token)) {
 			throw new Exception("token is null.");
@@ -33,7 +33,7 @@ public class DownloadHandler {
 		ClientSession session = ClientHandler.getSession(request);
 		WorkspaceProcessor workspaceProcessor = new WorkspaceProcessor(session, token);
 
-		workspaceProcessor.onDo(RepositoryProcessorType.DOWNLOAD.getValue(), data);
+		workspaceProcessor.onDo(RepositoryProcessorType.UPLOAD.getValue(), data);
 	}
 
 }

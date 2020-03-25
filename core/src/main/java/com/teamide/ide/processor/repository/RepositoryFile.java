@@ -5,11 +5,15 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -22,11 +26,13 @@ import com.teamide.app.process.ServiceProcess;
 import com.teamide.app.process.service.DaoProcess;
 import com.teamide.app.process.service.SubServiceProcess;
 import com.teamide.app.util.ModelFileUtil;
+import com.teamide.bean.Status;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.util.ZipUtil;
 import com.teamide.util.FileUtil;
 import com.teamide.util.IDGenerateUtil;
+import com.teamide.util.ResponseUtil;
 import com.teamide.util.StringUtil;
 
 public class RepositoryFile extends RepositoryBase {
@@ -457,8 +463,58 @@ public class RepositoryFile extends RepositoryBase {
 		HttpServletRequest request = (HttpServletRequest) data.get("request");
 		HttpServletResponse response = (HttpServletResponse) data.get("response");
 
-		System.out.println(request);
-		System.out.println(response);
+		// 构造一个文件上传处理对象
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		String tempPath = IDEConstant.WORKSPACES_TEMP_FOLDER + "upload/temp/";
+		File fp1 = new File(tempPath);
+		if (!fp1.exists())
+			fp1.mkdirs();
+		factory.setRepository(new File(tempPath));
+		factory.setSizeThreshold(10240);
+
+		List<FileItem> fileItems = new ArrayList<FileItem>();
+		String fullPath = null;
+		String repeat = null;
+		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		if (isMultipart) {
+			Iterator<?> items = upload.parseRequest(request).iterator();
+
+			while (items.hasNext()) {
+				FileItem item = (FileItem) items.next();
+				if (!item.isFormField()) {
+					fileItems.add(item);
+				} else {
+					if ("fullPath".equals(item.getFieldName())) {
+						fullPath = item.getString();
+					} else if ("repeat".equals(item.getFieldName())) {
+						repeat = item.getString();
+					}
+				}
+			}
+
+		}
+		if (StringUtil.isNotEmpty(fullPath) && !"undefined".equals(fullPath) && fileItems.size() == 1) {
+
+			FileItem fileItem = fileItems.get(0);
+
+			File file = param.getFile(fullPath);
+
+			if (file.exists()) {
+				if (StringUtil.isEmpty(repeat) || repeat.equals("IGNORE")) {
+
+				} else {
+					FileUtil.write(fileItem.get(), file);
+				}
+			} else {
+				FileUtil.write(fileItem.get(), file);
+			}
+
+		}
+
+		Status status = Status.SUCCESS();
+
+		ResponseUtil.outJSON(response, status);
 
 	}
 }
