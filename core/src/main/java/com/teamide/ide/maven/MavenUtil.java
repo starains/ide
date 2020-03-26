@@ -14,7 +14,7 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
-import com.teamide.ide.tool.LogTool;
+import com.teamide.LogTool;
 import com.teamide.util.StringUtil;
 
 public class MavenUtil {

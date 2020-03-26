@@ -14,11 +14,6 @@
 			<artifactId>teamide.base</artifactId>
 			<version>${teamide.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.teamide</groupId>
-			<artifactId>ide.base</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>

@@ -10,11 +10,11 @@ import java.util.Properties;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.IOUtil;
 import com.teamide.util.StringUtil;
+import com.teamide.LogTool;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceRepositoryOptionBean;
 import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.service.impl.SpaceRepositoryOptionService;
-import com.teamide.ide.tool.LogTool;
 
 public class RepositoryProcessorParam extends SpaceProcessorParam {
 

@@ -6,10 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.LogTool;
 import com.teamide.starter.enums.DeployStatus;
 import com.teamide.starter.enums.InstallStatus;
 import com.teamide.starter.enums.StarterStatus;
-import com.teamide.ide.tool.LogTool;
 import com.teamide.util.FileUtil;
 
 public class StarterParam {

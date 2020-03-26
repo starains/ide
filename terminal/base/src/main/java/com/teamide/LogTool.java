@@ -1,4 +1,4 @@
-package com.teamide.ide.tool;
+package com.teamide;
 
 import java.io.BufferedReader;
 import java.io.File;

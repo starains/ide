@@ -17,13 +17,7 @@
 
 		<dependency>
 			<groupId>com.teamide</groupId>
-			<artifactId>terminal.deployer</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.teamide</groupId>
-			<artifactId>terminal.starter</artifactId>
+			<artifactId>terminal.base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

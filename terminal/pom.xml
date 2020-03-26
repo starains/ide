@@ -55,6 +55,5 @@
 	<modules>
 		<module>base</module>
 		<module>deployer</module>
-		<module>starter</module>
 	</modules>
 </project>

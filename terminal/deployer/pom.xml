@@ -6,7 +6,6 @@
 	<artifactId>terminal.deployer</artifactId>
 	<properties>
 		<release.root>../../release/${project.version}</release.root>
-		<teamide.version>0.0.5</teamide.version>
 		<fastjson.version>1.2.47</fastjson.version>
 		<tomcat.version>8.5.43</tomcat.version>
 		<fileupload.version>1.3.3</fileupload.version>
@@ -14,22 +13,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.teamide</groupId>
-			<artifactId>teamide.base</artifactId>
-			<version>${teamide.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.teamide</groupId>
 			<artifactId>terminal.base</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.teamide</groupId>
-			<artifactId>terminal.starter</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.teamide</groupId>
-			<artifactId>ide.base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
