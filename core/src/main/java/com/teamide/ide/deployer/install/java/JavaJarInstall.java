@@ -6,9 +6,9 @@ import org.apache.maven.shared.utils.io.FileUtils;
 
 import com.teamide.ide.deployer.DeployParam;
 
-public class JavaJarStarterProcess extends JavaStarterProcess {
+public class JavaJarInstall extends JavaInstall {
 
-	public JavaJarStarterProcess(DeployParam param) {
+	public JavaJarInstall(DeployParam param) {
 		super(param);
 	}
 
@@ -31,7 +31,7 @@ public class JavaJarStarterProcess extends JavaStarterProcess {
 	@Override
 	public void copyProject() throws Exception {
 		if (jarFile != null && jarFile.exists()) {
-			File appJarFile = new File(param.starter.workFolder, "app.jar");
+			File appJarFile = new File(param.starter.workFolder, jarFile.getName());
 			if (appJarFile.exists()) {
 				FileUtils.delete(appJarFile);
 			}

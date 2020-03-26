@@ -7,12 +7,12 @@ import java.util.List;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.jna.Platform;
 import com.teamide.starter.enums.StarterStatus;
-import com.teamide.starter.shell.DefaultInstall;
-import com.teamide.starter.shell.java.JavaInternalStarterProcess;
-import com.teamide.starter.shell.java.JavaJarStarterProcess;
-import com.teamide.starter.shell.java.JavaMainStarterProcess;
-import com.teamide.starter.shell.java.JavaTomcatStarterProcess;
-import com.teamide.starter.shell.node.NodeStarterProcess;
+import com.teamide.starter.shell.DefaultStarterShell;
+import com.teamide.starter.shell.java.JavaInternalTomcatStarterShell;
+import com.teamide.starter.shell.java.JavaJarStarterShell;
+import com.teamide.starter.shell.java.JavaMainStarterShell;
+import com.teamide.starter.shell.java.JavaWarStarterShell;
+import com.teamide.starter.shell.node.NodeStarterShell;
 import com.teamide.terminal.TerminalProcess;
 import com.teamide.terminal.TerminalProcessListener;
 import com.teamide.terminal.TerminalUtil;
@@ -66,6 +66,7 @@ public class StarterEventProcessor extends StarterParam {
 		writeStatus(StarterStatus.STARTING);
 		kill();
 		try {
+			starterShell.copyWorkFolder();
 			File workFolder = this.workFolder;
 			File pidFile = this.starterShell.getPIDFile();
 
@@ -291,26 +292,25 @@ public class StarterEventProcessor extends StarterParam {
 			String mode = option.getString("mode");
 			switch (String.valueOf(mode)) {
 			case "MAIN":
-				shell = new JavaMainStarterProcess(this);
+				shell = new JavaMainStarterShell(this);
 				break;
 			case "JAR":
-				shell = new JavaJarStarterProcess(this);
+				shell = new JavaJarStarterShell(this);
+				break;
+			case "WAR":
+				shell = new JavaWarStarterShell(this);
 				break;
 			case "TOMCAT":
-				if (option.getBooleanValue("useinternal")) {
-					shell = new JavaInternalStarterProcess(this);
-				} else {
-					shell = new JavaTomcatStarterProcess(this);
-				}
+				shell = new JavaInternalTomcatStarterShell(this);
 				break;
 			}
 			break;
 		case "NODE":
-			shell = new NodeStarterProcess(this);
+			shell = new NodeStarterShell(this);
 			break;
 		}
 		if (shell == null) {
-			shell = new DefaultInstall(this);
+			shell = new DefaultStarterShell(this);
 		}
 		return shell;
 

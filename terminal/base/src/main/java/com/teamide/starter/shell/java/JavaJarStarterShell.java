@@ -8,9 +8,9 @@ import com.teamide.shell.Shell;
 import com.teamide.shell.java.JavaShell;
 import com.teamide.starter.StarterParam;
 
-public class JavaMainStarterProcess extends JavaStarterProcess {
+public class JavaJarStarterShell extends JavaStarterShell {
 
-	public JavaMainStarterProcess(StarterParam param) {
+	public JavaJarStarterShell(StarterParam param) {
 		super(param);
 	}
 
@@ -26,14 +26,20 @@ public class JavaMainStarterProcess extends JavaStarterProcess {
 		JavaShell shell = (JavaShell) this.shell;
 		shell.setJava_home(getJavaHome());
 		shell.setJava_envp(getJavaEnvp());
+
 		List<File> lib_folders = new ArrayList<File>();
 		lib_folders.add(new File(param.workFolder, "lib"));
 		shell.setLib_folders(lib_folders);
-		List<File> class_folders = new ArrayList<File>();
-		class_folders.add(new File(param.workFolder, "classes"));
-		shell.setClass_folders(class_folders);
 
-		shell.setMain(getMain());
+		File jarFile = null;
+		for (File file : param.workFolder.listFiles()) {
+			if (file.getName().endsWith(".jar")) {
+				jarFile = file;
+				break;
+			}
+		}
+
+		shell.setJar_file(jarFile);
 
 		return shell.getShellString();
 	}
@@ -43,8 +49,9 @@ public class JavaMainStarterProcess extends JavaStarterProcess {
 		return null;
 	}
 
-	public String getMain() {
-		return param.getOptionString("main");
+	public File getJarFile() {
+
+		return null;
 	}
 
 	@Override
@@ -52,4 +59,8 @@ public class JavaMainStarterProcess extends JavaStarterProcess {
 		return shell.getPIDFile();
 	}
 
+	@Override
+	public void copyWorkFolder() throws Exception {
+
+	}
 }

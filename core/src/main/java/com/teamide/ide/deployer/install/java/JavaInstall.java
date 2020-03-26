@@ -14,7 +14,7 @@ import com.teamide.ide.maven.MavenUtil;
 import com.teamide.ide.processor.repository.hanlder.RepositoryHanlder;
 import com.teamide.ide.service.impl.EnvironmentService;
 
-public abstract class JavaStarterProcess extends DeployInstall {
+public abstract class JavaInstall extends DeployInstall {
 
 	private final String java_home;
 
@@ -30,7 +30,7 @@ public abstract class JavaStarterProcess extends DeployInstall {
 
 	protected File warFolder;
 
-	public JavaStarterProcess(DeployParam param) {
+	public JavaInstall(DeployParam param) {
 		super(param);
 		String java_home = null;
 		String maven_home = null;
@@ -56,8 +56,7 @@ public abstract class JavaStarterProcess extends DeployInstall {
 		}
 		this.java_home = param.starter.formatToRoot(java_home);
 		this.maven_home = param.starter.formatToRoot(maven_home);
-		
-		
+
 		try {
 			param.starter.starterJSON.put("java_home", java_home);
 			param.starter.starterJSON.put("maven_home", maven_home);
@@ -86,52 +85,6 @@ public abstract class JavaStarterProcess extends DeployInstall {
 	public String getMavenHome() {
 		return maven_home;
 	}
-
-	public File getAppFolder(File tomcatFolder, String name) {
-		File webappsFolder = new File(tomcatFolder, "webapps");
-		String contextpath = getContextpath();
-		if (StringUtil.isEmpty(contextpath)) {
-			contextpath = name;
-		}
-		String outName = contextpath;
-		if (StringUtil.isEmpty(outName) || outName.equals("/")) {
-			outName = "/ROOT";
-		}
-		File appFolder = new File(webappsFolder, outName);
-
-		return appFolder;
-	}
-
-//	protected void outWebapps(File tomcatFolder) throws Exception {
-//		File targetWebappFolder = new File(param.starter.workFolder, "webapp");
-//		if (targetWebappFolder.exists() && targetWebappFolder.listFiles().length > 0) {
-//			targetWebappFolder = targetWebappFolder.listFiles()[0];
-//		}
-//		if (targetWebappFolder != null && targetWebappFolder.exists()) {
-//			if (tomcatFolder == null || !tomcatFolder.exists()) {
-//				throw new Exception("tomcat[" + tomcatFolder.getAbsolutePath() + "] does not exist.");
-//			}
-//
-//			File appFolder = getAppFolder(tomcatFolder, targetWebappFolder.getName());
-//
-//			if (appFolder.exists()) {
-//				try {
-//					FileUtils.deleteDirectory(appFolder);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//			if (!appFolder.exists()) {
-//				appFolder.mkdirs();
-//			}
-//			try {
-//				FileUtils.copyDirectoryStructure(targetWebappFolder, appFolder);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//
-//		}
-//	}
 
 	public void compile() throws Exception {
 		Model model = RepositoryHanlder.getPomModel(new File(param.projectFolder, "pom.xml"));

@@ -12,7 +12,6 @@ public class StarterOption {
 	private String javaenvp;
 	private String javaenvironmentid;
 	private String mavenenvironmentid;
-	private boolean useinternal;
 	private String internaltomcat;
 	private String hostname;
 	private int port;
@@ -142,14 +141,6 @@ public class StarterOption {
 
 	public void setMavenenvironmentid(String mavenenvironmentid) {
 		this.mavenenvironmentid = mavenenvironmentid;
-	}
-
-	public boolean isUseinternal() {
-		return useinternal;
-	}
-
-	public void setUseinternal(boolean useinternal) {
-		this.useinternal = useinternal;
 	}
 
 	public String getInternaltomcat() {

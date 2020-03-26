@@ -7,9 +7,9 @@ import com.teamide.starter.StarterParam;
 import com.teamide.starter.StarterShell;
 import com.teamide.util.StringUtil;
 
-public class DefaultInstall extends StarterShell {
+public class DefaultStarterShell extends StarterShell {
 
-	public DefaultInstall(StarterParam param) {
+	public DefaultStarterShell(StarterParam param) {
 		super(param);
 	}
 
@@ -18,7 +18,7 @@ public class DefaultInstall extends StarterShell {
 		return null;
 	}
 
-	public String formatCommand(String command) {
+	public String formatCommand(String command) throws Exception {
 		if (StringUtil.isNotEmpty(command)) {
 			File logFile = new File(param.starterFolder, "log/starter.log");
 			File pidFile = getPIDFile();
@@ -34,7 +34,7 @@ public class DefaultInstall extends StarterShell {
 	}
 
 	@Override
-	public String getStartShell() {
+	public String getStartShell() throws Exception {
 		String command = param.getOptionString("startcommand");
 		command = formatCommand(command);
 
@@ -42,7 +42,7 @@ public class DefaultInstall extends StarterShell {
 	}
 
 	@Override
-	public String getStopShell() {
+	public String getStopShell() throws Exception {
 		String command = param.getOptionString("stopcommand");
 		command = formatCommand(command);
 
@@ -50,7 +50,7 @@ public class DefaultInstall extends StarterShell {
 	}
 
 	@Override
-	public File getPIDFile() {
+	public File getPIDFile() throws Exception {
 		String pidfile = param.getOptionString("pidfile");
 		if (StringUtil.isNotEmpty(pidfile)) {
 			return new File(pidfile);
@@ -62,6 +62,11 @@ public class DefaultInstall extends StarterShell {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void copyWorkFolder() throws Exception {
+
 	}
 
 }

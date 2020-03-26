@@ -5,13 +5,13 @@ import java.io.File;
 import com.teamide.shell.Shell;
 import com.teamide.shell.node.NodeShell;
 import com.teamide.starter.StarterParam;
-import com.teamide.starter.StarterShell;
+import com.teamide.starter.shell.DefaultStarterShell;
 
-public class NodeStarterProcess extends StarterShell {
+public class NodeStarterShell extends DefaultStarterShell {
 
 	private final String node_home;
 
-	public NodeStarterProcess(StarterParam param) {
+	public NodeStarterShell(StarterParam param) {
 		super(param);
 
 		this.node_home = param.starterJSON.getString("node_home");
@@ -49,6 +49,11 @@ public class NodeStarterProcess extends StarterShell {
 
 	public String getNodeHome() {
 		return node_home;
+	}
+
+	@Override
+	public void copyWorkFolder() throws Exception {
+		super.copyWorkFolder();
 	}
 
 }

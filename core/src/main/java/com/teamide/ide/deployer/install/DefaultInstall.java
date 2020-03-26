@@ -1,8 +1,11 @@
 package com.teamide.ide.deployer.install;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.InputStream;
 import java.io.PrintWriter;
+
+import org.apache.commons.io.FileUtils;
 
 import com.teamide.util.StringUtil;
 import com.teamide.ide.constant.IDEConstant;
@@ -51,8 +54,22 @@ public class DefaultInstall extends DeployInstall {
 
 	@Override
 	public void copyProject() throws Exception {
-		// TODO Auto-generated method stub
 
+		FileUtils.deleteDirectory(this.param.starter.workFolder);
+
+		FileUtils.copyDirectory(this.param.projectFolder, this.param.starter.workFolder, new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				if (pathname.isDirectory()) {
+					if (pathname.getName().equals(".git")) {
+						return false;
+					} else if (pathname.getName().equals("node_modules")) {
+						return false;
+					}
+				}
+				return true;
+			}
+		});
 	}
 
 }

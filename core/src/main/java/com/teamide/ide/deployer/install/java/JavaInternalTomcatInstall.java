@@ -9,9 +9,9 @@ import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.deployer.DeployParam;
 import com.teamide.util.FileUtil;
 
-public class JavaInternalStarterProcess extends JavaStarterProcess {
+public class JavaInternalTomcatInstall extends JavaInstall {
 
-	public JavaInternalStarterProcess(DeployParam param) {
+	public JavaInternalTomcatInstall(DeployParam param) {
 		super(param);
 
 		try {

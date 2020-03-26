@@ -5,11 +5,11 @@ import java.io.File;
 import com.teamide.ide.bean.EnvironmentBean;
 import com.teamide.ide.bean.StarterOption;
 import com.teamide.ide.deployer.install.DefaultInstall;
-import com.teamide.ide.deployer.install.java.JavaInternalStarterProcess;
-import com.teamide.ide.deployer.install.java.JavaJarStarterProcess;
-import com.teamide.ide.deployer.install.java.JavaMainStarterProcess;
-import com.teamide.ide.deployer.install.java.JavaTomcatStarterProcess;
-import com.teamide.ide.deployer.install.node.NodeStarterProcess;
+import com.teamide.ide.deployer.install.java.JavaInternalTomcatInstall;
+import com.teamide.ide.deployer.install.java.JavaJarInstall;
+import com.teamide.ide.deployer.install.java.JavaMainInstall;
+import com.teamide.ide.deployer.install.java.JavaWarInstall;
+import com.teamide.ide.deployer.install.node.NodeInstall;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.starter.Starter;
@@ -78,22 +78,21 @@ public class DeployParam {
 			String mode = option.getMode();
 			switch (String.valueOf(mode)) {
 			case "MAIN":
-				install = new JavaMainStarterProcess(this);
+				install = new JavaMainInstall(this);
 				break;
 			case "JAR":
-				install = new JavaJarStarterProcess(this);
+				install = new JavaJarInstall(this);
+				break;
+			case "WAR":
+				install = new JavaWarInstall(this);
 				break;
 			case "TOMCAT":
-				if (option.isUseinternal()) {
-					install = new JavaInternalStarterProcess(this);
-				} else {
-					install = new JavaTomcatStarterProcess(this);
-				}
+				install = new JavaInternalTomcatInstall(this);
 				break;
 			}
 			break;
 		case "NODE":
-			install = new NodeStarterProcess(this);
+			install = new NodeInstall(this);
 			break;
 		}
 		if (install == null) {

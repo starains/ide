@@ -26,4 +26,6 @@ public abstract class StarterShell {
 	public abstract String getStopShell() throws Exception;
 
 	public abstract File getPIDFile() throws Exception;
+
+	public abstract void copyWorkFolder() throws Exception;
 }

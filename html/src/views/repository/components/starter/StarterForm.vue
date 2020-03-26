@@ -77,6 +77,7 @@
             <el-radio v-model="form.mode" label="MAIN">Main</el-radio>
             <el-radio v-model="form.mode" label="TOMCAT">Tomcat</el-radio>
             <el-radio v-model="form.mode" label="JAR">Jar</el-radio>
+            <el-radio v-model="form.mode" label="WAR">War</el-radio>
           </el-form-item>
 
           <el-form-item
@@ -90,50 +91,30 @@
           <el-form-item v-show="form.mode == 'JAR'" label="Jar" :prop="form.mode == 'JAR'?'jar':''">
             <el-input v-model="form.jar" type="text" autocomplete="off"></el-input>
           </el-form-item>
+          <template v-if="form.mode == 'TOMCAT' || form.mode == 'WAR'">
+            <el-form-item
+              :prop="(form.mode == 'TOMCAT'|| form.mode == 'WAR')?'internaltomcat':''"
+              label="内置Tomcat"
+            >
+              <el-radio v-model="form.internaltomcat" label="tomcat-7.0.94">tomcat-7.0.94</el-radio>
+              <el-radio v-model="form.internaltomcat" label="tomcat-8.0.53">tomcat-8.0.53</el-radio>
+              <el-radio v-model="form.internaltomcat" label="tomcat-8.5.41">tomcat-8.5.41</el-radio>
+            </el-form-item>
 
-          <el-form-item v-show="form.mode == 'TOMCAT'" label="使用内置Tomcat">
-            <el-switch v-model="form.useinternal" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
-          </el-form-item>
+            <el-form-item
+              :prop="(form.mode == 'TOMCAT'|| form.mode == 'WAR')?'port':''"
+              label="请输入端口"
+            >
+              <el-input v-model="form.port" type="text" autocomplete="off"></el-input>
+            </el-form-item>
 
-          <el-form-item
-            v-show="!coos.isTrue(form.useinternal) && (form.mode == 'TOMCAT')"
-            :prop="!coos.isTrue(form.useinternal) && (form.mode == 'TOMCAT')?'environmentid':''"
-            label="服务"
-          >
-            <el-radio
-              v-for="one in source.data.ENVIRONMENTS"
-              :key="one.id"
-              v-model="form.environmentid"
-              v-show="one.type == 'TOMCAT'"
-              :label="one.id"
-            >{{one.name}}({{one.version}})</el-radio>
-          </el-form-item>
-
-          <el-form-item
-            v-show="coos.isTrue(form.useinternal) && (form.mode == 'TOMCAT')"
-            :prop="coos.isTrue(form.useinternal) && (form.mode == 'TOMCAT')?'internaltomcat':''"
-            label="内置Tomcat"
-          >
-            <el-radio v-model="form.internaltomcat" label="tomcat-7.0.94">tomcat-7.0.94</el-radio>
-            <el-radio v-model="form.internaltomcat" label="tomcat-8.0.53">tomcat-8.0.53</el-radio>
-            <el-radio v-model="form.internaltomcat" label="tomcat-8.5.41">tomcat-8.5.41</el-radio>
-          </el-form-item>
-
-          <el-form-item
-            v-show="form.mode == 'TOMCAT' && coos.isTrue(form.useinternal)"
-            :prop="coos.isTrue(form.useinternal) && (form.mode == 'TOMCAT')?'port':''"
-            label="请输入端口"
-          >
-            <el-input v-model="form.port" type="text" autocomplete="off"></el-input>
-          </el-form-item>
-
-          <el-form-item
-            v-show="form.mode == 'TOMCAT'"
-            label="访问路径"
-            :prop="(form.mode == 'TOMCAT' )?'contextpath':''"
-          >
-            <el-input v-model="form.contextpath" type="text" autocomplete="off"></el-input>
-          </el-form-item>
+            <el-form-item
+              label="访问路径"
+              :prop="(form.mode == 'TOMCAT'|| form.mode == 'WAR' )?'contextpath':''"
+            >
+              <el-input v-model="form.contextpath" type="text" autocomplete="off"></el-input>
+            </el-form-item>
+          </template>
         </template>
 
         <template v-if="form.language == 'OTHER'">
@@ -207,7 +188,6 @@ export default {
         javaenvp: "",
         javaenvironmentid: "",
         mavenenvironmentid: "",
-        useinternal: true,
         internaltomcat: "tomcat-8.0.53",
         port: 8080,
         contextpath: "/",
@@ -316,14 +296,7 @@ export default {
         }
       }
       for (var key in data) {
-        if (key == "useinternal") {
-          if (coos.isEmpty(data[key])) {
-            data[key] = true;
-          }
-          this.form[key] = coos.isTrue(data[key]);
-        } else {
-          this.form[key] = data[key];
-        }
+        this.form[key] = data[key];
       }
       if (coos.isEmpty(data.name)) {
         this.is_update = false;

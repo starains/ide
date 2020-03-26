@@ -6,9 +6,9 @@ import org.apache.maven.shared.utils.io.FileUtils;
 
 import com.teamide.ide.deployer.DeployParam;
 
-public class JavaMainStarterProcess extends JavaStarterProcess {
+public class JavaMainInstall extends JavaInstall {
 
-	public JavaMainStarterProcess(DeployParam param) {
+	public JavaMainInstall(DeployParam param) {
 		super(param);
 	}
 

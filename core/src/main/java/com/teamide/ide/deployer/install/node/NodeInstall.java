@@ -6,15 +6,15 @@ import java.io.IOException;
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.EnvironmentBean;
-import com.teamide.ide.deployer.DeployInstall;
 import com.teamide.ide.deployer.DeployParam;
+import com.teamide.ide.deployer.install.DefaultInstall;
 import com.teamide.ide.service.impl.EnvironmentService;
 
-public class NodeStarterProcess extends DeployInstall {
+public class NodeInstall extends DefaultInstall {
 
 	private final String node_home;
 
-	public NodeStarterProcess(DeployParam param) {
+	public NodeInstall(DeployParam param) {
 		super(param);
 		String node_home = null;
 		if (!StringUtil.isEmpty(param.option.getNodeenvironmentid())) {
@@ -57,7 +57,7 @@ public class NodeStarterProcess extends DeployInstall {
 
 	@Override
 	public void copyProject() throws Exception {
-
+		super.copyProject();
 	}
 
 }
