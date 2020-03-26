@@ -239,7 +239,9 @@ public class JGitUtil {
 
 		FetchCommand command = git.fetch();
 		command.setRemote(remote);
-		command.setCredentialsProvider(credentialsProvider);
+		if (credentialsProvider != null) {
+			command.setCredentialsProvider(credentialsProvider);
+		}
 		return command.call();
 	}
 
@@ -319,10 +321,12 @@ public class JGitUtil {
 		return command.call();
 	}
 
-	public static List<Ref> branchList(Git git) throws Exception {
+	public static List<Ref> branchList(Git git, ListMode mode) throws Exception {
 
 		ListBranchCommand command = git.branchList();
-		command.setListMode(ListMode.ALL);
+		if (mode != null) {
+			command.setListMode(mode);
+		}
 		return command.call();
 	}
 

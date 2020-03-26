@@ -1,6 +1,7 @@
 package com.teamide.ide.processor.repository;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -44,13 +45,23 @@ public class RepositoryCreate extends RepositoryBase {
 			try {
 				File src = new File(this.param.getBranchsFolder(), copybranch);
 				if (src.exists()) {
-					FileUtils.copyDirectory(src, branchFolder);
+					FileUtils.copyDirectory(src, branchFolder, new FileFilter() {
+						@Override
+						public boolean accept(File pathname) {
+							if (pathname.isDirectory()) {
+								if (pathname.getName().equals(".git")) {
+									// return false;
+								}
+							}
+							return true;
+						}
+					});
 					SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
 					List<SpaceRepositoryOptionBean> options = service.query(this.param.getSession(),
 							this.param.getSpace(), null, null, null, null);
 
 					for (SpaceRepositoryOptionBean option : options) {
-						option.setBranch(copybranch);
+						option.setBranch(branch);
 						option.setId(null);
 						service.save(this.param.getSession(), option);
 					}

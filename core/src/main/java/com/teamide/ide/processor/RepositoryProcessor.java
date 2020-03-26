@@ -1,9 +1,12 @@
 package com.teamide.ide.processor;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -362,6 +365,22 @@ public class RepositoryProcessor extends SpaceProcessor {
 			gitRemoteName = data.getString("gitRemoteName");
 			url = data.getString("url");
 			param.saveOption(null, null, OptionType.GIT, data);
+
+			if (data.getBooleanValue("needclean")) {
+				File sourceFolder = param.getSourceFolder();
+				if (sourceFolder.exists()) {
+					File[] fs = sourceFolder.listFiles();
+					for (File f : fs) {
+						if (f.isFile()) {
+							FileUtils.forceDelete(f);
+						} else {
+							FileUtils.deleteDirectory(f);
+						}
+					}
+
+				}
+			}
+
 			value = new RepositoryGit(param).remoteAdd(gitRemoteName, url);
 
 			spaceEventBean.set("remote", gitRemoteName);

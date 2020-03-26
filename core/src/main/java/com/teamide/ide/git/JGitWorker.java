@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.jgit.api.CherryPickResult;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -149,10 +150,10 @@ public class JGitWorker {
 		}
 	}
 
-	public List<Ref> branchList() throws Exception {
+	public List<Ref> branchList(ListMode mode) throws Exception {
 
 		try {
-			return JGitUtil.branchList(open());
+			return JGitUtil.branchList(open(), mode);
 		} finally {
 			close();
 		}

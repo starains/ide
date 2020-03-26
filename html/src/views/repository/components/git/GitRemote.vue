@@ -109,17 +109,43 @@ export default {
 
           this.hideForm();
 
-          source.gitCertificateForm.show().then(certificate => {
-            data.certificate = certificate;
-            coos
-              .confirm(
-                "远程仓库将切换至远程仓库[" +
-                  data.gitRemoteName +
-                  "]下[" +
-                  data.gitRemoteBranch +
-                  "]版本，是否切换？"
-              )
-              .then(
+          let isChange = true;
+          let isNew = true;
+          if (source.repository.git && source.repository.git.option) {
+            let option = source.repository.git.option;
+            if (
+              option.gitRemoteBranch == data.gitRemoteBranch &&
+              option.gitRemoteName == data.gitRemoteName &&
+              option.url == data.url
+            ) {
+              isChange = false;
+            }
+            isNew = false;
+          }
+          data.needclean = true;
+
+          if (isChange) {
+            let msg = "";
+
+            if (isNew) {
+              msg =
+                "设置远程仓库[" +
+                data.gitRemoteName +
+                "]下[" +
+                data.gitRemoteBranch +
+                "]版本，设置后将清空仓库文件，是否设置？";
+            } else {
+              msg =
+                "切换至远程仓库[" +
+                data.gitRemoteName +
+                "]下[" +
+                data.gitRemoteBranch +
+                "]版本，切换操作将清空仓库文件，是否切换？";
+            }
+
+            source.gitCertificateForm.show().then(certificate => {
+              data.certificate = certificate;
+              coos.confirm(msg).then(
                 res => {
                   source.do("GIT_REMOTE_ADD", data).then(res => {
                     if (res.errcode == 0) {
@@ -132,7 +158,8 @@ export default {
                 },
                 () => {}
               );
-          });
+            });
+          }
         } else {
           return false;
         }

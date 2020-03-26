@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.eclipse.jgit.api.CherryPickResult;
 import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Ref;
@@ -87,6 +88,26 @@ public class RepositoryGit extends RepositoryBase {
 		this.param.saveOption(null, null, OptionType.GIT_CERTIFICATE, json);
 	}
 
+	public void checkLocalBranch() throws Exception {
+		if (!findGit()) {
+			return;
+		}
+		List<Ref> localBranchList = worker.branchList(null);
+		boolean find = false;
+		for (Ref localBranch : localBranchList) {
+			if (localBranch.getName().endsWith("/" + this.param.getBranch())) {
+				find = true;
+				break;
+			}
+		}
+		if (!find) {
+			try {
+				worker.checkout(this.param.getBranch(), "master");
+			} catch (Exception e) {
+			}
+		}
+	}
+
 	public JSONObject load() throws Exception {
 
 		this.param.getLog().info("git load");
@@ -99,9 +120,10 @@ public class RepositoryGit extends RepositoryBase {
 			return result;
 		}
 		result.put("findGit", true);
-
+		checkLocalBranch();
 		List<RemoteConfig> remoteList = worker.remoteList();
-		List<Ref> branchList = worker.branchList();
+
+		List<Ref> branchList = worker.branchList(ListMode.ALL);
 
 		Status status = worker.status();
 		result.put("remoteList", toJSONByRemoteConfigs(remoteList));
@@ -317,7 +339,7 @@ public class RepositoryGit extends RepositoryBase {
 		}
 		result.put("findGit", true);
 
-		List<Ref> branchList = worker.branchList();
+		List<Ref> branchList = worker.branchList(ListMode.ALL);
 		result.put("branchList", toJSONByRefs(branchList));
 		return result;
 	}
@@ -482,6 +504,7 @@ public class RepositoryGit extends RepositoryBase {
 			@Override
 			public void run() {
 				try {
+
 					worker.pull(remote, remoteBranchName, getCredentialsProvider(username, password));
 					setGitWorkStatus(GitWorkStatus.PULLED);
 					setGitWorkMessage(null);
