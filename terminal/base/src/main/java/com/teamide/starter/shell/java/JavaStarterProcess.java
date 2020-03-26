@@ -1,9 +1,9 @@
-package com.teamide.deployer.starter.shell.java;
+package com.teamide.starter.shell.java;
 
 import java.io.File;
 
-import com.teamide.deployer.starter.Starter;
-import com.teamide.deployer.starter.StarterShell;
+import com.teamide.starter.StarterParam;
+import com.teamide.starter.StarterShell;
 import com.teamide.util.StringUtil;
 
 public abstract class JavaStarterProcess extends StarterShell {
@@ -12,23 +12,23 @@ public abstract class JavaStarterProcess extends StarterShell {
 
 	private final String maven_home;
 
-	public JavaStarterProcess(Starter starter) {
-		super(starter);
+	public JavaStarterProcess(StarterParam param) {
+		super(param);
 
-		this.java_home = starter.starterJSON.getString("java_home");
-		this.maven_home = starter.starterJSON.getString("maven_home");
+		this.java_home = param.starterJSON.getString("java_home");
+		this.maven_home = param.starterJSON.getString("maven_home");
 	}
 
 	public String getJavaEnvp() {
-		return starter.getOptionString("javaenvp");
+		return param.getOptionString("javaenvp");
 	}
 
 	public String getMavenEnvp() {
-		return starter.getOptionString("mavenenvp");
+		return param.getOptionString("mavenenvp");
 	}
 
 	public String getContextpath() {
-		return starter.getOptionString("contextpath");
+		return param.getOptionString("contextpath");
 	}
 
 	public String getJavaHome() {

@@ -6,6 +6,7 @@
 	<artifactId>terminal.base</artifactId>
 	<properties>
 		<teamide.version>0.0.5</teamide.version>
+		<fileupload.version>1.3.3</fileupload.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -13,11 +14,23 @@
 			<artifactId>teamide.base</artifactId>
 			<version>${teamide.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.teamide</groupId>
+			<artifactId>ide.base</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
 			<version>5.5.0</version>
+		</dependency>
+
+		<!-- commons-fileupload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${fileupload.version}</version>
 		</dependency>
 
 	</dependencies>

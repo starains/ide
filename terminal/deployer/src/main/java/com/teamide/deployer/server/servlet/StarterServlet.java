@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.Status;
-import com.teamide.deployer.starter.StarterService;
+import com.teamide.deployer.server.service.StarterService;
 import com.teamide.util.RequestUtil;
 import com.teamide.util.StringUtil;
 

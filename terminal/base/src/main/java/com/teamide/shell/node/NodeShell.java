@@ -1,10 +1,10 @@
-package com.teamide.deployer.shell.node;
+package com.teamide.shell.node;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.teamide.deployer.shell.Shell;
+import com.teamide.shell.Shell;
 import com.teamide.util.StringUtil;
 
 public class NodeShell extends Shell {

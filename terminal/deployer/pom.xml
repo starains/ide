@@ -24,6 +24,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.teamide</groupId>
+			<artifactId>terminal.starter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.teamide</groupId>
 			<artifactId>ide.base</artifactId>
 			<version>${project.version}</version>
 		</dependency>

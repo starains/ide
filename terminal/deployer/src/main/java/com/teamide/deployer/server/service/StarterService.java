@@ -1,4 +1,4 @@
-package com.teamide.deployer.starter;
+package com.teamide.deployer.server.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,7 +16,8 @@ import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.deployer.IDEConstant;
-import com.teamide.deployer.enums.DeployStatus;
+import com.teamide.starter.Starter;
+import com.teamide.starter.enums.DeployStatus;
 
 public class StarterService {
 

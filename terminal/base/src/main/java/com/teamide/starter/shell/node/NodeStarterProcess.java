@@ -1,26 +1,26 @@
-package com.teamide.deployer.starter.shell.node;
+package com.teamide.starter.shell.node;
 
 import java.io.File;
 
-import com.teamide.deployer.shell.Shell;
-import com.teamide.deployer.shell.node.NodeShell;
-import com.teamide.deployer.starter.Starter;
-import com.teamide.deployer.starter.StarterShell;
+import com.teamide.shell.Shell;
+import com.teamide.shell.node.NodeShell;
+import com.teamide.starter.StarterParam;
+import com.teamide.starter.StarterShell;
 
 public class NodeStarterProcess extends StarterShell {
 
 	private final String node_home;
 
-	public NodeStarterProcess(Starter starter) {
-		super(starter);
+	public NodeStarterProcess(StarterParam param) {
+		super(param);
 
-		this.node_home = starter.starterJSON.getString("node_home");
+		this.node_home = param.starterJSON.getString("node_home");
 
 	}
 
 	@Override
 	public Shell getShell() {
-		NodeShell shell = new NodeShell(starter.starterFolder);
+		NodeShell shell = new NodeShell(param.starterFolder);
 		return shell;
 	}
 
@@ -44,7 +44,7 @@ public class NodeStarterProcess extends StarterShell {
 	}
 
 	public String getNodeCommand() {
-		return starter.starterJSON.getJSONObject("option").getString("nodecommand");
+		return param.getOptionString("nodecommand");
 	}
 
 	public String getNodeHome() {

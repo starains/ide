@@ -10,13 +10,13 @@ import com.teamide.util.FileUtil;
 import com.teamide.util.IDGenerateUtil;
 import com.teamide.util.StringUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.deployer.StarterTerminal;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.deployer.LocalDeploy;
 import com.teamide.ide.deployer.RemoteDeploy;
 import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.starter.StarterServer;
 
 public class DeployHandler {
 
@@ -26,10 +26,9 @@ public class DeployHandler {
 
 	static {
 		File starterRootFolder = new File(IDEConstant.WORKSPACES_STARTER_FOLDER);
-		File tempStarterJarFile = new File(IDEConstant.PLUGIN_STARTER_JAR);
 
-		StarterTerminal starterTerminal = new StarterTerminal(starterRootFolder, tempStarterJarFile);
-		new Thread(starterTerminal).start();
+		StarterServer starterServer = new StarterServer(starterRootFolder);
+		new Thread(starterServer).start();
 	}
 
 	public static void reloadStarters() {

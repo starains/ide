@@ -1,22 +1,22 @@
-package com.teamide.deployer.starter.shell.java;
+package com.teamide.starter.shell.java;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.teamide.deployer.shell.Shell;
-import com.teamide.deployer.shell.java.JavaShell;
-import com.teamide.deployer.starter.Starter;
+import com.teamide.shell.Shell;
+import com.teamide.shell.java.JavaShell;
+import com.teamide.starter.StarterParam;
 
 public class JavaJarStarterProcess extends JavaStarterProcess {
 
-	public JavaJarStarterProcess(Starter starter) {
-		super(starter);
+	public JavaJarStarterProcess(StarterParam param) {
+		super(param);
 	}
 
 	@Override
 	public Shell getShell() {
-		JavaShell shell = new JavaShell(starter.starterFolder);
+		JavaShell shell = new JavaShell(param.starterFolder);
 		return shell;
 	}
 
@@ -28,9 +28,9 @@ public class JavaJarStarterProcess extends JavaStarterProcess {
 		shell.setJava_envp(getJavaEnvp());
 
 		List<File> lib_folders = new ArrayList<File>();
-		lib_folders.add(new File(starter.workFolder, "lib"));
+		lib_folders.add(new File(param.workFolder, "lib"));
 		shell.setLib_folders(lib_folders);
-		shell.setJar_file(new File(starter.workFolder, "app.jar"));
+		shell.setJar_file(new File(param.workFolder, "app.jar"));
 
 		return shell.getShellString();
 	}

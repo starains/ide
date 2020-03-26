@@ -1,4 +1,4 @@
-package com.teamide.deployer.starter;
+package com.teamide.starter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,9 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.deployer.enums.DeployStatus;
-import com.teamide.deployer.enums.InstallStatus;
-import com.teamide.deployer.enums.StarterStatus;
+import com.teamide.starter.enums.DeployStatus;
+import com.teamide.starter.enums.InstallStatus;
+import com.teamide.starter.enums.StarterStatus;
 import com.teamide.ide.tool.LogTool;
 import com.teamide.util.FileUtil;
 
@@ -20,10 +20,6 @@ public class StarterParam {
 
 	public final File starterServerFolder;
 
-	public final File starterStartShellFile;
-
-	public final File starterStopShellFile;
-
 	public final File starterJSONFile;
 
 	public final File starterEventFile;
@@ -33,8 +29,6 @@ public class StarterParam {
 	public final File deployStatusFile;
 
 	public final File installStatusFile;
-
-	public final File starterTimestampFile;
 
 	public final File workFolder;
 
@@ -52,10 +46,7 @@ public class StarterParam {
 		this.starterStatusFile = new File(this.starterFolder, "starter.status");
 		this.deployStatusFile = new File(this.starterFolder, "deploy.status");
 		this.installStatusFile = new File(this.starterFolder, "install.status");
-		this.starterTimestampFile = new File(this.starterFolder, "starter.timestamp");
 
-		this.starterStartShellFile = new File(this.starterFolder, "starter.start.shell");
-		this.starterStopShellFile = new File(this.starterFolder, "starter.stop.shell");
 		JSONObject starterJSON = readJSON();
 		if (starterJSON == null || starterJSON.isEmpty()) {
 			throw new RuntimeException(starterFolder + " starter json is null.");
@@ -65,6 +56,14 @@ public class StarterParam {
 		this.token = starterJSON.getString("token");
 		log = LogTool.get("starter", new File(starterFolder, "log"));
 
+	}
+
+	public String getOptionString(String key) {
+		if (this.starterJSON == null && this.starterJSON.get("option") == null) {
+			return null;
+		}
+		JSONObject option = this.starterJSON.getJSONObject("option");
+		return option.getString(key);
 	}
 
 	public void read(InputStream stream, boolean isError) {
@@ -136,6 +135,30 @@ public class StarterParam {
 		try {
 			if (installStatusFile.exists()) {
 				return new String(FileUtil.read(installStatusFile));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public String writePID(String pid, File pidFile) {
+
+		try {
+			FileUtil.write(pid.getBytes(), pidFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public String readPID(File pidFile) {
+
+		try {
+			if (pidFile.exists()) {
+				return new String(FileUtil.read(pidFile));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,4 +1,4 @@
-package com.teamide.deployer.enums;
+package com.teamide.starter.enums;
 
 public enum StarterStatus {
 

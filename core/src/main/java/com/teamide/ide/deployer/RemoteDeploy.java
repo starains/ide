@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.deployer.enums.DeployStatus;
-import com.teamide.deployer.enums.InstallStatus;
 import com.teamide.http.HttpRequest;
 import com.teamide.http.HttpResponse;
 import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.handler.RemoteHandler;
+import com.teamide.starter.enums.DeployStatus;
+import com.teamide.starter.enums.InstallStatus;
 import com.teamide.util.FileUtil;
 
 public class RemoteDeploy extends Deploy {

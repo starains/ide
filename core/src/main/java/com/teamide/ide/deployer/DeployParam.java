@@ -2,7 +2,6 @@ package com.teamide.ide.deployer;
 
 import java.io.File;
 
-import com.teamide.deployer.starter.Starter;
 import com.teamide.ide.bean.EnvironmentBean;
 import com.teamide.ide.bean.StarterOption;
 import com.teamide.ide.deployer.install.DefaultInstall;
@@ -13,6 +12,7 @@ import com.teamide.ide.deployer.install.java.JavaTomcatStarterProcess;
 import com.teamide.ide.deployer.install.node.NodeStarterProcess;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.service.impl.EnvironmentService;
+import com.teamide.starter.Starter;
 import com.teamide.util.StringUtil;
 
 public class DeployParam {

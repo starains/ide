@@ -1,21 +1,25 @@
-package com.teamide.deployer.starter;
+package com.teamide.starter;
 
 import java.io.File;
 
-import com.teamide.deployer.shell.Shell;
+import com.teamide.shell.Shell;
 
 public abstract class StarterShell {
 
-	protected final Starter starter;
+	protected final StarterParam param;
 
 	protected final Shell shell;
 
-	public StarterShell(Starter starter) {
-		this.starter = starter;
+	public StarterShell(StarterParam param) {
+		this.param = param;
 		this.shell = getShell();
 	}
 
 	public abstract Shell getShell();
+
+	public String getSearchInfo() throws Exception {
+		return this.param.token;
+	}
 
 	public abstract String getStartShell() throws Exception;
 

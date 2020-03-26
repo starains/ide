@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.teamide.deployer.processor.TaskBean;
 import com.teamide.deployer.processor.TaskProcessor;
+import com.teamide.starter.StarterServer;
 
 public abstract class Listener implements Runnable {
 
@@ -20,9 +21,8 @@ public abstract class Listener implements Runnable {
 		Long wait = CONNECT_SLEEP;
 
 		File starterRootFolder = new File(IDEConstant.WORKSPACES_STARTER_FOLDER);
-		File tempStarterJarFile = new File(IDEConstant.PLUGIN_STARTER_JAR);
-		StarterTerminal starterTerminal = new StarterTerminal(starterRootFolder, tempStarterJarFile);
-		new Thread(starterTerminal).start();
+		StarterServer starterServer = new StarterServer(starterRootFolder);
+		new Thread(starterServer).start();
 		while (true) {
 
 			boolean flag = true;

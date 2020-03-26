@@ -1,4 +1,4 @@
-package com.teamide.deployer.starter;
+package com.teamide.deployer.server.service;
 
 import java.io.File;
 import java.io.FileOutputStream;

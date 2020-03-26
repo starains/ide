@@ -1,11 +1,21 @@
-package com.teamide.deployer.shell;
+package com.teamide.shell;
 
 import java.io.File;
 import java.util.List;
 
-import com.teamide.ide.constant.IDEConstant;
-
 public abstract class Shell {
+
+	public static final boolean IS_OS_WINDOW = isOSWindow();
+
+	private static boolean isOSWindow() {
+
+		String os = System.getProperty("os.name");
+		if (os != null && os.toLowerCase().indexOf("window") > -1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	protected final File starterFolder;
 
@@ -18,7 +28,7 @@ public abstract class Shell {
 	protected abstract List<String> getLinuxShell();
 
 	public List<String> getShell() throws Exception {
-		if (IDEConstant.IS_OS_WINDOW) {
+		if (IS_OS_WINDOW) {
 			return getWindowShell();
 		} else {
 			return getLinuxShell();
@@ -35,7 +45,7 @@ public abstract class Shell {
 	}
 
 	public File getPIDFile() {
-		if (IDEConstant.IS_OS_WINDOW) {
+		if (IS_OS_WINDOW) {
 			return null;
 		}
 		if (starterFolder == null) {

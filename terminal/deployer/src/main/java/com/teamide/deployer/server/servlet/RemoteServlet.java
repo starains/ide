@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
 import com.teamide.bean.Status;
-import com.teamide.deployer.starter.RemoteService;
+import com.teamide.deployer.server.service.RemoteService;
 import com.teamide.util.StringUtil;
 
 @WebServlet(urlPatterns = "/remote/*")
