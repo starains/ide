@@ -4,10 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import com.teamide.ide.constant.IDEConstant;
+import com.teamide.terminal.TerminalUtil;
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
 
@@ -35,7 +36,7 @@ public class StarterTerminal implements Runnable {
 				startStarter();
 			}
 			try {
-				Thread.sleep(1000 * 1);
+				Thread.sleep(1000 * 5);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -129,6 +130,15 @@ public class StarterTerminal implements Runnable {
 	public boolean isRunning() {
 
 		try {
+			if (IDEConstant.IS_OS_LINUX) {
+
+				List<String> infos = TerminalUtil.getRunningInfoForLinux(starterJarFile.getAbsolutePath());
+				for (String info : infos) {
+					if (info.indexOf(" java ") >= 0 && info.indexOf(" -jar ") >= 0) {
+						return true;
+					}
+				}
+			}
 			if (timestampFile.exists()) {
 				String value = new String(FileUtil.read(timestampFile));
 				if (StringUtil.isNotEmpty(value)) {
@@ -138,10 +148,12 @@ public class StarterTerminal implements Runnable {
 					}
 				}
 			}
+
+			return false;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return true;
 
 	}
 }
