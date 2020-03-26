@@ -705,7 +705,7 @@ export default {
                   {data.loading ? (
                     <i class="coos-icon el-icon-loading " />
                   ) : (
-                    <i class="coos-icon coos-icon-reload " />
+                    <i class="coos-icon coos-icon-reload ft-14" />
                   )}
                 </a>
               </span>
@@ -878,7 +878,7 @@ export default {
 }
 .repository-project-tree-box {
   position: absolute;
-  top: 95px;
+  top: 98px;
   left: 0px;
   bottom: 0px;
   right: 0px;

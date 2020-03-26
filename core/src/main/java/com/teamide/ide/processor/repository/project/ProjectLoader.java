@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.model.Model;
 
@@ -18,33 +20,50 @@ public class ProjectLoader {
 
 	protected final RepositoryProcessorParam param;
 
-	private final List<ProjectBean> projects = new ArrayList<ProjectBean>();
+	private final List<ProjectBean> project_caches = new ArrayList<ProjectBean>();
+
+	private final Map<String, ProjectBean> project_map = new HashMap<String, ProjectBean>();
 
 	public ProjectLoader(RepositoryProcessorParam param) {
 		this.param = param;
 		init();
 	}
 
-	public void init() {
-		projects.clear();
-		Model model = RepositoryHanlder.getPomModel(param.getPomFile());
+	public void appendProjects(File folder) {
 
-		ProjectBean project = createProject("");
-		if (project != null) {
-			projects.add(project);
+		if (folder != null && folder.isFile()) {
+			return;
 		}
-		if (model != null) {
-			List<String> list = model.getModules();
-			if (list != null) {
-				for (String path : list) {
-					project = createProject(path);
-					if (project != null) {
-						projects.add(project);
-					}
-
+		File pomFile = new File(folder, "pom.xml");
+		if (pomFile.exists()) {
+			String path = param.getPath(folder);
+			if (project_map.get(path) == null) {
+				ProjectBean project = createProject(path);
+				if (project != null) {
+					project_map.put(path, project);
+					project_caches.add(project);
 				}
 			}
 		}
+
+		File[] files = folder.listFiles();
+		for (File file : files) {
+			if (file.isDirectory()) {
+				appendProjects(file);
+			}
+		}
+	}
+
+	public void init() {
+		project_caches.clear();
+		project_map.clear();
+
+		ProjectBean project = createProject("");
+		if (project != null) {
+			project_caches.add(project);
+			project_map.put("", project);
+		}
+		appendProjects(param.getSourceFolder());
 
 	}
 
@@ -58,7 +77,11 @@ public class ProjectLoader {
 		}
 		String projectPath = this.param.getPath(projectFolder);
 		ProjectBean project = new ProjectBean();
-		project.setName(projectFolder.getName());
+		if (StringUtil.isEmpty(projectPath)) {
+			project.setName(this.param.getSpace().getName());
+		} else {
+			project.setName(projectFolder.getName());
+		}
 		project.setPath(projectPath);
 		if (StringUtil.isEmpty(projectPath)) {
 			project.setRoot(true);
@@ -78,15 +101,17 @@ public class ProjectLoader {
 
 	public ProjectBean loadProject(String path) throws Exception {
 
-		ProjectBean projectBean = getProjectByPath(path);
-		FileBean folderBean = loadFiles(this.param.getFile(path), projectBean);
-		if (folderBean != null) {
-			projectBean.setFiles(folderBean.getFiles());
+		ProjectBean projectBean = getProject(path);
+		if (projectBean != null) {
+			FileBean folderBean = loadFiles(this.param.getFile(path), projectBean);
+			if (folderBean != null) {
+				projectBean.setFiles(folderBean.getFiles());
 
+			}
+			ProjectAppLoader appLoader = new ProjectAppLoader(param);
+
+			projectBean.setApp(appLoader.loadApp(projectBean.getPath()));
 		}
-		ProjectAppLoader appLoader = new ProjectAppLoader(param);
-
-		projectBean.setApp(appLoader.loadApp(projectBean.getPath()));
 		return projectBean;
 	}
 
@@ -104,18 +129,20 @@ public class ProjectLoader {
 			FileUtil.orderByName(listFiles);
 			for (int i = 0; i < listFiles.size(); i++) {
 				File file = listFiles.get(i);
-				path = this.param.getPath(file);
-				if (projectBean != null) {
-					ProjectBean fileProjectBean = getProjectByPath(path);
-					if (fileProjectBean != projectBean) {
+
+				if (file.isDirectory()) {
+					if (file.getName().equals(".git")) {
+						continue;
+					} else if (file.getName().equals("node_modules")) {
 						continue;
 					}
 				}
-				if (file.getName().equals(".git")) {
-					continue;
-				}
-				if (file.getName().equals("node_modules")) {
-					continue;
+
+				path = this.param.getPath(file);
+				if (projectBean != null) {
+					if (!isProjectFile(projectBean, path)) {
+						continue;
+					}
 				}
 				FileBean fileBean = load(path);
 				if (fileBean.isDirectory()) {
@@ -235,45 +262,38 @@ public class ProjectLoader {
 		return fileBean;
 	}
 
-	public ProjectBean getProjectByPath(final String path) {
-		File file = new File(this.param.getSourceFolder(), path);
+	public boolean isProjectFile(ProjectBean project, final String path) {
 
-		for (ProjectBean project : projects) {
-			if (project.isRoot()) {
-				continue;
-			}
+		ProjectBean lastP = null;
+		int lastLength = 0;
+		for (ProjectBean p : project_caches) {
+			if (StringUtil.isNotEmpty(p.getPath())) {
+				if (path.startsWith(p.getPath() + "/") || path.equals(p.getPath())) {
+					int length = p.getPath().length();
+					if (length > lastLength) {
+						lastLength = length;
+						lastP = p;
+					}
+				}
 
-			File projectFolder = new File(this.param.getSourceFolder(), project.getPath());
-			if (isProject(file, projectFolder)) {
-				return project;
 			}
 		}
-		for (ProjectBean project : projects) {
-			if (project.isRoot()) {
-				return project;
-			}
-
+		if (lastP == null) {
+			lastP = getProject("");
 		}
-		return null;
+		boolean flag = lastP == project;
+
+		return flag;
 	}
 
-	public boolean isProject(final File file, final File projectFolder) {
-		String filePath = file.toURI().getPath();
-
-		String projectPath = projectFolder.toURI().getPath();
-		if (projectPath.equals(filePath)) {
-			return true;
+	public ProjectBean getProject(String key) {
+		if (StringUtil.isEmpty(key)) {
+			return project_map.get("");
 		}
-		if (!projectPath.endsWith("/")) {
-			projectPath += "/";
-		}
-		if (filePath.startsWith(projectPath)) {
-			return true;
-		}
-		return false;
+		return project_map.get(key);
 	}
 
 	public List<ProjectBean> getProjects() {
-		return projects;
+		return project_caches;
 	}
 }

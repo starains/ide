@@ -116,8 +116,12 @@ source.repository.navs = [
             project.files.forEach(file => {
                 if (file.name == 'src/main/java') {
                     let path = source.getPublickPathByFiles(file.files);
-                    if (path && !coos.isEmpty(path) && path.startsWith('src/main/java/')) {
-                        let packPath = path.substring('src/main/java/'.length);
+                    let javaFolder = project.path + '/src/main/java/';
+                    if (coos.isEmpty(project.path)) {
+                        javaFolder = 'src/main/java/';
+                    }
+                    if (path && !coos.isEmpty(path) && path.startsWith(javaFolder)) {
+                        let packPath = path.substring(javaFolder.length);
                         if (packPath.length > 0) {
                             let pack = coos.replaceAll(packPath, '/', '.');
                             let fs = [];

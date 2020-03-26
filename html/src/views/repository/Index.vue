@@ -126,17 +126,18 @@ export default {
 }
 .repository-screen-control-toolbar {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 0px;
+  right: 0px;
   z-index: 1;
-  font-size: 15px;
-  height: 20px;
+  height: 30px;
+  line-height: 30px;
 }
 .repository-screen-control {
   cursor: pointer;
   background: #989898;
   color: #ffffff;
-  padding: 2px;
+  padding: 6px;
+  font-size: 18px;
 }
 .repository-screen-control:hover {
   background: #bdbdbd;
