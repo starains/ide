@@ -2,6 +2,7 @@ package com.teamide.ide.generater.code.sql;
 
 import java.util.List;
 
+import com.teamide.app.AppContext;
 import com.teamide.app.process.dao.sql.Insert;
 import com.teamide.app.process.dao.sql.InsertColumn;
 import com.teamide.app.variable.VariableBean;
@@ -13,8 +14,8 @@ public class InsertGenerater extends SqlGenerater {
 
 	protected final Insert insert;
 
-	public InsertGenerater(String factory_classname, Insert insert) {
-		super(factory_classname, insert);
+	public InsertGenerater(AppContext context, String factory_classname, Insert insert) {
+		super(context, factory_classname, insert);
 		this.insert = insert;
 	}
 

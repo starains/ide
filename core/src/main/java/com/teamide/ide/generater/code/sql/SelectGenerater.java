@@ -3,6 +3,7 @@ package com.teamide.ide.generater.code.sql;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.teamide.app.AppContext;
 import com.teamide.app.process.dao.sql.From;
 import com.teamide.app.process.dao.sql.Group;
 import com.teamide.app.process.dao.sql.Having;
@@ -18,8 +19,8 @@ public class SelectGenerater extends SqlGenerater {
 
 	protected final Select select;
 
-	public SelectGenerater(String factory_classname, Select select) {
-		super(factory_classname, select);
+	public SelectGenerater(AppContext context, String factory_classname, Select select) {
+		super(context, factory_classname, select);
 		this.select = select;
 	}
 

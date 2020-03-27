@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.teamide.app.AppContext;
+import com.teamide.app.bean.DatabaseBean;
+import com.teamide.app.bean.TableBean;
 import com.teamide.app.enums.ComparisonOperator;
 import com.teamide.app.process.dao.sql.Abstract;
 import com.teamide.app.process.dao.sql.AppendCustomSql;
@@ -29,24 +32,86 @@ public abstract class SqlGenerater extends CodeGenerater {
 
 	protected final Map<String, Integer> keyCache = new HashMap<String, Integer>();
 
+	protected final Map<String, String> tableVariableCache = new HashMap<String, String>();
+
 	protected final List<VariableValidate> validates = new ArrayList<VariableValidate>();
 
 	protected final List<Variable> variables = new ArrayList<Variable>();
+
+	protected final AppContext context;
+
+	public SqlGenerater(AppContext context, String factory_classname, Abstract base) {
+		super(factory_classname);
+		this.context = context;
+		this.base = base;
+	}
 
 	public void generate(int tab) {
 		content.setLength(0);
 		content_mapper.setLength(0);
 		content_count_mapper.setLength(0);
 		keyCache.clear();
+		tableVariableCache.clear();
 		validates.clear();
+		variables.clear();
 		doGenerate(tab);
 	}
 
 	protected abstract void doGenerate(int tab);
 
-	public SqlGenerater(String factory_classname, Abstract base) {
-		super(factory_classname);
-		this.base = base;
+	public boolean shouldTableVariableDefinition(String tablename) {
+		DatabaseBean database = getDatabaseByTableName(tablename);
+		if (database != null) {
+			if (ObjectUtil.isTrue(database.getMustbringname())) {
+				return true;
+			}
+		}
+		TableBean table = getTable(tablename);
+		if (table != null) {
+			if (ObjectUtil.isTrue(table.getDynamic())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public String getTableVariableDefinitionCode(String tablename) {
+		if (!shouldTableVariableDefinition(tablename)) {
+			return null;
+		}
+		tablename = tablename.trim();
+		StringBuffer code = new StringBuffer();
+		if (tableVariableCache.get(tablename) == null) {
+			code.append("String " + tablename + " = ");
+			tableVariableCache.put(tablename, tablename);
+		} else {
+			code.append("" + tablename + " = ");
+		}
+		code.append("factory.getTableName(\"" + tablename + "\", data);");
+		return code.toString();
+	}
+
+	public DatabaseBean getDatabaseByTableName(String tablename) {
+		TableBean table = getTable(tablename);
+		String databasename = null;
+		if (table != null) {
+			databasename = table.getDatabasename();
+		}
+		return getDatabase(databasename);
+
+	}
+
+	public DatabaseBean getDatabase(String databasename) {
+		if (StringUtil.isEmpty(databasename)) {
+			return context.getJdbc();
+		}
+		return context.get(DatabaseBean.class, databasename);
+
+	}
+
+	public TableBean getTable(String tablename) {
+		return context.get(TableBean.class, tablename);
+
 	}
 
 	public StringBuffer getContentMapper() {

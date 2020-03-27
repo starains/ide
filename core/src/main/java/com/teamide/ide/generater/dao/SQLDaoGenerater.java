@@ -105,7 +105,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			datarule = sqlProcess.getSelect().getData();
 			data.put("$database", getDatabase(sqlProcess.getSelect()));
 
-			sqlGenerater = new SelectGenerater(getAppFactoryClassname(), sqlProcess.getSelect());
+			sqlGenerater = new SelectGenerater(context, getAppFactoryClassname(), sqlProcess.getSelect());
 			sqlGenerater.generate(2);
 			data.put("$content", sqlGenerater.getContent());
 
@@ -150,7 +150,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 						$subselect.put("$database", getDatabase(subSelect.getSelect()));
 						$subselect.put("$name", $name);
 						$subselect.put("$method", $name.substring(0, 1).toUpperCase() + $name.substring(1));
-						sqlGenerater = new SelectGenerater(getAppFactoryClassname(), subSelect.getSelect());
+						sqlGenerater = new SelectGenerater(context, getAppFactoryClassname(), subSelect.getSelect());
 						sqlGenerater.generate(2);
 
 						$subselect.put("$content", sqlGenerater.getContent());
@@ -163,7 +163,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			datarule = sqlProcess.getInsert().getData();
 			data.put("$database", getDatabase(sqlProcess.getInsert()));
 
-			sqlGenerater = new InsertGenerater(getAppFactoryClassname(), sqlProcess.getInsert());
+			sqlGenerater = new InsertGenerater(context, getAppFactoryClassname(), sqlProcess.getInsert());
 			sqlGenerater.generate(2);
 			data.put("$content", sqlGenerater.getContent());
 
@@ -186,7 +186,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			datarule = sqlProcess.getUpdate().getData();
 			data.put("$database", getDatabase(sqlProcess.getUpdate()));
 
-			sqlGenerater = new UpdateGenerater(getAppFactoryClassname(), sqlProcess.getUpdate());
+			sqlGenerater = new UpdateGenerater(context, getAppFactoryClassname(), sqlProcess.getUpdate());
 			sqlGenerater.generate(2);
 			data.put("$content", sqlGenerater.getContent());
 
@@ -196,7 +196,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 			datarule = sqlProcess.getDelete().getData();
 			data.put("$database", getDatabase(sqlProcess.getDelete()));
 
-			sqlGenerater = new DeleteGenerater(getAppFactoryClassname(), sqlProcess.getDelete());
+			sqlGenerater = new DeleteGenerater(context, getAppFactoryClassname(), sqlProcess.getDelete());
 			sqlGenerater.generate(2);
 			data.put("$content", sqlGenerater.getContent());
 
@@ -226,7 +226,7 @@ public abstract class SQLDaoGenerater extends BaseDaoGenerater {
 
 			data.put("$customsqltype", customSql.getCustomsqltype());
 
-			sqlGenerater = new CustomGenerater(getAppFactoryClassname(), sqlProcess.getCustomSql());
+			sqlGenerater = new CustomGenerater(context, getAppFactoryClassname(), sqlProcess.getCustomSql());
 			sqlGenerater.generate(2);
 			data.put("$content", sqlGenerater.getContent());
 

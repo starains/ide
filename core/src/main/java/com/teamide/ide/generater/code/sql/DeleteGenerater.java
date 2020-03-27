@@ -1,5 +1,6 @@
 package com.teamide.ide.generater.code.sql;
 
+import com.teamide.app.AppContext;
 import com.teamide.app.process.dao.sql.Delete;
 import com.teamide.util.StringUtil;
 
@@ -7,8 +8,8 @@ public class DeleteGenerater extends SqlGenerater {
 
 	protected final Delete delete;
 
-	public DeleteGenerater(String factory_classname, Delete delete) {
-		super(factory_classname, delete);
+	public DeleteGenerater(AppContext context, String factory_classname, Delete delete) {
+		super(context, factory_classname, delete);
 		this.delete = delete;
 	}
 

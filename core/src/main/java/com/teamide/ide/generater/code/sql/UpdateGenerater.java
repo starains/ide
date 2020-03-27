@@ -2,6 +2,7 @@ package com.teamide.ide.generater.code.sql;
 
 import java.util.List;
 
+import com.teamide.app.AppContext;
 import com.teamide.app.process.dao.sql.Update;
 import com.teamide.app.process.dao.sql.UpdateColumn;
 import com.teamide.app.variable.VariableBean;
@@ -13,8 +14,8 @@ public class UpdateGenerater extends SqlGenerater {
 
 	protected final Update update;
 
-	public UpdateGenerater(String factory_classname, Update update) {
-		super(factory_classname, update);
+	public UpdateGenerater(AppContext context, String factory_classname, Update update) {
+		super(context, factory_classname, update);
 		this.update = update;
 	}
 

@@ -1,5 +1,6 @@
 package com.teamide.ide.generater.code.sql;
 
+import com.teamide.app.AppContext;
 import com.teamide.app.process.dao.sql.CustomSql;
 import com.teamide.util.StringUtil;
 
@@ -7,8 +8,8 @@ public class CustomGenerater extends SqlGenerater {
 
 	protected final CustomSql custom;
 
-	public CustomGenerater(String factory_classname, CustomSql custom) {
-		super(factory_classname, custom);
+	public CustomGenerater(AppContext context, String factory_classname, CustomSql custom) {
+		super(context, factory_classname, custom);
 		this.custom = custom;
 	}
 
