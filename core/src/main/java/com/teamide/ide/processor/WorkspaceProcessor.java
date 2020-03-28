@@ -4,9 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.handler.SpaceHandler;
-import com.teamide.ide.processor.param.ProcessorParam;
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
-import com.teamide.ide.processor.param.SpaceProcessorParam;
+import com.teamide.ide.param.ProcessorParam;
+import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.RepositoryProcessorParam;
+import com.teamide.ide.param.SpaceProcessorParam;
 import com.teamide.ide.util.TokenUtil;
 import com.teamide.util.StringUtil;
 
@@ -16,33 +17,43 @@ public class WorkspaceProcessor {
 
 	protected final Processor processor;
 
-	public WorkspaceProcessor(ClientSession session, String token) {
+	protected final ProcessorParam param;
+
+	public WorkspaceProcessor(ClientSession session, String token, String projectPath) {
 		this.token = token;
 		JSONObject json = TokenUtil.getJSON(token);
 		Processor processor = null;
 		String spaceid = null;
 		String branch = null;
+		ProcessorParam param = null;
 		if (json != null) {
 			spaceid = json.getString("spaceid");
 			SpaceBean space = SpaceHandler.get(spaceid);
+			JSONObject formatSpace = SpaceHandler.getFormat(space);
 			if (space != null) {
 				if (SpaceHandler.isRepositorys(space)) {
 					branch = json.getString("branch");
 					if (StringUtil.isEmpty(branch)) {
 						branch = "master";
 					}
-					RepositoryProcessorParam param = new RepositoryProcessorParam(session, spaceid, branch);
-					processor = new RepositoryProcessor(param);
+					if (projectPath == null) {
+						param = new RepositoryProcessorParam(session, spaceid, formatSpace, branch);
+						processor = new RepositoryProcessor((RepositoryProcessorParam) param);
+					} else {
+						param = new ProjectParam(session, spaceid, formatSpace, branch, projectPath);
+						processor = new ProjectProcessor((ProjectParam) param);
+					}
 				} else {
-					SpaceProcessorParam param = new SpaceProcessorParam(session, spaceid);
-					processor = new SpaceProcessor(param);
+					param = new SpaceProcessorParam(session, spaceid, formatSpace);
+					processor = new SpaceProcessor((SpaceProcessorParam) param);
 				}
 			}
 		}
 		if (processor == null) {
-			ProcessorParam param = new ProcessorParam(session);
+			param = new ProcessorParam(session);
 			processor = new Processor(param);
 		}
+		this.param = param;
 		this.processor = processor;
 	}
 
@@ -52,5 +63,17 @@ public class WorkspaceProcessor {
 
 	public Object onLoad(String type, JSONObject data) throws Exception {
 		return this.processor.onLoad(type, data);
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public Processor getProcessor() {
+		return processor;
+	}
+
+	public ProcessorParam getParam() {
+		return param;
 	}
 }

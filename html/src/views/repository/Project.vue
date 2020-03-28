@@ -142,9 +142,10 @@ export default {
         appModelMenu.menus.push({
           header: "应用模型"
         });
+        let app = source.getProjectApp(data);
 
-        if (data.app != null) {
-          if (data.app.context.JAVA == null) {
+        if (app != null) {
+          if (app.context.JAVA == null) {
             appModelMenu.menus.push({
               text: "请在模型目录创建java文件，配置源码相关设置",
               onClick() {}
@@ -161,7 +162,7 @@ export default {
             text: "生成库表",
             onClick() {
               let param = {};
-              param.path = data.app.localpath;
+              param.path = app.localpath;
               param.type = "DATABASE";
               source.service.data.doTest(param).then(result => {
                 if (result.errcode == 0) {
@@ -175,15 +176,21 @@ export default {
           appModelMenu.menus.push({
             text: "修改配置",
             onClick() {
-              source.appOptionForm.show(data.path, data.app.option);
+              source.appOptionForm.show(data.path, app.option);
             }
           });
+
           appModelMenu.menus.push({
             text: "删除",
             onClick() {
-              source.do("APP_DELETE_OPTION", {
-                path: data.path
-              });
+              let project = source.getProjectByPath(data.path);
+              source.do(
+                "DELETE_PLUGIN_OPTION",
+                {
+                  type: "APP"
+                },
+                project
+              );
             }
           });
         } else {
@@ -310,18 +317,17 @@ export default {
         }
       }
       let project = source.getProjectByPath(data.path);
+      let app = source.getProjectApp(project);
       if (
-        project &&
-        project.app &&
-        (project.app.path == data.path ||
-          data.path.startsWith(project.app.path + "/"))
+        app &&
+        (app.path == data.path || data.path.startsWith(app.path + "/"))
       ) {
         menus.push({
           header: "模型"
         });
         let model = source.getModelTypeByPath(data.path);
-        if (project.app.path == data.path) {
-          if (project.app.context.JAVA == null) {
+        if (app.path == data.path) {
+          if (app.context.JAVA == null) {
             menus.push({
               text: "请在模型目录创建java文件，配置源码相关设置",
               onClick() {}
@@ -338,7 +344,7 @@ export default {
             text: "生成库表",
             onClick() {
               let param = {};
-              param.path = project.app.localpath;
+              param.path = app.localpath;
               param.type = "DATABASE";
               source.service.data.doTest(param).then(result => {
                 if (result.errcode == 0) {
@@ -361,7 +367,7 @@ export default {
                 text: "导入" + database + "已有表",
                 onClick() {
                   source.tableImportForm
-                    .show(project.app, { databasename: database, parent: data })
+                    .show(app, { databasename: database, parent: data })
                     .then(res => {});
                 }
               });
@@ -615,7 +621,7 @@ export default {
           path = new_name;
         }
         file.path = path;
-        let date = {
+        let data = {
           parentPath: file.parentPath,
           name: new_name,
           isFile: file.isFile,
@@ -623,7 +629,8 @@ export default {
         };
 
         source.updateFileName(file, new_name);
-        source.do("FILE_CREATE", date).then(res => {
+        let project = source.getProjectByPath(data.parentPath);
+        source.do("FILE_CREATE", data, project).then(res => {
           if (res.errcode == 0) {
             delete file.isNew;
             file.toRename = false;
@@ -637,13 +644,14 @@ export default {
           }
         });
       } else {
-        let date = {
+        let data = {
           path: file.path,
           name: new_name
         };
 
         source.updateFileName(file, new_name);
-        source.do("FILE_RENAME", date).then(res => {
+        let project = source.getProjectByPath(data.path);
+        source.do("FILE_RENAME", data, project).then(res => {
           if (res.errcode == 0) {
             file.toRename = false;
             this.toRename = false;
@@ -685,12 +693,12 @@ export default {
                 on-keyup={() => this.keyup(data, event)}
               />
               <span v-show={!data.toRename}>{data.name}</span>
-              {data.app != null ? (
+              {data.attribute.app != null ? (
                 <i
                   class="mgl-10 ft-12"
                   style="vertical-align: 1px;color: #bfbcbc;"
                 >
-                  [应用模型]
+                  [已配置模型]
                 </i>
               ) : (
                 <i />

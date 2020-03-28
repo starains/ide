@@ -33,7 +33,8 @@ source.repository.file_data_map = {};
             folder = path.substring(0, path.lastIndexOf('/'));
         }
         source.openFolder(folder);
-        source.do("FILE_OPEN", { path: path });
+        let project = source.getProjectByPath(path);
+        source.do("FILE_OPEN", { path: path }, project);
         source.createTabByPath(path);
     };
 
@@ -42,21 +43,24 @@ source.repository.file_data_map = {};
         if (coos.isEmpty(path)) {
             return;
         }
-        source.do("FILE_CLOSE", { path: path });
+        let project = source.getProjectByPath(path);
+        source.do("FILE_CLOSE", { path: path }, project);
     };
 
     source.downloadFile = function (path) {
         if (coos.isEmpty(path)) {
             return;
         }
-        source.server.download({ path: path });
+        let project = source.getProjectByPath(path);
+        source.server.download({ path: path }, project);
 
     };
     source.uploadRepository = function (data) {
         source.uploadForm.show(data);
     };
     source.downloadRepository = function () {
-        source.server.download({ type: 'REPOSITORY' });
+        let project = source.getProjectByPath('');
+        source.server.download({ type: 'REPOSITORY' }, project);
 
     };
 
@@ -222,13 +226,16 @@ source.repository.file_data_map = {};
         console.log(value);
     };
     source.loadFiles = function (path) {
-        source.load('FILES', { path: path });
+        let project = source.getProjectByPath(path);
+        source.load('FILES', { path: path }, project);
     };
     source.loadFile = function (path) {
-        source.load('FILE', { path: path });
+        let project = source.getProjectByPath(path);
+        source.load('FILE', { path: path }, project);
     };
     source.saveFile = function (path, content, callback) {
-        source.do('FILE_SAVE', { path: path, content: content }).then((res) => {
+        let project = source.getProjectByPath(path);
+        source.do('FILE_SAVE', { path: path, content: content }, project).then((res) => {
             if (res.errcode == 0) {
                 coos.success('保存成功！');
                 let tab = source.getTab(path);

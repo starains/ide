@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import org.apache.commons.io.FileUtils;
 
 import com.teamide.util.StringUtil;
-import com.teamide.ide.constant.IDEConstant;
+import com.teamide.ide.IDEConstant;
 import com.teamide.ide.deployer.DeployInstall;
 import com.teamide.ide.deployer.DeployParam;
 

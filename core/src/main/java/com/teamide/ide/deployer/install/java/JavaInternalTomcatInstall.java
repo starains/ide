@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.apache.maven.shared.utils.io.FileUtils;
 
-import com.teamide.ide.constant.IDEConstant;
+import com.teamide.ide.IDEConstant;
 import com.teamide.ide.deployer.DeployParam;
 import com.teamide.util.FileUtil;
 

@@ -26,7 +26,7 @@ import com.teamide.ide.enums.SpaceTeamType;
 import com.teamide.ide.enums.SpaceType;
 import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.handler.SpaceHandler;
-import com.teamide.ide.processor.param.SpaceProcessorParam;
+import com.teamide.ide.param.SpaceProcessorParam;
 import com.teamide.ide.service.ISpaceService;
 
 @Resource
@@ -55,7 +55,9 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 			spaceTeamService.insert(session, spaceTeam);
 
 		}
-		SpaceProcessorParam param = new SpaceProcessorParam(session, space.getId());
+		space = SpaceHandler.get(space.getId());
+		JSONObject formatSpace = SpaceHandler.getFormat(space);
+		SpaceProcessorParam param = new SpaceProcessorParam(session, space.getId(), formatSpace);
 		if (!param.getSpaceFolder().exists()) {
 			param.getSpaceFolder().mkdirs();
 		}
@@ -438,10 +440,12 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 			throw new Exception("该空间目录下包含其它空间数据，请先删除其它空间！");
 		}
 
-		SpaceProcessorParam processorParam = new SpaceProcessorParam(session, space.getId());
-		if (processorParam.getSpace() == null) {
+		space = SpaceHandler.get(space.getId());
+		if (space == null) {
 			throw new Exception("空间数据不存在！");
 		}
+		JSONObject formatSpace = SpaceHandler.getFormat(space);
+		SpaceProcessorParam processorParam = new SpaceProcessorParam(session, space.getId(), formatSpace);
 
 		if (processorParam.getSpaceFolder().exists()) {
 			FileUtils.deleteDirectory(processorParam.getSpaceFolder());
@@ -454,17 +458,19 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 	}
 
 	public void rename(ClientSession session, String spaceid, String name) throws Exception {
-		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceid);
-		if (param.getSpace() == null) {
+		SpaceBean space = SpaceHandler.get(spaceid);
+		if (space == null) {
 			throw new Exception("空间数据不存在！");
 		}
+		JSONObject formatSpace = SpaceHandler.getFormat(space);
+		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceid, formatSpace);
 		File parentFolder = param.getSpaceFolder().getParentFile();
 		if (new File(parentFolder, name).exists()) {
 			throw new Exception("名称【" + name + "】已存在！");
 		}
 
 		FileUtils.moveDirectory(param.getSpaceFolder(), new File(parentFolder, name));
-		SpaceBean space = new SpaceBean();
+		space = new SpaceBean();
 		space.setId(spaceid);
 		space.setName(name);
 		this.update(session, space);

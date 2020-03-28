@@ -8,21 +8,25 @@ import javax.annotation.Resource;
 
 import com.teamide.util.StringUtil;
 import com.teamide.client.ClientSession;
-import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.SpaceRepositoryOptionBean;
 import com.teamide.ide.enums.OptionType;
 
 @Resource
 public class SpaceRepositoryOptionService extends BaseService<SpaceRepositoryOptionBean> {
 
-	public List<SpaceRepositoryOptionBean> query(ClientSession session, SpaceBean space, String branch, String path,
+	public List<SpaceRepositoryOptionBean> query(ClientSession session, String spaceid, String branch, String path,
 			String name, OptionType type) throws Exception {
+		return query(session, spaceid, branch, path, name, type.name());
+	}
+
+	public List<SpaceRepositoryOptionBean> query(ClientSession session, String spaceid, String branch, String path,
+			String name, String type) throws Exception {
 
 		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("spaceid", space.getId());
+		param.put("spaceid", spaceid);
 		if (type != null) {
-			param.put("type", type.name());
+			param.put("type", type);
 		}
 		String userid = null;
 		if (session != null && session.getUser() != null) {

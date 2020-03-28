@@ -67,19 +67,33 @@
             let url = _SERVER_URL + action;
             window.open(url);
         },
-        load(type, data) {
+        load(type, data, project) {
             return new Promise((resolve, reject) => {
                 data = data || {};
                 let action = '/api/workspace/load/' + type + '/' + source.token;
+                if (project) {
+                    action += '/project-' + project.path;
+                }
                 source.server.post(action, JSON.stringify(data)).then(res => {
                     source.onData(type, res);
                     resolve && resolve(res);
                 });
             });
         },
-        do(type, data) {
+        do(type, data, project) {
             data = data || {};
             let action = '/api/workspace/do/' + type + '/' + source.token;
+            if (project) {
+                action += '/project-' + project.path;
+            }
+            return source.server.post(action, JSON.stringify(data));
+        },
+        event(name, version, type, data, project) {
+            data = data || {};
+            let action = '/api/event/' + name + '/' + version + '/' + type + '/' + source.token;
+            if (project) {
+                action += '/project-' + project.path;
+            }
             return source.server.post(action, JSON.stringify(data));
         },
         restart() {

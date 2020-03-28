@@ -84,10 +84,11 @@
 		var $btn = $('<a class="mglr-10 coos-pointer color-green">导入已存在表字段</a>');
 		$li.append($btn);
 		$btn.click(function() {
-			if (that.project && that.project.app) {
+			let app = that.getApp();
+			if (app) {
 				let data = {};
 				data.type = "LOAD_DATABASE_TABLES";
-				data.path = that.project.app.localpath;
+				data.path = app.localpath;
 				data.name = model.database;
 				data.tablename = model.name;source.service.data.doTest(data).then(result => {
 					var value = result.value;

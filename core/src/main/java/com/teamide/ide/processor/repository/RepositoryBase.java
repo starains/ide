@@ -1,6 +1,6 @@
 package com.teamide.ide.processor.repository;
 
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.param.RepositoryProcessorParam;
 
 public class RepositoryBase {
 

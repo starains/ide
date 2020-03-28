@@ -9,7 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientHandler;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.processor.WorkspaceProcessor;
-import com.teamide.ide.processor.enums.RepositoryProcessorType;
+import com.teamide.ide.processor.enums.ProjectProcessorType;
 import com.teamide.util.LogUtil;
 import com.teamide.util.StringUtil;
 
@@ -31,9 +31,9 @@ public class DownloadHandler {
 		}
 
 		ClientSession session = ClientHandler.getSession(request);
-		WorkspaceProcessor workspaceProcessor = new WorkspaceProcessor(session, token);
+		WorkspaceProcessor workspaceProcessor = new WorkspaceProcessor(session, token, "");
 
-		workspaceProcessor.onDo(RepositoryProcessorType.DOWNLOAD.getValue(), data);
+		workspaceProcessor.onDo(ProjectProcessorType.DOWNLOAD.getValue(), data);
 	}
 
 }

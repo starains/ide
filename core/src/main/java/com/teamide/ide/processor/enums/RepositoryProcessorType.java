@@ -6,36 +6,6 @@ public enum RepositoryProcessorType {
 
 	BRANCH_CREATE("BRANCH_CREATE", "版本创建"),
 
-	FILE_SAVE("FILE_SAVE", "文件保存"),
-
-	FILE_PASTE("FILE_PASTE", "文件粘贴"),
-
-	FILE_CLOSE("FILE_CLOSE", "文件关闭"),
-
-	FILE_OPEN("FILE_OPEN", "文件打开"),
-
-	FILE_RENAME("FILE_RENAME", "文件重命名"),
-
-	FILE_MOVE("FILE_MOVE", "文件移动"),
-
-	FILE_CREATE("FILE_CREATE", "文件创建"),
-
-	FILE_DELETE("FILE_DELETE", "文件删除"),
-
-	DOWNLOAD("DOWNLOAD", "下载"),
-
-	UPLOAD("UPLOAD", "上传"),
-
-	MAVEN_CLEAN("MAVEN_CLEAN", "Maven Clean"),
-
-	MAVEN_COMPILE("MAVEN_COMPILE", "Maven Compile"),
-
-	MAVEN_PACKAGE("MAVEN_PACKAGE", "Maven Package"),
-
-	MAVEN_INSTALL("MAVEN_INSTALL", "Maven Install"),
-
-	MAVEN_DEPLOY("MAVEN_DEPLOY", "Maven Deploy"),
-
 	GIT_REVERT("GIT_REVERT", "Git Revert"),
 
 	GIT_PUSH("GIT_PUSH", "Git Push"),
@@ -74,19 +44,9 @@ public enum RepositoryProcessorType {
 
 	STARTER_STOP("STARTER_STOP", "Starter Stop"),
 
-	STARTER_DESTROY("STARTER_DESTROY", "Starter Destroy"),
-
 	STARTER_REMOVE("STARTER_REMOVE", "Starter Remove"),
 
-	STARTER_LOG_CLEAN("STARTER_LOG_CLEAN", "Starter Log Clean"),
-
-	APP_SET_OPTION("APP_SET_OPTION", "应用配置"),
-
-	APP_DELETE_OPTION("APP_DELETE_OPTION", "删除应用配置"),
-
-	APP_GENERATE_SOURCE_CODE("APP_GENERATE_SOURCE_CODE", "应用生成源码"),
-
-	;
+	STARTER_LOG_CLEAN("STARTER_LOG_CLEAN", "Starter Log Clean"),;
 
 	private RepositoryProcessorType(String value, String text) {
 		this.value = value;

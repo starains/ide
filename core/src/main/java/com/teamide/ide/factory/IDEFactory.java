@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.websocket.Session;
 
-import com.teamide.app.factory.DataSourceFactory;
 import com.teamide.client.ClientSession;
 import com.teamide.db.TableUtil;
 import com.teamide.db.bean.Database;

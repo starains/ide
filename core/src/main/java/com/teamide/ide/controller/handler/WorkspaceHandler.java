@@ -30,6 +30,7 @@ public class WorkspaceHandler {
 		String work = null;
 		String type = null;
 		String token = null;
+		String projectPath = null;
 		if (path.startsWith("/api/workspace/")) {
 			path = path.substring("/api/workspace/".length());
 		}
@@ -43,6 +44,9 @@ public class WorkspaceHandler {
 		if (keys.length > 2) {
 			token = keys[2];
 		}
+		if (keys.length > 3) {
+			projectPath = keys[3].replace("project-", "");
+		}
 		if (StringUtil.isEmpty(work)) {
 			throw new Exception("work is null.");
 		}
@@ -54,7 +58,7 @@ public class WorkspaceHandler {
 		}
 
 		ClientSession session = ClientHandler.getSession(request);
-		WorkspaceProcessor workspaceProcessor = new WorkspaceProcessor(session, token);
+		WorkspaceProcessor workspaceProcessor = new WorkspaceProcessor(session, token, projectPath);
 		Object result = null;
 		// logger.info("workspace work [" + work + "] type [" + type + "]");
 

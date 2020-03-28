@@ -81,10 +81,11 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           var option = this.form;
-          let data = { path: this.path, option: option };
+          let data = { path: this.path, option: option, type: "APP" };
           this.hideForm();
+          let project = source.getProjectByPath(data.path);
 
-          source.do("APP_SET_OPTION", data);
+          source.do("SET_PLUGIN_OPTION", data, project);
           this.resolve && this.resolve(data);
         } else {
           return false;

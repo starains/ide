@@ -4,29 +4,29 @@ import java.io.File;
 
 import com.alibaba.fastjson.JSONObject;
 
-public interface IDERepositoryProjectListener extends IDEListener {
+public interface IDERepositoryProjectListener {
 
-	public void onLoad(JSONObject data, File folder);
+	public JSONObject onLoad(PluginParam param, String path);
 
-	public void onLoadFile(JSONObject data, File file);
+	public void onLoadFile(PluginParam param, File file);
 
-	public void onCreateFile(JSONObject data, File file);
+	public void onCreateFile(PluginParam param, File file);
 
-	public void onCreateFolder(JSONObject data, File folder);
+	public void onCreateFolder(PluginParam param, File folder);
 
-	public void onUpdateFile(JSONObject data, File file);
+	public void onUpdateFile(PluginParam param, File file);
 
-	public void onDeleteFile(JSONObject data, File file);
+	public void onDeleteFile(PluginParam param, File file);
 
-	public void onDeleteFolder(JSONObject data, File folder);
+	public void onDeleteFolder(PluginParam param, File folder);
 
-	public void onRenameFile(JSONObject data, File oldFile, File newFile);
+	public void onRenameFile(PluginParam param, File oldFile, File newFile);
 
-	public void onRenameFolder(JSONObject data, File oldFolder, File newFolder);
+	public void onRenameFolder(PluginParam param, File oldFolder, File newFolder);
 
-	public void onMoveFile(JSONObject data, File oldFile, File newFile);
+	public void onMoveFile(PluginParam param, File oldFile, File newFile);
 
-	public void onMoveFolder(JSONObject data, File oldFolder, File newFolder);
+	public void onMoveFolder(PluginParam param, File oldFolder, File newFolder);
 
-	public void onMenuClick(JSONObject data, File folder);
+	public void onMenuClick(PluginParam param, File folder);
 }

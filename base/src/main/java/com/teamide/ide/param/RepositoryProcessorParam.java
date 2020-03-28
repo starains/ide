@@ -1,10 +1,9 @@
-package com.teamide.ide.processor.param;
+package com.teamide.ide.param;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Properties;
 
 import com.alibaba.fastjson.JSONObject;
@@ -12,9 +11,6 @@ import com.teamide.util.IOUtil;
 import com.teamide.util.StringUtil;
 import com.teamide.LogTool;
 import com.teamide.client.ClientSession;
-import com.teamide.ide.bean.SpaceRepositoryOptionBean;
-import com.teamide.ide.enums.OptionType;
-import com.teamide.ide.service.impl.SpaceRepositoryOptionService;
 
 public class RepositoryProcessorParam extends SpaceProcessorParam {
 
@@ -32,8 +28,12 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 
 	public static final String DEFAULT_BRANCH = "master";
 
-	public RepositoryProcessorParam(ClientSession session, String spaceid, String branch) {
-		super(session, spaceid);
+	public RepositoryProcessorParam(RepositoryProcessorParam param) {
+		this(param.getSession(), param.getSpaceid(), param.getFormatSpace(), param.getBranch());
+	}
+
+	public RepositoryProcessorParam(ClientSession session, String spaceid, JSONObject formatSpace, String branch) {
+		super(session, spaceid, formatSpace);
 
 		if (StringUtil.isEmpty(branch)) {
 			branch = DEFAULT_BRANCH;
@@ -66,12 +66,12 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 			throw new RuntimeException("token is null.");
 		}
 
-		return getSpace().getName() + "." + token;
+		return getSpaceName() + "." + token;
 	}
 
 	public String getLogName() {
 
-		return getSpace().getName();
+		return getSpaceName();
 	}
 
 	public File getDeployerLogFolder() {
@@ -138,77 +138,6 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		} finally {
 			IOUtil.close(stream);
 		}
-	}
-
-	public void deleteOption(String path, String name, OptionType type) throws Exception {
-
-		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-		List<SpaceRepositoryOptionBean> options = service.query(getSession(), getSpace(), branch, path, name, type);
-		for (SpaceRepositoryOptionBean option : options) {
-			service.delete(option.getId());
-		}
-	}
-
-	public List<SpaceRepositoryOptionBean> getOptions(String path, OptionType type) throws Exception {
-
-		List<SpaceRepositoryOptionBean> options = queryOptions(path, null, type);
-		return options;
-	}
-
-	public JSONObject getAppOption(String path) throws Exception {
-
-		List<SpaceRepositoryOptionBean> options = queryOptions(path, null, OptionType.APP);
-		if (options.size() > 0) {
-			return options.get(0).getJSONOption();
-		}
-		return null;
-	}
-
-	public JSONObject getOption(String path, String name, OptionType type) throws Exception {
-
-		List<SpaceRepositoryOptionBean> options = queryOptions(path, name, type);
-		if (options.size() > 0) {
-			return options.get(0).getJSONOption();
-		}
-		return null;
-	}
-
-	public List<SpaceRepositoryOptionBean> queryOptions(String path, String name, OptionType type) throws Exception {
-		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-		return service.query(getSession(), getSpace(), branch, path, name, type);
-	}
-
-	public JSONObject saveOption(String path, String name, OptionType type, JSONObject json) throws Exception {
-		if (json == null) {
-			json = new JSONObject();
-		}
-
-		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-
-		List<SpaceRepositoryOptionBean> options = queryOptions(path, name, type);
-		SpaceRepositoryOptionBean option = null;
-		if (options.size() > 0) {
-			option = options.get(0);
-		}
-		if (option == null) {
-			option = new SpaceRepositoryOptionBean();
-		}
-		if (getSession() != null && getSession().getUser() != null) {
-			option.setUserid(getSession().getUser().getId());
-		}
-		option.setName(name);
-		option.setPath(path);
-		option.setJSONOption(json);
-		option.setType(type.name());
-		option.setSpaceid(getSpaceid());
-		option.setBranch(branch);
-
-		if (StringUtil.isEmpty(option.getId())) {
-			service.insert(getSession(), option);
-		} else {
-			service.update(getSession(), option);
-		}
-		return json;
 	}
 
 	public String getBranch() {

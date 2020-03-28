@@ -50,22 +50,18 @@
             });
         });
     };
-    source.do = function (type, data) {
+    source.do = function (type, data, project) {
         return new Promise((resolve, reject) => {
 
             if (type == 'FILE_RENAME' || type == 'FILE_MOVE') {
-                let project = null;
-                data = data || {};
-                if (data.path) {
-                    project = source.getProjectByPath(data.path);
-                }
                 if (project) {
-                    if (project.app && project.app.path_model_type) {
+                    let app = source.getProjectApp(project);
+                    if (app && app.path_model_type) {
                         let model = null;
-                        Object.keys(project.app.path_model_type).forEach(key => {
+                        Object.keys(app.path_model_type).forEach(key => {
                             if (data.path && data.path.startsWith(key)) {
-                                model = project.app.path_model_type[key];
-                                model.apppath = project.app.path;
+                                model = app.path_model_type[key];
+                                model.apppath = app.path;
                                 model.path = key;
                             }
                         });
@@ -73,24 +69,17 @@
                     }
                 }
             }
-            source.server.do(type, data).then(res => {
+            source.server.do(type, data, project).then(res => {
                 resolve && resolve(res);
                 if (res.errcode == 0) {
                     if (type == 'FILE_CREATE' || type == 'FILE_SAVE' || type == 'FILE_RENAME' || type == 'FILE_DELETE' || type == 'FILE_MOVE') {
                         source.loadGitStatus();
 
-                        let project = null;
-                        data = data || {};
-                        if (data.parentPath) {
-                            project = source.getProjectByPath(data.parentPath);
-                        }
-                        if (data.path) {
-                            project = source.getProjectByPath(data.path);
-                        }
                         if (project != null) {
                             let needLoadApp = false;
-                            if (project.app && project.app.path_model_type) {
-                                Object.keys(project.app.path_model_type).forEach(key => {
+                            let app = source.getProjectApp(project);
+                            if (app && app.path_model_type) {
+                                Object.keys(app.path_model_type).forEach(key => {
                                     if (data.path && data.path.startsWith(key)) {
                                         needLoadApp = true;
                                     }
@@ -108,9 +97,8 @@
                 }
             });
         });
-        return source.server.do(type, data);
     };
-    source.load = function (type, data) {
+    source.load = function (type, data, project) {
         data = data || {};
         let model = source.getModel(type);
 
@@ -126,7 +114,7 @@
                 }
             }
         }
-        return source.server.load(type, data);
+        return source.server.load(type, data, project);
     };
 
 
@@ -189,9 +177,6 @@
             return;
         } else if (type == 'PROJECT') {
             source.onLoadProject(value);
-            return;
-        } else if (type == 'APP') {
-            source.onApp(value);
             return;
         } else if (type == 'FILE') {
             source.onLoadFile(value);

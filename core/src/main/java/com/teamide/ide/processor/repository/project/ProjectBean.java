@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.app.plugin.AppBean;
 import com.teamide.util.StringUtil;
 
 public class ProjectBean {
@@ -16,20 +15,14 @@ public class ProjectBean {
 	private String packaging;
 	private List<FileBean> files = new ArrayList<FileBean>();
 
-	private AppBean app;
-
 	private final JSONObject attribute = new JSONObject();
 
-	public void setAttribute(String key, JSONObject value) {
-		attribute.put(key, value);
+	public void setAttribute(String key, Object value) {
+		this.attribute.put(key, value);
 	}
 
-	public AppBean getApp() {
-		return app;
-	}
-
-	public void setApp(AppBean app) {
-		this.app = app;
+	public JSONObject getAttribute() {
+		return this.attribute;
 	}
 
 	public String getPackaging() {

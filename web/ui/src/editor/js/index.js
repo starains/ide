@@ -27,6 +27,10 @@ window.app = app;
 			file : this.file
 		};
 	};
+	Editor.prototype.getApp = function() {
+		return this.project.attribute.app;
+	};
+
 
 	Editor.prototype.init = function() {
 		this.initView();

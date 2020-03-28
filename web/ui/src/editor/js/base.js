@@ -154,8 +154,9 @@
 	};
 	Editor.prototype.getContext = function(type) {
 		var context = null;
-		if (this.project && this.project.app) {
-			context = this.project.app.context;
+		let app = this.getApp();
+		if (app) {
+			context = app.context;
 		}
 		return context;
 	};

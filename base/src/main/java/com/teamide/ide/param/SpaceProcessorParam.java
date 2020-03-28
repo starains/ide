@@ -1,28 +1,27 @@
-package com.teamide.ide.processor.param;
+package com.teamide.ide.param;
 
 import java.io.File;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
-import com.teamide.ide.bean.SpaceBean;
-import com.teamide.ide.constant.IDEConstant;
-import com.teamide.ide.handler.SpaceHandler;
+import com.teamide.ide.IDEConstant;
 
 public class SpaceProcessorParam extends ProcessorParam {
 
 	private final String spaceid;
 
-	private final SpaceBean space;
-
 	private final JSONObject formatSpace;
 
 	private final File spaceFolder;
 
-	public SpaceProcessorParam(ClientSession session, String spaceid) {
+	public SpaceProcessorParam(RepositoryProcessorParam param) {
+		this(param.getSession(), param.getSpaceid(), param.getFormatSpace());
+	}
+
+	public SpaceProcessorParam(ClientSession session, String spaceid, JSONObject formatSpace) {
 		super(session);
 		this.spaceid = spaceid;
-		this.space = SpaceHandler.get(spaceid);
-		this.formatSpace = SpaceHandler.getFormat(spaceid);
+		this.formatSpace = formatSpace;
 		String root = "";
 		if (this.formatSpace != null) {
 			root = this.formatSpace.getString("root");
@@ -35,8 +34,12 @@ public class SpaceProcessorParam extends ProcessorParam {
 		return spaceid;
 	}
 
-	public SpaceBean getSpace() {
-		return space;
+	public String getSpaceName() {
+		String name = null;
+		if (this.formatSpace != null) {
+			name = this.formatSpace.getString("name");
+		}
+		return name;
 	}
 
 	public File getSpaceFolder() {

@@ -9,7 +9,7 @@ import org.apache.commons.io.FileUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceRepositoryOptionBean;
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.service.impl.SpaceRepositoryOptionService;
 
 public class RepositoryCreate extends RepositoryBase {
@@ -58,7 +58,7 @@ public class RepositoryCreate extends RepositoryBase {
 					});
 					SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
 					List<SpaceRepositoryOptionBean> options = service.query(this.param.getSession(),
-							this.param.getSpace(), null, null, null, null);
+							this.param.getSpaceid(), null, null, null, "");
 
 					for (SpaceRepositoryOptionBean option : options) {
 						option.setBranch(branch);

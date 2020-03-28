@@ -24,7 +24,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.enums.GitWorkStatus;
 import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.git.JGitWorker;
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.param.RepositoryOption;
 import com.teamide.util.StringUtil;
 
 public class RepositoryGit extends RepositoryBase {
@@ -77,7 +78,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject loadCertificateOption() throws Exception {
 
-		return this.param.getOption(null, null, OptionType.GIT_CERTIFICATE);
+		return new RepositoryOption(this.param).getOption(null, OptionType.GIT_CERTIFICATE);
 	}
 
 	public void saveCertificateOption(String username, String password) throws Exception {
@@ -85,7 +86,7 @@ public class RepositoryGit extends RepositoryBase {
 		json.put("username", username);
 		json.put("password", password);
 
-		this.param.saveOption(null, null, OptionType.GIT_CERTIFICATE, json);
+		new RepositoryOption(this.param).saveOption(null, OptionType.GIT_CERTIFICATE, json);
 	}
 
 	public void checkLocalBranch() throws Exception {
@@ -114,7 +115,7 @@ public class RepositoryGit extends RepositoryBase {
 
 		JSONObject result = new JSONObject();
 		result.put("certificate", loadCertificateOption());
-		result.put("option", this.param.getOption(null, null, OptionType.GIT));
+		result.put("option", new RepositoryOption(this.param).getOption(null, OptionType.GIT));
 		if (!findGit()) {
 			result.put("findGit", false);
 			return result;

@@ -1,8 +1,5 @@
 
-import source from "@/source/base";
-
-import service from "@/common/js/service";
-source.service = service;
+import base from "@/source/base";
 
 import server from "@/source/server";
 
@@ -14,6 +11,6 @@ import data from "@/source/data";
 
 import repository from "@/source/repository/index";
 
-import source_ from "@/source/source";
+import source from "@/source/source";
 
-export default source;
+export default base;

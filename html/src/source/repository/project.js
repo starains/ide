@@ -6,6 +6,22 @@ source.repository.navs = [
 
 (function () {
 
+    source.getProjectApp = function (project) {
+        if (project == null) {
+            return null;
+        }
+        if (project.attribute == null) {
+            return null;
+        }
+        return project.attribute.app;
+    };
+    source.setProjectApp = function (project, app) {
+        if (project == null) {
+            return;
+        }
+        project.attribute = project.attribute || {};
+        project.attribute.app = app;
+    };
     source.formatPublicFolder = function (formats, parent, files) {
         if (files == null || files.length == null) {
             return;
@@ -95,7 +111,7 @@ source.repository.navs = [
         if (project == null) {
             return;
         }
-        project.app = value.app;
+        source.setProjectApp(project, value.attribute.app);
         project.files = project.files || [];
         coos.trimList(project.files);
         value.files = value.files || [];
@@ -182,7 +198,7 @@ source.repository.navs = [
     source.reloadProject = function (project) {
 
         project.loading = true;
-        return source.load('PROJECT', { path: project.path });
+        return source.load('PROJECT', { path: project.path }, project);
     };
 })();
 

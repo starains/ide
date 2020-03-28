@@ -17,18 +17,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.app.AppContext;
-import com.teamide.app.Application;
-import com.teamide.app.ApplicationFactory;
-import com.teamide.app.bean.ServiceBean;
-import com.teamide.app.enums.ServiceProcessType;
-import com.teamide.app.process.ServiceProcess;
-import com.teamide.app.process.service.DaoProcess;
-import com.teamide.app.process.service.SubServiceProcess;
-import com.teamide.app.util.ModelFileUtil;
 import com.teamide.bean.Status;
-import com.teamide.ide.constant.IDEConstant;
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.IDEConstant;
+import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.util.ZipUtil;
 import com.teamide.util.FileUtil;
 import com.teamide.util.IDGenerateUtil;
@@ -37,9 +29,11 @@ import com.teamide.util.StringUtil;
 
 public class RepositoryFile extends RepositoryBase {
 
-	public RepositoryFile(RepositoryProcessorParam param) {
+	public final ProjectParam param;
 
+	public RepositoryFile(ProjectParam param) {
 		super(param);
+		this.param = param;
 	}
 
 	public File callChange(final File folder) {
@@ -145,75 +139,6 @@ public class RepositoryFile extends RepositoryBase {
 
 	}
 
-	public void modelRename(File oldFile, File newFile, JSONObject model) throws Exception {
-		if (model == null) {
-			return;
-		}
-
-		if ("DAO".contentEquals(model.getString("value")) || "SERVICE".contentEquals(model.getString("value"))) {
-			String path = model.getString("path");
-			File modelFolder = this.param.getFile(path);
-			path = modelFolder.toURI().toURL().getPath();
-			String oldPath = oldFile.toURI().toURL().getPath();
-			String newPath = newFile.toURI().toURL().getPath();
-			if (!oldPath.startsWith(path)) {
-				return;
-			}
-			if (!newPath.startsWith(path)) {
-				return;
-			}
-			String oldName = oldPath.substring(path.length());
-			String newName = newPath.substring(path.length());
-			String apppath = model.getString("apppath");
-			try {
-
-				Application application = ApplicationFactory.start(this.param.getFile(apppath));
-				if (application.getContext() != null) {
-					AppContext context = application.getContext();
-
-					List<ServiceBean> services = context.get(ServiceBean.class);
-					for (ServiceBean service : services) {
-						boolean change = false;
-						if (service.getProcesss() != null) {
-							for (ServiceProcess process : service.getProcesss()) {
-
-								if (ServiceProcessType.DAO.getValue().equalsIgnoreCase(process.getType())
-										&& "DAO".contentEquals(model.getString("value"))) {
-
-									DaoProcess daoProcess = (DaoProcess) process;
-									if (oldName.equals(daoProcess.getDaoname())) {
-										daoProcess.setDaoname(newName);
-										change = true;
-									}
-								} else if (ServiceProcessType.SUB_SERVICE.getValue().equalsIgnoreCase(process.getType())
-										&& "SERVICE".contentEquals(model.getString("value"))) {
-									SubServiceProcess subServiceProcess = (SubServiceProcess) process;
-									if (oldName.equals(subServiceProcess.getServicename())) {
-										subServiceProcess.setServicename(newName);
-										change = true;
-									}
-								}
-							}
-						}
-						if (change) {
-							File file = new File(service.getLocalfilepath());
-							if (file.exists()) {
-								service.setLocalfilepath(null);
-								String fileType = ModelFileUtil.getTypeByFileName(file.getName());
-								String text = ModelFileUtil.beanToText(service, fileType);
-								FileUtil.write(text.getBytes(), file);
-							}
-						}
-					}
-				}
-				application.stop();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
-
 	public File rename(final String path, final String name, JSONObject model) throws Exception {
 
 		this.param.getLog().info("file rename,  path:" + path + ",  name:" + name);
@@ -265,7 +190,7 @@ public class RepositoryFile extends RepositoryBase {
 			FileUtils.forceDelete(oldFile);
 		}
 		if (files == null) {
-			modelRename(oldFile, newFile, model);
+			PluginHandler.moveFile(param, oldFile, newFile);
 		} else {
 			String oldPath = oldFile.getAbsolutePath();
 			String newPath = newFile.getAbsolutePath();
@@ -274,7 +199,7 @@ public class RepositoryFile extends RepositoryBase {
 				fPath = fPath.replace(oldPath, newPath);
 				File toF = new File(fPath);
 				if (toF.exists() && toF.isFile()) {
-					modelRename(f, toF, model);
+					PluginHandler.moveFile(param, f, toF);
 				}
 			}
 		}
@@ -370,7 +295,7 @@ public class RepositoryFile extends RepositoryBase {
 			}
 			if (file.isFile()) {
 				FileUtils.moveFileToDirectory(file, toFolder, false);
-				modelRename(file, toFile, model);
+				PluginHandler.moveFile(param, file, toFile);
 			} else {
 				List<File> files = FileUtil.loadAllFiles(file.getAbsolutePath());
 				FileUtils.moveDirectoryToDirectory(file, toFolder, false);
@@ -381,7 +306,7 @@ public class RepositoryFile extends RepositoryBase {
 					fPath = fPath.replace(oldPath, newPath);
 					File toF = new File(fPath);
 					if (toF.exists() && toF.isFile()) {
-						modelRename(f, toF, model);
+						PluginHandler.moveFile(param, f, toF);
 					}
 				}
 			}
@@ -405,7 +330,7 @@ public class RepositoryFile extends RepositoryBase {
 		} else if (type.equalsIgnoreCase("REPOSITORY")) {
 			isTemp = true;
 			File tempFolder = new File(IDEConstant.WORKSPACES_TEMP_FOLDER);
-			name = param.getSpace().getName();
+			name = param.getSpaceName();
 			file = new File(tempFolder, IDGenerateUtil.generateShort() + "/" + name);
 			FileUtils.copyDirectory(param.getSourceFolder(), file, new FileFilter() {
 				@Override

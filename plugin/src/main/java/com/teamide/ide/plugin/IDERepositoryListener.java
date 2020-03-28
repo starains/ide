@@ -1,9 +1,7 @@
 package com.teamide.ide.plugin;
 
-import com.alibaba.fastjson.JSONObject;
+public interface IDERepositoryListener {
 
-public interface IDERepositoryListener extends IDEListener {
-
-	public void onLoad(JSONObject data, String path);
+	public void onLoad(PluginParam param, String path);
 
 }

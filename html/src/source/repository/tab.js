@@ -28,11 +28,12 @@ source.repository.activeTab = null;
         let project = source.getProjectByPath(path);
 
         let model = null;
-        if (project.app) {
+        let app = source.getProjectApp(project);
+        if (app) {
 
-            if (project.app.path_model_type) {
-                Object.keys(project.app.path_model_type).forEach(model_path => {
-                    let m = project.app.path_model_type[model_path];
+            if (app.path_model_type) {
+                Object.keys(app.path_model_type).forEach(model_path => {
+                    let m = app.path_model_type[model_path];
                     if (m.isDirectory) {
                         if (model_path == path || path.startsWith(model_path + '/')) {
                             model = m;
@@ -86,11 +87,12 @@ source.repository.activeTab = null;
         let project = source.getProjectByPath(file_date.path);
 
         let type = null;
-        if (project.app) {
+        let appBean = source.getProjectApp(project);
+        if (appBean) {
             let model = null;
-            if (project.app.path_model_type) {
-                Object.keys(project.app.path_model_type).forEach(path => {
-                    let m = project.app.path_model_type[path];
+            if (appBean.path_model_type) {
+                Object.keys(appBean.path_model_type).forEach(path => {
+                    let m = appBean.path_model_type[path];
                     if (m.isDirectory) {
                         if (file_date.path.startsWith(path + '/')) {
                             model = m;
@@ -103,8 +105,8 @@ source.repository.activeTab = null;
                 });
             }
             if (model) {
-                if (project.app.path_model_bean) {
-                    model.bean = project.app.path_model_bean[file_date.path];
+                if (appBean.path_model_bean) {
+                    model.bean = appBean.path_model_bean[file_date.path];
                 }
                 model.bean = model.bean || {};
                 file_date.model = model;
@@ -120,23 +122,24 @@ source.repository.activeTab = null;
                 source.saveFile(path, content, callback);
             },
             onTest(data, callback) {
-                if (project.app && project.app.localpath && file_date.model) {
+                let app = source.getProjectApp(project);
+                if (app && app.localpath && file_date.model) {
                     data = data || {};
                     data.type = type;
-                    data.path = project.app.localpath;
+                    data.path = app.localpath;
                     data.name = file_date.model.bean.name;
-                    source.service.data.doTest(data).then(result => {
+                    source.server.event('app.plugin', '1.0', 'doTest', data).then(result => {
                         callback && callback(result);
                     });
                 }
             },
             toText(data, callback) {
-                source.service.data.toText(data).then(result => {
+                source.server.event('app.plugin', '1.0', 'toText', data).then(result => {
                     callback && callback(result);
                 });
             },
             toModel(data, callback) {
-                source.service.data.toModel(data).then(result => {
+                source.server.event('app.plugin', '1.0', 'toModel', data).then(result => {
                     callback && callback(result);
                 });
             }, load(callback) {

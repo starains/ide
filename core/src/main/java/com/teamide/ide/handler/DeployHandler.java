@@ -10,12 +10,14 @@ import com.teamide.util.FileUtil;
 import com.teamide.util.IDGenerateUtil;
 import com.teamide.util.StringUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.ide.constant.IDEConstant;
+import com.teamide.ide.IDEConstant;
 import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.deployer.LocalDeploy;
 import com.teamide.ide.deployer.RemoteDeploy;
 import com.teamide.ide.enums.OptionType;
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.RepositoryProcessorParam;
+import com.teamide.ide.processor.param.ProjectOption;
 import com.teamide.starter.StarterServer;
 
 public class DeployHandler {
@@ -106,11 +108,12 @@ public class DeployHandler {
 
 	public static final String deploy(RepositoryProcessorParam param, String projectPath, String runName)
 			throws Exception {
-		JSONObject option = param.getOption(projectPath, runName, OptionType.STARTER);
+		ProjectParam projectParam = new ProjectParam(param, projectPath);
+		JSONObject option = new ProjectOption(projectParam).getOption(runName, OptionType.STARTER);
 		if (option == null) {
 			throw new Exception("path [" + projectPath + "] run [" + runName + "] option is null.");
 		}
-		Deploy starter = create(param, projectPath, option);
+		Deploy starter = create(projectParam, projectPath, option);
 		deploy(starter.starter.token);
 		return starter.starter.token;
 	}
@@ -132,7 +135,7 @@ public class DeployHandler {
 		}
 	}
 
-	public static Deploy create(RepositoryProcessorParam param, String path, JSONObject option) throws Exception {
+	public static Deploy create(ProjectParam param, String path, JSONObject option) throws Exception {
 		String token = IDGenerateUtil.generateShort();
 		JSONObject json = new JSONObject();
 		json.put("spaceid", param.getSpaceid());

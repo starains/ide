@@ -110,8 +110,12 @@ export default {
     },
     doImport(table) {
       table.find = true;
-      source.service.data
-        .toText({ type: "table", model: table, filename: table.name })
+      source.server
+        .event("app.plugin", "1.0", "toText", {
+          type: "table",
+          model: table,
+          filename: table.name
+        })
         .then(result => {
           let file = {
             parentPath: this.parent.path,
@@ -151,7 +155,7 @@ export default {
       data.name = this.databasename;
       this.loading = true;
       coos.trimArray(this.tables);
-      source.service.data.doTest(data).then(result => {
+      source.server.event("app.plugin", "1.0", "doTest", data).then(result => {
         var value = result.value || [];
         value.forEach(table => {
           table.find = false;

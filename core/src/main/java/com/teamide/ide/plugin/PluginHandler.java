@@ -1,21 +1,48 @@
 package com.teamide.ide.plugin;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.ide.IDEConstant;
+import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.processor.param.ProjectOption;
 import com.teamide.ide.processor.repository.project.FileBean;
 import com.teamide.ide.processor.repository.project.ProjectBean;
+import com.teamide.util.FileUtil;
+import com.teamide.util.StringUtil;
 
 public class PluginHandler {
 
-	final static Map<String, IDEPlugin> CACHE = new HashMap<String, IDEPlugin>();
+	final static Map<String, PluginLoader> CACHE = new HashMap<String, PluginLoader>();
 
 	final static Object LOCK = new Object();
 
-	public static void load() {
+	public static List<File> getJarFiles() {
+		List<File> files = FileUtil.loadAllFiles(IDEConstant.PLUGINS_FOLDER);
+		List<File> jarFiles = new ArrayList<File>();
+		for (File jarFile : files) {
+			if (!jarFile.isFile() || !jarFile.getName().endsWith(".jar")) {
+				continue;
+			}
+			jarFiles.add(jarFile);
+		}
+		return jarFiles;
+	}
 
+	public static void load() {
+		List<File> jarFiles = getJarFiles();
+		for (File jarFile : jarFiles) {
+			PluginLoader loader = new PluginLoader(jarFile);
+			IDEPlugin plugin = loader.getPlugin();
+			if (plugin != null) {
+				String key = getKey(plugin);
+				CACHE.put(key, loader);
+			}
+		}
 	}
 
 	private static void init() {
@@ -26,157 +53,244 @@ public class PluginHandler {
 				}
 			}
 		}
-	}
-
-	public static void loadProject(ProjectBean project, File folder) {
-
-		init();
-
-		for (IDEPlugin plugin : CACHE.values()) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
-				continue;
+		synchronized (LOCK) {
+			for (PluginLoader loader : CACHE.values()) {
+				if (loader.changed()) {
+					loader.reload();
+				}
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
-
-			JSONObject data = new JSONObject();
-
-			listener.onLoad(data, folder);
-
-			project.setAttribute(plugin.getProjectAttributeName(), data);
 		}
 	}
 
-	public static void loadFile(FileBean fileBean, File file) {
+	public static String getKey(IDEPlugin plugin) {
+		return getKey(plugin.getName(), plugin.getVersion());
+	}
 
+	public static String getKey(String name, String version) {
+		return name + "-" + version;
+	}
+
+	public static PluginLoader getPluginLoader(String name, String version) {
 		init();
+		String key = getKey(name, version);
+		return CACHE.get(key);
+	}
 
-		for (IDEPlugin plugin : CACHE.values()) {
+	public static IDEPlugin getPlugin(String name, String version) {
+		PluginLoader loader = getPluginLoader(name, version);
+
+		if (loader != null) {
+			return loader.getPlugin();
+		}
+		return null;
+	}
+
+	public static List<IDEPlugin> getPlugins() {
+		init();
+		List<IDEPlugin> plugins = new ArrayList<IDEPlugin>();
+		for (PluginLoader loader : CACHE.values()) {
+			if (loader == null || loader.getPlugin() == null) {
+				continue;
+			}
+			plugins.add(loader.getPlugin());
+		}
+
+		return plugins;
+	}
+
+	public static JSONObject getEnumMap() {
+
+		JSONObject ENUM_MAP = new JSONObject();
+
+		List<IDEPlugin> plugins = getPlugins();
+
+		for (IDEPlugin plugin : plugins) {
+			if (plugin == null) {
+				continue;
+			}
+			JSONObject json = plugin.getEnumMap();
+			if (json != null) {
+				ENUM_MAP.putAll(json);
+			}
+		}
+		return ENUM_MAP;
+	}
+
+	public static PluginParam getParam(ProjectParam param, IDEPlugin plugin) {
+		ProjectOption projectOption = new ProjectOption(param);
+		JSONObject option = new JSONObject();
+		if (StringUtil.isEmpty(plugin.getOptionType())) {
+			try {
+				option = projectOption.getOptionByType(plugin.getOptionType());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return new PluginParam(param, option);
+
+	}
+
+	public static void loadProject(ProjectParam param, ProjectBean project) {
+
+		List<IDEPlugin> plugins = getPlugins();
+
+		for (IDEPlugin plugin : plugins) {
+			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+				continue;
+			}
+			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+
+			PluginParam pluginParam = getParam(param, plugin);
+			Object value = listener.onLoad(pluginParam, project.getPath());
+
+			project.setAttribute(plugin.getProjectAttributeName(), value);
+		}
+	}
+
+	public static void loadFile(ProjectParam param, FileBean fileBean, File file) {
+
+		List<IDEPlugin> plugins = getPlugins();
+
+		for (IDEPlugin plugin : plugins) {
 			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
 				continue;
 			}
 			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
 			JSONObject data = new JSONObject();
 
-			listener.onLoadFile(data, file);
+			PluginParam pluginParam = getParam(param, plugin);
+
+			listener.onLoadFile(pluginParam, file);
 
 			fileBean.setAttribute(plugin.getFileAttributeName(), data);
 		}
 	}
 
-	public static void createFile(JSONObject data, File file) {
+	public static void createFile(ProjectParam param, File file) {
 
-		init();
+		List<IDEPlugin> plugins = getPlugins();
 
-		for (IDEPlugin plugin : CACHE.values()) {
+		for (IDEPlugin plugin : plugins) {
 			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
 				continue;
 			}
 			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
-			listener.onCreateFile(data, file);
+
+			PluginParam pluginParam = getParam(param, plugin);
+			listener.onCreateFile(pluginParam, file);
 		}
 	}
 
-	public static void createFolder(JSONObject data, File folder) {
+	public static void createFolder(ProjectParam param, File folder) {
 
-		init();
+		List<IDEPlugin> plugins = getPlugins();
 
-		for (IDEPlugin plugin : CACHE.values()) {
+		for (IDEPlugin plugin : plugins) {
 			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
 				continue;
 			}
 			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
-			listener.onCreateFolder(data, folder);
+			PluginParam pluginParam = getParam(param, plugin);
+			listener.onCreateFile(pluginParam, folder);
 		}
 	}
 
-	public static void updateFile(JSONObject data, File file) {
+	public static void updateFile(ProjectParam param, File file) {
 
-		init();
+		List<IDEPlugin> plugins = getPlugins();
 
-		for (IDEPlugin plugin : CACHE.values()) {
+		for (IDEPlugin plugin : plugins) {
 			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
 				continue;
 			}
 			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
-			listener.onUpdateFile(data, file);
+			PluginParam pluginParam = getParam(param, plugin);
+			listener.onUpdateFile(pluginParam, file);
 		}
 	}
 
-	public static void deleteFile(JSONObject data, File file) {
+	public static void deleteFile(ProjectParam param, File file) {
 
-		init();
+		List<IDEPlugin> plugins = getPlugins();
 
-		for (IDEPlugin plugin : CACHE.values()) {
+		for (IDEPlugin plugin : plugins) {
 			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
 				continue;
 			}
 			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
-			listener.onDeleteFile(data, file);
+			PluginParam pluginParam = getParam(param, plugin);
+			listener.onDeleteFile(pluginParam, file);
 		}
 	}
 
-	public static void deleteFolder(JSONObject data, File folder) {
+	public static void deleteFolder(ProjectParam param, File folder) {
 
-		init();
+		List<IDEPlugin> plugins = getPlugins();
 
-		for (IDEPlugin plugin : CACHE.values()) {
+		for (IDEPlugin plugin : plugins) {
 			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
 				continue;
 			}
 			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
-			listener.onDeleteFolder(data, folder);
+			PluginParam pluginParam = getParam(param, plugin);
+			listener.onDeleteFolder(pluginParam, folder);
 		}
 	}
 
-	public static void renameFile(JSONObject data, File oldFile, File newFile) {
+	public static void renameFile(ProjectParam param, File oldFile, File newFile) {
 
-		init();
+		List<IDEPlugin> plugins = getPlugins();
 
-		for (IDEPlugin plugin : CACHE.values()) {
+		for (IDEPlugin plugin : plugins) {
 			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
 				continue;
 			}
 			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
-			listener.onRenameFile(data, oldFile, newFile);
+			PluginParam pluginParam = getParam(param, plugin);
+			listener.onRenameFile(pluginParam, oldFile, newFile);
 		}
 	}
 
-	public static void renameFolder(JSONObject data, File oldFolder, File newFolder) {
+	public static void renameFolder(ProjectParam param, File oldFolder, File newFolder) {
 
-		init();
+		List<IDEPlugin> plugins = getPlugins();
 
-		for (IDEPlugin plugin : CACHE.values()) {
+		for (IDEPlugin plugin : plugins) {
 			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
 				continue;
 			}
 			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
-			listener.onRenameFolder(data, oldFolder, newFolder);
+			PluginParam pluginParam = getParam(param, plugin);
+			listener.onRenameFolder(pluginParam, oldFolder, newFolder);
 		}
 	}
 
-	public static void moveFile(JSONObject data, File oldFile, File newFile) {
+	public static void moveFile(ProjectParam param, File oldFile, File newFile) {
 
-		init();
+		List<IDEPlugin> plugins = getPlugins();
 
-		for (IDEPlugin plugin : CACHE.values()) {
+		for (IDEPlugin plugin : plugins) {
 			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
 				continue;
 			}
 			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
-			listener.onMoveFile(data, oldFile, newFile);
+			PluginParam pluginParam = getParam(param, plugin);
+			listener.onMoveFile(pluginParam, oldFile, newFile);
 		}
 	}
 
-	public static void moveFolder(JSONObject data, File oldFolder, File newFolder) {
+	public static void moveFolder(ProjectParam param, File oldFolder, File newFolder) {
 
-		init();
+		List<IDEPlugin> plugins = getPlugins();
 
-		for (IDEPlugin plugin : CACHE.values()) {
+		for (IDEPlugin plugin : plugins) {
 			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
 				continue;
 			}
 			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
-			listener.onMoveFolder(data, oldFolder, newFolder);
+			PluginParam pluginParam = getParam(param, plugin);
+			listener.onMoveFolder(pluginParam, oldFolder, newFolder);
 		}
 	}
 }

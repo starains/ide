@@ -5,7 +5,7 @@ import java.io.File;
 import javax.tools.Diagnostic;
 
 import com.teamide.ide.compiler.CompilerHelper;
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.param.RepositoryProcessorParam;
 
 public class RepositoryBuild extends RepositoryBase {
 

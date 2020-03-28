@@ -1,12 +1,9 @@
 package com.teamide.ide.processor.repository;
 
-import java.util.List;
-
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.handler.DeployHandler;
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.param.RepositoryProcessorParam;
 
 public class RepositoryStarter extends RepositoryBase {
 
@@ -115,15 +112,6 @@ public class RepositoryStarter extends RepositoryBase {
 			json.put("removed", true);
 			return json;
 		}
-	}
-
-	public JSONArray loadStarters() throws Exception {
-		JSONArray res = new JSONArray();
-		List<Deploy> deploys = DeployHandler.getStarters(this.param);
-		for (Deploy deploy : deploys) {
-			res.add(deploy.getStatus());
-		}
-		return res;
 	}
 
 }

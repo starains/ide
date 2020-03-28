@@ -10,12 +10,6 @@ public enum RepositoryModelType {
 
 	BRANCHS("BRANCHS", "版本", ModelDataType.LIST),
 
-	FILE("FILE", "文件", ModelDataType.ONE),
-
-	FILES("FILES", "文件列表", ModelDataType.LIST),
-
-	PROJECT("PROJECT", "项目", ModelDataType.ONE),
-
 	GIT("GIT", "库", ModelDataType.ONE),
 
 	GIT_BRANCH_LIST("GIT_BRANCH_LIST", "库", ModelDataType.ONE),
@@ -28,16 +22,8 @@ public enum RepositoryModelType {
 
 	GIT_WORK_STATUS("GIT_WORK_STATUS", "Git工作状态", ModelDataType.ONE),
 
-	STARTER_OPTIONS("STARTER_OPTIONS", "库", ModelDataType.ONE),
-
-	STARTERS("STARTERS", "库", ModelDataType.ONE),
-
-	STARTER_STATUS("STARTER_STATUS", "库", ModelDataType.ONE),
-
-	STARTER_LOG("STARTER_LOG", "库", ModelDataType.ONE),
-
-	APP("APP", "库", ModelDataType.ONE),
-
+	STARTERS("STARTERS", "Git工作状态", ModelDataType.LIST),
+	
 	;
 
 	public static RepositoryModelType get(String value) {

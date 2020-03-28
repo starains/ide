@@ -2,7 +2,7 @@ package com.teamide.ide.processor.repository;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.maven.MavenUtil;
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
+import com.teamide.ide.param.RepositoryProcessorParam;
 
 public class RepositoryMaven extends RepositoryBase {
 

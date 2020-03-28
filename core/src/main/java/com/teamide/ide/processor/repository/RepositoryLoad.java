@@ -5,8 +5,11 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.ide.deployer.Deploy;
+import com.teamide.ide.handler.DeployHandler;
+import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.plugin.PluginHandler;
-import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.repository.project.ProjectBean;
 import com.teamide.ide.processor.repository.project.ProjectLoader;
 import com.teamide.ide.service.impl.SpaceRepositoryOpenService;
@@ -38,10 +41,9 @@ public class RepositoryLoad extends RepositoryBase {
 
 	public JSONObject loadRepository() throws Exception {
 
-		this.param.getLog()
-				.info("load " + param.getSpace().getName() + "]版本[ " + this.param.getBranch() + "] workspace");
+		this.param.getLog().info("load " + param.getSpaceName() + "]版本[ " + this.param.getBranch() + "] workspace");
 		if (!this.param.getBranchFolder().exists()) {
-			this.param.getLog().error("库[" + param.getSpace().getName() + "]版本[ " + this.param.getBranch() + "]未创建!");
+			this.param.getLog().error("库[" + param.getSpaceName() + "]版本[ " + this.param.getBranch() + "]未创建!");
 			return null;
 		}
 		if (!this.param.getSourceFolder().exists()) {
@@ -53,7 +55,9 @@ public class RepositoryLoad extends RepositoryBase {
 		List<ProjectBean> projects = projectLoader.getProjects();
 
 		for (ProjectBean project : projects) {
-			PluginHandler.loadProject(project, param.getFile(project.getPath()));
+			ProjectParam projectParam = new ProjectParam(param, project.getPath());
+
+			PluginHandler.loadProject(projectParam, project);
 		}
 
 		result.put("projects", projects);
@@ -78,4 +82,12 @@ public class RepositoryLoad extends RepositoryBase {
 		return result;
 	}
 
+	public JSONArray loadStarters() throws Exception {
+		JSONArray res = new JSONArray();
+		List<Deploy> deploys = DeployHandler.getStarters(this.param);
+		for (Deploy deploy : deploys) {
+			res.add(deploy.getStatus());
+		}
+		return res;
+	}
 }

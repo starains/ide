@@ -9,9 +9,9 @@ import com.teamide.ide.bean.SpaceTeamBean;
 import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.enums.SpacePermission;
 import com.teamide.ide.handler.SpaceHandler;
+import com.teamide.ide.param.SpaceProcessorParam;
 import com.teamide.ide.processor.enums.SpaceModelType;
 import com.teamide.ide.processor.enums.SpaceProcessorType;
-import com.teamide.ide.processor.param.SpaceProcessorParam;
 import com.teamide.ide.service.ISpaceEventService;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.ide.service.ISpaceTeamService;
@@ -196,8 +196,8 @@ public class SpaceProcessor extends Processor {
 		JSONObject param = new JSONObject();
 		switch (modelType) {
 		case SPACE:
-			JSONObject space_format = SpaceHandler.getFormat(this.param.getSpace());
-			SpacePermission permission = SpaceHandler.getPermission(this.param.getSpace(), session);
+			JSONObject space_format = SpaceHandler.getFormat(this.param.getSpaceid());
+			SpacePermission permission = SpaceHandler.getPermission(this.param.getSpaceid(), session);
 			space_format.put("permission", permission);
 			value = space_format;
 			break;
@@ -214,8 +214,9 @@ public class SpaceProcessor extends Processor {
 			value = spaceService.queryVisibles(session, this.param.getSpaceid(), pageindex, pagesize);
 			break;
 		case STAR_SPACES:
-			if (this.param.getSpace() != null) {
-				if (SpaceHandler.isUsers(this.param.getSpace())) {
+			if (this.param.getSpaceid() != null) {
+				SpaceBean space = SpaceHandler.get(this.param.getSpaceid());
+				if (SpaceHandler.isUsers(space)) {
 					IUserService userService = new UserService();
 					UserBean user = userService.getBySpaceid(this.param.getSpaceid());
 					if (user != null) {

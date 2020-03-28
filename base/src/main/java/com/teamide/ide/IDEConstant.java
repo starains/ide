@@ -1,4 +1,4 @@
-package com.teamide.ide.constant;
+package com.teamide.ide;
 
 import java.io.File;
 

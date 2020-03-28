@@ -1,7 +1,7 @@
 package com.teamide.ide.processor;
 
 import com.teamide.ide.bean.SpaceEventBean;
-import com.teamide.ide.processor.param.ProcessorParam;
+import com.teamide.ide.param.ProcessorParam;
 import com.teamide.ide.service.impl.SpaceEventService;
 
 public class ProcessorBase {
