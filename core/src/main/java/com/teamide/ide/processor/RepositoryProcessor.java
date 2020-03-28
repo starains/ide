@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
+import com.teamide.app.plugin.ProjectAppLoader;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceRepositoryOpenBean;
 import com.teamide.ide.deployer.Deploy;
@@ -26,7 +27,6 @@ import com.teamide.ide.processor.repository.RepositoryGit;
 import com.teamide.ide.processor.repository.RepositoryLoad;
 import com.teamide.ide.processor.repository.RepositoryMaven;
 import com.teamide.ide.processor.repository.RepositoryStarter;
-import com.teamide.ide.processor.repository.project.ProjectAppLoader;
 import com.teamide.ide.processor.repository.project.ProjectLoader;
 import com.teamide.ide.service.impl.SpaceRepositoryOpenService;
 
@@ -630,10 +630,13 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 		case APP:
 			path = data.getString("path");
-			ProjectAppLoader appLoader = new ProjectAppLoader(param);
+
+			JSONObject option = param.getAppOption(path);
+
+			ProjectAppLoader appLoader = new ProjectAppLoader(param.getSourceFolder());
 			res = new JSONObject();
 			res.put("path", path);
-			res.put("app", appLoader.loadApp(path));
+			res.put("app", appLoader.loadApp(path, option));
 			value = res;
 			break;
 

@@ -26,6 +26,8 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 
 	private final File sourceFolder;
 
+	protected final String sourcePath;
+
 	private final File pomFile;
 
 	public static final String DEFAULT_BRANCH = "master";
@@ -41,6 +43,7 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		this.branchsFolder = new File(this.getSpaceFolder(), "branchs");
 		this.branchFolder = new File(this.branchsFolder, branch);
 		this.sourceFolder = new File(this.branchFolder, "source");
+		this.sourcePath = sourceFolder.toURI().getPath();
 		this.pomFile = new File(this.sourceFolder, "pom.xml");
 	}
 
@@ -234,8 +237,6 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		}
 
 		String filePath = file.toURI().getPath();
-
-		String sourcePath = getSourceFolder().toURI().getPath();
 
 		String path = filePath.substring(sourcePath.length());
 		if (path.startsWith("/")) {

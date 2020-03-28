@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.app.plugin.AppBean;
 import com.teamide.util.StringUtil;
 
 public class ProjectBean {

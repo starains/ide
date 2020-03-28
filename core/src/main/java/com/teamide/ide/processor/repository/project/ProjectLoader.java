@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.maven.model.Model;
 
+import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.repository.hanlder.RepositoryHanlder;
 import com.teamide.util.FileUtil;
@@ -101,18 +102,16 @@ public class ProjectLoader {
 
 	public ProjectBean loadProject(String path) throws Exception {
 
-		ProjectBean projectBean = getProject(path);
-		if (projectBean != null) {
-			FileBean folderBean = loadFiles(this.param.getFile(path), projectBean);
+		ProjectBean project = getProject(path);
+		if (project != null) {
+			FileBean folderBean = loadFiles(this.param.getFile(path), project);
 			if (folderBean != null) {
-				projectBean.setFiles(folderBean.getFiles());
+				project.setFiles(folderBean.getFiles());
 
 			}
-			ProjectAppLoader appLoader = new ProjectAppLoader(param);
-
-			projectBean.setApp(appLoader.loadApp(projectBean.getPath()));
+			PluginHandler.loadProject(project, param.getFile(project.getPath()));
 		}
-		return projectBean;
+		return project;
 	}
 
 	public FileBean loadFiles(File folder, ProjectBean projectBean) {
