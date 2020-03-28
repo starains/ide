@@ -3,6 +3,7 @@ package com.teamide.ide.processor.repository.project;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 
 public class ProjectBean {
@@ -15,6 +16,12 @@ public class ProjectBean {
 	private List<FileBean> files = new ArrayList<FileBean>();
 
 	private AppBean app;
+
+	private final JSONObject attribute = new JSONObject();
+
+	public void setAttribute(String key, JSONObject value) {
+		attribute.put(key, value);
+	}
 
 	public AppBean getApp() {
 		return app;

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.processor.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.repository.project.ProjectAppLoader;
 import com.teamide.ide.processor.repository.project.ProjectBean;
@@ -54,6 +55,7 @@ public class RepositoryLoad extends RepositoryBase {
 
 		ProjectAppLoader appLoader = new ProjectAppLoader(param);
 		for (ProjectBean project : projects) {
+			PluginHandler.loadProject(project, param.getFile(project.getPath()));
 			project.setApp(appLoader.loadApp(project.getPath()));
 		}
 

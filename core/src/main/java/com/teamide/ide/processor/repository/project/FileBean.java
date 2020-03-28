@@ -2,6 +2,8 @@ package com.teamide.ide.processor.repository.project;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
+
 public class FileBean {
 
 	private String name;
@@ -14,6 +16,12 @@ public class FileBean {
 	private String content;
 	private String errmsg;
 	private List<FileBean> files;
+
+	private final JSONObject attribute = new JSONObject();
+
+	public void setAttribute(String key, JSONObject value) {
+		attribute.put(key, value);
+	}
 
 	public String getErrmsg() {
 		return errmsg;
