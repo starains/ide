@@ -13,11 +13,13 @@ import com.teamide.ide.plugin.PluginParam;
 import com.teamide.ide.processor.WorkspaceProcessor;
 import com.teamide.util.StringUtil;
 
-public class EventHandler {
+public class PluginEventHandler {
+
+	public static String PATH_PREFIX = "/api/plugin/event/";
 
 	public void handle(String path, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		if (path.startsWith("/api/event/")) {
-			path = path.substring("/api/event/".length());
+		if (path.startsWith(PATH_PREFIX)) {
+			path = path.substring(PATH_PREFIX.length());
 		}
 		String[] keys = path.split("/");
 		String name = null;
@@ -38,8 +40,8 @@ public class EventHandler {
 			token = keys[3];
 		}
 		if (keys.length > 4) {
-			projectPath = keys[4].replace("project-", "");
-
+			projectPath = path.substring((name + "/" + version + "/" + event + "/" + token + "/").length());
+			projectPath = projectPath.substring(1);
 		}
 		if (StringUtil.isEmpty(name)) {
 			throw new Exception("name is null.");

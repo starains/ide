@@ -57,7 +57,8 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		}
 		space = SpaceHandler.get(space.getId());
 		JSONObject formatSpace = SpaceHandler.getFormat(space);
-		SpaceProcessorParam param = new SpaceProcessorParam(session, space.getId(), formatSpace);
+		File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
+		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceRootFolder, formatSpace);
 		if (!param.getSpaceFolder().exists()) {
 			param.getSpaceFolder().mkdirs();
 		}
@@ -445,7 +446,8 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 			throw new Exception("空间数据不存在！");
 		}
 		JSONObject formatSpace = SpaceHandler.getFormat(space);
-		SpaceProcessorParam processorParam = new SpaceProcessorParam(session, space.getId(), formatSpace);
+		File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
+		SpaceProcessorParam processorParam = new SpaceProcessorParam(session, spaceRootFolder, formatSpace);
 
 		if (processorParam.getSpaceFolder().exists()) {
 			FileUtils.deleteDirectory(processorParam.getSpaceFolder());
@@ -463,7 +465,8 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 			throw new Exception("空间数据不存在！");
 		}
 		JSONObject formatSpace = SpaceHandler.getFormat(space);
-		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceid, formatSpace);
+		File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
+		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceRootFolder, formatSpace);
 		File parentFolder = param.getSpaceFolder().getParentFile();
 		if (new File(parentFolder, name).exists()) {
 			throw new Exception("名称【" + name + "】已存在！");

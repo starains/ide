@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.ide.IDEConstant;
+import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.param.ProjectParam;
 import com.teamide.ide.processor.param.ProjectOption;
 import com.teamide.ide.processor.repository.project.FileBean;
@@ -116,10 +116,46 @@ public class PluginHandler {
 		return ENUM_MAP;
 	}
 
+	public static List<IDEResource> getResources() {
+
+		List<IDEResource> resources = new ArrayList<IDEResource>();
+
+		List<IDEPlugin> plugins = getPlugins();
+
+		for (IDEPlugin plugin : plugins) {
+			if (plugin == null) {
+				continue;
+			}
+			List<IDEResource> list = plugin.getResources();
+			if (list != null) {
+				resources.addAll(list);
+			}
+		}
+		return resources;
+	}
+
+	public static List<IDEContextmenu> getContextmenus() {
+
+		List<IDEContextmenu> contextmenus = new ArrayList<IDEContextmenu>();
+
+		List<IDEPlugin> plugins = getPlugins();
+
+		for (IDEPlugin plugin : plugins) {
+			if (plugin == null) {
+				continue;
+			}
+			List<IDEContextmenu> list = plugin.getContextmenus();
+			if (list != null) {
+				contextmenus.addAll(list);
+			}
+		}
+		return contextmenus;
+	}
+
 	public static PluginParam getParam(ProjectParam param, IDEPlugin plugin) {
 		ProjectOption projectOption = new ProjectOption(param);
 		JSONObject option = new JSONObject();
-		if (StringUtil.isEmpty(plugin.getOptionType())) {
+		if (StringUtil.isNotEmpty(plugin.getOptionType())) {
 			try {
 				option = projectOption.getOptionByType(plugin.getOptionType());
 			} catch (Exception e) {
@@ -136,10 +172,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 
 			PluginParam pluginParam = getParam(param, plugin);
 			Object value = listener.onLoad(pluginParam, project.getPath());
@@ -153,10 +189,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 			JSONObject data = new JSONObject();
 
 			PluginParam pluginParam = getParam(param, plugin);
@@ -172,10 +208,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 
 			PluginParam pluginParam = getParam(param, plugin);
 			listener.onCreateFile(pluginParam, file);
@@ -187,10 +223,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 			PluginParam pluginParam = getParam(param, plugin);
 			listener.onCreateFile(pluginParam, folder);
 		}
@@ -201,10 +237,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 			PluginParam pluginParam = getParam(param, plugin);
 			listener.onUpdateFile(pluginParam, file);
 		}
@@ -215,10 +251,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 			PluginParam pluginParam = getParam(param, plugin);
 			listener.onDeleteFile(pluginParam, file);
 		}
@@ -229,10 +265,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 			PluginParam pluginParam = getParam(param, plugin);
 			listener.onDeleteFolder(pluginParam, folder);
 		}
@@ -243,10 +279,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 			PluginParam pluginParam = getParam(param, plugin);
 			listener.onRenameFile(pluginParam, oldFile, newFile);
 		}
@@ -257,10 +293,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 			PluginParam pluginParam = getParam(param, plugin);
 			listener.onRenameFolder(pluginParam, oldFolder, newFolder);
 		}
@@ -271,10 +307,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 			PluginParam pluginParam = getParam(param, plugin);
 			listener.onMoveFile(pluginParam, oldFile, newFile);
 		}
@@ -285,10 +321,10 @@ public class PluginHandler {
 		List<IDEPlugin> plugins = getPlugins();
 
 		for (IDEPlugin plugin : plugins) {
-			if (plugin == null || plugin.getRepositoryProjectListener() == null) {
+			if (plugin == null || plugin.getProjectListener() == null) {
 				continue;
 			}
-			IDERepositoryProjectListener listener = plugin.getRepositoryProjectListener();
+			IDERepositoryProjectListener listener = plugin.getProjectListener();
 			PluginParam pluginParam = getParam(param, plugin);
 			listener.onMoveFolder(pluginParam, oldFolder, newFolder);
 		}

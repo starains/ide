@@ -14,7 +14,7 @@ public class RepositoryStarter extends RepositoryBase {
 
 	public JSONObject deploy(String path, JSONObject option) throws Exception {
 
-		this.param.getLog().info("starter deploy,  path:" + path);
+		this.getLog().info("starter deploy,  path:" + path);
 
 		String token = DeployHandler.deploy(this.param, path, option.getString("name"));
 		JSONObject result = new JSONObject();
@@ -24,7 +24,7 @@ public class RepositoryStarter extends RepositoryBase {
 
 	public JSONObject deploy(String token) throws Exception {
 
-		this.param.getLog().info("starter deploy,  token:" + token);
+		this.getLog().info("starter deploy,  token:" + token);
 
 		DeployHandler.deploy(token);
 		JSONObject result = new JSONObject();
@@ -33,7 +33,7 @@ public class RepositoryStarter extends RepositoryBase {
 
 	public JSONObject stop(String token) throws Exception {
 
-		this.param.getLog().info("starter stop,  token:" + token);
+		this.getLog().info("starter stop,  token:" + token);
 		Deploy deploy = DeployHandler.get(token);
 
 		if (deploy != null) {
@@ -45,7 +45,7 @@ public class RepositoryStarter extends RepositoryBase {
 
 	public JSONObject start(String token) throws Exception {
 
-		this.param.getLog().info("starter start,  token:" + token);
+		this.getLog().info("starter start,  token:" + token);
 
 		Deploy deploy = DeployHandler.get(token);
 
@@ -69,7 +69,7 @@ public class RepositoryStarter extends RepositoryBase {
 
 	public JSONObject remove(String token) throws Exception {
 
-		this.param.getLog().info("starter remove,  token:" + token);
+		this.getLog().info("starter remove,  token:" + token);
 
 		new Thread() {
 
@@ -90,7 +90,7 @@ public class RepositoryStarter extends RepositoryBase {
 
 	public JSONObject logClean(String token) throws Exception {
 
-		this.param.getLog().info("starter log clean,  token:" + token);
+		this.getLog().info("starter log clean,  token:" + token);
 		Deploy deploy = DeployHandler.get(token);
 
 		if (deploy != null) {

@@ -1,5 +1,6 @@
 package com.teamide.ide.handler;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,7 @@ import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.SpaceTeamBean;
 import com.teamide.ide.bean.UserBean;
+import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.enums.PublicType;
 import com.teamide.ide.enums.SpacePermission;
 import com.teamide.ide.enums.SpaceTeamType;
@@ -151,6 +153,11 @@ public class SpaceHandler {
 		result.put("root", root);
 		result.put("servletpath", servletpath);
 		return result;
+	}
+
+	public static File getSpaceRootFolder() {
+		File spaceRootFolder = new File(IDEConstant.SPACE_FOLDER);
+		return spaceRootFolder;
 	}
 
 	public static SpacePermission getPermission(String spaceid, ClientSession session) {

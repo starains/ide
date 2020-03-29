@@ -16,6 +16,7 @@ import com.teamide.ide.param.ProjectParam;
 import com.teamide.ide.processor.enums.ProjectModelType;
 import com.teamide.ide.processor.enums.ProjectProcessorType;
 import com.teamide.ide.processor.param.ProjectOption;
+import com.teamide.ide.processor.repository.RepositoryBase;
 import com.teamide.ide.processor.repository.RepositoryFile;
 import com.teamide.ide.processor.repository.RepositoryMaven;
 import com.teamide.ide.processor.repository.RepositoryStarter;
@@ -245,13 +246,12 @@ public class ProjectProcessor extends RepositoryProcessor {
 		Object value = null;
 		switch (modelType) {
 		case PROJECT:
-			String path = data.getString("path");
 			ProjectLoader loader = new ProjectLoader(param);
-			value = loader.loadProject(path);
+			value = loader.loadProject(param.getProjectPath());
 
 			break;
 		case FILE:
-			path = data.getString("path");
+			String path = data.getString("path");
 			value = new ProjectLoader(param).readFile(path);
 
 			break;
@@ -282,7 +282,7 @@ public class ProjectProcessor extends RepositoryProcessor {
 					res = new JSONObject();
 				}
 			} else {
-				res = param.getLog().read(start, end, timestamp);
+				res = new RepositoryBase(param).getLog().read(start, end, timestamp);
 			}
 			res.put("token", token);
 			res.put("start", start);
@@ -291,6 +291,11 @@ public class ProjectProcessor extends RepositoryProcessor {
 			value = res;
 			break;
 
+		case PLUGIN_OPTION:
+			String type = data.getString("type");
+			value = new ProjectOption(this.param).getOptionByType(type);
+
+			break;
 		}
 		return value;
 	}

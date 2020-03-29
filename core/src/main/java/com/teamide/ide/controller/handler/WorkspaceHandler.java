@@ -45,7 +45,8 @@ public class WorkspaceHandler {
 			token = keys[2];
 		}
 		if (keys.length > 3) {
-			projectPath = keys[3].replace("project-", "");
+			projectPath = path.substring((work + "/" + type + "/" + token + "/").length());
+			projectPath = projectPath.substring(1);
 		}
 		if (StringUtil.isEmpty(work)) {
 			throw new Exception("work is null.");

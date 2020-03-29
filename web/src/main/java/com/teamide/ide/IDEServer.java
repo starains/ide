@@ -24,7 +24,8 @@ import org.apache.tomcat.websocket.server.WsSci;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.ide.IDEConf.Server;
+import com.teamide.ide.constant.IDEConstant;
+import com.teamide.ide.constant.IDEConf.Server;
 import com.teamide.ide.controller.RootController;
 import com.teamide.ide.listener.SessionListener;
 import com.teamide.ide.websocket.WebSocketServer;

@@ -1,5 +1,7 @@
 package com.teamide.ide.param;
 
+import java.io.File;
+
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
 
@@ -14,9 +16,9 @@ public class ProjectParam extends RepositoryProcessorParam {
 
 	}
 
-	public ProjectParam(ClientSession session, String spaceid, JSONObject formatSpace, String branch,
+	public ProjectParam(ClientSession session, File spaceRootFolder, JSONObject formatSpace, String branch,
 			String projectPath) {
-		super(session, spaceid, formatSpace, branch);
+		super(session, spaceRootFolder, formatSpace, branch);
 
 		this.projectPath = projectPath;
 

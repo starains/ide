@@ -26,18 +26,18 @@ public class RepositoryBuild extends RepositoryBase {
 
 			File jarDir = new File(this.param.getTargetFolder(projectPath), "lib");
 
-			this.param.getLog().info("compiler path " + path);
-			this.param.getLog().info("compiler sourceDir " + sourceDir);
-			this.param.getLog().info("compiler targetDir " + targetDir);
-			this.param.getLog().info("compiler jarDir " + jarDir);
+			this.getLog().info("compiler path " + path);
+			this.getLog().info("compiler sourceDir " + sourceDir);
+			this.getLog().info("compiler targetDir " + targetDir);
+			this.getLog().info("compiler jarDir " + jarDir);
 			CompilerHelper compilerHelper = new CompilerHelper(sourceDir, targetDir, jarDir);
 			if (!compilerHelper.compile(path)) {
-				this.param.getLog().error(path + "编译失败");
+				this.getLog().error(path + "编译失败");
 				for (Diagnostic<?> diagnostic : compilerHelper.getDiagnostic().getDiagnostics()) {
-					this.param.getLog().error(diagnostic.getMessage(null));
+					this.getLog().error(diagnostic.getMessage(null));
 				}
 			} else {
-				this.param.getLog().info(path + "编译成功");
+				this.getLog().info(path + "编译成功");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -44,7 +44,8 @@ public class DeployParam {
 		if (!StringUtil.isEmpty(spaceid)) {
 			SpaceBean space = SpaceHandler.get(spaceid);
 			JSONObject formatSpace = SpaceHandler.getFormat(space);
-			RepositoryProcessorParam param = new RepositoryProcessorParam(null, spaceid, formatSpace, branch);
+			File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
+			RepositoryProcessorParam param = new RepositoryProcessorParam(null, spaceRootFolder, formatSpace, branch);
 			projectFolder = param.getFile(path);
 		}
 		this.projectFolder = projectFolder;

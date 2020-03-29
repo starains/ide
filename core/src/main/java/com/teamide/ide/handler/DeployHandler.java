@@ -10,7 +10,7 @@ import com.teamide.util.FileUtil;
 import com.teamide.util.IDGenerateUtil;
 import com.teamide.util.StringUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.ide.IDEConstant;
+import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.deployer.LocalDeploy;
 import com.teamide.ide.deployer.RemoteDeploy;

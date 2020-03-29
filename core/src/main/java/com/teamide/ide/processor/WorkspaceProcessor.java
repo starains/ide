@@ -1,5 +1,7 @@
 package com.teamide.ide.processor;
 
+import java.io.File;
+
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceBean;
@@ -31,20 +33,21 @@ public class WorkspaceProcessor {
 			SpaceBean space = SpaceHandler.get(spaceid);
 			JSONObject formatSpace = SpaceHandler.getFormat(space);
 			if (space != null) {
+				File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
 				if (SpaceHandler.isRepositorys(space)) {
 					branch = json.getString("branch");
 					if (StringUtil.isEmpty(branch)) {
 						branch = "master";
 					}
 					if (projectPath == null) {
-						param = new RepositoryProcessorParam(session, spaceid, formatSpace, branch);
+						param = new RepositoryProcessorParam(session, spaceRootFolder, formatSpace, branch);
 						processor = new RepositoryProcessor((RepositoryProcessorParam) param);
 					} else {
-						param = new ProjectParam(session, spaceid, formatSpace, branch, projectPath);
+						param = new ProjectParam(session, spaceRootFolder, formatSpace, branch, projectPath);
 						processor = new ProjectProcessor((ProjectParam) param);
 					}
 				} else {
-					param = new SpaceProcessorParam(session, spaceid, formatSpace);
+					param = new SpaceProcessorParam(session, spaceRootFolder, formatSpace);
 					processor = new SpaceProcessor((SpaceProcessorParam) param);
 				}
 			}

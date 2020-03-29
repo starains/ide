@@ -8,7 +8,7 @@ import java.util.Properties;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.db.bean.Database;
-import com.teamide.ide.IDEConstant;
+import com.teamide.ide.constant.IDEConstant;
 import com.teamide.util.StringUtil;
 
 public class IDEOptions {

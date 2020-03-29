@@ -34,6 +34,10 @@
 					<el-form-item class label="显示SQL" prop="showsql">
 					  <el-switch v-model="form.showsql" @change="change($event,'showsql')"></el-switch>
 					</el-form-item>
+					<el-form-item class label="拼接库名" prop="mustbringname">
+					  <el-switch v-model="form.mustbringname" autocomplete="off" @change="change($event,'mustbringname')" ></el-switch>
+					  <span class="color-grey-4">如果选中生产的SQL语句将拼接库名称</span>
+					</el-form-item>
 					<el-form-item class label="initialsize" prop="initialsize">
 					  <el-input type="text" v-model="form.initialsize" autocomplete="off" @change="change($event,'initialsize')"></el-input>
 					</el-form-item>

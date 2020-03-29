@@ -9,7 +9,6 @@ import java.util.Properties;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.IOUtil;
 import com.teamide.util.StringUtil;
-import com.teamide.LogTool;
 import com.teamide.client.ClientSession;
 
 public class RepositoryProcessorParam extends SpaceProcessorParam {
@@ -29,11 +28,12 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 	public static final String DEFAULT_BRANCH = "master";
 
 	public RepositoryProcessorParam(RepositoryProcessorParam param) {
-		this(param.getSession(), param.getSpaceid(), param.getFormatSpace(), param.getBranch());
+		this(param.getSession(), param.getSpaceRootFolder(), param.getFormatSpace(), param.getBranch());
 	}
 
-	public RepositoryProcessorParam(ClientSession session, String spaceid, JSONObject formatSpace, String branch) {
-		super(session, spaceid, formatSpace);
+	public RepositoryProcessorParam(ClientSession session, File spaceRootFolder, JSONObject formatSpace,
+			String branch) {
+		super(session, spaceRootFolder, formatSpace);
 
 		if (StringUtil.isEmpty(branch)) {
 			branch = DEFAULT_BRANCH;
@@ -49,16 +49,6 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 
 	public String getMavenHome(String path) {
 		return null;
-	}
-
-	public LogTool getLog() {
-
-		return LogTool.get(getLogName(), getLogFolder());
-	}
-
-	public LogTool getDeployerLog(String token) {
-
-		return LogTool.get(getDeployerLogName(token), getDeployerLogFolder());
 	}
 
 	public String getDeployerLogName(String token) {

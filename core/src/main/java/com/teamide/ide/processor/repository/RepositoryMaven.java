@@ -13,49 +13,49 @@ public class RepositoryMaven extends RepositoryBase {
 
 	public JSONObject clean(String path) throws Exception {
 
-		this.param.getLog().info("maven clean,  path:" + path);
+		this.getLog().info("maven clean,  path:" + path);
 
 		MavenUtil mavenUtil = new MavenUtil(this.param.getMavenHome(path));
-		mavenUtil.doClean(this.param.getFile(path), null, this.param.getLog());
+		mavenUtil.doClean(this.param.getFile(path), null, this.getLog());
 		return null;
 	}
 
 	public JSONObject doCompile(String path) throws Exception {
 
-		this.param.getLog().info("maven compile,  path:" + path);
+		this.getLog().info("maven compile,  path:" + path);
 
 		MavenUtil mavenUtil = new MavenUtil(this.param.getMavenHome(path));
-		mavenUtil.doCompile(this.param.getFile(path), null, this.param.getLog());
+		mavenUtil.doCompile(this.param.getFile(path), null, this.getLog());
 
 		return null;
 	}
 
 	public JSONObject doPackage(String path) throws Exception {
 
-		this.param.getLog().info("maven package,  path:" + path);
+		this.getLog().info("maven package,  path:" + path);
 
 		MavenUtil mavenUtil = new MavenUtil(this.param.getMavenHome(path));
-		mavenUtil.doPackage(this.param.getFile(path), null, this.param.getLog());
+		mavenUtil.doPackage(this.param.getFile(path), null, this.getLog());
 
 		return null;
 	}
 
 	public JSONObject install(String path) throws Exception {
 
-		this.param.getLog().info("maven install,  path:" + path);
+		this.getLog().info("maven install,  path:" + path);
 
 		MavenUtil mavenUtil = new MavenUtil(this.param.getMavenHome(path));
-		mavenUtil.doInstall(this.param.getFile(path), null, this.param.getLog());
+		mavenUtil.doInstall(this.param.getFile(path), null, this.getLog());
 
 		return null;
 	}
 
 	public JSONObject deploy(String path) throws Exception {
 
-		this.param.getLog().info("maven deploy,  path:" + path);
+		this.getLog().info("maven deploy,  path:" + path);
 
 		MavenUtil mavenUtil = new MavenUtil(this.param.getMavenHome(path));
-		mavenUtil.doDeploy(this.param.getFile(path), null, this.param.getLog());
+		mavenUtil.doDeploy(this.param.getFile(path), null, this.getLog());
 
 		return null;
 	}

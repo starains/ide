@@ -103,6 +103,11 @@ public class PluginLoader {
 		return plugin;
 	}
 
+	public InputStream load(String name) {
+		init();
+		return ResourceUtil.load(classLoader, name);
+	}
+
 	public File getJarFile() {
 		return jarFile;
 	}

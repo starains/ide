@@ -54,6 +54,8 @@ public class DataHandler {
 				IDEConfigure configure = IDEConfigure.get();
 				JSONObject CONFIGURE = (JSONObject) JSONObject.toJSON(configure);
 				data.put("CONFIGURE", CONFIGURE);
+
+				data.put("plugins", PluginHandler.getPlugins());
 			}
 
 			if (installed) {

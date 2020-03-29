@@ -4,7 +4,7 @@ import java.io.File;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
-import com.teamide.ide.IDEConstant;
+import com.teamide.util.StringUtil;
 
 public class SpaceProcessorParam extends ProcessorParam {
 
@@ -14,20 +14,29 @@ public class SpaceProcessorParam extends ProcessorParam {
 
 	private final File spaceFolder;
 
+	private final File spaceRootFolder;
+
 	public SpaceProcessorParam(RepositoryProcessorParam param) {
-		this(param.getSession(), param.getSpaceid(), param.getFormatSpace());
+		this(param.getSession(), param.getSpaceRootFolder(), param.getFormatSpace());
 	}
 
-	public SpaceProcessorParam(ClientSession session, String spaceid, JSONObject formatSpace) {
+	public SpaceProcessorParam(ClientSession session, File spaceRootFolder, JSONObject formatSpace) {
 		super(session);
-		this.spaceid = spaceid;
-		this.formatSpace = formatSpace;
-		String root = "";
-		if (this.formatSpace != null) {
-			root = this.formatSpace.getString("root");
+		if (formatSpace == null) {
+			throw new RuntimeException("space is null.");
 		}
+		this.formatSpace = formatSpace;
+		this.spaceid = this.formatSpace.getString("id");
+		String root = this.formatSpace.getString("root");
 
-		this.spaceFolder = new File(IDEConstant.SPACE_FOLDER, root);
+		if (StringUtil.isEmpty(this.spaceid)) {
+			throw new RuntimeException("space spaceid is null.");
+		}
+		if (StringUtil.isEmpty(root)) {
+			throw new RuntimeException("space root is null.");
+		}
+		this.spaceRootFolder = spaceRootFolder;
+		this.spaceFolder = new File(spaceRootFolder, root);
 	}
 
 	public String getSpaceid() {
@@ -44,6 +53,10 @@ public class SpaceProcessorParam extends ProcessorParam {
 
 	public File getSpaceFolder() {
 		return spaceFolder;
+	}
+
+	public File getSpaceRootFolder() {
+		return spaceRootFolder;
 	}
 
 	public JSONObject getFormatSpace() {

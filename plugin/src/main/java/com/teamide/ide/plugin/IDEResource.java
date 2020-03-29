@@ -4,7 +4,16 @@ public class IDEResource {
 
 	public IDEResourceType type;
 
-	public String path;
+	public String name;
+
+	public IDEResource() {
+
+	}
+
+	public IDEResource(IDEResourceType type, String name) {
+		this.type = type;
+		this.name = name;
+	}
 
 	public IDEResourceType getType() {
 		return type;
@@ -14,12 +23,12 @@ public class IDEResource {
 		this.type = type;
 	}
 
-	public String getPath() {
-		return path;
+	public String getName() {
+		return name;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

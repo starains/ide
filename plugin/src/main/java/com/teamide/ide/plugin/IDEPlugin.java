@@ -6,11 +6,15 @@ import com.alibaba.fastjson.JSONObject;
 
 public interface IDEPlugin {
 
+	public String getText();
+
 	public String getName();
 
 	public String getVersion();
 
 	public String getOptionType();
+
+	public List<IDEInput> getOptionInputs();
 
 	public String getProjectAttributeName();
 
@@ -28,6 +32,6 @@ public interface IDEPlugin {
 
 	public IDERepositoryListener getRepositoryListener();
 
-	public IDERepositoryProjectListener getRepositoryProjectListener();
+	public IDERepositoryProjectListener getProjectListener();
 
 }

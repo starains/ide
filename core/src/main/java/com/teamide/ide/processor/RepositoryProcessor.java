@@ -13,6 +13,7 @@ import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.enums.RepositoryModelType;
 import com.teamide.ide.processor.enums.RepositoryProcessorType;
 import com.teamide.ide.processor.param.RepositoryOption;
+import com.teamide.ide.processor.repository.RepositoryBase;
 import com.teamide.ide.processor.repository.RepositoryCreate;
 import com.teamide.ide.processor.repository.RepositoryGit;
 import com.teamide.ide.processor.repository.RepositoryLoad;
@@ -287,7 +288,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			if (!StringUtil.isEmpty(token) && !"0".equals(token)) {
 				new RepositoryStarter(param).logClean(token);
 			} else {
-				param.getLog().clean();
+				new RepositoryBase(param).getLog().clean();
 			}
 
 			value = 0;

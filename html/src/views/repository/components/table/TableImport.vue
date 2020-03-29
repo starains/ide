@@ -73,11 +73,12 @@ export default {
     };
   },
   methods: {
-    show(app, data) {
-      return this.showForm(app, data);
+    show(app, data, project) {
+      return this.showForm(app, data, project);
     },
-    showForm(app, data) {
+    showForm(app, data, project) {
       data = data || {};
+      this.project = project;
       this.app = app;
       this.databasename = data.databasename;
       this.parent = data.parent;
@@ -110,12 +111,16 @@ export default {
     },
     doImport(table) {
       table.find = true;
-      source.server
-        .event("app.plugin", "1.0", "toText", {
-          type: "table",
-          model: table,
-          filename: table.name
-        })
+      source.plugin.app
+        .event(
+          "toText",
+          {
+            type: "table",
+            model: table,
+            filename: table.name
+          },
+          this.project
+        )
         .then(result => {
           let file = {
             parentPath: this.parent.path,
@@ -135,7 +140,7 @@ export default {
             content: result
           };
 
-          source.do("FILE_CREATE", date).then(res => {
+          source.do("FILE_CREATE", date, this.project).then(res => {
             if (res.errcode == 0) {
               if (file.parent) {
                 source.sortFolderFiles(file.parent);
@@ -155,7 +160,7 @@ export default {
       data.name = this.databasename;
       this.loading = true;
       coos.trimArray(this.tables);
-      source.server.event("app.plugin", "1.0", "doTest", data).then(result => {
+      source.plugin.app.event("doTest", data, this.project).then(result => {
         var value = result.value || [];
         value.forEach(table => {
           table.find = false;

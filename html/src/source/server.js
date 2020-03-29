@@ -44,6 +44,12 @@
                     });
                     source.CONFIGURE = value.CONFIGURE || {};
 
+                    if (value.plugins) {
+                        value.plugins.forEach(plugin => {
+                            source.plugin.init(plugin);
+                        });
+                    }
+
                     if (!check) {
                         source.data = {};
                         if (value.ENUM_MAP && value.ENUM_MAP.MODEL_TYPE) {
@@ -72,7 +78,7 @@
                 data = data || {};
                 let action = '/api/workspace/load/' + type + '/' + source.token;
                 if (project) {
-                    action += '/project-' + project.path;
+                    action += '/-' + project.path;
                 }
                 source.server.post(action, JSON.stringify(data)).then(res => {
                     source.onData(type, res);
@@ -84,15 +90,15 @@
             data = data || {};
             let action = '/api/workspace/do/' + type + '/' + source.token;
             if (project) {
-                action += '/project-' + project.path;
+                action += '/-' + project.path;
             }
             return source.server.post(action, JSON.stringify(data));
         },
         event(name, version, type, data, project) {
             data = data || {};
-            let action = '/api/event/' + name + '/' + version + '/' + type + '/' + source.token;
+            let action = '/api/plugin/event/' + name + '/' + version + '/' + type + '/' + source.token;
             if (project) {
-                action += '/project-' + project.path;
+                action += '/-' + project.path;
             }
             return source.server.post(action, JSON.stringify(data));
         },

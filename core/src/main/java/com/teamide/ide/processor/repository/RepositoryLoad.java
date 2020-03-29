@@ -41,9 +41,9 @@ public class RepositoryLoad extends RepositoryBase {
 
 	public JSONObject loadRepository() throws Exception {
 
-		this.param.getLog().info("load " + param.getSpaceName() + "]版本[ " + this.param.getBranch() + "] workspace");
+		this.getLog().info("load " + param.getSpaceName() + "]版本[ " + this.param.getBranch() + "] workspace");
 		if (!this.param.getBranchFolder().exists()) {
-			this.param.getLog().error("库[" + param.getSpaceName() + "]版本[ " + this.param.getBranch() + "]未创建!");
+			this.getLog().error("库[" + param.getSpaceName() + "]版本[ " + this.param.getBranch() + "]未创建!");
 			return null;
 		}
 		if (!this.param.getSourceFolder().exists()) {

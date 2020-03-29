@@ -9,6 +9,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.teamide.ide.plugin.IDEPlugin;
+import com.teamide.ide.plugin.IDEResource;
+import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.util.IOUtil;
 import com.teamide.util.RequestUtil;
 import com.teamide.util.ResponseUtil;
@@ -132,6 +135,33 @@ public class ResourcesHandler {
 				css.add("resources/coos/css/page.editor.css?v=" + VERSION);
 				js.add("resources/coos/js/page.editor.js?v=" + VERSION);
 			}
+
+			List<IDEPlugin> plugins = PluginHandler.getPlugins();
+
+			for (IDEPlugin plugin : plugins) {
+				if (plugin == null || plugin.getResources() == null) {
+					continue;
+				}
+				List<IDEResource> resources = plugin.getResources();
+				for (IDEResource resource : resources) {
+					if (resource == null || resource.getType() == null || StringUtil.isEmpty(resource.getName())) {
+						continue;
+					}
+					String url = PluginResourcesHandler.PATH_PREFIX;
+					url += plugin.getName() + "/" + plugin.getVersion() + "/";
+					url += resource.getName();
+					url += "?v=" + VERSION;
+					switch (resource.getType()) {
+					case CSS:
+						css.add(url);
+						break;
+					case JS:
+						js.add(url);
+						break;
+					}
+				}
+			}
+
 			StringBuffer content = new StringBuffer();
 			writelnCSS(request, content, css);
 			writelnJS(request, content, js);

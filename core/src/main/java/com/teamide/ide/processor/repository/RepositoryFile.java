@@ -18,7 +18,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.Status;
-import com.teamide.ide.IDEConstant;
+import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.param.ProjectParam;
 import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.util.ZipUtil;
@@ -76,7 +76,7 @@ public class RepositoryFile extends RepositoryBase {
 
 	public File paste(final String path, final String source) throws Exception {
 
-		this.param.getLog().info("file paste,  path:" + path + ",  source:" + source);
+		this.getLog().info("file paste,  path:" + path + ",  source:" + source);
 		File sourceFile = this.param.getFile(source);
 		if (!sourceFile.exists()) {
 			throw new Exception("源文件不存在！");
@@ -125,7 +125,7 @@ public class RepositoryFile extends RepositoryBase {
 
 	public File save(final String path, String content) throws Exception {
 
-		this.param.getLog().info("file save,  path:" + path);
+		this.getLog().info("file save,  path:" + path);
 
 		if (content == null) {
 			content = "";
@@ -141,7 +141,7 @@ public class RepositoryFile extends RepositoryBase {
 
 	public File rename(final String path, final String name, JSONObject model) throws Exception {
 
-		this.param.getLog().info("file rename,  path:" + path + ",  name:" + name);
+		this.getLog().info("file rename,  path:" + path + ",  name:" + name);
 		if (StringUtil.isEmpty(name)) {
 			throw new Exception("文件名称不能为空！");
 		}
@@ -208,7 +208,7 @@ public class RepositoryFile extends RepositoryBase {
 
 	public File create(final String parentPath, String name, boolean isFile, String content) throws Exception {
 
-		this.param.getLog().info("file create,  parentPath:" + parentPath + ",  name:" + name);
+		this.getLog().info("file create,  parentPath:" + parentPath + ",  name:" + name);
 		String path = parentPath + "/" + name;
 		if (StringUtil.isEmpty(parentPath)) {
 			path = name;
@@ -254,7 +254,7 @@ public class RepositoryFile extends RepositoryBase {
 
 	public File delete(final String path) throws Exception {
 
-		this.param.getLog().info("file delete,  path:" + path);
+		this.getLog().info("file delete,  path:" + path);
 
 		File file = this.param.getFile(path);
 		if (!this.param.sourceContains(file)) {
@@ -274,7 +274,7 @@ public class RepositoryFile extends RepositoryBase {
 
 	public File move(final String path, final String to, JSONObject model) throws Exception {
 
-		this.param.getLog().info("file move,  path:" + path + ",  to:" + to);
+		this.getLog().info("file move,  path:" + path + ",  to:" + to);
 
 		File file = this.param.getFile(path);
 		if (!this.param.sourceContains(file)) {

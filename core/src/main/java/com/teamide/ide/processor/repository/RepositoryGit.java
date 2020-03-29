@@ -111,7 +111,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject load() throws Exception {
 
-		this.param.getLog().info("git load");
+		this.getLog().info("git load");
 
 		JSONObject result = new JSONObject();
 		result.put("certificate", loadCertificateOption());
@@ -217,7 +217,7 @@ public class RepositoryGit extends RepositoryBase {
 	public JSONObject clone(String uri, String branch, String remote, String username, String password)
 			throws Exception {
 
-		this.param.getLog().info("git clone");
+		this.getLog().info("git clone");
 
 		JSONObject result = new JSONObject();
 		worker.clone(uri, branch, remote, getCredentialsProvider(username, password));
@@ -226,7 +226,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject remoteSetUrl(String name, String uri) throws Exception {
 
-		this.param.getLog().info("git remote set url, name:" + name + ", url:" + uri);
+		this.getLog().info("git remote set url, name:" + name + ", url:" + uri);
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
 			result.put("findGit", false);
@@ -241,7 +241,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject remoteAdd(String name, String uri) throws Exception {
 
-		this.param.getLog().info("git remote add, name:" + name + ", url:" + uri);
+		this.getLog().info("git remote add, name:" + name + ", url:" + uri);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -256,7 +256,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject remoteRemove(String name) throws Exception {
 
-		this.param.getLog().info("git remote remove, name:" + name);
+		this.getLog().info("git remote remove, name:" + name);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -286,7 +286,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject branchCreate(String name, String startPoint) throws Exception {
 
-		this.param.getLog().info("git branch create, name:" + name + ", startPoint:" + startPoint);
+		this.getLog().info("git branch create, name:" + name + ", startPoint:" + startPoint);
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
 			result.put("findGit", false);
@@ -301,7 +301,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject branchDelete(String... branchnames) throws Exception {
 
-		this.param.getLog().info("git branch delete, names:" + branchnames);
+		this.getLog().info("git branch delete, names:" + branchnames);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -317,7 +317,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject branchRename(String oldName, String newName) throws Exception {
 
-		this.param.getLog().info("git branch rename, oldName:" + oldName + ", newName:" + newName);
+		this.getLog().info("git branch rename, oldName:" + oldName + ", newName:" + newName);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -347,7 +347,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject checkout(String branch, String startPoint) throws Exception {
 
-		this.param.getLog().info("git checkout, branch:" + branch + ", startPoint:" + startPoint);
+		this.getLog().info("git checkout, branch:" + branch + ", startPoint:" + startPoint);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -363,7 +363,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject add(String filepattern) throws Exception {
 
-		this.param.getLog().info("git add, filepattern:" + filepattern);
+		this.getLog().info("git add, filepattern:" + filepattern);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -383,7 +383,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject rm(String filepattern) throws Exception {
 
-		this.param.getLog().info("git rm, filepattern:" + filepattern);
+		this.getLog().info("git rm, filepattern:" + filepattern);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -403,7 +403,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject reset(String filepattern) throws Exception {
 
-		this.param.getLog().info("git reset, filepattern:" + filepattern);
+		this.getLog().info("git reset, filepattern:" + filepattern);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -422,7 +422,7 @@ public class RepositoryGit extends RepositoryBase {
 	}
 
 	public JSONObject revert(List<String> paths) throws Exception {
-		this.param.getLog().info("git revert, paths:" + paths);
+		this.getLog().info("git revert, paths:" + paths);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -441,7 +441,7 @@ public class RepositoryGit extends RepositoryBase {
 	}
 
 	public JSONObject checkout(String path) throws Exception {
-		this.param.getLog().info("git checkout,  path:" + path);
+		this.getLog().info("git checkout,  path:" + path);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -465,7 +465,7 @@ public class RepositoryGit extends RepositoryBase {
 	}
 
 	public JSONObject commit(String message) throws Exception {
-		this.param.getLog().info("git commit,  message:" + message);
+		this.getLog().info("git commit,  message:" + message);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
@@ -490,7 +490,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject pull(String remote, String remoteBranchName, String username, String password) throws Exception {
 
-		this.param.getLog().info("git pull,  remote:" + remote + ",  remoteBranchName:" + remoteBranchName);
+		this.getLog().info("git pull,  remote:" + remote + ",  remoteBranchName:" + remoteBranchName);
 		JSONObject result = new JSONObject();
 		if (!findGit()) {
 			result.put("findGit", false);
@@ -522,7 +522,7 @@ public class RepositoryGit extends RepositoryBase {
 
 	public JSONObject push(JSONArray paths, String message, String remote, String branchName, String remoteBranchName,
 			String username, String password) throws Exception {
-		this.param.getLog().info("git push,  remote:" + remote + ",  remoteBranchName:" + remoteBranchName);
+		this.getLog().info("git push,  remote:" + remote + ",  remoteBranchName:" + remoteBranchName);
 
 		JSONObject result = new JSONObject();
 		if (!findGit()) {

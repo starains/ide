@@ -15,7 +15,8 @@ import com.teamide.client.ClientSession;
 import com.teamide.exception.BaseException;
 import com.teamide.ide.controller.handler.DataHandler;
 import com.teamide.ide.controller.handler.DownloadHandler;
-import com.teamide.ide.controller.handler.EventHandler;
+import com.teamide.ide.controller.handler.PluginEventHandler;
+import com.teamide.ide.controller.handler.PluginResourcesHandler;
 import com.teamide.ide.controller.handler.ResourcesHandler;
 import com.teamide.ide.controller.handler.ResourcesMergeHandler;
 import com.teamide.ide.controller.handler.UploadHandler;
@@ -47,7 +48,9 @@ public class RootController extends HttpServlet {
 
 	UploadHandler uploadHandler = new UploadHandler();
 
-	EventHandler eventHandler = new EventHandler();
+	PluginEventHandler pluginEventHandler = new PluginEventHandler();
+
+	PluginResourcesHandler pluginResourcesHandler = new PluginResourcesHandler();
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -74,7 +77,11 @@ public class RootController extends HttpServlet {
 				response.sendRedirect(contextPath);
 				return;
 			}
-			if (path.startsWith("/resources/") || path.startsWith("/html/")
+			if (path.startsWith(PluginEventHandler.PATH_PREFIX)) {
+				pluginEventHandler.handle(path, request, response);
+			} else if (path.startsWith(PluginResourcesHandler.PATH_PREFIX)) {
+				pluginResourcesHandler.handle(path, request, response);
+			} else if (path.startsWith("/resources/") || path.startsWith("/html/")
 
 					|| path.endsWith(".js")
 
@@ -105,8 +112,6 @@ public class RootController extends HttpServlet {
 				downloadHandler.handle(path, request, response);
 			} else if (path.startsWith("/api/upload/")) {
 				uploadHandler.handle(path, request, response);
-			} else if (path.startsWith("/api/event/")) {
-				eventHandler.handle(path, request, response);
 			} else {
 				if ("GET".equalsIgnoreCase(request.getMethod())) {
 					resourcesHandler.handle("/html/index.html", request, response);

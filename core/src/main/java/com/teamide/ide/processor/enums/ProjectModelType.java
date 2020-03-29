@@ -16,6 +16,8 @@ public enum ProjectModelType {
 
 	STARTER_LOG("STARTER_LOG", "库", ModelDataType.ONE),
 
+	PLUGIN_OPTION("PLUGIN_OPTION", "库", ModelDataType.ONE),
+
 	;
 
 	public static ProjectModelType get(String value) {

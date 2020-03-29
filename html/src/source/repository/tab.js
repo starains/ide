@@ -128,18 +128,19 @@ source.repository.activeTab = null;
                     data.type = type;
                     data.path = app.localpath;
                     data.name = file_date.model.bean.name;
-                    source.server.event('app.plugin', '1.0', 'doTest', data).then(result => {
+
+                    source.plugin.app.event('doTest', data, project).then(result => {
                         callback && callback(result);
                     });
                 }
             },
             toText(data, callback) {
-                source.server.event('app.plugin', '1.0', 'toText', data).then(result => {
+                source.plugin.app.event('toText', data, project).then(result => {
                     callback && callback(result);
                 });
             },
             toModel(data, callback) {
-                source.server.event('app.plugin', '1.0', 'toModel', data).then(result => {
+                source.plugin.app.event('toModel', data, project).then(result => {
                     callback && callback(result);
                 });
             }, load(callback) {

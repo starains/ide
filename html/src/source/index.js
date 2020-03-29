@@ -13,4 +13,6 @@ import repository from "@/source/repository/index";
 
 import source from "@/source/source";
 
+import plugin from "@/source/plugin";
+
 export default base;

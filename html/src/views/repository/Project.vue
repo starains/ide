@@ -135,72 +135,54 @@ export default {
       let menus = [];
       if (data.isProject) {
         menus.push({
-          header: "应用模型"
+          header: "插件配置"
         });
-        let appModelMenu = { text: "应用模型", menus: [] };
-        menus.push(appModelMenu);
-        appModelMenu.menus.push({
-          header: "应用模型"
-        });
-        let app = source.getProjectApp(data);
-
-        if (app != null) {
-          if (app.context.JAVA == null) {
-            appModelMenu.menus.push({
-              text: "请在模型目录创建java文件，配置源码相关设置",
-              onClick() {}
-            });
-          } else {
-            appModelMenu.menus.push({
-              text: "生成源码",
-              onClick() {
-                source.appGenerateSourceCode(data);
+        source.plugins.forEach(one => {
+          let pluginMenu = { text: one.text, menus: [] };
+          menus.push(pluginMenu);
+          if (
+            one.plugin.optionInputs != null &&
+            one.plugin.optionInputs.length > 0
+          ) {
+            if (one.name == "app") {
+              let appModel = source.getProjectApp(data);
+              if (appModel) {
+                pluginMenu.menus.push({
+                  text: "生成源码",
+                  onClick() {
+                    source.appGenerateSourceCode(data);
+                  }
+                });
               }
-            });
-          }
-          appModelMenu.menus.push({
-            text: "生成库表",
-            onClick() {
-              let param = {};
-              param.path = app.localpath;
-              param.type = "DATABASE";
-              source.service.data.doTest(param).then(result => {
-                if (result.errcode == 0) {
-                  coos.success("库表创建成功！");
-                } else {
-                  coos.error(result.errmsg);
-                }
-              });
             }
-          });
-          appModelMenu.menus.push({
-            text: "修改配置",
-            onClick() {
-              source.appOptionForm.show(data.path, app.option);
-            }
-          });
+            source
+              .load("PLUGIN_OPTION", { type: one.plugin.optionType }, data)
+              .then(res => {
+                let option = res.value || {};
 
-          appModelMenu.menus.push({
-            text: "删除",
-            onClick() {
-              let project = source.getProjectByPath(data.path);
-              source.do(
-                "DELETE_PLUGIN_OPTION",
-                {
-                  type: "APP"
-                },
-                project
-              );
-            }
-          });
-        } else {
-          appModelMenu.menus.push({
-            text: "配置",
-            onClick() {
-              source.appOptionForm.show(data.path);
-            }
-          });
-        }
+                pluginMenu.menus.push({
+                  text: "配置",
+                  onClick() {
+                    app
+                      .formDialog({
+                        title: "插件配置",
+                        items: one.plugin.optionInputs,
+                        data: option
+                      })
+                      .then(res => {
+                        let project = source.getProjectByPath(data.path);
+
+                        let param = {
+                          option: option,
+                          type: one.plugin.optionType
+                        };
+                        source.do("SET_PLUGIN_OPTION", param, project);
+                      });
+                  }
+                });
+              });
+          }
+        });
 
         menus.push({
           header: "项目"
@@ -317,17 +299,18 @@ export default {
         }
       }
       let project = source.getProjectByPath(data.path);
-      let app = source.getProjectApp(project);
+      let appModel = source.getProjectApp(project);
       if (
-        app &&
-        (app.path == data.path || data.path.startsWith(app.path + "/"))
+        appModel &&
+        (appModel.path == data.path ||
+          data.path.startsWith(appModel.path + "/"))
       ) {
         menus.push({
-          header: "模型"
+          header: "应用模型"
         });
         let model = source.getModelTypeByPath(data.path);
-        if (app.path == data.path) {
-          if (app.context.JAVA == null) {
+        if (appModel.path == data.path) {
+          if (appModel.context.JAVA == null) {
             menus.push({
               text: "请在模型目录创建java文件，配置源码相关设置",
               onClick() {}
@@ -344,9 +327,9 @@ export default {
             text: "生成库表",
             onClick() {
               let param = {};
-              param.path = app.localpath;
+              param.path = appModel.localpath;
               param.type = "DATABASE";
-              source.service.data.doTest(param).then(result => {
+              source.plugin.app.event("doTest", param, project).then(result => {
                 if (result.errcode == 0) {
                   coos.success("库表创建成功！");
                 } else {
@@ -367,7 +350,11 @@ export default {
                 text: "导入" + database + "已有表",
                 onClick() {
                   source.tableImportForm
-                    .show(app, { databasename: database, parent: data })
+                    .show(
+                      appModel,
+                      { databasename: database, parent: data },
+                      project
+                    )
                     .then(res => {});
                 }
               });
