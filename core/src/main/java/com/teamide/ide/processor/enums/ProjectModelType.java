@@ -10,12 +10,6 @@ public enum ProjectModelType {
 
 	PROJECT("PROJECT", "项目", ModelDataType.ONE),
 
-	STARTER_OPTIONS("STARTER_OPTIONS", "库", ModelDataType.ONE),
-
-	STARTER_STATUS("STARTER_STATUS", "库", ModelDataType.ONE),
-
-	STARTER_LOG("STARTER_LOG", "库", ModelDataType.ONE),
-
 	PLUGIN_OPTION("PLUGIN_OPTION", "库", ModelDataType.ONE),
 
 	;

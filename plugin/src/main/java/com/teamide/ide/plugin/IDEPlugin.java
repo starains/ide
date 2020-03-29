@@ -14,6 +14,8 @@ public interface IDEPlugin {
 
 	public String getOptionType();
 
+	public String getScriptClassName();
+
 	public List<IDEInput> getOptionInputs();
 
 	public String getProjectAttributeName();
@@ -21,8 +23,6 @@ public interface IDEPlugin {
 	public String getFileAttributeName();
 
 	public List<IDEResource> getResources();
-
-	public List<IDEContextmenu> getContextmenus();
 
 	public IDEListener getListener();
 

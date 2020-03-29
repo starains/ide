@@ -134,24 +134,6 @@ public class PluginHandler {
 		return resources;
 	}
 
-	public static List<IDEContextmenu> getContextmenus() {
-
-		List<IDEContextmenu> contextmenus = new ArrayList<IDEContextmenu>();
-
-		List<IDEPlugin> plugins = getPlugins();
-
-		for (IDEPlugin plugin : plugins) {
-			if (plugin == null) {
-				continue;
-			}
-			List<IDEContextmenu> list = plugin.getContextmenus();
-			if (list != null) {
-				contextmenus.addAll(list);
-			}
-		}
-		return contextmenus;
-	}
-
 	public static PluginParam getParam(ProjectParam param, IDEPlugin plugin) {
 		ProjectOption projectOption = new ProjectOption(param);
 		JSONObject option = new JSONObject();

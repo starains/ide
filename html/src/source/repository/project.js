@@ -161,6 +161,16 @@ source.repository.navs = [
         }
         project.loading = false;
         source.refreshProjectFileStatus(project);
+        source.refreshTabFiles(project);
+    };
+
+    source.refreshTabFiles = function (project) {
+        source.repository.tabs.forEach(tab => {
+            let p = source.getProjectByPath(tab.path);
+            if (p == project) {
+                source.reloadTab(tab.path);
+            }
+        });
     };
     source.getProjectByPath = function (path) {
         let result = null;

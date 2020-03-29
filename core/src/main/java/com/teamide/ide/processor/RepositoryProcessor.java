@@ -8,7 +8,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceEventBean;
+import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.enums.OptionType;
+import com.teamide.ide.handler.DeployHandler;
 import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.enums.RepositoryModelType;
 import com.teamide.ide.processor.enums.RepositoryProcessorType;
@@ -378,6 +380,36 @@ public class RepositoryProcessor extends SpaceProcessor {
 			break;
 		case STARTERS:
 			value = new RepositoryLoad(param).loadStarters();
+			break;
+		case STARTER_OPTIONS:
+			value = new RepositoryOption(this.param).getOptions(OptionType.STARTER);
+			break;
+		case STARTER_STATUS:
+			String token = data.getString("token");
+			value = new RepositoryStarter(param).status(token);
+			break;
+		case STARTER_LOG:
+			token = data.getString("token");
+			int start = data.getIntValue("start");
+			int end = data.getIntValue("end");
+			String timestamp = data.getString("timestamp");
+			boolean isloadold = data.getBooleanValue("isloadold");
+			res = null;
+			if (!StringUtil.isEmpty(token) && !token.equals("0")) {
+				Deploy deploy = DeployHandler.get(token);
+				if (deploy != null) {
+					res = deploy.read(start, end, timestamp);
+				} else {
+					res = new JSONObject();
+				}
+			} else {
+				res = new RepositoryBase(param).getLog().read(start, end, timestamp);
+			}
+			res.put("token", token);
+			res.put("start", start);
+			res.put("end", end);
+			res.put("isloadold", isloadold);
+			value = res;
 			break;
 
 		}

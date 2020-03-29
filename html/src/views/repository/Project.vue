@@ -144,17 +144,6 @@ export default {
             one.plugin.optionInputs != null &&
             one.plugin.optionInputs.length > 0
           ) {
-            if (one.name == "app") {
-              let appModel = source.getProjectApp(data);
-              if (appModel) {
-                pluginMenu.menus.push({
-                  text: "生成源码",
-                  onClick() {
-                    source.appGenerateSourceCode(data);
-                  }
-                });
-              }
-            }
             source
               .load("PLUGIN_OPTION", { type: one.plugin.optionType }, data)
               .then(res => {
@@ -176,7 +165,11 @@ export default {
                           option: option,
                           type: one.plugin.optionType
                         };
-                        source.do("SET_PLUGIN_OPTION", param, project);
+                        source
+                          .do("SET_PLUGIN_OPTION", param, project)
+                          .then(res => {
+                            source.reloadProject(project);
+                          });
                       });
                   }
                 });
@@ -298,70 +291,10 @@ export default {
           });
         }
       }
-      let project = source.getProjectByPath(data.path);
-      let appModel = source.getProjectApp(project);
-      if (
-        appModel &&
-        (appModel.path == data.path ||
-          data.path.startsWith(appModel.path + "/"))
-      ) {
-        menus.push({
-          header: "应用模型"
-        });
-        let model = source.getModelTypeByPath(data.path);
-        if (appModel.path == data.path) {
-          if (appModel.context.JAVA == null) {
-            menus.push({
-              text: "请在模型目录创建java文件，配置源码相关设置",
-              onClick() {}
-            });
-          } else {
-            menus.push({
-              text: "生成源码",
-              onClick() {
-                source.appGenerateSourceCode(project);
-              }
-            });
-          }
-          menus.push({
-            text: "生成库表",
-            onClick() {
-              let param = {};
-              param.path = appModel.localpath;
-              param.type = "DATABASE";
-              source.plugin.app.event("doTest", param, project).then(result => {
-                if (result.errcode == 0) {
-                  coos.success("库表创建成功！");
-                } else {
-                  coos.error(result.errmsg);
-                }
-              });
-            }
-          });
-        }
+      source.plugins.forEach(one => {
+        one.onContextmenu(data, menus);
+      });
 
-        if (model) {
-          if (model.value == "TABLE") {
-            let databases = [];
-            databases.push("");
-
-            databases.forEach(database => {
-              menus.push({
-                text: "导入" + database + "已有表",
-                onClick() {
-                  source.tableImportForm
-                    .show(
-                      appModel,
-                      { databasename: database, parent: data },
-                      project
-                    )
-                    .then(res => {});
-                }
-              });
-            });
-          }
-        }
-      }
       menus.push({
         header: "文件"
       });

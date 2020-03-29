@@ -21,6 +21,10 @@ source.repository.activeTab = null;
         tab.$editor.addClass("show");
         if (tab.editor == null) {
             source.createTabEditor(tab);
+        } else {
+            if (tab.isLoadChanged) {
+                source.callLoadChanged(tab);
+            }
         }
     };
 
@@ -49,7 +53,21 @@ source.repository.activeTab = null;
         }
         return model;
     }
-
+    source.callLoadChanged = function (tab) {
+        if (tab.isLoadChanged && tab.changed) {
+            let file_date = tab.file_date;
+            delete tab.isLoadChanged;
+            delete tab.file_date;
+            coos.confirm('文件[' + tab.path + ']内容发生更改，是否显示最新内容？').then(() => {
+                tab.changed = false;
+                tab.$editor.empty();
+                delete tab.editor;
+                source.buildFileEditor(file_date);
+            }).catch(() => {
+                tab.changed = tab.oldChanged;
+            });
+        }
+    };
     source.buildFileEditor = function (file_date) {
         if (file_date == null) {
             return;
@@ -75,13 +93,13 @@ source.repository.activeTab = null;
                 return;
             }
             tab.editor.file.content = file_date.content;
+            tab.oldChanged = tab.changed;
             tab.changed = true;
-            coos.confirm('文件[' + file_date.path + ']内容发生更改，是否显示最新内容？').then(() => {
-                tab.changed = false;
-                tab.$editor.empty();
-                delete tab.editor;
-                source.buildFileEditor(file_date);
-            });
+            tab.isLoadChanged = true;
+            tab.file_date = file_date;
+            if (source.repository.activeTab == tab.path) {
+                source.callLoadChanged(tab);
+            }
             return;
         }
         let project = source.getProjectByPath(file_date.path);
@@ -302,6 +320,20 @@ source.repository.activeTab = null;
         }
         source.repository.activeTab = path;
 
+    };
+
+    source.reloadTab = function (path) {
+        let tab = source.getTab(path);
+        if (tab == null) {
+            return;
+        }
+        if (tab.editor == null) {
+            return;
+        }
+        if (tab.changed) {
+            return;
+        }
+        source.loadFile(tab.path);
     };
 })();
 

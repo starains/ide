@@ -9,17 +9,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceRepositoryOpenBean;
-import com.teamide.ide.deployer.Deploy;
-import com.teamide.ide.enums.OptionType;
-import com.teamide.ide.handler.DeployHandler;
 import com.teamide.ide.param.ProjectParam;
 import com.teamide.ide.processor.enums.ProjectModelType;
 import com.teamide.ide.processor.enums.ProjectProcessorType;
 import com.teamide.ide.processor.param.ProjectOption;
-import com.teamide.ide.processor.repository.RepositoryBase;
 import com.teamide.ide.processor.repository.RepositoryFile;
 import com.teamide.ide.processor.repository.RepositoryMaven;
-import com.teamide.ide.processor.repository.RepositoryStarter;
 import com.teamide.ide.processor.repository.project.ProjectLoader;
 import com.teamide.ide.service.impl.SpaceRepositoryOpenService;
 
@@ -259,36 +254,6 @@ public class ProjectProcessor extends RepositoryProcessor {
 			path = data.getString("path");
 			value = new ProjectLoader(param).loadFiles(param.getFile(path), null);
 
-			break;
-		case STARTER_OPTIONS:
-			value = new ProjectOption(this.param).getOptions(OptionType.STARTER);
-			break;
-		case STARTER_STATUS:
-			String token = data.getString("token");
-			value = new RepositoryStarter(param).status(token);
-			break;
-		case STARTER_LOG:
-			token = data.getString("token");
-			int start = data.getIntValue("start");
-			int end = data.getIntValue("end");
-			String timestamp = data.getString("timestamp");
-			boolean isloadold = data.getBooleanValue("isloadold");
-			JSONObject res = null;
-			if (!StringUtil.isEmpty(token) && !token.equals("0")) {
-				Deploy deploy = DeployHandler.get(token);
-				if (deploy != null) {
-					res = deploy.read(start, end, timestamp);
-				} else {
-					res = new JSONObject();
-				}
-			} else {
-				res = new RepositoryBase(param).getLog().read(start, end, timestamp);
-			}
-			res.put("token", token);
-			res.put("start", start);
-			res.put("end", end);
-			res.put("isloadold", isloadold);
-			value = res;
 			break;
 
 		case PLUGIN_OPTION:

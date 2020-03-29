@@ -23,7 +23,13 @@ public enum RepositoryModelType {
 	GIT_WORK_STATUS("GIT_WORK_STATUS", "Git工作状态", ModelDataType.ONE),
 
 	STARTERS("STARTERS", "Git工作状态", ModelDataType.LIST),
-	
+
+	STARTER_OPTIONS("STARTER_OPTIONS", "库", ModelDataType.ONE),
+
+	STARTER_STATUS("STARTER_STATUS", "库", ModelDataType.ONE),
+
+	STARTER_LOG("STARTER_LOG", "库", ModelDataType.ONE),
+
 	;
 
 	public static RepositoryModelType get(String value) {
