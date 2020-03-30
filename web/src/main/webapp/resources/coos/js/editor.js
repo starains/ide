@@ -29,6 +29,10 @@ window.app = app;
 			file : this.file
 		};
 	};
+	Editor.prototype.getApp = function() {
+		return this.project.attribute.app;
+	};
+
 
 	Editor.prototype.init = function() {
 		this.initView();
@@ -441,8 +445,9 @@ window.app = app;
 	};
 	Editor.prototype.getContext = function(type) {
 		var context = null;
-		if (this.project && this.project.app) {
-			context = this.project.app.context;
+		let app = this.getApp();
+		if (app) {
+			context = app.context;
 		}
 		return context;
 	};
@@ -1022,44 +1027,8 @@ window.app = app;
 				<el-form-item class label="名称" prop="name">
 				  <el-input type="text" v-model="form.name" autocomplete="off" @change="change($event,'name')"></el-input>
 				</el-form-item>
-				<el-form-item class label="首页地址" prop="indexurl">
-				  <el-input type="text" v-model="form.indexurl" autocomplete="off" @change="change($event,'indexurl')"></el-input>
-				</el-form-item>
-				<el-form-item class label="登录地址" prop="loginurl">
-				  <el-input type="text" v-model="form.loginurl" autocomplete="off" @change="change($event,'loginurl')"></el-input>
-				</el-form-item>
-				<el-form-item class label="登录后跳转地址" prop="afterlogintourl">
-				  <el-input type="text" v-model="form.afterlogintourl" autocomplete="off" @change="change($event,'afterlogintourl')"></el-input>
-				</el-form-item>
-				<el-form-item class label="退出后跳转" prop="afterlogouttourl">
-				  <el-input type="text" v-model="form.afterlogouttourl" autocomplete="off" @change="change($event,'afterlogouttourl')"></el-input>
-				</el-form-item>
-				
-				<el-form-item class label="忽略地址" prop="ignoreurl">
-				  <el-input type="text" v-model="form.ignoreurl" autocomplete="off" @change="change($event,'ignoreurl')"></el-input>
-				  <span>检查到匹配地址将直接放行，多个地址以“;”隔开如：/res/*;/abc/*。</span>
-				</el-form-item>
-				<el-form-item class label="登录忽略地址" prop="loginignoreurl">
-				  <el-input type="text" v-model="form.loginignoreurl" autocomplete="off" @change="change($event,'loginignoreurl')"></el-input>
-				  <span>检查到匹配地址将不检测是否登录，多个地址以“;”隔开如：/res/*;/abc/*。</span>
-				</el-form-item>
-				<el-form-item class label="必须登录" prop="requiredlogin">
-				  <el-switch v-model="form.requiredlogin" @change="change($event,'requiredlogin')"></el-switch>
-				</el-form-item>
-				<el-form-item class label="登录匹配地址" prop="loginmatchurl">
-				  <el-input type="text" v-model="form.loginmatchurl" autocomplete="off" @change="change($event,'loginmatchurl')"></el-input>
-				  <span>检查到匹配地址将需要登录，多个地址以“;”隔开如：/res/*;/abc/*。</span>
-				</el-form-item>
-				
-				<h3 class="pdtb-10 color-orange">错误页面配置</h3>
-				<el-form-item class label="404地址" prop="error_notfound">
-				  <el-input type="text" v-model="form.error_notfound" autocomplete="off" @change="change($event,'error_notfound')"></el-input>
-				</el-form-item>
-				<el-form-item class label="500地址" prop="error_error">
-				  <el-input type="text" v-model="form.error_error" autocomplete="off" @change="change($event,'error_error')"></el-input>
-				</el-form-item>
-				<el-form-item class label="无权限地址" prop="error_nopermission">
-				  <el-input type="text" v-model="form.error_nopermission" autocomplete="off" @change="change($event,'error_nopermission')"></el-input>
+				<el-form-item class label="AES密钥" prop="aeskey">
+				  <el-input type="text" v-model="form.aeskey" autocomplete="off" @change="change($event,'aeskey')"></el-input>
 				</el-form-item>
 			</el-form>
 		</div>
@@ -1273,6 +1242,10 @@ window.app = app;
 					<el-form-item class label="显示SQL" prop="showsql">
 					  <el-switch v-model="form.showsql" @change="change($event,'showsql')"></el-switch>
 					</el-form-item>
+					<el-form-item class label="拼接库名" prop="mustbringname">
+					  <el-switch v-model="form.mustbringname" autocomplete="off" @change="change($event,'mustbringname')" ></el-switch>
+					  <span class="color-grey-4">如果选中生产的SQL语句将拼接库名称</span>
+					</el-form-item>
 					<el-form-item class label="initialsize" prop="initialsize">
 					  <el-input type="text" v-model="form.initialsize" autocomplete="off" @change="change($event,'initialsize')"></el-input>
 					</el-form-item>
@@ -1417,10 +1390,11 @@ window.app = app;
 		var $btn = $('<a class="mglr-10 coos-pointer color-green">导入已存在表字段</a>');
 		$li.append($btn);
 		$btn.click(function() {
-			if (that.project && that.project.app) {
+			let app = that.getApp();
+			if (app) {
 				let data = {};
 				data.type = "LOAD_DATABASE_TABLES";
-				data.path = that.project.app.localpath;
+				data.path = app.localpath;
 				data.name = model.database;
 				data.tablename = model.name;source.service.data.doTest(data).then(result => {
 					var value = result.value;
