@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.PageResultBean;
 import com.teamide.client.ClientSession;
-import com.teamide.db.bean.PageSqlParam;
 import com.teamide.util.IDGenerateUtil;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceBean;
@@ -20,6 +19,7 @@ import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.handler.UserHandler;
 import com.teamide.ide.service.IUserService;
 import com.teamide.ide.util.PasswordMD5Tool;
+import com.teamide.param.PageSqlParam;
 
 @Resource
 public class UserService extends BaseService<UserBean> implements IUserService {

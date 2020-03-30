@@ -8,8 +8,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.teamide.bean.PageResultBean;
-import com.teamide.db.bean.PageSqlParam;
-import com.teamide.db.bean.SqlParam;
 import com.teamide.util.IDGenerateUtil;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.PermissionBean;
@@ -19,6 +17,8 @@ import com.teamide.ide.bean.RoleUserBean;
 import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.service.IRoleService;
+import com.teamide.param.PageSqlParam;
+import com.teamide.param.SqlParam;
 
 @Resource
 public class RoleService extends BaseService<RoleBean> implements IRoleService {

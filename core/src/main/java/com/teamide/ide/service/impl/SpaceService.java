@@ -15,7 +15,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.PageResultBean;
 import com.teamide.client.ClientSession;
-import com.teamide.db.bean.PageSqlParam;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.SpaceStarBean;
@@ -28,6 +27,7 @@ import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.handler.SpaceHandler;
 import com.teamide.ide.param.SpaceProcessorParam;
 import com.teamide.ide.service.ISpaceService;
+import com.teamide.param.PageSqlParam;
 
 @Resource
 public class SpaceService extends BaseService<SpaceBean> implements ISpaceService {

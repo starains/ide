@@ -6,7 +6,9 @@
 	<version>0.0.1</version>
 	<properties>
 		<release.root>../release/${project.version}</release.root>
-		<teamide.version>0.0.5</teamide.version>
+		<c3p0.version>0.9.1.2</c3p0.version>
+		<dbcp2.version>2.4.0</dbcp2.version>
+		<druid.version>1.1.12</druid.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -34,10 +36,25 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- 连接池 -->
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>${c3p0.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- 连接池 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>${dbcp2.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- 连接池 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>1.1.12</version>
+			<version>${druid.version}</version>
 		</dependency>
 
 		<dependency>

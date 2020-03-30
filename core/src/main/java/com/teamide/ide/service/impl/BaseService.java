@@ -10,10 +10,10 @@ import com.teamide.service.impl.TService;
 import com.teamide.util.StringUtil;
 import com.teamide.bean.PageResultBean;
 import com.teamide.client.ClientSession;
-import com.teamide.db.bean.PageSqlParam;
 import com.teamide.ide.bean.BaseBean;
 import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.service.IBaseService;
+import com.teamide.param.PageSqlParam;
 
 public class BaseService<T> extends TService<T> implements IBaseService<T> {
 

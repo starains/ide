@@ -3,9 +3,9 @@ package com.teamide.ide.service.impl;
 import javax.annotation.Resource;
 
 import com.teamide.bean.PageResultBean;
-import com.teamide.db.bean.PageSqlParam;
 import com.teamide.ide.bean.SpaceOptionBean;
 import com.teamide.ide.service.ISpaceOptionService;
+import com.teamide.param.PageSqlParam;
 
 @Resource
 public class SpaceOptionService extends BaseService<SpaceOptionBean> implements ISpaceOptionService {

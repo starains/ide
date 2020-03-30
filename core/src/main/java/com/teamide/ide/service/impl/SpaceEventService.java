@@ -4,11 +4,11 @@ import javax.annotation.Resource;
 
 import com.teamide.bean.PageResultBean;
 import com.teamide.client.ClientSession;
-import com.teamide.db.bean.PageSqlParam;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.enums.WorkspaceControl;
 import com.teamide.ide.service.ISpaceEventService;
+import com.teamide.param.PageSqlParam;
 
 @Resource
 public class SpaceEventService extends BaseService<SpaceEventBean> implements ISpaceEventService {
