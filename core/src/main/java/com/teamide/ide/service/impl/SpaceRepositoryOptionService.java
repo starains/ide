@@ -41,7 +41,7 @@ public class SpaceRepositoryOptionService extends BaseService<SpaceRepositoryOpt
 		if (!StringUtil.isEmpty(branch)) {
 			param.put("branch", branch);
 		}
-		if (type != null && type.equals(OptionType.GIT_CERTIFICATE)) {
+		if (type != null && type.equals(OptionType.GIT_CERTIFICATE.name())) {
 			if (!StringUtil.isEmpty(userid)) {
 				param.put("userid", userid);
 			} else {
