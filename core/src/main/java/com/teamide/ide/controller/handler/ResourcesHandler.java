@@ -138,30 +138,40 @@ public class ResourcesHandler {
 
 			List<IDEPlugin> plugins = PluginHandler.getPlugins();
 
-			for (IDEPlugin plugin : plugins) {
-				if (plugin == null || plugin.getResources() == null) {
-					continue;
-				}
-				List<IDEResource> resources = plugin.getResources();
-				for (IDEResource resource : resources) {
-					if (resource == null || resource.getType() == null || StringUtil.isEmpty(resource.getName())) {
+			if (hasUI) {
+				for (IDEPlugin plugin : plugins) {
+					if (plugin == null || plugin.getResources() == null) {
 						continue;
 					}
-					String url = PluginResourcesHandler.PATH_PREFIX;
-					url += plugin.getName() + "/" + plugin.getVersion() + "/";
-					url += resource.getName();
-					url += "?v=" + VERSION;
-					switch (resource.getType()) {
-					case CSS:
-						css.add(url);
-						break;
-					case JS:
-						js.add(url);
-						break;
+					css.add("resources/plugin/merge/" + plugin.getName() + "/" + plugin.getVersion() + "/index.css");
+					js.add("resources/plugin/merge/" + plugin.getName() + "/" + plugin.getVersion() + "/index.js");
+
+				}
+			} else {
+				for (IDEPlugin plugin : plugins) {
+					if (plugin == null || plugin.getResources() == null) {
+						continue;
+					}
+					List<IDEResource> resources = plugin.getResources();
+					for (IDEResource resource : resources) {
+						if (resource == null || resource.getType() == null || StringUtil.isEmpty(resource.getName())) {
+							continue;
+						}
+						String url = PluginResourcesHandler.PATH_PREFIX;
+						url += plugin.getName() + "/" + plugin.getVersion() + "/";
+						url += resource.getName();
+						url += "?v=" + VERSION;
+						switch (resource.getType()) {
+						case CSS:
+							css.add(url);
+							break;
+						case JS:
+							js.add(url);
+							break;
+						}
 					}
 				}
 			}
-
 			StringBuffer content = new StringBuffer();
 			writelnCSS(request, content, css);
 			writelnJS(request, content, js);

@@ -19,6 +19,7 @@ import com.teamide.ide.controller.handler.PluginEventHandler;
 import com.teamide.ide.controller.handler.PluginResourcesHandler;
 import com.teamide.ide.controller.handler.ResourcesHandler;
 import com.teamide.ide.controller.handler.ResourcesMergeHandler;
+import com.teamide.ide.controller.handler.ResourcesPluginMergeHandler;
 import com.teamide.ide.controller.handler.UploadHandler;
 import com.teamide.ide.controller.handler.ListenHandler;
 import com.teamide.ide.controller.handler.WorkspaceHandler;
@@ -37,6 +38,8 @@ public class RootController extends HttpServlet {
 	ResourcesHandler resourcesHandler = new ResourcesHandler();
 
 	ResourcesMergeHandler resourcesMergeHandler = new ResourcesMergeHandler();
+
+	ResourcesPluginMergeHandler resourcesPluginMergeHandler = new ResourcesPluginMergeHandler();
 
 	DataHandler dataHandler = new DataHandler();
 
@@ -90,6 +93,8 @@ public class RootController extends HttpServlet {
 					|| path.endsWith(".html")) {
 				if (path.startsWith("/resources/coos/merge/")) {
 					resourcesMergeHandler.handle(path, request, response);
+				} else if (path.startsWith("/resources/plugin/merge/")) {
+					resourcesPluginMergeHandler.handle(path, request, response);
 				} else {
 					resourcesHandler.handle(path, request, response);
 				}
