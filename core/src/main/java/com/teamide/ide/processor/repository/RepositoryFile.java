@@ -139,7 +139,7 @@ public class RepositoryFile extends RepositoryBase {
 
 	}
 
-	public File rename(final String path, final String name, JSONObject model) throws Exception {
+	public File rename(final String path, final String name) throws Exception {
 
 		this.getLog().info("file rename,  path:" + path + ",  name:" + name);
 		if (StringUtil.isEmpty(name)) {
@@ -272,7 +272,7 @@ public class RepositoryFile extends RepositoryBase {
 		return folder;
 	}
 
-	public File move(final String path, final String to, JSONObject model) throws Exception {
+	public File move(final String path, final String to) throws Exception {
 
 		this.getLog().info("file move,  path:" + path + ",  to:" + to);
 

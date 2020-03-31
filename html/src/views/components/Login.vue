@@ -88,7 +88,7 @@ export default {
                 }
               } catch (e) {}
               window.setTimeout(() => {
-                source.loadSession();
+                window.location.reload();
               }, 300);
             } else {
               coos.error(res.errmsg);

@@ -414,11 +414,16 @@ export default {
         let path = file.path;
         let to = newParent.path;
         source.fileMove(file, newParent);
+        let project = source.getProjectByPath(path);
         source
-          .do("FILE_MOVE", {
-            path: path,
-            to: to
-          })
+          .do(
+            "FILE_MOVE",
+            {
+              path: path,
+              to: to
+            },
+            project
+          )
           .then(res => {
             if (res.errcode == 0) {
               coos.success("移动成功！");
@@ -462,10 +467,15 @@ export default {
       if (file.parent == null) {
         return;
       }
+      let project = source.getProjectByPath(file.path);
       source
-        .do("FILE_DELETE", {
-          path: file.path
-        })
+        .do(
+          "FILE_DELETE",
+          {
+            path: file.path
+          },
+          project
+        )
         .then(res => {
           if (res.errcode == 0) {
             if (file.isNew) {

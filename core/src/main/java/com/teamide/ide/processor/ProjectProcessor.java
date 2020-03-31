@@ -61,11 +61,7 @@ public class ProjectProcessor extends RepositoryProcessor {
 		case FILE_MOVE:
 			String path = data.getString("path");
 			String to = data.getString("to");
-			JSONObject model = null;
-			if (data.get("model") != null) {
-				model = data.getJSONObject("model");
-			}
-			new RepositoryFile(param).move(path, to, model);
+			new RepositoryFile(param).move(path, to);
 
 			spaceEventBean.set("path", path);
 			spaceEventBean.set("to", to);
@@ -105,11 +101,7 @@ public class ProjectProcessor extends RepositoryProcessor {
 		case FILE_RENAME:
 			path = data.getString("path");
 			name = data.getString("name");
-			model = null;
-			if (data.get("model") != null) {
-				model = data.getJSONObject("model");
-			}
-			new RepositoryFile(param).rename(path, name, model);
+			new RepositoryFile(param).rename(path, name);
 
 			spaceEventBean.set("path", path);
 			spaceEventBean.set("name", name);
