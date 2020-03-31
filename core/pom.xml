@@ -6,11 +6,18 @@
 	<version>0.0.1</version>
 	<properties>
 		<release.root>../release/${project.version}</release.root>
+		<teamide.version>0.0.6</teamide.version>
 		<c3p0.version>0.9.1.2</c3p0.version>
 		<dbcp2.version>2.4.0</dbcp2.version>
 		<druid.version>1.1.12</druid.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>com.teamide</groupId>
+			<artifactId>teamide.component</artifactId>
+			<version>${teamide.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.teamide</groupId>
 			<artifactId>ide.base</artifactId>
