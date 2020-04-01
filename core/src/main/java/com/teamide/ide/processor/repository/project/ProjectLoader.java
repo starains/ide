@@ -249,7 +249,7 @@ public class ProjectLoader {
 		fileBean.setDirectory(file.isDirectory());
 		if (file.isFile()) {
 			int lastIndex = name.lastIndexOf(".");
-			String type = name;
+			String type = "";
 			if (lastIndex >= 0 && lastIndex < name.length()) {
 				type = name.substring(lastIndex + 1);
 			}
