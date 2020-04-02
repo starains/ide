@@ -130,13 +130,13 @@ export default {
 }
 .repository-screen-control {
   cursor: pointer;
-  background: #989898;
-  color: #ffffff;
+  background: #efefef;
+  color: #afafaf;
   padding: 6px;
   font-size: 18px;
 }
 .repository-screen-control:hover {
-  background: #bdbdbd;
+  background: #989898;
   color: #fff;
 }
 .repository-box {

@@ -22,23 +22,30 @@ public class RemoteDeploy extends Deploy {
 	}
 
 	public void deploy() throws Exception {
-		this.starter.writeDeployStatus(DeployStatus.UPLOADING);
+		this.starter.writeDeployStatus(DeployStatus.DEPLOYING);
+
 		install();
+
+		this.starter.writeDeployStatus(DeployStatus.UPLOADING);
+
 		upload();
 		this.starter.writeDeployStatus(DeployStatus.UPLOADED);
 
+		start();
+
 		this.starter.writeDeployStatus(DeployStatus.DEPLOYED);
+
 	}
 
 	private void upload() {
 		RemoteBean remote = RemoteHandler.get(remoteid);
 		HttpRequest request = getHttpRequest(RemoteHandler.getStarterDeployUrl(remote));
-		String root = starter.starterFolder.getAbsolutePath();
+		String root = starter.starterFolder.toURI().getPath();
 		List<File> files = FileUtil.loadAllFiles(root);
 
 		for (File file : files) {
 			if (file.isFile()) {
-				String path = file.getAbsolutePath();
+				String path = file.toURI().getPath();
 				path = path.substring(root.length());
 				request.form(path, file);
 			}
@@ -69,16 +76,17 @@ public class RemoteDeploy extends Deploy {
 	public void start() throws Exception {
 		installProject();
 
+		deployInstall.copyProject();
 		this.starter.writeInstallStatus(InstallStatus.WORK_UPLOADING);
 		RemoteBean remote = RemoteHandler.get(remoteid);
 		HttpRequest request = getHttpRequest(RemoteHandler.getStarterStartUrl(remote));
 
-		String root = starter.workFolder.getAbsolutePath();
+		String root = starter.workFolder.toURI().getPath();
 		List<File> files = FileUtil.loadAllFiles(root);
 
 		for (File file : files) {
 			if (file.isFile()) {
-				String path = file.getAbsolutePath();
+				String path = file.toURI().getPath();
 				path = path.substring(root.length());
 				request.form(path, file);
 			}
@@ -108,8 +116,7 @@ public class RemoteDeploy extends Deploy {
 
 	public JSONObject getStatus() throws Exception {
 		String status = this.starter.readDeployStatus();
-		if (DeployStatus.UPLOADED.getValue().equalsIgnoreCase(status)
-				|| DeployStatus.DEPLOYED.getValue().equalsIgnoreCase(status)) {
+		if (DeployStatus.DEPLOYED.getValue().equalsIgnoreCase(status)) {
 			RemoteBean remote = RemoteHandler.get(remoteid);
 			HttpRequest request = getHttpRequest(RemoteHandler.getStarterStatusUrl(remote));
 			HttpResponse response = request.execute();
@@ -126,9 +133,13 @@ public class RemoteDeploy extends Deploy {
 
 	@Override
 	public JSONObject read(int start, int end, String timestamp) {
+		String installStatus = this.starter.readInstallStatus();
+		if (InstallStatus.INSTALL_PROJECT_ING.getValue().equalsIgnoreCase(installStatus)
+				|| InstallStatus.WORK_UPLOADING.getValue().equalsIgnoreCase(installStatus)) {
+			return this.starter.getLog().read(start, end, timestamp);
+		}
 		String status = this.starter.readDeployStatus();
-		if (DeployStatus.UPLOADED.getValue().equalsIgnoreCase(status)
-				|| DeployStatus.DEPLOYED.getValue().equalsIgnoreCase(status)) {
+		if (DeployStatus.DEPLOYED.getValue().equalsIgnoreCase(status)) {
 			RemoteBean remote = RemoteHandler.get(remoteid);
 			HttpRequest request = getHttpRequest(RemoteHandler.getStarterLogUrl(remote));
 			JSONObject param = new JSONObject();

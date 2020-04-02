@@ -4,8 +4,7 @@
 
     source.loadSession = function () {
 
-        source.load("SESSION").then(res => {
-        });
+        return source.load("SESSION");
     };
     source.ready = function () {
         return new Promise((resolve, reject) => {
@@ -13,10 +12,12 @@
                 resolve && resolve();
             } else {
                 source.server.session().then(() => {
-                    source.readyed = true;
-                    source.loadSession();
                     source.websocket.open();
-                    resolve && resolve();
+                    source.loadSession().then(res => {
+                        source.readyed = true;
+                        resolve && resolve();
+                    });
+
                 });
             }
         });
@@ -34,7 +35,7 @@
             if (res.errcode == 0) {
                 coos.info("退出成功！");
                 window.setTimeout(() => {
-                    source.loadSession();
+                    window.location.reload();
                 }, 300);
             } else {
                 coos.error(res.errmsg);
