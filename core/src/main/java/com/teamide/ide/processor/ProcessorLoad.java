@@ -73,7 +73,7 @@ public class ProcessorLoad extends ProcessorBase {
 			out.put("LOGIN_USER", null);
 			out.put("isManager", false);
 			out.put("roles", session.getCache("roles"));
-			if (session.getUser() != null) {
+			if (session.getUser() != null && session.getCache("user") != null) {
 				JSONObject USER = UserHandler.getFormat((UserBean) session.getCache("user"));
 				out.put("LOGIN_USER", USER);
 				out.put("isManager", session.getCache("isManager"));

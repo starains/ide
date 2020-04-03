@@ -7,7 +7,9 @@ import com.teamide.ide.bean.UserBean;
 public class UserHandler {
 
 	public static JSONObject getFormat(UserBean user) throws Exception {
-
+		if (user == null) {
+			return null;
+		}
 		JSONObject USER = (JSONObject) JSONObject.toJSON(user);
 		USER.remove("password");
 
