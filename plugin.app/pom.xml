@@ -7,12 +7,13 @@
 	<name>plugin.app</name>
 	<properties>
 		<release.root>../release/${project.version}/plugins/app</release.root>
+		<app.version>0.0.1</app.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.teamide</groupId>
-			<artifactId>app.java</artifactId>
-			<version>${project.version}</version>
+			<artifactId>app</artifactId>
+			<version>${app.version}</version>
 		</dependency>
 
 		<dependency>
