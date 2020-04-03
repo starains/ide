@@ -53,9 +53,8 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>server</module>
-		<module>terminal</module>
 		<module>base</module>
+		<module>starter</module>
 		<module>plugin</module>
 		<module>core</module>
 		<module>web</module>
