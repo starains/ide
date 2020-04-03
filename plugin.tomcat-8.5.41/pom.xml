@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.teamide</groupId>
-	<artifactId>plugin.tomcat-8.5.41</artifactId>
+	<artifactId>ide.plugin.tomcat-8.5.41</artifactId>
 	<version>0.0.1</version>
 	<properties>
 		<release.root>../release/${project.version}/plugins/server/tomcat-8.5.41</release.root>
@@ -11,7 +11,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.teamide</groupId>
-			<artifactId>plugin.tomcat</artifactId>
+			<artifactId>ide.plugin.tomcat</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
