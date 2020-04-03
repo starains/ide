@@ -1,0 +1,27 @@
+#ifStart($only_content == false)#
+package #{$package};
+
+import java.util.*;
+import com.teamide.util.*;
+import com.teamide.exception.*;
+
+import com.alibaba.fastjson.*;
+import com.teamide.bean.*;
+import com.teamide.param.DataParam;
+import com.teamide.annotation.*;
+
+/**
+ * Service
+ * #{$comment}
+ */
+@SuppressWarnings({"unused"})
+public interface #{$classname} {
+	
+#ifEnd#
+#forStart($list, $one)#
+
+#{$one.$content}
+#forEnd#
+#ifStart($only_content == false)#
+}
+#ifEnd#

@@ -1,0 +1,62 @@
+package #{$package};
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.teamide.util.StringUtil;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class #{$classname} {
+
+	public Date date() {
+		return new Date();
+	}
+
+	public long time() {
+		return new Date().getTime();
+	}
+
+	public String now() {
+		return now(null);
+	}
+
+	public String now(Object arg) {
+		String format = StringUtil.str(arg);
+		if (format == null || StringUtil.isEmpty(format.trim())) {
+			format = "yyyy-MM-dd HH:mm:ss";
+		}
+		Date date = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat(format.trim());
+		return dateFormat.format(date);
+	}
+
+	public String format(Object arg) {
+		return format(arg, null);
+	}
+
+	public String format(Object arg, Object argForamt) {
+		if (arg == null) {
+			return null;
+		}
+		String format = StringUtil.str(argForamt);
+		if (format == null || StringUtil.isEmpty(format.trim())) {
+			format = "yyyy-MM-dd HH:mm:ss";
+		}
+		SimpleDateFormat dateFormat = new SimpleDateFormat(format.trim());
+		Date date = null;
+		if (arg instanceof Long) {
+			date = new Date((Long) arg);
+		} else if (arg instanceof String) {
+
+		} else if (arg instanceof Date) {
+			date = (Date) arg;
+		}
+		if (date != null) {
+			return dateFormat.format(date);
+		}
+		return null;
+	}
+
+}

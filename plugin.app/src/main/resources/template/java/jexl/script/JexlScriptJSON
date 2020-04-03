@@ -1,0 +1,24 @@
+package #{$package};
+
+import com.alibaba.fastjson.JSON;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class #{$classname} {
+
+	public JSON toJson(Object arg) {
+		return to_json(arg);
+	}
+
+	public JSON to_json(Object arg) {
+		if (arg == null) {
+			return null;
+		}
+		if (arg instanceof String) {
+			return (JSON) JSON.parse(String.valueOf(arg));
+		}
+		return (JSON) JSON.toJSON(arg);
+	}
+
+}

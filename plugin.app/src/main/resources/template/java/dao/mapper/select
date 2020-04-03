@@ -1,0 +1,79 @@
+#ifStart($only_content == false)#
+package #{$package};
+
+import java.util.*;
+import com.teamide.util.*;
+import com.teamide.exception.*;
+
+import com.alibaba.fastjson.*;
+
+import com.teamide.bean.*;
+import com.teamide.param.*;
+import com.teamide.annotation.*;
+
+import org.springframework.stereotype.Repository;
+
+/**
+ * SQL Dao 查询
+ * #{$comment}
+ */
+@SuppressWarnings("unused")
+public interface #{$classname} extends #{$classname}Method {
+
+	#ifStart($sqlType == 'SELECT_PAGE')#
+	public PageResultBean<Map<String, Object>> #{$method_name}(@VariableData JSONObject data) throws Exception;
+	
+	#ifEnd#	
+	@Repository
+	public interface #{$classname}Mapper extends #{$classname}Method {
+	
+	}
+}
+#ifEnd#
+
+
+#ifStart($only_content == false)#
+
+/**
+ * SQL Dao Mapper
+ * #{$comment}
+ */
+@Repository
+interface #{$classname}Method {
+
+#ifEnd#
+
+	/**
+	 * 执行 
+	 * #{$method_name}
+	 * #{$comment}
+	 */
+	@DataSource()
+	#ifStart($sqlType == 'SELECT_ONE')#
+	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception;
+	#ifEnd#
+	#ifStart($sqlType == 'SELECT_LIST')#
+	public List<Map<String, Object>> #{$method_name}(@VariableData JSONObject data) throws Exception;
+	#ifEnd#
+	#ifStart($sqlType == 'SELECT_PAGE')#
+	public List<Map<String, Object>> #{$method_name}ForList(@VariableData JSONObject data) throws Exception;
+	
+	public int #{$method_name}ForCount(@VariableData JSONObject data) throws Exception;
+	#ifEnd#
+	
+	#forStart($subselects, $subselect, $index)#
+	/**
+	 * 子查询
+	 */
+	@DataSource()
+	#ifStart($subselect.queryone == true)#
+	public Map<String, Object> #{$query_name}#{$subselect.$method}(@VariableData JSONObject data) throws Exception;
+	#ifEnd#
+	#ifStart($subselect.queryone == false)#
+	public List<Map<String, Object>> #{$query_name}#{$subselect.$method}(@VariableData JSONObject data) throws Exception;
+	#ifEnd#
+	#forEnd#
+
+#ifStart($only_content == false)#
+}
+#ifEnd#

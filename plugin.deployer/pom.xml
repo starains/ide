@@ -2,20 +2,20 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.teamide</groupId>
-	<artifactId>ide.web</artifactId>
 	<version>0.0.1</version>
+	<artifactId>plugin.deployer</artifactId>
 	<properties>
-		<release.root>../release/${project.version}</release.root>
+		<release.root>../release/${project.version}/plugins/deployer</release.root>
+		<fastjson.version>1.2.47</fastjson.version>
+		<tomcat.version>8.5.43</tomcat.version>
 		<fileupload.version>1.3.3</fileupload.version>
-		<tomcat.version>8.5.41</tomcat.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.teamide</groupId>
-			<artifactId>ide.core</artifactId>
+			<artifactId>ide.starter</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
@@ -31,71 +31,28 @@
 			<artifactId>tomcat-embed-el</artifactId>
 			<version>${tomcat.version}</version>
 		</dependency>
+
+		<!-- JSON -->
 		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-websocket</artifactId>
-			<version>${tomcat.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-logging-juli</artifactId>
-			<version>8.5.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-logging-log4j</artifactId>
-			<version>8.5.2</version>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
 		</dependency>
 
+		<!-- commons-fileupload -->
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.7</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-access</artifactId>
-			<version>1.1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.1.7</version>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${fileupload.version}</version>
 		</dependency>
 
 	</dependencies>
 	<build>
-		<finalName>ide</finalName>
-		<resources>
-			<resource>
-				<directory>${project.basedir}/src/main/webapp</directory>
-				<targetPath>${project.build.outputDirectory}/META-INF/resources/</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory>src/main/java</directory>
-				<includes>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
+		<finalName>deployer</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -120,7 +77,7 @@
 					<archive>
 						<manifest>
 							<!-- 此处指定main方法入口的class -->
-							<mainClass>com.teamide.ide.IDEMain</mainClass>
+							<mainClass>com.teamide.deployer.IDEMain</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -146,29 +103,13 @@
 						</goals>
 						<configuration>
 							<encoding>UTF-8</encoding>
-							<outputDirectory>${release.root}/</outputDirectory>
+							<outputDirectory>${release.root}</outputDirectory>
 							<resources>
 								<resource>
 									<directory>target</directory>
 									<includes>
 										<include>*.jar</include>
 									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-config</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<encoding>UTF-8</encoding>
-							<outputDirectory>${release.root}/bin</outputDirectory>
-							<resources>
-								<resource>
-									<directory>bin</directory>
 								</resource>
 							</resources>
 						</configuration>

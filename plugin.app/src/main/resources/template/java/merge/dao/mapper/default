@@ -1,0 +1,58 @@
+#ifStart($only_content == false)#
+package #{$package};
+
+import java.util.*;
+import com.teamide.util.*;
+import com.teamide.exception.*;
+
+import com.alibaba.fastjson.*;
+
+import com.teamide.bean.*;
+import com.teamide.param.*;
+import com.teamide.annotation.*;
+
+import org.springframework.stereotype.Repository;
+
+
+/**
+ * SQL Dao
+ * #{$comment}
+ */
+@SuppressWarnings("unused")
+public interface #{$classname} extends #{$classname}Method {
+
+#forStart($list, $one)#
+	#ifStart($one.$sqlType == 'SELECT_PAGE')#
+	
+	public PageResultBean<Map<String, Object>> #{$one.$method_name}(@VariableData JSONObject data) throws Exception;
+	#ifEnd#	
+	#ifStart($one.$is_batch == true)#
+	/**
+	 * 执行
+	 */
+	@DataSource()
+	public List<Map<String, Object>> #{$one.$method_name}(JSON json, @VariableData JSONObject data) throws Exception;
+	#ifEnd#
+#forEnd#
+	@Repository
+	public interface #{$classname}Mapper extends #{$classname}Method {
+	
+	}
+}
+#ifEnd#
+#ifStart($only_content == false)#
+
+/**
+ * SQL Dao Mapper
+ * #{$comment}
+ */
+interface #{$classname}Method {
+
+#ifEnd#
+#forStart($list, $one)#
+
+#{$one.$content}
+#forEnd#
+#ifStart($only_content == false)#
+}
+#ifEnd#

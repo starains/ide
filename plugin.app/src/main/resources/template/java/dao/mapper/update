@@ -1,0 +1,59 @@
+#ifStart($only_content == false)#
+package #{$package};
+
+import java.util.*;
+import com.teamide.util.*;
+import com.teamide.exception.*;
+
+import com.alibaba.fastjson.*;
+
+import com.teamide.bean.*;
+import com.teamide.param.*;
+import com.teamide.annotation.*;
+
+import org.springframework.stereotype.Repository;
+
+/**
+ * SQL Dao 修改
+ * #{$comment}
+ */
+@SuppressWarnings("unused")
+public interface #{$classname} extends #{$classname}Method {
+
+	#ifStart($is_batch == true)#
+	/**
+	 * 执行
+	 */
+	@DataSource()
+	public List<Map<String, Object>> #{$method_name}(JSON json, @VariableData JSONObject data) throws Exception;
+	#ifEnd#
+
+	@Repository
+	public interface #{$classname}Mapper extends #{$classname}Method {
+	
+	}
+
+}
+#ifEnd#
+
+
+#ifStart($only_content == false)#
+
+/**
+ * SQL Dao Mapper
+ * #{$comment}
+ */
+@Repository
+interface #{$classname}Method {
+
+#ifEnd#
+
+	/**
+	 * 执行
+	 */
+	@DataSource()
+	public Map<String, Object> #{$method_name}(@VariableData JSONObject data) throws Exception;
+
+#ifStart($only_content == false)#
+}
+#ifEnd#

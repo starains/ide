@@ -58,5 +58,11 @@
 		<module>plugin</module>
 		<module>core</module>
 		<module>web</module>
+		<module>plugin.deployer</module>
+		<module>plugin.app</module>
+		<module>plugin.tomcat</module>
+		<module>plugin.tomcat-7.0.94</module>
+		<module>plugin.tomcat-8.0.53</module>
+		<module>plugin.tomcat-8.5.41</module>
 	</modules>
 </project>

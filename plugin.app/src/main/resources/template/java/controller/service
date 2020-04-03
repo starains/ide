@@ -1,0 +1,70 @@
+#ifStart($only_content == false)#
+package #{$package};
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
+import com.teamide.param.*;
+import com.teamide.bean.*;
+import com.teamide.annotation.*;
+import com.teamide.client.ClientHandler;
+import com.teamide.client.ClientSession;
+import com.teamide.exception.BaseException;
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
+import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+#forStart($imports, $import)#
+import #{$import};
+#forEnd#
+
+import #{$service.$package}.#{$service.$classname};
+
+@SuppressWarnings("unused")
+@Controller
+public class #{$classname} {
+
+	@Autowired
+	#{$app_factory.$classname} factory;
+	
+	//#{$service.$comment}
+	@Autowired
+	#{$service.$classname} #{$service.$propertyname};
+#ifEnd#
+
+	@Comment("#{$service.$comment}")
+	#ifStart($service.$requestmethod == null)#
+	@RequestMapping("#{$requestmapping}")
+	#ifEnd#
+	#ifStart($service.$requestmethod != null)#
+	@RequestMapping(path = "#{$requestmapping}", method = {RequestMethod.#{$service.$requestmethod}})
+	#ifEnd#
+	@ResponseBody
+	public Object #{$method_name}(HttpServletRequest request, HttpServletResponse response) {
+		Object result = null;
+		Exception exception = null;
+		try {
+			ClientSession session = ClientHandler.getSession(request);
+			DataParam param = new DataParam(request, session);
+
+			JSONObject data = new JSONObject();
+			if (param.getData() != null) {
+				data = (JSONObject) param.getData();
+			}
+			JSONObject variableCache = param.toVariableCache(data);
+			
+			result = #{$service.$propertyname}.#{$service.$method_name}(variableCache);
+		} catch (Exception e) {
+			exception = e;
+		}
+		
+		return factory.toStatus(result, exception);
+	}
+
+#ifStart($only_content == false)#
+}
+#ifEnd#

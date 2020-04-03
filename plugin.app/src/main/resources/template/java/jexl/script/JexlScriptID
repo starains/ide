@@ -1,0 +1,29 @@
+package #{$package};
+
+import com.teamide.util.IDGenerateUtil;
+import com.teamide.util.StringUtil;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class #{$classname} {
+
+	public String generate() {
+		return generate(null);
+	}
+
+	public String generate(Object arg) {
+		String format = StringUtil.str(arg);
+		if (StringUtil.isEmpty(format)) {
+			return IDGenerateUtil.generate();
+		}
+		switch (format.toUpperCase()) {
+		case "SHORT":
+			return IDGenerateUtil.generateShort();
+		default:
+			int length = Integer.valueOf(format);
+			return IDGenerateUtil.generate(length);
+		}
+	}
+
+}

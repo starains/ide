@@ -1,0 +1,136 @@
+#ifStart($only_content == false)#
+package #{$package};
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.util.regex.Pattern;
+
+import com.alibaba.fastjson.*;
+
+import com.teamide.bean.*;
+import com.teamide.util.*;
+import com.teamide.annotation.*;
+
+import com.teamide.client.ClientHandler;
+import com.teamide.client.ClientSession;
+import com.teamide.exception.*;
+import com.teamide.param.*;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+#forStart($imports, $import)#
+import #{$import};
+#forEnd#
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
+#forStart($propertys, $property)#
+import #{$property.$package}.#{$property.$classname};
+#forEnd#
+
+@SuppressWarnings("unused")
+@Controller
+#ifStart($requestmapping != null)#
+@RequestMapping("#{$requestmapping}")
+#ifEnd#
+public class #{$classname} {
+
+	@Autowired
+	#{$app_factory.$classname} factory;
+	#forStart($propertys, $property)#
+	
+	// #{$property.$comment}
+	@Autowired
+	#{$property.$classname} #{$property.$name};
+	#forEnd#
+#ifEnd#
+	#forStart($methods, $method)#
+	
+	/**
+	 * #{$method.name}
+	 * 说明：#{$method.comment}
+	 */
+	@Comment("#{$method.comment}")
+	#ifStart($method.requestmethod == null)#
+	@RequestMapping("#{$method.$requestmapping}")
+	#ifEnd#
+	#ifStart($method.requestmethod != null)#
+	@RequestMapping(path = "#{$method.$requestmapping}", method = {RequestMethod.#{$method.requestmethod}})
+	#ifEnd#
+	@ResponseBody
+	#ifStart($method.$userrequestbody == true)#
+	public Object #{$method.name}(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
+	#ifEnd#
+	#ifStart($method.$userrequestbody == false)#
+	public Object #{$method.name}(HttpServletRequest request, HttpServletResponse response) {
+	#ifEnd#
+		Object result = null;
+		Exception exception = null;
+		try {
+			ClientSession session = ClientHandler.getSession(request);
+			#ifStart($method.$userrequestbody == true)#
+			DataParam param = new DataParam(body, session);
+			#ifEnd#
+			#ifStart($method.$userrequestbody == false)#
+			DataParam param = new DataParam(request, session);
+			#ifEnd#
+	
+			JSONObject data = new JSONObject();
+			if (param.getData() != null) {
+				data = (JSONObject) param.getData();
+			}
+			JSONObject variableCache = param.toVariableCache(data);
+			// 用于暂存字段取到的值
+			Object value = null;
+#ifStart($method.$variable_content != null)#
+#{$method.$variable_content}
+#ifEnd#
+#ifStart($method.$validate_content != null)#
+#{$method.$validate_content}
+#ifEnd#
+			#forStart($method.$processs, $process)#
+			#ifStart($process.$ifrule == null)#
+#ifStart($process.$variable_content != null)#
+#{$process.$variable_content}
+#ifEnd#
+#ifStart($process.$validate_content != null)#
+#{$process.$validate_content}
+#ifEnd#
+				#ifStart($process.$property != null)#
+				#ifStart($process.$dao != null)#
+			result = #{$process.$property.$name}.#{$process.$dao.$method_name}(variableCache);
+				#ifEnd#
+				#ifStart($process.$service != null)#
+			result = #{$process.$property.$name}.#{$process.$service.$method_name}(variableCache);
+				#ifEnd#
+				#ifEnd#
+			#ifEnd#
+			#ifStart($process.$ifrule != null)#
+			if(ObjectUtil.isTrue(factory.getValueByJexlScript("#{$process.$ifrule}", variableCache))){
+#{$process.$variable_content}
+#{$process.$validate_content}
+				#ifStart($process.$property != null)#
+					#ifStart($process.$dao != null)#
+				result = #{$process.$property.$name}.#{$process.$dao.$method_name}(variableCache);
+					#ifEnd#
+					#ifStart($process.$service != null)#
+				result = #{$process.$property.$name}.#{$process.$service.$method_name}(variableCache);
+					#ifEnd#
+				#ifEnd#
+			}
+			#ifEnd#
+			#forEnd#
+		} catch (Exception e) {
+			exception = e;
+		}
+		
+		return factory.toStatus(result, exception);
+	}
+	#forEnd#
+
+#ifStart($only_content == false)#
+}
+#ifEnd#

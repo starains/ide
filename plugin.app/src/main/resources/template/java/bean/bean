@@ -1,0 +1,34 @@
+package #{$package};
+
+import java.io.Serializable;
+import com.teamide.annotation.*;
+
+/**
+ * Bean
+ * #{$comment}
+ */
+@Comment("#{$comment}")
+public class #{$classname} implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	#forStart($propertys, $property)#
+	// #{$property.$comment}
+	@Comment("#{$property.$comment}")
+	private #{$property.$type} #{$property.$name};
+	
+	#forEnd#
+	#forStart($propertys, $property)#
+	public #{$property.$type} #{$property.$getname}() {
+		return #{$property.$name};
+	}
+
+	public void #{$property.$setname}(#{$property.$type} #{$property.$name}) {
+		this.#{$property.$name} = #{$property.$name};
+	}
+	#forEnd#
+
+}

@@ -1,0 +1,19 @@
+package #{$package};
+
+import com.alibaba.fastjson.JSONArray;
+import com.teamide.util.TreeUtil;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class #{$classname} {
+
+	public JSONArray toTree(JSONArray array, String idName, String parentidName, String childrenName) {
+		return to_tree(array, idName, parentidName, childrenName);
+	}
+
+	public JSONArray to_tree(JSONArray array, String idName, String parentidName, String childrenName) {
+		return TreeUtil.toTree(array, idName, parentidName, childrenName);
+	}
+
+}

@@ -1,0 +1,11 @@
+#ifStart($only_content == false)#
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="#{$package}.#{$classname}$#{$classname}Mapper">
+#ifEnd#
+	<!-- #{$comment} -->
+	<update id="#{$method_name}" parameterType="Map" >
+#{$content_mapper}
+	</update>
+#ifStart($only_content == false)#
+</mapper>
+#ifEnd#

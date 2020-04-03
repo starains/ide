@@ -1,0 +1,40 @@
+#ifStart($only_content == false)#
+package #{$package};
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
+import com.teamide.param.*;
+import com.teamide.bean.*;
+import com.teamide.annotation.*;
+import com.teamide.client.ClientHandler;
+import com.teamide.client.ClientSession;
+import com.teamide.exception.BaseException;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+#forStart($imports, $import)#
+import #{$import};
+#forEnd#
+
+import #{$dictionary.$package}.#{$dictionary.$classname};
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
+@Controller
+public class #{$classname} {
+
+#ifEnd#
+	@RequestMapping("/app/dictionary/#{$dictionary.$name}")
+	@ResponseBody
+	public Object #{$method_name}(HttpServletRequest request, HttpServletResponse response) {
+	
+		Status status = Status.SUCCESS();
+		status.setValue(#{$dictionary.$classname}.getOptions());
+		return status;
+	}
+#ifStart($only_content == false)#
+}
+#ifEnd#

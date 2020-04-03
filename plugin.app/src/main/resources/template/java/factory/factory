@@ -1,0 +1,167 @@
+package #{$package};
+
+import com.teamide.bean.*;
+import com.teamide.param.*;
+import com.teamide.exception.*;
+import com.teamide.util.LogUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.jexl3.JexlException;
+import org.slf4j.Logger;
+
+import javax.annotation.PostConstruct;
+
+import com.alibaba.fastjson.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import #{$database_factory.$package}.#{$database_factory.$classname};
+import #{$IDao.$package}.#{$IDao.$classname};
+import #{$jexl_processor.$package}.#{$jexl_processor.$classname};
+
+/**
+ * AppFactory
+ * 应用工厂
+ */
+@Component("teamide-factory")
+public class #{$classname} {
+	
+	static Logger logger = LogUtil.get();
+	
+	public static #{$classname} factory;
+
+	@PostConstruct
+	public void init() {
+		factory = this;
+	}
+	
+	@Autowired
+	private #{$database_factory.$classname} databaseFactory;
+
+	/**
+	 * jexl表达式处理器，解析字符表达式，得到结果
+	 */
+	@Autowired
+	public #{$jexl_processor.$classname} jexlProcessor;
+
+	/**
+	 * 获取Dao
+	 */
+	public #{$IDao.$classname} getDao(JSONObject json) throws Exception {
+		return databaseFactory.getDao(json);
+	}
+	
+	/**
+	 * 根据库名获取Dao
+	 */
+	public #{$IDao.$classname} getDao(String databaseName, JSONObject json) throws Exception {
+		return databaseFactory.getDao(databaseName, json);
+	}
+	
+	/**
+	 * 包装表名，可以分表，分库等
+	 * 如根据数据，包装为 库名.表名
+	 * 如果不包装 直接返回tableName
+	 */
+	public String wrapTableName(String tableName, JSONObject json) throws Exception {
+		return databaseFactory.wrapTableName(tableName, json);
+	}
+
+	/**
+	 * 传入表达式和data，获取表达式值
+	 * 
+	 * @param jexlScript
+	 *            表达式
+	 * @param data
+	 *            数据
+	 * @return 表达式解析结果
+	 */
+	public Object getValueByJexlScript(String jexlScript, JSONObject data) {
+
+		try {
+			return jexlProcessor.invoke(jexlScript, data);
+		} catch (JexlException.Variable e) {
+			logger.warn(e.getMessage());
+		}
+		return null;
+	}
+
+	/**
+	 * 将结果转成status
+	 * 
+	 * @param result
+	 *            结果
+	 * @return status 转后的返回
+	 */
+	public Object toStatus(Object result, Exception e) {
+		if (e != null) {
+			Status error = Status.FAIL();
+			error.setErrmsg(e.getMessage());
+			if (e instanceof BaseException) {
+				BaseException base = (BaseException) e;
+				error.setErrcode(base.getErrcode());
+				error.setErrmsg(base.getErrmsg());
+			} else if (e instanceof NullPointerException) {
+				error.setErrmsg("null pointer exception.");
+				e.printStackTrace();
+			}
+			return error;
+		}
+		Status status = Status.SUCCESS();
+		if (result != null) {
+			if (!(result instanceof ResultBean)) {
+				status.setValue(result);
+			} else {
+				return result;
+			}
+		}
+		return status;
+	}
+
+	public SqlValues toSqlValues(String sql, Map<String, Object> param) {
+
+		List<String> names = new ArrayList<String>();
+		Pattern pattern = Pattern.compile(":([\\w|\\-|.|:|$|#|+|_|-|{|}|\\]|\\[]+)");
+		Matcher matcher = pattern.matcher(sql);
+		while (matcher.find()) {
+			String group = matcher.group();
+			names.add(group.replace(":", ""));
+			group = group.replaceAll("\\{", "\\\\{");
+			group = group.replaceAll("\\}", "\\\\}");
+			group = group.replaceAll("\\[", "\\\\[");
+			group = group.replaceAll("\\]", "\\\\]");
+			sql = sql.replaceFirst(group, "?");
+		}
+		List<Object> values = new ArrayList<Object>();
+		if (names != null && param != null) {
+			for (int i = 0; i < names.size(); i++) {
+				String name = names.get(i);
+				Object value = param.get(name);
+				values.add(value);
+			}
+		}
+		return new SqlValues(sql, values);
+	}
+
+	public SqlValues toSqlValues(SqlParam sqlParam) {
+
+		return toSqlValues(sqlParam.getSql(), sqlParam.getParam());
+	}
+
+	public SqlValuesList toSqlValuesList(SqlParamList sqlParamList) {
+		SqlValuesList sqlValuesList = new SqlValuesList();
+		if (sqlParamList != null) {
+			for (SqlParam sqlParam : sqlParamList) {
+				SqlValues sqlValues = toSqlValues(sqlParam);
+				sqlValuesList.add(sqlValues);
+			}
+		}
+		return sqlValuesList;
+	}
+}

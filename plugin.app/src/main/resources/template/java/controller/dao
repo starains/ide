@@ -1,0 +1,75 @@
+#ifStart($only_content == false)#
+package #{$package};
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
+import com.teamide.bean.*;
+import com.teamide.param.*;
+import com.teamide.annotation.*;
+import com.teamide.client.ClientHandler;
+import com.teamide.client.ClientSession;
+import com.teamide.exception.BaseException;
+
+import #{$app_factory.$package}.#{$app_factory.$classname};
+
+import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+#forStart($imports, $import)#
+import #{$import};
+#forEnd#
+
+import #{$dao.$package}.#{$dao.$classname};
+
+@SuppressWarnings("unused")
+@Controller
+public class #{$classname} {
+
+	@Autowired
+	#{$app_factory.$classname} factory;
+
+	//#{$dao.$comment}
+	@Autowired
+	#{$dao.$classname} #{$dao.$propertyname};
+#ifEnd#
+	
+	@Comment("#{$dao.$comment}")
+	#ifStart($dao.$requestmethod == null)#
+	@RequestMapping("#{$requestmapping}")
+	#ifEnd#
+	#ifStart($dao.$requestmethod != null)#
+	@RequestMapping(path = "#{$requestmapping}", method = { RequestMethod.#{$dao.$requestmethod }})
+	#ifEnd#
+	@ResponseBody
+	public Object #{$method_name}(HttpServletRequest request, HttpServletResponse response) {
+		Object result = null;
+		Exception exception = null;
+		try {
+			ClientSession session = ClientHandler.getSession(request);
+			DataParam param = new DataParam(request, session);
+
+			JSONObject data = new JSONObject();
+			if (param.getData() != null) {
+				data = (JSONObject) param.getData();
+			}
+			JSONObject variableCache = param.toVariableCache(data);
+			
+			#ifStart($dao.$is_batch == true)#
+			result = #{$dao.$propertyname}.#{$dao.$method_name}(data, variableCache);
+			#ifEnd#
+			#ifStart($dao.$is_batch != true)#
+			result = #{$dao.$propertyname}.#{$dao.$method_name}(variableCache);
+			#ifEnd#
+		} catch (Exception e) {
+			exception = e;
+		}
+		
+		return factory.toStatus(result, exception);
+	}
+
+#ifStart($only_content == false)#
+}
+#ifEnd#

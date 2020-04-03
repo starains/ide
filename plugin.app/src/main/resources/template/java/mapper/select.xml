@@ -1,0 +1,28 @@
+#ifStart($only_content == false)#
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="#{$package}.#{$classname}$#{$classname}Mapper">
+#ifEnd#
+	<!-- #{$comment} -->
+	#ifStart($sqlType == 'SELECT_ONE')#
+	<select id="#{$method_name}" parameterType="Map" resultType="java.util.HashMap">
+#{$content_mapper}
+	</select>
+	#ifEnd#
+	#ifStart($sqlType == 'SELECT_LIST')#
+	<select id="#{$method_name}" parameterType="Map" resultType="java.util.HashMap">
+#{$content_mapper}
+	</select>
+	#ifEnd#
+	#ifStart($sqlType == 'SELECT_PAGE')#
+	<!-- #{$comment} 查询分页列表 -->
+	<select id="#{$method_name}ForList" parameterType="Map" resultType="java.util.HashMap">
+#{$content_mapper}
+	</select>
+	<!-- #{$comment} 统计 -->
+	<select id="#{$method_name}ForCount" parameterType="Map" resultType="java.lang.Integer">
+#{$content_count_mapper}
+	</select>
+	#ifEnd#
+#ifStart($only_content == false)#
+</mapper>
+#ifEnd#

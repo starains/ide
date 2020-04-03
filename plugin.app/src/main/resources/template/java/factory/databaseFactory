@@ -1,0 +1,38 @@
+package #{$package};
+
+import javax.sql.DataSource;
+
+import com.alibaba.fastjson.JSONObject;
+
+import #{$IDao.$package}.#{$IDao.$classname};
+
+public interface #{$classname} {
+
+	/**
+	 * 获取Dao 根据默认数据源生成Dao
+	 */
+	public #{$IDao.$classname} getDao(JSONObject json) throws Exception;
+
+	/**
+	 * 获取默认数据源
+	 */
+	public DataSource getDataSource(JSONObject json) throws Exception;
+
+	/**
+	 * 根据库名称获取数据源生成Dao
+	 */
+	public #{$IDao.$classname} getDao(String databaseName, JSONObject json) throws Exception;
+
+	/**
+	 * 根据库名称获取数据源
+	 */
+	public DataSource getDataSource(String databaseName, JSONObject json) throws Exception;
+
+	/**
+	 * 包装表名，可以分表，分库等
+	 * 如根据数据，包装为 库名.表名
+	 * 如果不包装 直接返回tableName
+	 */
+	public String wrapTableName(String tableName, JSONObject json) throws Exception;
+
+}
