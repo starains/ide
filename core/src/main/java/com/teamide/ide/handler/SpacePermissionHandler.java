@@ -30,6 +30,9 @@ public class SpacePermissionHandler {
 				break;
 			case DEVELOPER:
 				repositorys.addAll(RepositoryProcessorType.getList());
+				repositorys.remove(RepositoryProcessorType.BRANCH_CREATE);
+				repositorys.remove(RepositoryProcessorType.GIT_REMOTE_ADD);
+
 				projects.addAll(ProjectProcessorType.getList());
 				break;
 			case VIEWER:

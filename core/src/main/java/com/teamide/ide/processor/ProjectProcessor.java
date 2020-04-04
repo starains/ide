@@ -120,7 +120,7 @@ public class ProjectProcessor extends RepositoryProcessor {
 			break;
 		case FILE_OPEN:
 			path = data.getString("path");
-			if (!StringUtil.isEmpty(path)) {
+			if (!StringUtil.isEmpty(path) && param.getSession().getUser() != null) {
 				Map<String, Object> p = new HashMap<String, Object>();
 				p.put("spaceid", param.getSpaceid());
 				p.put("userid", param.getSession().getUser().getId());
@@ -151,14 +151,16 @@ public class ProjectProcessor extends RepositoryProcessor {
 		case FILE_CLOSE:
 
 			path = data.getString("path");
-			Map<String, Object> p = new HashMap<String, Object>();
-			p.put("spaceid", param.getSpaceid());
-			p.put("userid", param.getSession().getUser().getId());
-			p.put("path", path);
+			if (!StringUtil.isEmpty(path) && param.getSession().getUser() != null) {
+				Map<String, Object> p = new HashMap<String, Object>();
+				p.put("spaceid", param.getSpaceid());
+				p.put("userid", param.getSession().getUser().getId());
+				p.put("path", path);
 
-			SpaceRepositoryOpenService spaceRepositoryOpenService = new SpaceRepositoryOpenService();
+				SpaceRepositoryOpenService spaceRepositoryOpenService = new SpaceRepositoryOpenService();
 
-			value = spaceRepositoryOpenService.delete(p);
+				value = spaceRepositoryOpenService.delete(p);
+			}
 			break;
 		case MAVEN_CLEAN:
 			path = data.getString("path");

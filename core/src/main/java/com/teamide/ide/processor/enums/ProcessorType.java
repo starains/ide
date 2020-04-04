@@ -15,8 +15,10 @@ public enum ProcessorType {
 	AUTO_LOGIN("AUTO_LOGIN", "自动登录"),
 
 	LOGOUT("LOGOUT", "登出"),
-
+	
 	REGISTER("REGISTER", "注册"),
+	
+	UPDATE_PASSWORD("UPDATE_PASSWORD", "修改密码"),
 
 	CONFIGURE_UPDATE("CONFIGURE_UPDATE", "配置修改"),
 
@@ -33,6 +35,12 @@ public enum ProcessorType {
 	REMOTE_UPDATE("REMOTE_UPDATE", "远程服务器修改"),
 
 	REMOTE_DELETE("REMOTE_DELETE", "远程服务器删除"),
+
+	PLUGIN_CREATE("PLUGIN_CREATE", "插件创建"),
+
+	PLUGIN_UPDATE("PLUGIN_UPDATE", "插件修改"),
+
+	PLUGIN_DELETE("PLUGIN_DELETE", "插件删除"),
 
 	;
 

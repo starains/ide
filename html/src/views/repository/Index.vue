@@ -11,7 +11,7 @@
         title="撑满屏幕"
       ></a>
       <a
-        class="repository-screen-control coos-icon coos-icon-fullscreen-exit"
+        class="repository-screen-control repository-screen-control-active coos-icon coos-icon-fullscreen-exit"
         @click="source.fullScreenExit()"
         v-if="repository.fullscreen"
         title="还原屏幕"
@@ -125,17 +125,18 @@ export default {
   top: 0px;
   right: 0px;
   z-index: 1;
-  height: 30px;
-  line-height: 30px;
+  height: 25px;
+  line-height: 25px;
 }
 .repository-screen-control {
   cursor: pointer;
   background: #efefef;
   color: #afafaf;
-  padding: 6px;
-  font-size: 18px;
+  padding: 4px;
+  font-size: 17px;
 }
-.repository-screen-control:hover {
+.repository-screen-control:hover,
+.repository-screen-control-active {
   background: #989898;
   color: #fff;
 }

@@ -18,6 +18,8 @@ public enum ModelType {
 
 	ENVIRONMENTS("ENVIRONMENTS", "环境", ModelDataType.LIST),
 
+	PLUGINS("PLUGINS", "插件", ModelDataType.LIST),
+
 	MASTER_SPACES("MASTER_SPACES", "管理的空间", ModelDataType.PAGE),
 
 	USERS("USERS", "人员", ModelDataType.PAGE),

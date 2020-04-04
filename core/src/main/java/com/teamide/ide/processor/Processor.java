@@ -3,6 +3,7 @@ package com.teamide.ide.processor;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.util.PasswordMD5Tool;
 import com.teamide.ide.util.TokenUtil;
+import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.IDEShare;
@@ -12,7 +13,11 @@ import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.bean.UserPreferenceBean;
+import com.teamide.ide.configure.IDEConfigure;
+import com.teamide.ide.exception.NoPermissionException;
 import com.teamide.ide.param.ProcessorParam;
+import com.teamide.ide.plugin.PluginHandler;
+import com.teamide.ide.plugin.PluginLoader;
 import com.teamide.ide.processor.enums.ProcessorType;
 import com.teamide.ide.service.IConfigureService;
 import com.teamide.ide.service.IRemoteService;
@@ -75,6 +80,9 @@ public class Processor extends ProcessorLoad {
 			installService.install(data);
 			break;
 		case REGISTER:
+			if (!ObjectUtil.isTrue(IDEConfigure.get().getOpenregister())) {
+				throw new Exception("未开放注册，请联系管理员！");
+			}
 			doRegister(data);
 			break;
 		case LOGIN:
@@ -86,7 +94,42 @@ public class Processor extends ProcessorLoad {
 		case LOGOUT:
 			doLogout(data);
 			break;
+		case UPDATE_PASSWORD:
+			if (this.param.getSession().getUser() == null) {
+				throw new Exception("用户登录信息丢失，请先登录！");
+			}
+			String oldpassword = data.getString("oldpassword");
+			String newpassword = data.getString("newpassword");
+			String repassword = data.getString("repassword");
+			if (StringUtil.isEmpty(oldpassword)) {
+				throw new Exception("请输入原密码！");
+			}
+			if (StringUtil.isEmpty(newpassword)) {
+				throw new Exception("请输入新密码！");
+			}
+			if (StringUtil.isEmpty(repassword)) {
+				throw new Exception("请确认新密码！");
+			}
+			if (!newpassword.equals(repassword)) {
+				throw new Exception("密码输入不一致，请重新确认密码！");
+			}
+			UserService userService = new UserService();
+			UserBean user = userService.get(this.param.getSession().getUser().getId());
+			oldpassword = PasswordMD5Tool.getPasswordMD5(oldpassword);
+			newpassword = PasswordMD5Tool.getPasswordMD5(newpassword);
+			repassword = PasswordMD5Tool.getPasswordMD5(repassword);
+
+			if (!oldpassword.equalsIgnoreCase(user.getPassword())) {
+				throw new Exception("原密码输入有误，请重新输入！");
+			}
+			UserBean updateUser = new UserBean();
+			updateUser.setId(user.getId());
+			updateUser.setPassword(newpassword);
+			userService.update(this.param.getSession(), updateUser);
+			break;
 		case CONFIGURE_UPDATE:
+			checkPermission(processorType);
+
 			IConfigureService configureService = new ConfigureService();
 			ConfigureBean configure = data.toJavaObject(ConfigureBean.class);
 			configure.setId("0");
@@ -94,18 +137,24 @@ public class Processor extends ProcessorLoad {
 
 			break;
 		case ENVIRONMENT_CREATE:
+			checkPermission(processorType);
+
 			IEnvironmentService environmentService = new EnvironmentService();
 			EnvironmentBean environment = data.toJavaObject(EnvironmentBean.class);
 			environmentService.insert(this.param.getSession(), environment);
 
 			break;
 		case ENVIRONMENT_DELETE:
+			checkPermission(processorType);
+
 			environmentService = new EnvironmentService();
 			environment = environmentService.get(data.getString("id"));
 			environmentService.delete(this.param.getSession(), environment);
 
 			break;
 		case ENVIRONMENT_UPDATE:
+			checkPermission(processorType);
+
 			environmentService = new EnvironmentService();
 			environment = data.toJavaObject(EnvironmentBean.class);
 			environmentService.update(this.param.getSession(), environment);
@@ -113,26 +162,63 @@ public class Processor extends ProcessorLoad {
 			break;
 
 		case REMOTE_CREATE:
+			checkPermission(processorType);
+
 			IRemoteService remoteService = new RemoteService();
 			RemoteBean remote = data.toJavaObject(RemoteBean.class);
 			remoteService.insert(this.param.getSession(), remote);
 
 			break;
 		case REMOTE_DELETE:
+			checkPermission(processorType);
+
 			remoteService = new RemoteService();
 			remote = remoteService.get(data.getString("id"));
 			remoteService.delete(this.param.getSession(), remote);
 
 			break;
 		case REMOTE_UPDATE:
+			checkPermission(processorType);
+
 			remoteService = new RemoteService();
 			remote = data.toJavaObject(RemoteBean.class);
 			remoteService.update(this.param.getSession(), remote);
 
 			break;
+
+		case PLUGIN_CREATE:
+			checkPermission(processorType);
+
+			String name = data.getString("name");
+			String version = data.getString("version");
+			PluginHandler.getPlugin(name, version);
+
+			break;
+		case PLUGIN_DELETE:
+			checkPermission(processorType);
+
+			name = data.getString("name");
+			version = data.getString("version");
+
+			PluginLoader loader = PluginHandler.getPluginLoader(name, version);
+			if (loader != null) {
+				loader.close();
+				loader.getJarFile().delete();
+			}
+			break;
+		case PLUGIN_UPDATE:
+			checkPermission(processorType);
+
+			break;
 		}
 
 		return null;
+	}
+
+	public void checkPermission(ProcessorType type) throws Exception {
+		if (!ObjectUtil.isTrue(this.param.getSession().get("isManager"))) {
+			throw new NoPermissionException("无权限操作！");
+		}
 	}
 
 	private UserBean doRegister(JSONObject data) throws Exception {

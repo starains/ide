@@ -3,7 +3,6 @@ source.isLogin = false;
 source.LOGIN_USER = null;
 source.isManager = false;
 source.roles = [];
-source.toRegister = false;
 source.SPACE_TYPE = null;
 source.branch = null;
 source.UPGRADE_STATUS = null;

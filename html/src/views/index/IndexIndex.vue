@@ -1,21 +1,21 @@
 <template>
   <div class="coos-jumbotron">
-    <h1 class="color-lime pdb-20">COOS IDE 应用在线开发平台</h1>
+    <h1 class="color-lime pdb-20">TeamIDE 团队在线开发平台</h1>
     <p>开发者可以在线建库、建表、可视化编辑页面、编辑服务、在线预览、导出工程的</p>
-    <p>COOS应用开发平台，致力于应用的自动开发，最大程度减少开发者编码，提高应用开发效率</p>
+    <p>TeamIDE开发平台，致力于项目在线开发，可视化开发，最大程度减少开发者编码，提高应用开发效率</p>
     <p v-if="!source.isLogin">
       现在
       <a @click="toLogin()" class="coos-link color-green pdlr-10">登录</a>
       开发者平台，在线开发您的应用吧！
     </p>
     <p v-if="source.isLogin">
-      <template v-if="source.LOGIN_USER.space == null">暂无空间数据，请联系管理员。</template>
+      <template v-if="source.LOGIN_USER.space == null">暂无仓库数据，请联系管理员。</template>
       <template v-else>
         您可以点击
         <a
           v-bind:href="app.getSpaceUrl(source.LOGIN_USER.space)"
           class="coos-link color-green pdlr-10"
-        >我的应用中心</a>管理您的应用。
+        >我的仓库</a>管理您的项目。
       </template>
     </p>
   </div>
@@ -26,6 +26,11 @@ export default {
   name: "IndexIndex",
   data() {
     return { source: source };
+  },
+  methods: {
+    toLogin() {
+      source.toLogin();
+    }
   }
 };
 </script>

@@ -4,7 +4,14 @@
       <div class="coos-row">
         <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange">系统设置</h3>
 
-        <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px">
+        <el-form
+          class="coos-row mgt-20"
+          :model="form"
+          status-icon
+          :rules="rules"
+          ref="form"
+          label-width="100px"
+        >
           <el-form-item class label="开启注册" prop="name">
             <el-switch type="text" v-model="form.openregister"></el-switch>
           </el-form-item>

@@ -1,7 +1,7 @@
 <template>
   <div class="app-min-page">
     <div class="coos-row">
-      <h3 class="pd-10 color-orange">部署服务器配置</h3>
+      <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange">部署服务器配置</h3>
       <div class="coos-row pd-10">
         <div class="float-right">
           <a class="coos-btn bg-green" @click="toInsert()">新增</a>

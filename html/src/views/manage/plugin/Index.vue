@@ -1,18 +1,16 @@
 <template>
   <div class="app-min-page">
     <div class="coos-row">
-      <h3 class="pd-10 color-orange">环境配置</h3>
+      <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange">插件管理</h3>
       <div class="coos-row pd-10">
         <div class="float-right">
           <a class="coos-btn bg-green" @click="toInsert()">新增</a>
         </div>
       </div>
       <div class="coos-row pd-10">
-        <el-table :data="source.data.ENVIRONMENTS" style="width: 100%">
+        <el-table :data="source.data.PLUGINS" style="width: 100%">
           <el-table-column prop="name" label="名称" width="100"></el-table-column>
-          <el-table-column prop="type" label="类型" width="100"></el-table-column>
           <el-table-column prop="version" label="版本" width="100"></el-table-column>
-          <el-table-column prop="path" label="路径"></el-table-column>
           <el-table-column>
             <template slot-scope="scope">
               <a class="coos-btn bg-green" @click="toUpdate(scope.row)">修改</a>
@@ -34,20 +32,8 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" type="text" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="form.type" placeholder="请选择">
-            <el-option label="Java" value="JAVA"></el-option>
-            <el-option label="Tomcat" value="TOMCAT"></el-option>
-            <el-option label="Git" value="GIT"></el-option>
-            <el-option label="Maven" value="MAVEN"></el-option>
-            <el-option label="Node" value="NODE"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="版本" prop="version">
           <el-input v-model="form.version" type="text" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="路径" prop="path">
-          <el-input v-model="form.path" type="text" autocomplete="off"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -61,22 +47,22 @@
 
 <script>
 export default {
-  name: "EnvironmentIndex",
+  name: "PluginIndex",
   data() {
     return {
       source: source,
       list: null,
       title: "编辑",
-      labelWidth: "120px",
+      labelWidth: "170px",
       size: "mini",
       source: source,
       show_form: false,
       form: {
         id: "",
         name: "",
-        path: "",
-        type: "",
-        version: ""
+        token: "",
+        mode: "",
+        server: ""
       },
       form_rules: {
         name: [
@@ -90,20 +76,6 @@ export default {
           {
             required: true,
             message: "请输入版本",
-            trigger: "blur"
-          }
-        ],
-        path: [
-          {
-            required: true,
-            message: "请填写路径",
-            trigger: "blur"
-          }
-        ],
-        type: [
-          {
-            required: true,
-            message: "请选中类型",
             trigger: "blur"
           }
         ]
@@ -136,19 +108,22 @@ export default {
           this.hideForm();
 
           if (coos.isEmpty(data.id)) {
-            source.do("ENVIRONMENT_CREATE", data).then(res => {
+            source.do("PLUGIN_CREATE", data).then(res => {
               if (res.errcode == 0) {
                 coos.success("新增成功！");
-                source.load("ENVIRONMENTS", {});
+                source.load("PLUGINS", {});
               } else {
                 coos.error(res.errmsg);
+                window.setTimeout(res => {
+                  this.show_form = true;
+                }, 300);
               }
             });
           } else {
-            source.do("ENVIRONMENT_UPDATE", data).then(res => {
+            source.do("PLUGIN_UPDATE", data).then(res => {
               if (res.errcode == 0) {
                 coos.success("修改成功！");
-                source.load("ENVIRONMENTS", {});
+                source.load("PLUGINS", {});
               } else {
                 coos.error(res.errmsg);
               }
@@ -172,21 +147,23 @@ export default {
       let that = this;
 
       coos
-        .confirm("确定删除该记录？")
+        .confirm("确定删除该插件？")
         .then(res => {
-          source.do("ENVIRONMENT_DELETE", { id: data.id }).then(res => {
-            if (res.errcode == 0) {
-              coos.success("删除成功！");
-              source.load("ENVIRONMENTS", {});
-            } else {
-              coos.error(res.errmsg);
-            }
-          });
+          source
+            .do("PLUGIN_DELETE", { name: data.name, version: data.version })
+            .then(res => {
+              if (res.errcode == 0) {
+                coos.success("删除成功！");
+                source.load("PLUGINS", {});
+              } else {
+                coos.error(res.errmsg);
+              }
+            });
         })
         .catch(() => {});
     },
     init() {
-      source.load("ENVIRONMENTS", {});
+      source.load("PLUGINS", {});
     }
   },
   mounted() {

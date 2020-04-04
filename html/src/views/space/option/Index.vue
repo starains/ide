@@ -1,5 +1,5 @@
 <template>
-  <div class="app-min-page">
+  <div class="app-min-page space-option-page">
     <el-collapse v-if="source.space != null" class="bd" v-model="activeName" accordion>
       <el-collapse-item title name="1">
         <template slot="title">
@@ -148,5 +148,14 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style >
+.space-option-page .el-collapse-item__header {
+  background-color: #f7f7f7;
+  height: 35px;
+  line-height: 35px;
+}
+.space-option-page .el-collapse-item__content {
+  padding: 20px;
+  border-top: 1px solid #ebeef5;
+}
 </style>

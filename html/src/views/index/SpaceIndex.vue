@@ -46,7 +46,7 @@ export default {
       source.load("VISIBLE_SPACES", data);
     },
     toSpaceCreate() {
-      this.$router.push("/space/create");
+      this.$router.push("/spaceCreate");
     }
   },
   mounted() {

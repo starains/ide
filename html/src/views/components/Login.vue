@@ -1,8 +1,8 @@
 <template>
-  <div class="login-page">
+  <div class="login-page" :class="{'show-login-page':source.show_login}">
     <div class="login-box">
       <div class="login-content">
-        <h2 class="text-center pd-10 color-green mgb-10">用户登录</h2>
+        <h3 class="text-center pd-10 color-white mgb-10">用户登录</h3>
         <el-form :model="form" status-icon :rules="rules" ref="login-form">
           <el-form-item class label prop="loginname">
             <el-input type="text" v-model="form.loginname" autocomplete="off">
@@ -22,7 +22,7 @@
         <div class="mgt-10 pdb-20" v-if="source.CONFIGURE.openregister">
           <div class="float-right">
             暂无账号？
-            <a class="coos-link color-orange" @click="toRegister()">注册账号</a>
+            <a class="coos-link color-white" @click="toRegister()">注册账号</a>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     toRegister() {
-      source.toRegister = true;
+      source.toRegister();
     },
     doLogin() {
       this.$refs["login-form"].validate(valid => {
@@ -112,6 +112,13 @@ export default {
   },
   mounted() {
     this.init();
+    let that = this;
+    $(this.$el).click(function(e) {
+      if ($(e.target).closest(".login-box").length > 0) {
+        return;
+      }
+      source.show_login = false;
+    });
   },
   beforeCreate() {}
 };
@@ -119,27 +126,34 @@ export default {
 
 <style  >
 .login-page {
-  position: fixed;
+  position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #ddd;
-  z-index: 1;
-  left: 0px;
+  z-index: 100;
   top: 0px;
+  left: 0px;
+  transition: all 0.3s;
+  transform: scale(0);
+}
+.login-page.show-login-page {
+  transform: scale(1);
 }
 .login-page .login-box {
   position: relative;
+  width: 360px;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 1px 10px 30px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: 1px 10px 30px -10px rgba(0, 0, 0, 0.5);
+  background: #aac4bc;
+  background: linear-gradient(135deg, #aac4bc 0%, #eca8a8 100%, #eed5a9 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfd8dc', endColorstr='#b0bec5',GradientType=1 );
   left: 50%;
   top: 50%;
-  width: 350px;
+  margin-left: -180px;
+  margin-top: -200px;
 }
 .login-page .login-content {
   padding: 15px;
-  background-color: #f7f7f7;
-  box-shadow: 1px 1px 7px #d0d0d0;
-  margin-left: -50%;
-  margin-top: -60%;
-  width: 350px;
 }
 .login-page .el-checkbox.is-checked .el-checkbox__inner {
   background-color: #4caf50;

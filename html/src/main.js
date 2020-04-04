@@ -3,11 +3,13 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+
+import app from "@/common/js/app";
+import source from "@/source/index";
+
 import App from './App'
 import router from './router'
 import store from './store'
-import app from "@/common/js/app";
-import source from "@/source/index";
 
 
 Vue.use(ElementUI);

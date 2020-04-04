@@ -9,7 +9,7 @@
         </li>
         <li>
           <a :href="_ROOT_URL">
-            <h2 class>COOS</h2>
+            <h2 class>TeamIDE</h2>
           </a>
         </li>
         <li>
@@ -28,13 +28,16 @@
           <a>系统管理</a>
           <ul class="coos-nav-ul">
             <li class>
-              <router-link to="/configure">系统设置</router-link>
+              <router-link to="/manage/configure">系统设置</router-link>
             </li>
             <li class>
-              <router-link to="/environment">TeamIDE环境配置</router-link>
+              <router-link to="/manage/environment">TeamIDE环境配置</router-link>
             </li>
             <li class>
-              <router-link to="/remote">远程服务器配置</router-link>
+              <router-link to="/manage/remote">远程服务器配置</router-link>
+            </li>
+            <li class>
+              <router-link to="/manage/plugin">插件管理</router-link>
             </li>
           </ul>
         </li>
@@ -49,7 +52,10 @@
           </a>
           <ul class="coos-nav-ul">
             <li class>
-              <a :href="app.getSpaceUrl(source.LOGIN_USER.space)" style>我的应用中心</a>
+              <a :href="app.getSpaceUrl(source.LOGIN_USER.space)" style>我的仓库</a>
+            </li>
+            <li class>
+              <router-link to="/user/center">个人中心</router-link>
             </li>
             <li class>
               <a @click="doLogout()">退出</a>
@@ -58,6 +64,9 @@
         </li>
         <li class="coos-nav-left" v-if="source.LOGIN_USER != null">
           <a @click="source.toPreference()">偏好设置</a>
+        </li>
+        <li class="coos-nav-left" v-if="source.LOGIN_USER == null">
+          <a @click="source.toLogin()">登录</a>
         </li>
       </ul>
     </div>

@@ -91,29 +91,29 @@ export default {
       }
       tabs.push({
         icon: "coos-icon-linechart",
-        name: "/event",
+        name: "/space/event",
         text: "动态"
       });
       if (source.space.type != "USERS") {
         tabs.push({
           icon: "coos-icon-team",
-          name: "/team",
+          name: "/space/team",
           text: "成员"
         });
         tabs.push({
           icon: "coos-icon-setting",
-          name: "/option",
+          name: "/space/option",
           text: "设置"
         });
       } else {
         tabs.push({
           icon: "coos-icon-deploymentunit",
-          name: "/join",
+          name: "/space/join",
           text: "参与"
         });
         tabs.push({
           icon: "coos-icon-star",
-          name: "/star",
+          name: "/space/star",
           text: "星标"
         });
       }

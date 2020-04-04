@@ -187,7 +187,6 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		whereSql += "	id IN (SELECT spaceid FROM " + space_team_tablename + " WHERE recordid=:recordid AND type='"
 				+ SpaceTeamType.USERS.getValue() + "') ";
 		whereSql += "	) ";
-
 		String sql = "SELECT * FROM " + space_tablename + "  " + whereSql;
 		String countSql = "SELECT count(1) FROM " + space_tablename + "  " + whereSql;
 

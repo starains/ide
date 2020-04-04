@@ -13,6 +13,7 @@ import com.teamide.ide.handler.RemoteHandler;
 import com.teamide.ide.handler.SpaceHandler;
 import com.teamide.ide.handler.UserHandler;
 import com.teamide.ide.param.ProcessorParam;
+import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.processor.enums.ModelType;
 import com.teamide.ide.service.IConfigureService;
 import com.teamide.ide.service.IRemoteService;
@@ -132,6 +133,9 @@ public class ProcessorLoad extends ProcessorBase {
 			userService = new UserService();
 			value = userService.queryPage(param, pageindex, pagesize);
 
+			break;
+		case PLUGINS:
+			value = PluginHandler.getPlugins();
 			break;
 		}
 		return value;

@@ -1,6 +1,6 @@
 .editor-box {
 	position: absolute;
-	background: #E6E6E6;
+	background: #262626;
 	left: 0px;
 	top: 0px;
 	right: 0px;
@@ -15,6 +15,7 @@
 	height: 40px;
 }
 
+}
 .editor-header .coos-nav li .coos-icon {
 	padding-top: 2px;
 }
@@ -75,6 +76,8 @@
 	display: none;
 	border: 1px solid #ddd;
 	padding: 10px;
+	bottom: 0px;
+	overflow: auto;
 }
 
 .open-help.editor-help {

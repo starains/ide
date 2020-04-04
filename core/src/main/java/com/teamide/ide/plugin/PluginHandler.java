@@ -55,8 +55,13 @@ public class PluginHandler {
 		}
 		synchronized (LOCK) {
 			for (PluginLoader loader : CACHE.values()) {
-				if (loader.changed()) {
-					loader.reload();
+				if (!loader.getJarFile().exists()) {
+					loader.close();
+					CACHE.remove(getKey(loader.getPlugin()));
+				} else {
+					if (loader.changed()) {
+						loader.reload();
+					}
 				}
 			}
 		}

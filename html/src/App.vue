@@ -3,36 +3,26 @@
   <div class="app">
     <Header></Header>
     <template v-if="source.installed">
-      <template v-if="source.LOGIN_USER != null">
-        <template v-if="source.space == null">
-          <template v-if="source.SPACE_TYPE == null">
-            <router-view></router-view>
-          </template>
-          <template v-else>
-            <template v-if="source.space != null">
-              <Toolbar></Toolbar>
-            </template>
-            <router-view></router-view>
-          </template>
+      <template v-if="source.space == null">
+        <template v-if="source.SPACE_TYPE == null">
+          <router-view></router-view>
         </template>
         <template v-else>
           <template v-if="source.space != null">
             <Toolbar></Toolbar>
           </template>
           <router-view></router-view>
-          <template v-if="source.SPACE_TYPE =='REPOSITORYS'">
-            <template v-if="source.NOT_FOUND_REPOSITORY_BRANCH == null">
-              <Rpository ref="repository" :repository="source.repository"></Rpository>
-            </template>
-          </template>
         </template>
       </template>
       <template v-else>
-        <template v-if="source.toRegister">
-          <Register></Register>
+        <template v-if="source.space != null">
+          <Toolbar></Toolbar>
         </template>
-        <template v-else>
-          <Login></Login>
+        <router-view></router-view>
+        <template v-if="source.SPACE_TYPE =='REPOSITORYS'">
+          <template v-if="source.NOT_FOUND_REPOSITORY_BRANCH == null">
+            <Rpository ref="repository" :repository="source.repository"></Rpository>
+          </template>
         </template>
       </template>
     </template>
@@ -40,6 +30,8 @@
       <Install></Install>
     </template>
     <PreferenceForm ref="preference-form"></PreferenceForm>
+    <Login></Login>
+    <Register></Register>
   </div>
 </template>
 <script>
@@ -50,6 +42,7 @@ import Install from "@/views/components/Install";
 import Toolbar from "@/views/components/Toolbar";
 import PreferenceForm from "@/views/components/PreferenceForm";
 import Rpository from "@/views/repository/Index";
+import IndexIndex from "@/views/index/IndexIndex";
 
 export default {
   name: "App",
@@ -60,7 +53,8 @@ export default {
     Register,
     Install,
     Rpository,
-    PreferenceForm
+    PreferenceForm,
+    IndexIndex
   },
   data() {
     return { source: source };

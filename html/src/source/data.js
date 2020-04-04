@@ -134,10 +134,8 @@
                     source.roles.push(role);
                 });
             }
-            if (source.isLogin) {
-                if (!coos.isEmpty(source.spaceid)) {
-                    source.load('SPACE');
-                }
+            if (!coos.isEmpty(source.spaceid)) {
+                source.load('SPACE');
             }
             source.initPreferenceStyle();
             return;

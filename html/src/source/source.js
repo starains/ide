@@ -1,3 +1,4 @@
+import source from "./data";
 
 
 (function () {
@@ -42,5 +43,17 @@
             }
         });
     };
+    source.show_login = false;
+    source.show_register = false;
+    source.toRegister = function () {
+        source.show_register = true;
+        source.show_login = false;
+    };
+    source.toLogin = function () {
+        source.show_register = false;
+        source.show_login = true;
+
+    };
+
 })();
 export default source;

@@ -119,18 +119,18 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  >
 .repository-tab-box {
-  margin-right: 30px;
+  margin-right: 25px;
 }
 .repository-tab-box .el-tabs__header {
   margin: 0px;
 }
 .repository-tab-box .el-tabs__nav-next,
 .repository-tab-box .el-tabs__nav-prev {
-  height: 30px;
-  line-height: 30px;
+  height: 25px;
+  line-height: 25px;
 }
 .repository-tab-box .el-tabs__nav {
-  height: 30px;
+  height: 25px;
 }
 .repository-tab-box .el-tabs__nav-scroll {
   margin-left: -1px;
@@ -140,10 +140,10 @@ export default {
 }
 .repository-tab-box .el-tabs--card > .el-tabs__header .el-tabs__item {
   font-size: 12px;
-  padding-left: 10px;
-  padding-right: 10px;
-  height: 30px;
-  line-height: 30px;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  height: 25px;
+  line-height: 25px;
 }
 .repository-tab-box .el-tabs__item.is-active,
 .repository-tab-box .el-tabs__item:hover {
@@ -152,7 +152,7 @@ export default {
 .repository-tab-editor-box {
   position: absolute;
   bottom: 0px;
-  top: 30px;
+  top: 25px;
   left: 0px;
   right: 0px;
 }

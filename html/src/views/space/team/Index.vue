@@ -10,7 +10,7 @@
             暂无成员数据
             <template v-if="source.hasPermission('SPACE_TEAM_INSERT')">
               ，可以点击
-              <router-link to="/team/form">
+              <router-link to="/space/teamForm">
                 <a class="coos-link pdlr-10 color-green">添加成员</a>
               </router-link>！
             </template>
@@ -21,7 +21,7 @@
             <div class="coos-content"></div>
             <div class="coos-flex-right">
               <template v-if="source.hasPermission('SPACE_TEAM_INSERT')">
-                <router-link to="/team/form">
+                <router-link to="/space/teamForm">
                   <a class="coos-link color-green mgl-5" title="添加人员">
                     <i class="coos-icon coos-icon-addteam"></i> 添加成员
                   </a>
@@ -59,7 +59,7 @@
               <a v-if="one.publictype == 'PRIVATE'" class="color-orange mgl-5" title="私人">
                 <i class="coos-icon coos-icon-lock"></i>
               </a>
-              <router-link :to="'/team/form?id=' + one.id">
+              <router-link :to="'/space/teamForm?id=' + one.id">
                 <a
                   v-if="source.hasPermission('SPACE_TEAM_DELETE')"
                   class="coos-link color-green mgl-5"

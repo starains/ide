@@ -8,6 +8,7 @@
         :label-width="labelWidth"
         class
         :size="size"
+        @submit.native.prevent
       >
         <el-form-item label="编辑器字体大小" prop="fontsize">
           <el-input-number v-model="form.fontsize" :min="1" :max="50"></el-input-number>
