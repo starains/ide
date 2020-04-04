@@ -29,7 +29,6 @@ public class SpacePermissionHandler {
 				projects.addAll(ProjectProcessorType.getList());
 				break;
 			case DEVELOPER:
-				spaces.addAll(SpaceProcessorType.getList());
 				repositorys.addAll(RepositoryProcessorType.getList());
 				projects.addAll(ProjectProcessorType.getList());
 				break;
