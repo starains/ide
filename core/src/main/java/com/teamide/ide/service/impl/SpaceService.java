@@ -25,6 +25,7 @@ import com.teamide.ide.enums.SpaceTeamType;
 import com.teamide.ide.enums.SpaceType;
 import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.handler.SpaceHandler;
+import com.teamide.ide.param.SpaceFormatParam;
 import com.teamide.ide.param.SpaceProcessorParam;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.param.PageSqlParam;
@@ -56,9 +57,9 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 
 		}
 		space = SpaceHandler.get(space.getId());
-		JSONObject formatSpace = SpaceHandler.getFormat(space);
+		SpaceFormatParam spaceFormat = SpaceHandler.getFormat(space, session);
 		File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
-		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceRootFolder, formatSpace);
+		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceRootFolder, spaceFormat);
 		if (!param.getSpaceFolder().exists()) {
 			param.getSpaceFolder().mkdirs();
 		}
@@ -363,11 +364,9 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		}
 		for (Map<String, Object> one : spaces) {
 			SpaceBean space = SpaceHandler.get(String.valueOf(one.get("id")));
-			JSONObject json = SpaceHandler.getFormat(space.getId());
-			SpacePermission permission = SpaceHandler.getPermission(space, session);
-			json.put("permission", permission);
+			SpaceFormatParam spaceFormat = SpaceHandler.getFormat(space, session);
 
-			json.put("login_user_star", false);
+			one.put("login_user_star", false);
 			if (session.getUser() != null) {
 				Map<String, Object> param = new HashMap<String, Object>();
 				param.put("spaceid", space.getId());
@@ -375,11 +374,11 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 
 				int count = queryCount(SpaceStarBean.class, param);
 				if (count > 0) {
-					json.put("login_user_star", true);
+					one.put("login_user_star", true);
 				}
 			}
 
-			one.putAll(json);
+			one.putAll((JSONObject) JSON.toJSON(spaceFormat));
 		}
 	}
 
@@ -398,13 +397,15 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 					break;
 				}
 
-				JSONObject parent_format = SpaceHandler.getFormat(parent.getId());
+				SpaceFormatParam parentSpaceFormat = SpaceHandler.getFormat(parent, session);
 
+				JSONObject parent_format = (JSONObject) JSON.toJSON(parentSpaceFormat);
 				List<SpaceBean> childs = getChilds(parent.getId());
 
 				List<JSONObject> child_formats = new ArrayList<JSONObject>();
 				for (SpaceBean child : childs) {
-					JSONObject child_format = SpaceHandler.getFormat(child.getId());
+					SpaceFormatParam childspaceFormat = SpaceHandler.getFormat(child.getId(), session);
+					JSONObject child_format = (JSONObject) JSON.toJSON(childspaceFormat);
 					child_formats.add(child_format);
 				}
 				parent_format.put("childs", child_formats);
@@ -445,9 +446,9 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		if (space == null) {
 			throw new Exception("空间数据不存在！");
 		}
-		JSONObject formatSpace = SpaceHandler.getFormat(space);
+		SpaceFormatParam spaceFormat = SpaceHandler.getFormat(space, session);
 		File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
-		SpaceProcessorParam processorParam = new SpaceProcessorParam(session, spaceRootFolder, formatSpace);
+		SpaceProcessorParam processorParam = new SpaceProcessorParam(session, spaceRootFolder, spaceFormat);
 
 		if (processorParam.getSpaceFolder().exists()) {
 			FileUtils.deleteDirectory(processorParam.getSpaceFolder());
@@ -464,9 +465,9 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		if (space == null) {
 			throw new Exception("空间数据不存在！");
 		}
-		JSONObject formatSpace = SpaceHandler.getFormat(space);
+		SpaceFormatParam spaceFormat = SpaceHandler.getFormat(space, session);
 		File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
-		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceRootFolder, formatSpace);
+		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceRootFolder, spaceFormat);
 		File parentFolder = param.getSpaceFolder().getParentFile();
 		if (new File(parentFolder, name).exists()) {
 			throw new Exception("名称【" + name + "】已存在！");

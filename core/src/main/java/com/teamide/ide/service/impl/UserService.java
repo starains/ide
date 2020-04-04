@@ -163,8 +163,8 @@ public class UserService extends BaseService<UserBean> implements IUserService {
 	}
 
 	@Override
-	public PageResultBean<Map<String, Object>> querySearch(String searchText, int pageindex, int pagesize)
-			throws Exception {
+	public PageResultBean<Map<String, Object>> querySearch(ClientSession session, String searchText, int pageindex,
+			int pagesize) throws Exception {
 		if (StringUtil.isEmpty(searchText)) {
 			return null;
 		}
@@ -190,14 +190,15 @@ public class UserService extends BaseService<UserBean> implements IUserService {
 		PageResultBean<Map<String, Object>> page = queryPageResult(sqlParam);
 		for (Map<String, Object> one : page.getValue()) {
 			JSONObject user_json = (JSONObject) JSONObject.toJSON(one);
-			JSONObject json = UserHandler.getFormat(user_json.toJavaObject(UserBean.class));
+			JSONObject json = UserHandler.getFormat(user_json.toJavaObject(UserBean.class), session);
 			one.putAll(json);
 		}
 		return page;
 	}
 
-	public PageResultBean<Map<String, Object>> queryPage(JSONObject param, int pageindex, int pagesize)
-			throws Exception {
+	@Override
+	public PageResultBean<Map<String, Object>> queryPage(ClientSession session, JSONObject param, int pageindex,
+			int pagesize) throws Exception {
 
 		String tablename = IDEFactory.getRealtablename(UserBean.class, param);
 		if (StringUtil.isEmpty(tablename)) {
@@ -217,7 +218,7 @@ public class UserService extends BaseService<UserBean> implements IUserService {
 		PageResultBean<Map<String, Object>> page = queryPageResult(sqlParam);
 		for (Map<String, Object> one : page.getValue()) {
 			JSONObject user_json = (JSONObject) JSONObject.toJSON(one);
-			JSONObject json = UserHandler.getFormat(user_json.toJavaObject(UserBean.class));
+			JSONObject json = UserHandler.getFormat(user_json.toJavaObject(UserBean.class), session);
 			one.putAll(json);
 		}
 		return page;

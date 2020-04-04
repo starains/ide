@@ -19,7 +19,7 @@ import org.apache.commons.io.FileUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.Status;
 import com.teamide.ide.constant.IDEConstant;
-import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.util.ZipUtil;
 import com.teamide.util.FileUtil;
@@ -29,9 +29,9 @@ import com.teamide.util.StringUtil;
 
 public class RepositoryFile extends RepositoryBase {
 
-	public final ProjectParam param;
+	public final ProjectProcessorParam param;
 
-	public RepositoryFile(ProjectParam param) {
+	public RepositoryFile(ProjectProcessorParam param) {
 		super(param);
 		this.param = param;
 	}

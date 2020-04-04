@@ -19,6 +19,7 @@ import com.teamide.ide.enums.PublicType;
 import com.teamide.ide.enums.SpacePermission;
 import com.teamide.ide.enums.SpaceTeamType;
 import com.teamide.ide.enums.SpaceType;
+import com.teamide.ide.param.SpaceFormatParam;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.ide.service.impl.SpaceService;
 
@@ -96,29 +97,26 @@ public class SpaceHandler {
 		return null;
 	}
 
-	public static JSONObject getFormat(String spaceid) {
+	public static SpaceFormatParam getFormat(String spaceid, ClientSession session) {
 		SpaceBean space = get(spaceid);
-		return getFormat(space);
+		return getFormat(space, session);
 	}
 
-	public static JSONObject getFormat(SpaceBean space) {
+	public static SpaceFormatParam getFormat(SpaceBean space, ClientSession session) {
 		if (space == null) {
 			return null;
 		}
-		JSONObject result = (JSONObject) JSON.toJSON(space);
 
-		JSONObject options = getOptions(space);
-		result.putAll(options);
-
-		return result;
+		return getSpaceFormatParam(space, session);
 
 	}
 
-	private static JSONObject getOptions(SpaceBean space) {
+	private static SpaceFormatParam getSpaceFormatParam(SpaceBean space, ClientSession session) {
 		if (space == null) {
 			return null;
 		}
-		JSONObject result = new JSONObject();
+		JSONObject json = (JSONObject) JSON.toJSON(space);
+		SpaceFormatParam param = json.toJavaObject(SpaceFormatParam.class);
 		String root = "";
 		String servletpath = "";
 
@@ -149,10 +147,10 @@ public class SpaceHandler {
 		}
 		servletpath = "/" + servletpath;
 
-		result = new JSONObject();
-		result.put("root", root);
-		result.put("servletpath", servletpath);
-		return result;
+		param.setRoot(root);
+		param.setServletpath(servletpath);
+		param.setPermission(getPermission(space, session, false));
+		return param;
 	}
 
 	public static File getSpaceRootFolder() {
@@ -160,11 +158,7 @@ public class SpaceHandler {
 		return spaceRootFolder;
 	}
 
-	public static SpacePermission getPermission(String spaceid, ClientSession session) {
-		return getPermission(get(spaceid), session);
-	}
-
-	public static SpacePermission getPermission(SpaceBean space, ClientSession session) {
+	private static SpacePermission getPermission(SpaceBean space, ClientSession session, boolean isParent) {
 		if (space == null) {
 			return null;
 		}
@@ -194,11 +188,11 @@ public class SpaceHandler {
 			if (!StringUtil.isEmpty(space.getParentid()) && !space.getParentid().equals(space.getId())) {
 				SpaceBean parent = get(space.getParentid());
 				if (parent != null) {
-					permission = getPermission(parent, session);
+					permission = getPermission(parent, session, true);
 				}
 			}
 		}
-		if (permission == null) {
+		if (permission == null && !isParent) {
 			if (String.valueOf(PublicType.OPEN.getValue()).equalsIgnoreCase(space.getPublictype())) {
 				permission = SpacePermission.VIEWER;
 			}

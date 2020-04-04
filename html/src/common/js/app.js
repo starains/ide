@@ -2,22 +2,6 @@ var app = window.app || new Object();
 window.app = app;
 (function () {
 
-    app.hasPermission = function (arg) {
-        let permission = source.space.permission;
-        if (permission == "MASTER") {
-            return true;
-        }
-        if (!coos.isEmpty(arg)) {
-            if (arg == 'MANAGER_TEAM') {
-                return false;
-            }
-        }
-        if (permission == "DEVELOPER") {
-            return true;
-        }
-        return false;
-    };
-
     app.toSpace = function (space) {
         var path = app.getSpacePath(space);
         coos.toURL(app.getURL(path));

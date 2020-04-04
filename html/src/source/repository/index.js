@@ -5,11 +5,13 @@ import file from "@/source/repository/file";
 import git from "@/source/repository/git";
 import maven from "@/source/repository/maven";
 import starter from "@/source/repository/starter";
-import app from "@/source/repository/app";
 
 source.repository.branchs = [];
 source.repository.projects = [];
 source.repository.fullscreen = false;
+source.repository.REPOSITORY_PERMISSIONS = [];
+source.repository.PROJECT_PERMISSIONS = [];
+source.NOT_FOUND_REPOSITORY_BRANCH = null;
 (function () {
     source.fullScreen = function () {
         source.repository.fullscreen = true;
@@ -40,16 +42,24 @@ source.repository.fullscreen = false;
     };
     source.onLoadRepository = function (value) {
         source.repository.loading = false;
+        if (value == null) {
+            source.NOT_FOUND_REPOSITORY_BRANCH = 'NOT_FOUND_REPOSITORY_BRANCH';
+            return;
+        }
         coos.trimList(source.repository.branchs);
         coos.trimList(source.repository.projects);
         coos.trimList(source.repository.starters);
         coos.trimList(source.repository.runners);
         coos.trimList(source.repository.opens);
         coos.trimList(source.repository.open_files);
+        coos.trimList(source.repository.REPOSITORY_PERMISSIONS);
+        coos.trimList(source.repository.PROJECT_PERMISSIONS);
         source.load('ENVIRONMENTS');
         source.load('REMOTES');
         source.load('STARTER_OPTIONS');
         source.load('STARTERS');
+        source.load('REPOSITORY_PERMISSIONS');
+        source.load('PROJECT_PERMISSIONS');
         if (value.branchs) {
             value.branchs.forEach(one => {
                 source.repository.branchs.push(one);

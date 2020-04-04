@@ -7,8 +7,8 @@ import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceStarBean;
 import com.teamide.ide.bean.SpaceTeamBean;
 import com.teamide.ide.bean.UserBean;
-import com.teamide.ide.enums.SpacePermission;
 import com.teamide.ide.handler.SpaceHandler;
+import com.teamide.ide.handler.SpacePermissionHandler;
 import com.teamide.ide.param.SpaceProcessorParam;
 import com.teamide.ide.processor.enums.SpaceModelType;
 import com.teamide.ide.processor.enums.SpaceProcessorType;
@@ -43,6 +43,9 @@ public class SpaceProcessor extends Processor {
 		if (processorType == null) {
 			return null;
 		}
+		ClientSession session = this.param.getSession();
+		SpacePermissionHandler.checkPermission(processorType, param.getPermission());
+
 		SpaceEventBean spaceEventBean = new SpaceEventBean();
 		spaceEventBean.setType(processorType.getValue());
 		spaceEventBean.setName(processorType.getText());
@@ -55,7 +58,7 @@ public class SpaceProcessor extends Processor {
 			SpaceBean space = data.toJavaObject(SpaceBean.class);
 			space = spaceService.insert(param.getSession(), space);
 
-			value = SpaceHandler.getFormat(space.getId());
+			value = SpaceHandler.getFormat(space.getId(), session);
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
@@ -67,7 +70,7 @@ public class SpaceProcessor extends Processor {
 			String name = data.getString("name");
 			spaceService.rename(param.getSession(), id, name);
 
-			value = SpaceHandler.getFormat(id);
+			value = SpaceHandler.getFormat(id, session);
 			break;
 		case SPACE_UPDATE:
 			spaceService = new SpaceService();
@@ -80,7 +83,7 @@ public class SpaceProcessor extends Processor {
 			space.setComment(comment);
 			spaceService.update(param.getSession(), space);
 
-			value = SpaceHandler.getFormat(id);
+			value = SpaceHandler.getFormat(id, session);
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
@@ -196,10 +199,10 @@ public class SpaceProcessor extends Processor {
 		JSONObject param = new JSONObject();
 		switch (modelType) {
 		case SPACE:
-			JSONObject space_format = SpaceHandler.getFormat(this.param.getSpaceid());
-			SpacePermission permission = SpaceHandler.getPermission(this.param.getSpaceid(), session);
-			space_format.put("permission", permission);
-			value = space_format;
+			value = SpaceHandler.getFormat(this.param.getSpaceid(), session);
+			break;
+		case SPACE_PERMISSIONS:
+			value = SpacePermissionHandler.getSpacePermissions(this.param.getPermission());
 			break;
 		case PARENTS:
 			ISpaceService spaceService = new SpaceService();

@@ -5,7 +5,6 @@ source.isManager = false;
 source.roles = [];
 source.toRegister = false;
 source.SPACE_TYPE = null;
-source.space = null;
 source.branch = null;
 source.UPGRADE_STATUS = null;
 source.UPGRADE_DOWNLOAD = { count: 0, downloaded_count: 0, downloading_path: '' };

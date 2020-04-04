@@ -1,5 +1,8 @@
 package com.teamide.ide.processor.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.teamide.util.StringUtil;
 
 public enum RepositoryProcessorType {
@@ -46,7 +49,17 @@ public enum RepositoryProcessorType {
 
 	STARTER_REMOVE("STARTER_REMOVE", "Starter Remove"),
 
-	STARTER_LOG_CLEAN("STARTER_LOG_CLEAN", "Starter Log Clean"),;
+	STARTER_LOG_CLEAN("STARTER_LOG_CLEAN", "Starter Log Clean"),
+
+	;
+
+	public static List<RepositoryProcessorType> getList() {
+		List<RepositoryProcessorType> list = new ArrayList<RepositoryProcessorType>();
+		for (RepositoryProcessorType type : RepositoryProcessorType.values()) {
+			list.add(type);
+		}
+		return list;
+	}
 
 	private RepositoryProcessorType(String value, String text) {
 		this.value = value;

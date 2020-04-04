@@ -89,12 +89,16 @@
                   </template>
 
                   <template v-if="item.status == 'STOPPED' || coos.isEmpty(item.status)">
-                    <a class="coos-btn coos-btn-xs bg-green" @click="source.startStarter(item)">启动</a>
+                    <a
+                      class="coos-btn coos-btn-xs bg-green"
+                      @click="source.startStarter(item)"
+                      :class="{'coos-disabled' :  !source.hasPermission('STARTER_START')}"
+                    >启动</a>
                   </template>
                   <template v-if="item.status == 'STARTED'">
                     <a
                       class="coos-btn coos-btn-xs bg-red"
-                      :class="{'coos-disabled' : item.status != 'STARTED'}"
+                      :class="{'coos-disabled' : item.status != 'STARTED' || !source.hasPermission('STARTER_STOP')}"
                       @click="source.stopStarter(item)"
                     >停止</a>
                   </template>
@@ -103,14 +107,23 @@
                     <a
                       class="coos-btn coos-btn-xs bg-orange"
                       @click="source.deployStarter(item)"
+                      :class="{'coos-disabled' :  !source.hasPermission('STARTER_START')}"
                     >重新部署</a>
                   </template>
                 </template>
                 <template v-if="item.status == 'STOPPED' ||  coos.isEmpty(item.status)">
-                  <a class="coos-btn coos-btn-xs bg-orange" @click="source.removeStarter(item)">移除</a>
+                  <a
+                    class="coos-btn coos-btn-xs bg-orange"
+                    @click="source.removeStarter(item)"
+                    :class="{'coos-disabled' :  !source.hasPermission('STARTER_REMOVE')}"
+                  >移除</a>
                 </template>
               </template>
-              <a class="coos-btn coos-btn-xs bg-orange" @click="source.cleanStarterLog(item)">清理日志</a>
+              <a
+                class="coos-btn coos-btn-xs bg-orange"
+                @click="source.cleanStarterLog(item)"
+                :class="{'coos-disabled' :  !source.hasPermission('STARTER_LOG_CLEAN')}"
+              >清理日志</a>
               <a class="coos-btn coos-btn-xs bg-blue" @click="source.reloadStarterLog(item)">重新加载日志</a>
             </div>
             <div class="repository-starter-log-box coos-scrollbar">

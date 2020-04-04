@@ -60,7 +60,7 @@ public class ProcessorLoad extends ProcessorBase {
 					value = userService.get(id);
 					break;
 				case "SPACE":
-					value = SpaceHandler.getFormat(id);
+					value = SpaceHandler.getFormat(id, session);
 					break;
 				case "SPACE_TEAM":
 					value = new SpaceTeamService().get(id);
@@ -74,7 +74,7 @@ public class ProcessorLoad extends ProcessorBase {
 			out.put("isManager", false);
 			out.put("roles", session.getCache("roles"));
 			if (session.getUser() != null && session.getCache("user") != null) {
-				JSONObject USER = UserHandler.getFormat((UserBean) session.getCache("user"));
+				JSONObject USER = UserHandler.getFormat((UserBean) session.getCache("user"), session);
 				out.put("LOGIN_USER", USER);
 				out.put("isManager", session.getCache("isManager"));
 				out.put("roles", session.getCache("roles"));
@@ -126,7 +126,7 @@ public class ProcessorLoad extends ProcessorBase {
 		case SEARCH_USERS:
 			IUserService userService = new UserService();
 			searchText = data.getString("searchText");
-			value = userService.querySearch(searchText, pageindex, pagesize);
+			value = userService.querySearch(session, searchText, pageindex, pagesize);
 			break;
 		case USERS:
 			userService = new UserService();

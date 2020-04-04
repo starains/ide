@@ -6,7 +6,10 @@ public enum RepositoryModelType {
 
 	REPOSITORY_STATUS("REPOSITORY_STATUS", "库状态", ModelDataType.ONE),
 
-	REPOSITORY("REPOSITORY", "库", ModelDataType.ONE),
+	REPOSITORY_PERMISSIONS("REPOSITORY_PERMISSIONS", "库", ModelDataType.LIST),
+
+	PROJECT_PERMISSIONS("PROJECT_PERMISSIONS", "库", ModelDataType.LIST), REPOSITORY("REPOSITORY", "库",
+			ModelDataType.ONE),
 
 	BRANCHS("BRANCHS", "版本", ModelDataType.LIST),
 

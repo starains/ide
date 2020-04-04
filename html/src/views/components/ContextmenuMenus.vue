@@ -9,7 +9,7 @@
           class
           :key="index"
           @click="onClick(menu)"
-          :class="{'has-sub' : menu.menus != null && menu.menus.length > 0}"
+          :class="{'has-sub' : menu.menus != null && menu.menus.length > 0, 'disabled' : menu.disabled}"
         >
           <a class :target="menu.target" :href="menu.href">{{menu.text}}</a>
           <template v-if="menu.menus != null">
@@ -36,9 +36,12 @@ export default {
   watch: {},
   methods: {
     onClick(menu) {
-      this.contextmenu.show = false;
       if (menu && menu.onClick) {
+        if (menu.disabled) {
+          return;
+        }
         menu.onClick();
+        this.contextmenu.show = false;
       }
     }
   },
@@ -107,7 +110,12 @@ li > a:focus,
   filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ff0088cc',
 		endColorstr='#ff0077b3', GradientType=0);
 }
-
+.disabled {
+  cursor: no-drop;
+  pointer-events: none;
+  opacity: 0.65;
+  filter: alpha(opacity = 65);
+}
 .disabled > a,
 .disabled > a:hover {
   color: #999;

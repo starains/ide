@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.constant.IDEConstant;
-import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.processor.param.ProjectOption;
 import com.teamide.ide.processor.repository.project.FileBean;
 import com.teamide.ide.processor.repository.project.ProjectBean;
@@ -134,7 +134,7 @@ public class PluginHandler {
 		return resources;
 	}
 
-	public static PluginParam getParam(ProjectParam param, IDEPlugin plugin) {
+	public static PluginParam getParam(ProjectProcessorParam param, IDEPlugin plugin) {
 		ProjectOption projectOption = new ProjectOption(param);
 		JSONObject option = new JSONObject();
 		if (StringUtil.isNotEmpty(plugin.getOptionType())) {
@@ -149,7 +149,7 @@ public class PluginHandler {
 
 	}
 
-	public static void loadProject(ProjectParam param, ProjectBean project) {
+	public static void loadProject(ProjectProcessorParam param, ProjectBean project) {
 
 		List<IDEPlugin> plugins = getPlugins();
 
@@ -166,7 +166,7 @@ public class PluginHandler {
 		}
 	}
 
-	public static void loadFile(ProjectParam param, FileBean fileBean, File file) {
+	public static void loadFile(ProjectProcessorParam param, FileBean fileBean, File file) {
 
 		List<IDEPlugin> plugins = getPlugins();
 
@@ -185,7 +185,7 @@ public class PluginHandler {
 		}
 	}
 
-	public static void createFile(ProjectParam param, File file) {
+	public static void createFile(ProjectProcessorParam param, File file) {
 
 		List<IDEPlugin> plugins = getPlugins();
 
@@ -200,7 +200,7 @@ public class PluginHandler {
 		}
 	}
 
-	public static void createFolder(ProjectParam param, File folder) {
+	public static void createFolder(ProjectProcessorParam param, File folder) {
 
 		List<IDEPlugin> plugins = getPlugins();
 
@@ -214,7 +214,7 @@ public class PluginHandler {
 		}
 	}
 
-	public static void updateFile(ProjectParam param, File file) {
+	public static void updateFile(ProjectProcessorParam param, File file) {
 
 		List<IDEPlugin> plugins = getPlugins();
 
@@ -228,7 +228,7 @@ public class PluginHandler {
 		}
 	}
 
-	public static void deleteFile(ProjectParam param, File file) {
+	public static void deleteFile(ProjectProcessorParam param, File file) {
 
 		List<IDEPlugin> plugins = getPlugins();
 
@@ -242,7 +242,7 @@ public class PluginHandler {
 		}
 	}
 
-	public static void deleteFolder(ProjectParam param, File folder) {
+	public static void deleteFolder(ProjectProcessorParam param, File folder) {
 
 		List<IDEPlugin> plugins = getPlugins();
 
@@ -256,7 +256,7 @@ public class PluginHandler {
 		}
 	}
 
-	public static void renameFile(ProjectParam param, File oldFile, File newFile) {
+	public static void renameFile(ProjectProcessorParam param, File oldFile, File newFile) {
 
 		List<IDEPlugin> plugins = getPlugins();
 
@@ -270,7 +270,7 @@ public class PluginHandler {
 		}
 	}
 
-	public static void renameFolder(ProjectParam param, File oldFolder, File newFolder) {
+	public static void renameFolder(ProjectProcessorParam param, File oldFolder, File newFolder) {
 
 		List<IDEPlugin> plugins = getPlugins();
 
@@ -284,7 +284,7 @@ public class PluginHandler {
 		}
 	}
 
-	public static void moveFile(ProjectParam param, File oldFile, File newFile) {
+	public static void moveFile(ProjectProcessorParam param, File oldFile, File newFile) {
 
 		List<IDEPlugin> plugins = getPlugins();
 
@@ -298,7 +298,7 @@ public class PluginHandler {
 		}
 	}
 
-	public static void moveFolder(ProjectParam param, File oldFolder, File newFolder) {
+	public static void moveFolder(ProjectProcessorParam param, File oldFolder, File newFolder) {
 
 		List<IDEPlugin> plugins = getPlugins();
 

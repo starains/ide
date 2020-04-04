@@ -14,7 +14,7 @@ import com.teamide.util.StringUtil;
 @Resource
 public class ResourcePluginMergeService {
 
-	private static String SRC_PATH = "ui/src/plugins/";
+	private static String SRC_PATH = "ui/plugins/";
 
 	public StringBuffer getJS(String name, String version) {
 

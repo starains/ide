@@ -1,5 +1,8 @@
 package com.teamide.ide.processor.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.teamide.util.StringUtil;
 
 public enum ProjectProcessorType {
@@ -39,6 +42,14 @@ public enum ProjectProcessorType {
 	DELETE_PLUGIN_OPTION("DELETE_PLUGIN_OPTION", "Starter Log Clean"),
 
 	;
+
+	public static List<ProjectProcessorType> getList() {
+		List<ProjectProcessorType> list = new ArrayList<ProjectProcessorType>();
+		for (ProjectProcessorType type : ProjectProcessorType.values()) {
+			list.add(type);
+		}
+		return list;
+	}
 
 	private ProjectProcessorType(String value, String text) {
 		this.value = value;

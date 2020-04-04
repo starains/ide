@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.handler.DeployHandler;
-import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.processor.repository.project.ProjectBean;
@@ -41,21 +41,20 @@ public class RepositoryLoad extends RepositoryBase {
 
 	public JSONObject loadRepository() throws Exception {
 
-		this.getLog().info("load " + param.getSpaceName() + "]版本[ " + this.param.getBranch() + "] workspace");
 		if (!this.param.getBranchFolder().exists()) {
-			this.getLog().error("库[" + param.getSpaceName() + "]版本[ " + this.param.getBranch() + "]未创建!");
-			return null;
+			throw new Exception("库[" + param.getSpaceName() + "]版本[ " + this.param.getBranch() + "]未创建!");
 		}
 		if (!this.param.getSourceFolder().exists()) {
 			this.param.getSourceFolder().mkdirs();
 		}
+		this.getLog().info("load " + param.getSpaceName() + "]版本[ " + this.param.getBranch() + "] workspace");
 		JSONObject result = new JSONObject();
 
 		ProjectLoader projectLoader = new ProjectLoader(param);
 		List<ProjectBean> projects = projectLoader.getProjects();
 
 		for (ProjectBean project : projects) {
-			ProjectParam projectParam = new ProjectParam(param, project.getPath());
+			ProjectProcessorParam projectParam = new ProjectProcessorParam(param, project.getPath());
 
 			PluginHandler.loadProject(projectParam, project);
 		}

@@ -9,7 +9,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceRepositoryOpenBean;
-import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.handler.SpacePermissionHandler;
+import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.processor.enums.ProjectModelType;
 import com.teamide.ide.processor.enums.ProjectProcessorType;
 import com.teamide.ide.processor.param.ProjectOption;
@@ -19,9 +20,9 @@ import com.teamide.ide.processor.repository.project.ProjectLoader;
 import com.teamide.ide.service.impl.SpaceRepositoryOpenService;
 
 public class ProjectProcessor extends RepositoryProcessor {
-	protected final ProjectParam param;
+	protected final ProjectProcessorParam param;
 
-	public ProjectProcessor(ProjectParam param) {
+	public ProjectProcessor(ProjectProcessorParam param) {
 		super(param);
 		this.param = param;
 	}
@@ -38,6 +39,7 @@ public class ProjectProcessor extends RepositoryProcessor {
 		if (processorType == null) {
 			return null;
 		}
+		SpacePermissionHandler.checkPermission(processorType, param.getPermission());
 		SpaceEventBean spaceEventBean = new SpaceEventBean();
 		spaceEventBean.setType(processorType.getValue());
 		spaceEventBean.setName(processorType.getText());

@@ -24,7 +24,11 @@
               <el-input v-model="source.space.comment" type="textarea" autocomplete="off" :rows="5"></el-input>
             </el-form-item>
           </el-form>
-          <div class="coos-btn bg-green" @click="update">保存</div>
+          <div
+            v-if="source.hasPermission('SPACE_UPDATE')"
+            class="coos-btn bg-green"
+            @click="update"
+          >保存</div>
         </div>
       </el-collapse-item>
       <el-collapse-item name="2">
@@ -37,7 +41,11 @@
               <el-input v-model="source.space.name" autocomplete="off" :rows="5"></el-input>
             </el-form-item>
           </el-form>
-          <div class="coos-btn bg-green" @click="rename">保存</div>
+          <div
+            v-if="source.hasPermission('SPACE_RENAME')"
+            class="coos-btn bg-green"
+            @click="rename"
+          >保存</div>
         </div>
       </el-collapse-item>
       <el-collapse-item name="3">
@@ -59,7 +67,7 @@
         <div class="pd-10">
           <div class="color-red pd-10 bd bd-red mgb-10">删除空间，将物理删除该空间所有数据！</div>
           <div class="color-red pd-10 bd bd-red mgb-10">此操作无法恢复！请慎重操作！</div>
-          <div class="coos-btn bg-red" @click="del">删除</div>
+          <div v-if="source.hasPermission('SPACE_DELETE')" class="coos-btn bg-red" @click="del">删除</div>
         </div>
       </el-collapse-item>
     </el-collapse>

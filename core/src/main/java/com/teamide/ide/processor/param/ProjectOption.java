@@ -6,14 +6,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceRepositoryOptionBean;
 import com.teamide.ide.enums.OptionType;
-import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.service.impl.SpaceRepositoryOptionService;
 
 public class ProjectOption {
 
-	private final ProjectParam param;
+	private final ProjectProcessorParam param;
 
-	public ProjectOption(ProjectParam param) {
+	public ProjectOption(ProjectProcessorParam param) {
 		this.param = param;
 	}
 

@@ -1,5 +1,8 @@
 package com.teamide.ide.processor.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.teamide.util.StringUtil;
 
 public enum SpaceProcessorType {
@@ -25,6 +28,14 @@ public enum SpaceProcessorType {
 	SPACE_STAR_DELETE("SPACE_STAR_DELETE", "删除星标"),
 
 	;
+
+	public static List<SpaceProcessorType> getList() {
+		List<SpaceProcessorType> list = new ArrayList<SpaceProcessorType>();
+		for (SpaceProcessorType type : SpaceProcessorType.values()) {
+			list.add(type);
+		}
+		return list;
+	}
 
 	private SpaceProcessorType(String value, String text) {
 		this.value = value;

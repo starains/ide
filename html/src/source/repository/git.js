@@ -4,33 +4,33 @@ source.repository.activeTab = null;
 let git_nav = {
     title: 'Git', icon: 'coos-icon-git', value: 0, disabled: true, dot: true, type: 'success', onClick() {
         source.gitRemoteForm.show();
-    }
+    }, permission: 'GIT_REMOTE_ADD'
 };
 source.repository.navs.push(git_nav);
 
 let git_plus_nav = {
     title: 'Git还原', icon: 'coos-icon-undo', value: 0, disabled: true, dot: false, type: 'success', onClick() {
         source.gitRevertForm.show();
-    }
+    }, permission: 'GIT_REVERT'
 };
 source.repository.navs.push(git_plus_nav);
 
 let git_push_nav = {
     title: 'Git推送', icon: 'coos-icon-git-push', value: 0, disabled: true, dot: false, type: 'success', onClick() {
         source.gitPushForm.show();
-    }
+    }, permission: 'GIT_PUSH'
 };
 source.repository.navs.push(git_push_nav);
 
 let git_pull_nav = {
     title: 'Git拉取', icon: 'coos-icon-git-pull', value: 0, disabled: true, dot: false, type: 'success', onClick() {
         source.gitPull();
-    }
+    }, permission: 'GIT_PULL'
 };
 source.repository.navs.push(git_pull_nav);
 
 let git_branche_nav = {
-    title: 'Git分支', icon: 'coos-icon-branches', value: 0, disabled: true, dot: false, type: 'success'
+    title: 'Git分支', icon: 'coos-icon-branches', value: 0, disabled: true, dot: false, type: 'success', permission: 'GIT_BRANCHES'
 };
 source.repository.navs.push(git_branche_nav);
 

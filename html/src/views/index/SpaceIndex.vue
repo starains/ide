@@ -4,7 +4,7 @@
       <div class="float-right">
         <a
           class="coos-link color-green"
-          :class="{'coos-disabled':(!source.space || source.space.permission != 'MASTER')}"
+          v-if="source.hasPermission('SPACE_CREATE')"
           @click="toSpaceCreate()"
         >新建仓库</a>
       </div>

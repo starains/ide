@@ -11,6 +11,7 @@ import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.handler.DeployHandler;
+import com.teamide.ide.handler.SpacePermissionHandler;
 import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.enums.RepositoryModelType;
 import com.teamide.ide.processor.enums.RepositoryProcessorType;
@@ -42,6 +43,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 		if (processorType == null) {
 			return null;
 		}
+		SpacePermissionHandler.checkPermission(processorType, param.getPermission());
 		SpaceEventBean spaceEventBean = new SpaceEventBean();
 		spaceEventBean.setType(processorType.getValue());
 		spaceEventBean.setName(processorType.getText());
@@ -340,12 +342,14 @@ public class RepositoryProcessor extends SpaceProcessor {
 		switch (modelType) {
 		case REPOSITORY_STATUS:
 			break;
+		case REPOSITORY_PERMISSIONS:
+			value = SpacePermissionHandler.getRepositoryPermissions(param.getPermission());
+			break;
+		case PROJECT_PERMISSIONS:
+			value = SpacePermissionHandler.getProjectPermissions(param.getPermission());
+			break;
 		case REPOSITORY:
 			RepositoryLoad repositoryLoad = new RepositoryLoad(this.param);
-			if (!this.param.getSpaceFolder().exists()) {
-				RepositoryCreate repositoryCreate = new RepositoryCreate(this.param);
-				repositoryCreate.create();
-			}
 			value = repositoryLoad.loadRepository();
 			break;
 		case BRANCHS:

@@ -15,7 +15,7 @@ import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.deployer.LocalDeploy;
 import com.teamide.ide.deployer.RemoteDeploy;
 import com.teamide.ide.enums.OptionType;
-import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.param.ProjectOption;
 import com.teamide.starter.StarterServer;
@@ -108,7 +108,7 @@ public class DeployHandler {
 
 	public static final String deploy(RepositoryProcessorParam param, String projectPath, String runName)
 			throws Exception {
-		ProjectParam projectParam = new ProjectParam(param, projectPath);
+		ProjectProcessorParam projectParam = new ProjectProcessorParam(param, projectPath);
 		JSONObject option = new ProjectOption(projectParam).getOption(runName, OptionType.STARTER);
 		if (option == null) {
 			throw new Exception("path [" + projectPath + "] run [" + runName + "] option is null.");
@@ -135,7 +135,7 @@ public class DeployHandler {
 		}
 	}
 
-	public static Deploy create(ProjectParam param, String path, JSONObject option) throws Exception {
+	public static Deploy create(ProjectProcessorParam param, String path, JSONObject option) throws Exception {
 		String token = IDGenerateUtil.generateShort();
 		JSONObject json = new JSONObject();
 		json.put("spaceid", param.getSpaceid());

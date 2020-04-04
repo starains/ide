@@ -7,8 +7,9 @@ import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.handler.SpaceHandler;
 import com.teamide.ide.param.ProcessorParam;
-import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.param.RepositoryProcessorParam;
+import com.teamide.ide.param.SpaceFormatParam;
 import com.teamide.ide.param.SpaceProcessorParam;
 import com.teamide.ide.util.TokenUtil;
 import com.teamide.util.StringUtil;
@@ -31,7 +32,7 @@ public class WorkspaceProcessor {
 		if (json != null) {
 			spaceid = json.getString("spaceid");
 			SpaceBean space = SpaceHandler.get(spaceid);
-			JSONObject formatSpace = SpaceHandler.getFormat(space);
+			SpaceFormatParam spaceFormat = SpaceHandler.getFormat(space, session);
 			if (space != null) {
 				File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
 				if (SpaceHandler.isRepositorys(space)) {
@@ -40,14 +41,14 @@ public class WorkspaceProcessor {
 						branch = "master";
 					}
 					if (projectPath == null) {
-						param = new RepositoryProcessorParam(session, spaceRootFolder, formatSpace, branch);
+						param = new RepositoryProcessorParam(session, spaceRootFolder, spaceFormat, branch);
 						processor = new RepositoryProcessor((RepositoryProcessorParam) param);
 					} else {
-						param = new ProjectParam(session, spaceRootFolder, formatSpace, branch, projectPath);
-						processor = new ProjectProcessor((ProjectParam) param);
+						param = new ProjectProcessorParam(session, spaceRootFolder, spaceFormat, branch, projectPath);
+						processor = new ProjectProcessor((ProjectProcessorParam) param);
 					}
 				} else {
-					param = new SpaceProcessorParam(session, spaceRootFolder, formatSpace);
+					param = new SpaceProcessorParam(session, spaceRootFolder, spaceFormat);
 					processor = new SpaceProcessor((SpaceProcessorParam) param);
 				}
 			}

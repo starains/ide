@@ -1,15 +1,15 @@
 package com.teamide.ide.plugin;
 
 import com.alibaba.fastjson.JSONObject;
-import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.ProjectProcessorParam;
 
 public class PluginParam {
 
 	protected final JSONObject option;
 
-	protected final ProjectParam param;
+	protected final ProjectProcessorParam param;
 
-	public PluginParam(ProjectParam param, JSONObject option) {
+	public PluginParam(ProjectProcessorParam param, JSONObject option) {
 		this.param = param;
 		this.option = option;
 	}
@@ -18,7 +18,7 @@ public class PluginParam {
 		return option;
 	}
 
-	public ProjectParam getParam() {
+	public ProjectProcessorParam getParam() {
 		return param;
 	}
 

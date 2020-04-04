@@ -9,15 +9,30 @@
             :class="{' el-icon-loading ' : repository.loading,' coos-icon-reload ' : !repository.loading }"
           />
         </a>
-        <a class title="上传" @click="source.uploadRepository()">
+        <a
+          class
+          title="上传"
+          @click="source.uploadRepository()"
+          :class="{'coos-disabled' :  !source.hasPermission('UPLOAD')}"
+        >
           <i class="coos-icon coos-icon-cloud-upload" />
         </a>
-        <a class title="下载" @click="source.downloadRepository()">
+        <a
+          class
+          title="下载"
+          @click="source.downloadRepository()"
+          :class="{'coos-disabled' :  !source.hasPermission('DOWNLOAD')}"
+        >
           <i class="coos-icon coos-icon-cloud-download" />
         </a>
         <a class="repository-project-header-line"></a>
         <template v-for="(nav,index) in repository.navs">
-          <a class :key="index" :class="{'coos-disabled' : nav.disabled}" @click="nav.onClick()">
+          <a
+            class
+            :key="index"
+            :class="{'coos-disabled' : nav.disabled || !source.hasPermission(nav.permission)}"
+            @click="nav.onClick()"
+          >
             <el-badge
               :value="nav.value>0?nav.value:''"
               :title="nav.title"
@@ -45,7 +60,7 @@
       <div class="repository-project-tree">
         <el-tree
           ref="tree"
-          draggable
+          :draggable="source.hasPermission('FILE_MOVE')"
           :data="repository.projects"
           :props="defaultProps"
           @node-click="nodeClick"
@@ -135,49 +150,6 @@ export default {
       let menus = [];
       if (data.isProject) {
         menus.push({
-          header: "插件配置"
-        });
-        source.plugins.forEach(one => {
-          let pluginMenu = { text: one.text, menus: [] };
-          menus.push(pluginMenu);
-          if (
-            one.plugin.optionInputs != null &&
-            one.plugin.optionInputs.length > 0
-          ) {
-            source
-              .load("PLUGIN_OPTION", { type: one.plugin.optionType }, data)
-              .then(res => {
-                let option = res.value || {};
-
-                pluginMenu.menus.push({
-                  text: "配置",
-                  onClick() {
-                    app
-                      .formDialog({
-                        title: "插件配置",
-                        items: one.plugin.optionInputs,
-                        data: option
-                      })
-                      .then(res => {
-                        let project = source.getProjectByPath(data.path);
-
-                        let param = {
-                          option: option,
-                          type: one.plugin.optionType
-                        };
-                        source
-                          .do("SET_PLUGIN_OPTION", param, project)
-                          .then(res => {
-                            source.reloadProject(project);
-                          });
-                      });
-                  }
-                });
-              });
-          }
-        });
-
-        menus.push({
           header: "项目"
         });
         let starterMenu = { text: "项目部署运行", menus: [] };
@@ -217,6 +189,7 @@ export default {
             } else {
               oMenu.menus.push({
                 text: "部署",
+                disabled: !source.hasPermission("STARTER_START"),
                 onClick() {
                   source.starterDeploy(data.path, option);
                 }
@@ -224,12 +197,14 @@ export default {
             }
             oMenu.menus.push({
               text: "修改配置",
+              disabled: !source.hasPermission("SET_STARTER_OPTION"),
               onClick() {
                 source.starterForm.show(data.path, option);
               }
             });
             oMenu.menus.push({
               text: "删除配置",
+              disabled: !source.hasPermission("DELETE_STARTER_OPTION"),
               onClick() {
                 source
                   .do("DELETE_STARTER_OPTION", {
@@ -248,6 +223,7 @@ export default {
         });
         starterMenu.menus.push({
           text: "添加配置",
+          disabled: !source.hasPermission("SET_STARTER_OPTION"),
           onClick() {
             source.starterForm.show(data.path);
           }
@@ -261,35 +237,85 @@ export default {
           });
           mavenSubs.push({
             text: "clean",
+            disabled: !source.hasPermission("MAVEN_CLEAN"),
             onClick: function() {
               source.mavenClean(data);
             }
           });
           mavenSubs.push({
             text: "compile",
+            disabled: !source.hasPermission("MAVEN_COMPILE"),
             onClick: function() {
               source.mavenCompile(data);
             }
           });
           mavenSubs.push({
             text: "package",
+            disabled: !source.hasPermission("MAVEN_PACKAGE"),
             onClick: function() {
               source.mavenPackage(data);
             }
           });
           mavenSubs.push({
             text: "install",
+            disabled: !source.hasPermission("MAVEN_INSTALL"),
             onClick: function() {
               source.mavenInstall(data);
             }
           });
           mavenSubs.push({
             text: "deploy",
+            disabled: !source.hasPermission("MAVEN_DEPLOY"),
             onClick: function() {
               source.mavenDeploy(data);
             }
           });
         }
+      }
+      if (data.isProject) {
+        menus.push({
+          header: "插件配置"
+        });
+        source.plugins.forEach(one => {
+          let pluginMenu = { text: one.text, menus: [] };
+          menus.push(pluginMenu);
+          if (
+            one.plugin.optionInputs != null &&
+            one.plugin.optionInputs.length > 0
+          ) {
+            source
+              .load("PLUGIN_OPTION", { type: one.plugin.optionType }, data)
+              .then(res => {
+                let option = res.value || {};
+
+                pluginMenu.menus.push({
+                  text: "配置",
+                  disabled: !source.hasPermission("SET_PLUGIN_OPTION"),
+                  onClick() {
+                    app
+                      .formDialog({
+                        title: "插件配置",
+                        items: one.plugin.optionInputs,
+                        data: option
+                      })
+                      .then(res => {
+                        let project = source.getProjectByPath(data.path);
+
+                        let param = {
+                          option: option,
+                          type: one.plugin.optionType
+                        };
+                        source
+                          .do("SET_PLUGIN_OPTION", param, project)
+                          .then(res => {
+                            source.reloadProject(project);
+                          });
+                      });
+                  }
+                });
+              });
+          }
+        });
       }
       source.plugins.forEach(one => {
         one.onContextmenu(data, menus);
@@ -301,6 +327,7 @@ export default {
       if (data.isProject || data.isDirectory) {
         menus.push({
           text: "新建文件",
+          disabled: !source.hasPermission("FILE_CREATE"),
           onClick() {
             source.openFolder(data.path);
             let file = {
@@ -318,6 +345,7 @@ export default {
         });
         menus.push({
           text: "新建文件夹",
+          disabled: !source.hasPermission("FILE_CREATE"),
           onClick() {
             source.openFolder(data.path);
             let file = {
@@ -338,29 +366,31 @@ export default {
       if (!data.isProject) {
         menus.push({
           text: "重命名",
+          disabled: !source.hasPermission("FILE_RENAME"),
           onClick() {
             that.rename(data);
           }
         });
         menus.push({
           text: "删除",
+          disabled: !source.hasPermission("FILE_DELETE"),
           onClick() {
             that.remove(data);
           }
         });
       }
 
-      if (data.isFile || data.isDirectory) {
-        menus.push({
-          text: "下载",
-          onClick() {
-            source.downloadFile(data.path);
-          }
-        });
-      }
+      menus.push({
+        text: "下载",
+        disabled: !source.hasPermission("DOWNLOAD"),
+        onClick() {
+          source.downloadFile(data.path);
+        }
+      });
       if (data.isDirectory) {
         menus.push({
           text: "上传",
+          disabled: !source.hasPermission("UPLOAD"),
           onClick() {
             source.uploadRepository({ parent: data.path });
           }
@@ -372,6 +402,7 @@ export default {
         });
         menus.push({
           text: "还原",
+          disabled: !source.hasPermission("GIT_REVERT"),
           onClick() {
             source.gitRevert([data.path]);
           }
@@ -600,7 +631,10 @@ export default {
         return (
           <span
             style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;"
-            class={{ "rename-file": data.toRename }}
+            class={{
+              "rename-file": data.toRename,
+              "coos-disabled": !source.hasPermission("FILE_OPEN")
+            }}
           >
             <span class="color-orange">
               <i class="coos-icon coos-icon-appstore mgr-5" />
@@ -655,7 +689,10 @@ export default {
         return (
           <span
             style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;"
-            class={{ "rename-file": data.toRename }}
+            class={{
+              "rename-file": data.toRename,
+              "coos-disabled": !source.hasPermission("FILE_OPEN")
+            }}
           >
             <span class="">
               <i class="coos-icon coos-icon-folder-fill mgr-5 color-orange" />
@@ -685,7 +722,10 @@ export default {
       return (
         <span
           style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;"
-          class={{ "rename-file": data.toRename }}
+          class={{
+            "rename-file": data.toRename,
+            "coos-disabled": !source.hasPermission("FILE_OPEN")
+          }}
           on-dblclick={() => this.openFile(data)}
         >
           <span class="">

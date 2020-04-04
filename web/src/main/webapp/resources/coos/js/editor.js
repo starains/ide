@@ -550,7 +550,7 @@ window.app = app;
 
 		this.save_nav = {
 			fonticon : 'save',
-			disabled : this.options.onSave == null,
+			disabled : this.options.onSave == null || this.readyonly,
 			text : "保存",
 			onClick : function() {
 				that.toSave();

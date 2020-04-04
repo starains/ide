@@ -21,7 +21,9 @@
           </template>
           <router-view></router-view>
           <template v-if="source.SPACE_TYPE =='REPOSITORYS'">
-            <Rpository ref="repository" :repository="source.repository"></Rpository>
+            <template v-if="source.NOT_FOUND_REPOSITORY_BRANCH == null">
+              <Rpository ref="repository" :repository="source.repository"></Rpository>
+            </template>
           </template>
         </template>
       </template>

@@ -54,7 +54,11 @@ export default {
     }
   },
   mounted() {
+    let $el = $(this.$el);
     $(document).on("click", "html", e => {
+      if ($(e.target).closest(".contextmenu-box")[0] == $el[0]) {
+        return;
+      }
       this.contextmenu.show = false;
     });
     // $(document).on("contextmenu", e => {

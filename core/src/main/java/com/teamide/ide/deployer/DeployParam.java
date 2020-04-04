@@ -2,7 +2,6 @@ package com.teamide.ide.deployer;
 
 import java.io.File;
 
-import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.bean.EnvironmentBean;
 import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.StarterOption;
@@ -14,6 +13,7 @@ import com.teamide.ide.deployer.install.java.JavaWarInstall;
 import com.teamide.ide.deployer.install.node.NodeInstall;
 import com.teamide.ide.handler.SpaceHandler;
 import com.teamide.ide.param.RepositoryProcessorParam;
+import com.teamide.ide.param.SpaceFormatParam;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.starter.Starter;
 import com.teamide.util.StringUtil;
@@ -43,9 +43,9 @@ public class DeployParam {
 		File projectFolder = null;
 		if (!StringUtil.isEmpty(spaceid)) {
 			SpaceBean space = SpaceHandler.get(spaceid);
-			JSONObject formatSpace = SpaceHandler.getFormat(space);
+			SpaceFormatParam spaceFormat = SpaceHandler.getFormat(space, null);
 			File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
-			RepositoryProcessorParam param = new RepositoryProcessorParam(null, spaceRootFolder, formatSpace, branch);
+			RepositoryProcessorParam param = new RepositoryProcessorParam(null, spaceRootFolder, spaceFormat, branch);
 			projectFolder = param.getFile(path);
 		}
 		this.projectFolder = projectFolder;

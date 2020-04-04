@@ -135,7 +135,7 @@ source.repository.activeTab = null;
             type: type,
             project: project,
             file: file_date,
-            readyonly: !app.hasPermission(),
+            readyonly: !source.hasPermission('FILE_EDITOR'),
             onSave(content, callback) {
                 source.saveFile(path, content, callback);
             },

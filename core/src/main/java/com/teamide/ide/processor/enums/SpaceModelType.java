@@ -18,6 +18,8 @@ public enum SpaceModelType {
 
 	STAR_SPACES("STAR_SPACES", "星标的空间", ModelDataType.PAGE),
 
+	SPACE_PERMISSIONS("SPACE_PERMISSIONS", "库", ModelDataType.LIST),
+
 	;
 
 	public static SpaceModelType get(String value) {

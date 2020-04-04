@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.teamide.client.ClientHandler;
 import com.teamide.client.ClientSession;
-import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.plugin.IDEListener;
 import com.teamide.ide.plugin.IDEPlugin;
 import com.teamide.ide.plugin.PluginHandler;
@@ -60,11 +60,11 @@ public class PluginEventHandler {
 
 		WorkspaceProcessor processor = new WorkspaceProcessor(session, token, projectPath);
 
-		if (processor.getParam() != null && processor.getParam() instanceof ProjectParam) {
+		if (processor.getParam() != null && processor.getParam() instanceof ProjectProcessorParam) {
 			IDEPlugin plugin = PluginHandler.getPlugin(name, version);
 			if (plugin != null && plugin.getListener() != null) {
 				IDEListener listener = plugin.getListener();
-				ProjectParam param = (ProjectParam) processor.getParam();
+				ProjectProcessorParam param = (ProjectProcessorParam) processor.getParam();
 				PluginParam pluginParam = PluginHandler.getParam(param, plugin);
 				listener.onServletEvent(pluginParam, event, request, response);
 			}

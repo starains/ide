@@ -40,8 +40,8 @@
                 </el-dropdown-item>
               </template>
               <el-dropdown-item
-                v-if="source.space.permission == 'MASTER'"
                 command="TO_CREATE_BRANCH_EVENT"
+                :class="{'coos-disabled' :  !source.hasPermission('BRANCH_CREATE')}"
               >
                 <span>新建版本</span>
               </el-dropdown-item>

@@ -125,12 +125,15 @@ public class RootController extends HttpServlet {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			Status status = new Status();
 			if (e instanceof BaseException) {
 				BaseException baseException = (BaseException) e;
 				status.setErrcode(baseException.getErrcode());
 				status.setErrmsg(baseException.getErrmsg());
+			} else if (e instanceof NullPointerException) {
+				e.printStackTrace();
+				status.setErrcode(-1);
+				status.setErrmsg("null pointer exception.");
 			} else {
 				status.setErrcode(-1);
 				status.setErrmsg(e.getMessage());

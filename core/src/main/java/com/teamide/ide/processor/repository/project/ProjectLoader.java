@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.apache.maven.model.Model;
 
-import com.teamide.ide.param.ProjectParam;
+import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.processor.repository.hanlder.RepositoryHanlder;
@@ -109,7 +109,7 @@ public class ProjectLoader {
 			if (folderBean != null) {
 				project.setFiles(folderBean.getFiles());
 			}
-			ProjectParam projectParam = new ProjectParam(param, path);
+			ProjectProcessorParam projectParam = new ProjectProcessorParam(param, path);
 
 			PluginHandler.loadProject(projectParam, project);
 		}

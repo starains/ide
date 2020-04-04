@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.IOUtil;
 import com.teamide.util.StringUtil;
 import com.teamide.client.ClientSession;
@@ -28,12 +27,12 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 	public static final String DEFAULT_BRANCH = "master";
 
 	public RepositoryProcessorParam(RepositoryProcessorParam param) {
-		this(param.getSession(), param.getSpaceRootFolder(), param.getFormatSpace(), param.getBranch());
+		this(param.getSession(), param.getSpaceRootFolder(), param.getSpaceFormat(), param.getBranch());
 	}
 
-	public RepositoryProcessorParam(ClientSession session, File spaceRootFolder, JSONObject formatSpace,
+	public RepositoryProcessorParam(ClientSession session, File spaceRootFolder, SpaceFormatParam spaceFormat,
 			String branch) {
-		super(session, spaceRootFolder, formatSpace);
+		super(session, spaceRootFolder, spaceFormat);
 
 		if (StringUtil.isEmpty(branch)) {
 			branch = DEFAULT_BRANCH;

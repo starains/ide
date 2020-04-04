@@ -8,7 +8,7 @@
         <li v-if="source.data.SPACE_TEAMS.list.length == 0">
           <div class="text-center pd-50 font-lg color-orange">
             暂无成员数据
-            <template v-if="app.hasPermission('MANAGER_TEAM')">
+            <template v-if="source.hasPermission('SPACE_TEAM_INSERT')">
               ，可以点击
               <router-link to="/team/form">
                 <a class="coos-link pdlr-10 color-green">添加成员</a>
@@ -20,7 +20,7 @@
           <div class="coos-item">
             <div class="coos-content"></div>
             <div class="coos-flex-right">
-              <template v-if="app.hasPermission('MANAGER_TEAM')">
+              <template v-if="source.hasPermission('SPACE_TEAM_INSERT')">
                 <router-link to="/team/form">
                   <a class="coos-link color-green mgl-5" title="添加人员">
                     <i class="coos-icon coos-icon-addteam"></i> 添加成员
@@ -61,7 +61,7 @@
               </a>
               <router-link :to="'/team/form?id=' + one.id">
                 <a
-                  v-if="app.hasPermission('MANAGER_TEAM')"
+                  v-if="source.hasPermission('SPACE_TEAM_DELETE')"
                   class="coos-link color-green mgl-5"
                   title="修改"
                 >
@@ -69,7 +69,7 @@
                 </a>
               </router-link>
               <a
-                v-if="app.hasPermission('MANAGER_TEAM')"
+                v-if="source.hasPermission('SPACE_TEAM_DELETE')"
                 class="coos-link color-red mgl-5"
                 title="删除"
                 @click="doDelete(one)"

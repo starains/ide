@@ -9,6 +9,8 @@ import screen from "@/source/screen";
 
 import data from "@/source/data";
 
+import space from "@/source/space/index";
+
 import repository from "@/source/repository/index";
 
 import source from "@/source/source";

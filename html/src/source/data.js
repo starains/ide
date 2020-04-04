@@ -136,9 +136,7 @@
             }
             if (source.isLogin) {
                 if (!coos.isEmpty(source.spaceid)) {
-                    if (source.space == null) {
-                        source.load('SPACE');
-                    }
+                    source.load('SPACE');
                 }
             }
             source.initPreferenceStyle();
@@ -155,22 +153,7 @@
             source.UPGRADE_STATUS = value;
             return;
         } else if (type == 'SPACE') {
-            if (value != null) {
-                value.levels = null;
-            }
-            if (source.space == null) {
-                source.space = value;
-            }
-            if (source.space == null && value == null) {
-                return;
-            } else {
-                Object.assign(source.space, value);
-            }
-            source.load('PARENTS');
-            if (source.space.type == "REPOSITORYS") {
-                source.loadRepository();
-                source.load('BRANCHS');
-            }
+            source.onLoadSpace(value);
             return;
         } else if (type == 'REPOSITORY') {
             source.onLoadRepository(value);
@@ -204,6 +187,15 @@
             return;
         } else if (type == 'RUNNER_OPTIONS') {
             source.onRunnerOptions(value);
+            return;
+        } else if (type == 'REPOSITORY_PERMISSIONS') {
+            source.onRepositoryPermissions(value);
+            return;
+        } else if (type == 'PROJECT_PERMISSIONS') {
+            source.onProjectPermissions(value);
+            return;
+        } else if (type == 'SPACE_PERMISSIONS') {
+            source.onSpacePermissions(value);
             return;
         } else if (type == 'PARENTS') {
             value = value || [];

@@ -8,7 +8,11 @@ public enum SpacePermission {
 
 	DEVELOPER("DEVELOPER", "开发者"),
 
-	VIEWER("VIEWER", "观察者");
+	VIEWER("VIEWER", "观察者"),
+
+	NO("NO", "无权限"),
+
+	;
 
 	public static SpacePermission get(String value) {
 		if (StringUtil.isEmpty(value)) {
