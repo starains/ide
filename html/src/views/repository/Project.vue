@@ -317,10 +317,7 @@ export default {
           }
         });
       }
-      source.plugins.forEach(one => {
-        one.onContextmenu(data, menus);
-      });
-
+      source.plugin.onContextmenu(data, menus);
       menus.push({
         header: "文件"
       });

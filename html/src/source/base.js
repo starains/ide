@@ -43,7 +43,7 @@ source.initPreferenceStyle = function () {
     $style.empty();
     let preference = source.preference;
     if (preference) {
-        $style.append('.repository-tab-editor .editor-code{font-size: ' + preference.fontsize + 'px}');
+        $style.append('.editor-designer-box .CodeMirror{font-size: ' + preference.fontsize + 'px !important; }');
     }
 };
 window.source = source;

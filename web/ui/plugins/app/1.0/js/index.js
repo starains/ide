@@ -45,7 +45,7 @@
 	}
 
 	AppPlugin.prototype.onContextmenu = function(data, menus) {
-
+		let that = this;
 		let project = source.getProjectByPath(data.path);
 		let appModel = source.getProjectApp(project);
 
@@ -111,7 +111,7 @@
 		}
 
 		if (appModel.path == data.path || data.path.startsWith(appModel.path + "/")) {
-			let model = source.getModelTypeByPath(data.path);
+			let model = getModelTypeByPath(data.path);
 			if (model && model.value == "TABLE") {
 				let databases = [];
 				databases.push("");
@@ -137,4 +137,149 @@
 	};
 
 
+	let getModelTypeByPath = function(path) {
+		let project = source.getProjectByPath(path);
+
+		let model = null;
+		let app = source.getProjectApp(project);
+		if (app) {
+
+			if (app.path_model_type) {
+				Object.keys(app.path_model_type).forEach(model_path => {
+					let m = app.path_model_type[model_path];
+					if (m.isDirectory) {
+						if (model_path == path || path.startsWith(model_path + '/')) {
+							model = m;
+						}
+					} else {
+						if (model_path == path) {
+							model = m;
+						}
+					}
+				});
+			}
+
+		}
+		return model;
+	}
+
+	AppPlugin.prototype.onCreateEditory = function(options) {
+		let that = this;
+		options = options || {};
+
+		let file = options.file;
+		if (!file) {
+			return;
+		}
+		let project = source.getProjectByPath(file.path);
+
+		let appBean = source.getProjectApp(project);
+		if (!appBean) {
+			return;
+		}
+		let type = null;
+		let model = null;
+		if (appBean.path_model_type) {
+			Object.keys(appBean.path_model_type).forEach(path => {
+				let m = appBean.path_model_type[path];
+				if (m.isDirectory) {
+					if (file.path.startsWith(path + '/')) {
+						model = m;
+					}
+				} else {
+					if (file.path == (path)) {
+						model = m;
+					}
+				}
+			});
+		}
+		if (!model) {
+			return;
+		}
+		if (appBean.path_model_bean) {
+			model.bean = appBean.path_model_bean[file.path];
+		}
+		model.bean = model.bean || {};
+		file.model = model;
+		type = model.value;
+
+		options = Object.assign({}, options);
+
+		options.type = type;
+		options.plugin = this;
+		options.project = project;
+		let modeDesigner = createEditor(options);
+
+		options.editor.isYaml = true;
+		options.editor.addDesigner(modeDesigner);
+	};
+
+	let createEditor = function(options) {
+		options = options || {};
+		options.type = options.type || '';
+		var editor = null;
+		switch (options.type.toUpperCase()) {
+		case "APP":
+			editor = new Editor.App(options);
+			break;
+		case "JDBC":
+			editor = new Editor.Database(options);
+			break;
+		case "DATABASE":
+			editor = new Editor.Database(options);
+			break;
+		case "TABLE":
+			editor = new Editor.Table(options);
+			break;
+		case "DAO":
+			editor = new Editor.Dao(options);
+			break;
+		case "SERVICE":
+			editor = new Editor.Service(options);
+			break;
+		case "CACHE":
+			editor = new Editor.Cache(options);
+			break;
+		case "DICTIONARY":
+			editor = new Editor.Dictionary(options);
+			break;
+		case "CODE":
+			editor = new Editor.Code(options);
+			break;
+		case "THEME":
+			editor = new Editor.Theme(options);
+			break;
+		case "PAGE":
+			editor = new Editor.Page(options);
+			break;
+		case "PAGECOMPONENT":
+			editor = new Editor.PageComponent(options);
+			break;
+		case "RESOURCE":
+			editor = new Editor.Resource(options);
+			break;
+		case "PLUGIN":
+			editor = new Editor.Plugin(options);
+			break;
+		case "ATTRIBUTE":
+			editor = new Editor.Attribute(options);
+			break;
+		case "CONTROL":
+			editor = new Editor.Control(options);
+			break;
+		case "JEXL":
+			editor = new Editor.Jexl(options);
+			break;
+		case "BEAN":
+			editor = new Editor.Bean(options);
+			break;
+		case "JAVA":
+			editor = new Editor.Java(options);
+			break;
+		default:
+			editor = new Editor(options);
+			break;
+		}
+		return editor;
+	};
 })();

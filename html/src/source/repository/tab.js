@@ -7,52 +7,13 @@ source.repository.activeTab = null;
         if (tab == null) {
             return;
         }
-        if (tab.$editor == null) {
-            tab.$editor = $('<div class="repository-tab-editor"/>');
-            $(".repository-tab-editor-box")
-                .append(tab.$editor);
-        }
-        $(".repository-tab-editor.show")
-            .each(function (index, $editor) {
-                if ($editor != tab.$editor[0]) {
-                    $($editor).removeClass("show");
-                }
-            });
-        tab.$editor.addClass("show");
-        if (tab.editor == null) {
-            source.createTabEditor(tab);
-        } else {
-            if (tab.isLoadChanged) {
-                source.callLoadChanged(tab);
+        source.repository.tabs.forEach(one => {
+            if (one != tab) {
+                one.show_editor = false;
             }
-        }
+        });
+        tab.show_editor = true;
     };
-
-    source.getModelTypeByPath = function (path) {
-        let project = source.getProjectByPath(path);
-
-        let model = null;
-        let app = source.getProjectApp(project);
-        if (app) {
-
-            if (app.path_model_type) {
-                Object.keys(app.path_model_type).forEach(model_path => {
-                    let m = app.path_model_type[model_path];
-                    if (m.isDirectory) {
-                        if (model_path == path || path.startsWith(model_path + '/')) {
-                            model = m;
-                        }
-                    } else {
-                        if (model_path == path) {
-                            model = m;
-                        }
-                    }
-                });
-            }
-
-        }
-        return model;
-    }
     source.callLoadChanged = function (tab) {
         if (tab.isLoadChanged && tab.changed) {
             let file_date = tab.file_date;
@@ -66,118 +27,6 @@ source.repository.activeTab = null;
             }).catch(() => {
                 tab.changed = tab.oldChanged;
             });
-        }
-    };
-    source.buildFileEditor = function (file_date) {
-        if (file_date == null) {
-            return;
-        }
-        let path = file_date.path;
-        let tab = source.getTab(file_date.path);
-
-        if (tab == null) {
-            return;
-        }
-        if (!coos.isEmpty(file_date.errmsg)) {
-
-            tab.$editor.empty().append('<div class="text-center ft-20 color-red pdtb-60">' + file_date.errmsg + '</div>');
-            return;
-        }
-        if (tab.editor != null) {
-            if (file_date.content == tab.editor.file.content) {
-                return;
-            }
-            if (file_date.content == tab.editor.getCode()) {
-                tab.editor.file.content = file_date.content;
-                tab.changed = false;
-                return;
-            }
-            tab.editor.file.content = file_date.content;
-            tab.oldChanged = tab.changed;
-            tab.changed = true;
-            tab.isLoadChanged = true;
-            tab.file_date = file_date;
-            if (source.repository.activeTab == tab.path) {
-                source.callLoadChanged(tab);
-            }
-            return;
-        }
-        let project = source.getProjectByPath(file_date.path);
-
-        let type = null;
-        let appBean = source.getProjectApp(project);
-        if (appBean) {
-            let model = null;
-            if (appBean.path_model_type) {
-                Object.keys(appBean.path_model_type).forEach(path => {
-                    let m = appBean.path_model_type[path];
-                    if (m.isDirectory) {
-                        if (file_date.path.startsWith(path + '/')) {
-                            model = m;
-                        }
-                    } else {
-                        if (file_date.path == (path)) {
-                            model = m;
-                        }
-                    }
-                });
-            }
-            if (model) {
-                if (appBean.path_model_bean) {
-                    model.bean = appBean.path_model_bean[file_date.path];
-                }
-                model.bean = model.bean || {};
-                file_date.model = model;
-                type = model.value;
-            }
-        }
-        let editor = coos.editor({
-            type: type,
-            project: project,
-            file: file_date,
-            readyonly: !source.hasPermission('FILE_EDITOR'),
-            onSave(content, callback) {
-                source.saveFile(path, content, callback);
-            },
-            onTest(data, callback) {
-                let app = source.getProjectApp(project);
-                if (app && app.localpath && file_date.model) {
-                    data = data || {};
-                    data.type = type;
-                    data.path = app.localpath;
-                    data.name = file_date.model.bean.name;
-
-                    source.plugin.app.event('doTest', data, project).then(result => {
-                        callback && callback(result);
-                    });
-                }
-            },
-            toText(data, callback) {
-                source.plugin.app.event('toText', data, project).then(result => {
-                    callback && callback(result);
-                });
-            },
-            toModel(data, callback) {
-                source.plugin.app.event('toModel', data, project).then(result => {
-                    callback && callback(result);
-                });
-            }, load(callback) {
-                source.loadFile(path);
-            }, onChange(changed) {
-                tab.changed = changed;
-            }
-        });
-        editor.build(tab.$editor);
-        tab.editor = editor;
-
-    };
-    source.createTabEditor = function (tab) {
-        if (tab.isFile) {
-            let path = tab.path;
-
-            tab.$editor.empty().append('<div class="text-center ft-20 color-grey pdtb-60">文件加载中，请稍后...</div>');
-            source.loadFile(path);
-
         }
     };
     source.getTab = function (name) {
@@ -273,10 +122,6 @@ source.repository.activeTab = null;
                 tab.editor.destroy();
                 delete tab.editor;
             }
-            if (tab.$editor) {
-                tab.$editor.remove();
-                delete tab.$editor;
-            }
             let index = source.repository.tabs.indexOf(tab);
             source.repository.tabs.splice(index, 1);
             if (tab.isFile) {
@@ -316,6 +161,8 @@ source.repository.activeTab = null;
             tab.text = text;
             tab.isFile = true;
             tab.changed = false;
+            tab.show_editor = false;
+            tab.loading = false;
             source.repository.tabs.push(tab);
         }
         source.repository.activeTab = path;
@@ -330,10 +177,7 @@ source.repository.activeTab = null;
         if (tab.editor == null) {
             return;
         }
-        if (tab.changed) {
-            return;
-        }
-        source.loadFile(tab.path);
+        tab.editor.callReload();
     };
 })();
 

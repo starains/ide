@@ -1,0 +1,95 @@
+.editor-case {
+	font-size: 13px;
+	position: relative;
+	width: 100%;
+	background-color: #3B3B3B;
+	color: #cacaca;
+	min-height: 100%;
+}
+
+.editor-case .input {
+	color: #FFFFFF;
+	min-width: 50px;
+	border: 0px;
+	border-bottom: 1px dashed #636363;
+	display: inline-block;
+	outline: 0px;
+	background-color: transparent;
+	text-align: center;
+	height: 24px;
+	max-width: 100%;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-size: 13px;
+}
+
+.editor-case .input.error {
+	border-color: #F44336 !important;
+}
+
+.editor-case .input-mini {
+	min-width: 30px;
+}
+
+.editor-case .input option {
+	background-color: #FFFFFF;
+	color: #3e3e3e;
+}
+
+.editor-case textarea.input {
+	height: 70px;
+	border: 1px dashed #636363;
+	text-align: left;
+	padding: 5px;
+	min-width: 500px;
+}
+
+.editor-case .input:focus {
+	outline: none;
+}
+
+.editor-case>ul>li, .editor-case .sub3>li, .editor-case .sub4>li {
+	position: relative;
+	padding: 0px 0px;
+	margin: 0px 0px;
+}
+
+.editor-case>ul>li:after {
+	content: "";
+	display: block;
+	float: none;
+	clear: both;
+	display: block;
+}
+
+.editor-case ul, .editor-case li {
+	position: relative;
+	padding: 0px 10px;
+}
+
+.editor-case .sub4 {
+	margin-bottom: 2px;
+	padding: 5px;
+	background: #2f2f2f;
+}
+
+.editor-case .sub1 {
+	padding-left: 10px;
+	background: #333333;
+	padding: 5px;
+	margin: 5px;
+}
+
+.editor-case .sub1>li {
+	margin: 5px 0px;
+}
+
+.editor-case .sub2 {
+	background: #3e3e3e;
+	margin-top: 10px;
+	padding-top: 10px;
+}
+
+.editor-case .sub2 .sub2 {
+	background: #3e3e3e;
+}

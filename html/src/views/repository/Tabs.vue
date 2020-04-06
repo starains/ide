@@ -17,16 +17,18 @@
               style="font-size: 16px;vertical-align: -5px;"
             >*</i>
           </span>
+          <TabEditor :tab="item"></TabEditor>
         </el-tab-pane>
       </el-tabs>
     </div>
-    <div class="repository-tab-editor-box"></div>
+    <div class="repository-tab-editor-box display-none"></div>
   </div>
 </template>
 
 <script>
+import TabEditor from "@/views/repository/components/editor/TabEditor";
 export default {
-  components: {},
+  components: { TabEditor },
   props: ["repository"],
   data() {
     return { source: source };
@@ -34,12 +36,14 @@ export default {
   beforeMount() {},
   watch: {
     "repository.activeTab": function(activeTab) {
-      source.changeTab(activeTab);
-      let tab = source.getTab(activeTab);
-      if (tab != null) {
-        let project = source.getProjectByPath(tab.path);
-        source.do("FILE_OPEN", { path: tab.path }, project);
-      }
+      this.$nextTick(res => {
+        source.changeTab(activeTab);
+        let tab = source.getTab(activeTab);
+        if (tab != null) {
+          let project = source.getProjectByPath(tab.path);
+          source.do("FILE_OPEN", { path: tab.path }, project);
+        }
+      });
     }
   },
   methods: {
@@ -148,6 +152,17 @@ export default {
 .repository-tab-box .el-tabs__item.is-active,
 .repository-tab-box .el-tabs__item:hover {
   color: #008992;
+}
+.repository-tab-box .el-tabs__content {
+  position: absolute;
+  bottom: 0px;
+  top: 25px;
+  left: 0px;
+  right: 0px;
+}
+.repository-tab-box .el-tabs__content .el-tab-pane {
+  width: 100%;
+  height: 100%;
 }
 .repository-tab-editor-box {
   position: absolute;

@@ -220,7 +220,6 @@ source.repository.file_data_map = {};
             return;
         }
         source.repository.file_data_map[value.path] = value;
-        source.buildFileEditor(value);
     };
     source.onLoadFiles = function (value) {
         console.log(value);
@@ -231,15 +230,13 @@ source.repository.file_data_map = {};
     };
     source.loadFile = function (path) {
         let project = source.getProjectByPath(path);
-        source.load('FILE', { path: path }, project);
+        return source.load('FILE', { path: path }, project);
     };
     source.saveFile = function (path, content, callback) {
         let project = source.getProjectByPath(path);
         source.do('FILE_SAVE', { path: path, content: content }, project).then((res) => {
             if (res.errcode == 0) {
                 coos.success('保存成功！');
-                let tab = source.getTab(path);
-                tab.changed = false;
                 callback && callback(true);
             } else {
                 coos.error(res.errmsg);

@@ -20,6 +20,28 @@
             source.plugins.splice(source.plugins.indexOf(old), 1, obj);
         }
     };
+    source.plugin.onCreateEditory = function (options) {
+        source.plugins.forEach(one => {
+            if (one.customPlugin && one.customPlugin.onCreateEditory) {
+                try {
+                    one.customPlugin.onCreateEditory(options);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        });
+    };
+    source.plugin.onContextmenu = function (data, menus) {
+        source.plugins.forEach(one => {
+            if (one.customPlugin && one.customPlugin.onContextmenu) {
+                try {
+                    one.customPlugin.onContextmenu(data, menus);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        });
+    };
 
     let PluginObj = function (plugin) {
         this.plugin = plugin;
@@ -41,14 +63,5 @@
         return source.server.event(this.name, this.version, type, data, project);
     };
 
-    PluginObj.prototype.onContextmenu = function (data, menus) {
-        if (this.customPlugin && this.customPlugin.onContextmenu) {
-            try {
-                this.customPlugin.onContextmenu(data, menus);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-    };
 })();
 export default source;

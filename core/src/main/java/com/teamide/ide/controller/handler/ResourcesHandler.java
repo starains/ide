@@ -122,19 +122,6 @@ public class ResourcesHandler {
 				// css.add("resources/coos/css/coos.layout.css?v=" + VERSION);
 				// js.add("resources/coos/js/coos.layout.js?v=" + VERSION);
 			}
-			if (hasUI) {
-				css.add("resources/coos/merge/editor.css");
-				js.add("resources/coos/merge/editor.js");
-
-				css.add("resources/coos/merge/page.editor.css");
-				js.add("resources/coos/merge/page.editor.js");
-			} else {
-				css.add("resources/coos/css/editor.css?v=" + VERSION);
-				js.add("resources/coos/js/editor.js?v=" + VERSION);
-
-				css.add("resources/coos/css/page.editor.css?v=" + VERSION);
-				js.add("resources/coos/js/page.editor.js?v=" + VERSION);
-			}
 
 			List<IDEPlugin> plugins = PluginHandler.getPlugins();
 
