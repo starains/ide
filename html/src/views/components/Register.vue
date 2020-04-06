@@ -55,9 +55,19 @@ export default {
           { required: true, message: "请输入用户名称！", trigger: "blur" }
         ],
         loginname: [
-          { required: true, message: "请输入登录账号！", trigger: "blur" }
+          { required: true, message: "请输入登录账号！", trigger: "blur" },
+          {
+            pattern: /^(?!_)(?!.*?_$)(?!\.)(?!.*?\.$)(?!-)(?!.*?-$)[a-zA-Z0-9_\.\-]{1,20}$/,
+            message: "请输入正确的账号格式！"
+          }
         ],
-        email: [{ required: true, message: "请输入邮箱！", trigger: "blur" }],
+        email: [
+          { required: true, message: "请输入邮箱！", trigger: "blur" },
+          {
+            pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
+            message: "请输入正确的邮箱格式！"
+          }
+        ],
         password: [
           { required: true, message: "请输入登录密码！", trigger: "blur" }
         ]
