@@ -11,6 +11,7 @@ import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.SpaceTeamBean;
 import com.teamide.ide.handler.SpaceHandler;
 import com.teamide.ide.service.ISpaceTeamService;
+import com.teamide.util.StringUtil;
 
 @Resource
 public class SpaceTeamService extends BaseService<SpaceTeamBean> implements ISpaceTeamService {
@@ -59,8 +60,15 @@ public class SpaceTeamService extends BaseService<SpaceTeamBean> implements ISpa
 
 	@Override
 	public SpaceTeamBean delete(ClientSession client, SpaceTeamBean t) throws Exception {
-		SpaceHandler.remove(t.getSpaceid());
-		return super.delete(client, t);
+		if (!StringUtil.isEmpty(t.getId())) {
+			t = get(t.getId());
+			if (t != null) {
+				SpaceHandler.remove(t.getSpaceid());
+				super.delete(client, t);
+				SpaceHandler.get(t.getSpaceid());
+			}
+		}
+		return t;
 	}
 
 	@Override

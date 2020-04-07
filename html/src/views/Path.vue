@@ -4,7 +4,7 @@
       <Index></Index>
     </template>
     <template v-else-if="$route.params.model == 'space'">
-      <template v-if="$route.params.page == 'spaceCreate'">
+      <template v-if="$route.params.page == 'create'">
         <SpaceCreate></SpaceCreate>
       </template>
       <template v-else-if="$route.params.page == 'event'">

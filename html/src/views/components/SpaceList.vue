@@ -83,24 +83,32 @@ export default {
   watch: {},
   methods: {
     star(space) {
-      source
-        .do("SPACE_STAR_INSERT", {
-          spaceid: space.id,
-          userid: source.LOGIN_USER.id
-        })
-        .then(res => {
-          space.login_user_star = true;
-        });
+      if (source.isLogin) {
+        source
+          .do("SPACE_STAR_INSERT", {
+            spaceid: space.id,
+            userid: source.LOGIN_USER.id
+          })
+          .then(res => {
+            space.login_user_star = true;
+          });
+      } else {
+        source.toLogin();
+      }
     },
     unstar(space) {
-      source
-        .do("SPACE_STAR_DELETE", {
-          spaceid: space.id,
-          userid: source.LOGIN_USER.id
-        })
-        .then(res => {
-          space.login_user_star = false;
-        });
+      if (source.isLogin) {
+        source
+          .do("SPACE_STAR_DELETE", {
+            spaceid: space.id,
+            userid: source.LOGIN_USER.id
+          })
+          .then(res => {
+            space.login_user_star = false;
+          });
+      } else {
+        source.toLogin();
+      }
     }
   },
   computed: {},
