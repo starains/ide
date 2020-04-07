@@ -93,7 +93,7 @@ CodeEditor.prototype.build = function ($box) {
     }
 
     this.codeMirror = CodeMirror.fromTextArea($pre[0], {
-        // mode: mode, // 语言模式
+        mode: mode, // 语言模式
         theme: "lesser-dark", // 主题
         keyMap: "sublime", // 快键键风格
         lineNumbers: true, // 显示行号

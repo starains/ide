@@ -336,7 +336,7 @@ export default {
               file: true
             };
             source.formatFile(file, data);
-            data.files.push(file);
+            data.files.splice(0, 0, file);
             that.rename(file);
           }
         });
@@ -355,7 +355,7 @@ export default {
               files: []
             };
             source.formatFile(file, data);
-            data.files.push(file);
+            data.files.splice(0, 0, file);
             that.rename(file);
           }
         });
