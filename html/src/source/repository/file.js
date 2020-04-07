@@ -24,7 +24,7 @@ source.repository.file_data_map = {};
     };
 
 
-    source.openFileByPath = function (path) {
+    source.openFileByPath = function (path, openTab) {
         if (coos.isEmpty(path)) {
             return;
         }
@@ -33,9 +33,11 @@ source.repository.file_data_map = {};
             folder = path.substring(0, path.lastIndexOf('/'));
         }
         source.openFolder(folder);
-        let project = source.getProjectByPath(path);
-        source.do("FILE_OPEN", { path: path }, project);
-        source.createTabByPath(path);
+        if (source.isLogin) {
+            let project = source.getProjectByPath(path);
+            source.do("FILE_OPEN", { path: path }, project);
+        }
+        source.createTabByPath(path, openTab);
     };
 
 
@@ -43,8 +45,10 @@ source.repository.file_data_map = {};
         if (coos.isEmpty(path)) {
             return;
         }
-        let project = source.getProjectByPath(path);
-        source.do("FILE_CLOSE", { path: path }, project);
+        if (source.isLogin) {
+            let project = source.getProjectByPath(path);
+            source.do("FILE_CLOSE", { path: path }, project);
+        }
     };
 
     source.downloadFile = function (path) {

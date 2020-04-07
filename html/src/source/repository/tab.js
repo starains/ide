@@ -144,7 +144,7 @@ source.repository.activeTab = null;
             source.repository.activeTab = null;
         }
     };
-    source.createTabByPath = function (path) {
+    source.createTabByPath = function (path, openTab) {
         if (path == null) {
             return;
         }
@@ -165,7 +165,9 @@ source.repository.activeTab = null;
             tab.loading = false;
             source.repository.tabs.push(tab);
         }
-        source.repository.activeTab = path;
+        if (openTab) {
+            source.repository.activeTab = path;
+        }
 
     };
 

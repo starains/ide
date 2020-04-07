@@ -94,6 +94,8 @@
                             }
                         }
                     }
+                } else if (res.errcode == '10001000') {
+                    source.toLogin();
                 }
             });
         });

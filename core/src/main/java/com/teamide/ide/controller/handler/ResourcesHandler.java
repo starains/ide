@@ -34,7 +34,7 @@ public class ResourcesHandler {
 			}
 		}
 
-		if (path.endsWith("/app.root.js")) {
+		if (path.endsWith("/ide.root.js")) {
 			List<String> js = new ArrayList<String>();
 
 			List<String> css = new ArrayList<String>();
@@ -47,7 +47,7 @@ public class ResourcesHandler {
 			writelnJS(request, content, js);
 			ResponseUtil.outJS(response, content.toString());
 			return;
-		} else if (path.endsWith("/app.resources.js")) {
+		} else if (path.endsWith("/ide.resources.js")) {
 			List<String> js = new ArrayList<String>();
 			List<String> css = new ArrayList<String>();
 
@@ -164,13 +164,13 @@ public class ResourcesHandler {
 			writelnJS(request, content, js);
 			ResponseUtil.outJS(response, content.toString());
 			return;
-		} else if (path.endsWith("/app.main.js")) {
+		} else if (path.endsWith("/ide.main.js")) {
 			List<String> js = new ArrayList<String>();
 
 			List<String> css = new ArrayList<String>();
 
 			StringBuffer content = new StringBuffer();
-			content.append("app_main();\n");
+			content.append("ide_main();\n");
 			writelnCSS(request, content, css);
 			writelnJS(request, content, js);
 			ResponseUtil.outJS(response, content.toString());

@@ -71,7 +71,7 @@ export default {
       this.$refs["login-form"].validate(valid => {
         if (valid) {
           let data = this.form;
-          source.server.do("LOGIN", data).then(res => {
+          source.do("LOGIN", data).then(res => {
             if (res.errcode == 0) {
               coos.success("登录成功.");
               try {
@@ -129,7 +129,7 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  z-index: 100;
+  z-index: 1000000000;
   top: 0px;
   left: 0px;
   transition: all 0.3s;

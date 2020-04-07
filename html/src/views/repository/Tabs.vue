@@ -40,8 +40,10 @@ export default {
         source.changeTab(activeTab);
         let tab = source.getTab(activeTab);
         if (tab != null) {
-          let project = source.getProjectByPath(tab.path);
-          source.do("FILE_OPEN", { path: tab.path }, project);
+          if (source.isLogin) {
+            let project = source.getProjectByPath(tab.path);
+            source.do("FILE_OPEN", { path: tab.path }, project);
+          }
         }
       });
     }

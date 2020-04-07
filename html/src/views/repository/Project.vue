@@ -486,7 +486,7 @@ export default {
       }
     },
     openFile(file) {
-      source.openFileByPath(file.path);
+      source.openFileByPath(file.path, true);
     },
     remove(file) {
       if (file == null) {

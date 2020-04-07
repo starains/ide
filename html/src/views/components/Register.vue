@@ -128,7 +128,7 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  z-index: 100;
+  z-index: 1000000000;
   top: 0px;
   left: 0px;
   transition: all 0.3s;

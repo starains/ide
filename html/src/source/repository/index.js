@@ -93,10 +93,13 @@ source.NOT_FOUND_REPOSITORY_BRANCH = null;
             });
         }
         if (value.opens) {
-            value.opens.forEach(one => {
+            value.opens.forEach((one, index) => {
                 source.repository.opens.push(one);
-
-                source.openFileByPath(one.path);
+                let openTab = false;
+                if (index >= (value.opens.length - 1)) {
+                    openTab = true;
+                }
+                source.openFileByPath(one.path, openTab);
             });
         }
         source.onLoadGit(value.git);

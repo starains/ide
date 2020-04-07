@@ -10,6 +10,7 @@ import com.teamide.bean.ResultBean;
 import com.teamide.bean.Status;
 import com.teamide.client.ClientHandler;
 import com.teamide.client.ClientSession;
+import com.teamide.ide.exception.NotLoginException;
 import com.teamide.ide.processor.WorkspaceProcessor;
 import com.teamide.util.LogUtil;
 import com.teamide.util.RequestUtil;
@@ -73,7 +74,7 @@ public class WorkspaceHandler {
 
 			} else {
 				if (session.getUser() == null) {
-					throw new Exception("登录信息丢失，请先登录！");
+					throw new NotLoginException();
 				}
 			}
 

@@ -16,7 +16,7 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
-window.app_main = function () {
+window.ide_main = function () {
   coos.startZIndex = 2000;
   Vue.prototype.coos = coos;
   Vue.prototype.app = app;
@@ -42,5 +42,5 @@ window.app_main = function () {
   });
 };
 
-document.writeln('<script type="text/javascript" src="' + _SERVER_URL + '/resources/app.resources.js"></script>');
-document.writeln('<script type="text/javascript" src="' + _SERVER_URL + '/resources/app.main.js"></script>');
+document.writeln('<script type="text/javascript" src="' + _SERVER_URL + '/resources/ide.resources.js"></script>');
+document.writeln('<script type="text/javascript" src="' + _SERVER_URL + '/resources/ide.main.js"></script>');

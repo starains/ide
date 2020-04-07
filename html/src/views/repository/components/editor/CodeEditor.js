@@ -14,9 +14,10 @@ CodeEditor.prototype.init = function () {
 
 
 CodeEditor.prototype.getCode = function () {
-    return this.codeMirror.getValue();
+    return this.lastText;
 };
 CodeEditor.prototype.setCode = function (code) {
+    this.lastText = code;
     return this.codeMirror.setValue(code);
 };
 
@@ -39,7 +40,8 @@ CodeEditor.prototype.callChange = function () {
 CodeEditor.prototype.show = function () {
     let that = this;
     this.editor.loadLastContent(function (content) {
-        if (that.getCode() != content) {
+        let code = that.getCode();
+        if (code != content) {
             that.setCode(content);
         }
     });
@@ -91,7 +93,7 @@ CodeEditor.prototype.build = function ($box) {
     }
 
     this.codeMirror = CodeMirror.fromTextArea($pre[0], {
-        mode: mode, // 语言模式
+        // mode: mode, // 语言模式
         theme: "lesser-dark", // 主题
         keyMap: "sublime", // 快键键风格
         lineNumbers: true, // 显示行号
@@ -99,8 +101,7 @@ CodeEditor.prototype.build = function ($box) {
         indentUnit: 4, // 智能缩进单位为4个空格长度
         indentWithTabs: true, // 使用制表符进行智能缩进
         styleActiveLine: true, // 当前行背景高亮
-        lineWrapping: false, //
-        // 在行槽中添加行号显示器、折叠器、语法检测器`
+        lineWrapping: false, // 在行槽中添加行号显示器、折叠器、语法检测器`
         gutters: [
             "CodeMirror-linenumbers",
             "CodeMirror-foldgutter",
@@ -134,8 +135,11 @@ CodeEditor.prototype.build = function ($box) {
     });
     // 设置初始文本，这个选项也可以在fromTextArea中配置`
     this.codeMirror.on("change", function () {
+        that.lastText = that.codeMirror.getValue();
         that.callChange();
+
     });
+    this.lastText = file.content;
 };
 
 export default CodeEditor;
