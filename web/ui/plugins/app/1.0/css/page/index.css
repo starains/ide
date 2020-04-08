@@ -6,6 +6,11 @@
 	background-color: #ffffff;
 }
 
+.page-design-layout-over {
+	-webkit-box-shadow: 0px 0px 5px #7b7b7b;
+	box-shadow: 0px 0px 5px #7b7b7b;
+}
+
 .page-editor-model-box {
 	position: absolute;
 	overflow: auto;

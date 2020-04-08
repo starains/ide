@@ -13,8 +13,14 @@
 
 		new Vue({
 			el : $view[0],
-			data : {}
-		})
+			data : {},
+			mounted () {}
+		});
+		$box.on('mouseover', function(e) {
+			let $layout = $(e.target).closest('[layout-id]');
+			$box.find('.page-design-layout-over').removeClass('page-design-layout-over');
+			$layout.addClass('page-design-layout-over');
+		});
 	};
 
 	PageEditor.prototype.getLayoutID = function(layout) {
@@ -109,7 +115,7 @@
 			} else {
 				p.layouts.forEach(one => {
 					if (res == null) {
-						res = this.getLayoutParent(one);
+						res = this.getLayoutParent(layout, one);
 					}
 				});
 			}
@@ -167,57 +173,45 @@
 
 				}
 			});
+			menus.push({
+				text : "上移",
+				onClick : function() {
+					let list = parentLayout.layouts;
+					let index = list.indexOf(layout);
+					if (index > 0) {
+						that.recordHistory();
+						list[index] = list.splice(index - 1, 1, list[index])[0];
+						that.changeModel();
+					}
+				}
+			});
+			menus.push({
+				text : "下移",
+				onClick : function() {
+					let list = parentLayout.layouts;
+					let index = list.indexOf(layout);
+					if (index < list.length - 1) {
+						that.recordHistory();
+
+						list[index] = list.splice(index + 1, 1, list[index])[0];
+
+						that.changeModel();
+					}
+				}
+			});
+			menus.push({
+				text : "删除",
+				onClick : function() {
+					that.recordHistory();
+
+					let index = parentLayout.layouts.indexOf(layout);
+					parentLayout.layouts.splice(index, 1);
+
+					that.changeModel();
+
+				}
+			});
 		}
-		menus.push({
-			text : "上移",
-			onClick : function() {
-				if (parentLayout == null) {
-					parentLayout = that.getLayoutRoot();
-				}
-
-				let list = parentLayout.layouts;
-				let index = list.indexOf(layout);
-				if (index > 0) {
-					that.recordHistory();
-					list[index] = list.splice(index - 1, 1, list[index])[0];
-					that.changeModel();
-				}
-			}
-		});
-		menus.push({
-			text : "下移",
-			onClick : function() {
-				if (parentLayout == null) {
-					parentLayout = that.getLayoutRoot();
-				}
-
-				let list = parentLayout.layouts;
-				let index = list.indexOf(layout);
-				if (index < list.length - 1) {
-					that.recordHistory();
-
-					list[index] = list.splice(index + 1, 1, list[index])[0];
-
-					that.changeModel();
-				}
-			}
-		});
-		menus.push({
-			text : "删除",
-			onClick : function() {
-				if (parentLayout == null) {
-					parentLayout = that.getLayoutRoot();
-				}
-				that.recordHistory();
-
-				let index = parentLayout.layouts.indexOf(layout);
-				parentLayout.layouts.splice(index, 1);
-
-				that.changeModel();
-
-			}
-		});
-
 
 		source.repository.contextmenu.menus = menus;
 		source.repository.contextmenu.callShow(event);

@@ -57,6 +57,13 @@
 		new Vue({
 			el : $modelBox[0],
 			data : data,
+			mounted () {
+				let height = $(this.$el).find('.ui-list').height();
+				this.uis.forEach((ui, index) => {
+					let groupList = $(this.$el).find('.ui-group-list')[index];
+					$(groupList).find('.ui-model-list').css('height', height - 30 * this.uis.length - 30 * ui.groups.length)
+				});
+			},
 			methods : {
 				chooseModel (ui, group, model, demo) {
 					that.onChoosePageModel(ui, group, model, demo);
@@ -88,8 +95,13 @@
 	};
 	PageEditor.prototype.onChoosePageModel = function(ui, group, model, demo) {
 		let layout = {};
-		layout.html = demo.html;
-		layout.template = demo.template;
+		if (coos.isEmpty(demo.template)) {
+			if (coos.isNotEmpty(demo.html)) {
+				layout.html = demo.html;
+			}
+		} else {
+			layout.template = demo.template;
+		}
 		this.lastChoosePageModelCallback && this.lastChoosePageModelCallback(layout);
 	};
 
