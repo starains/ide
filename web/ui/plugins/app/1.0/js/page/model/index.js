@@ -38,6 +38,10 @@
 
 
 	PageEditor.prototype.buildPageModel = function($box) {
+		if (this.buildPageModeled) {
+			return;
+		}
+		this.buildPageModeled = true;
 		let that = this;
 
 		let data = {};
@@ -83,7 +87,10 @@
 		this.page_model_data.show = true;
 	};
 	PageEditor.prototype.onChoosePageModel = function(ui, group, model, demo) {
-		console.log(demo);
+		let layout = {};
+		layout.html = demo.html;
+		layout.template = demo.template;
+		this.lastChoosePageModelCallback && this.lastChoosePageModelCallback(layout);
 	};
 
 
