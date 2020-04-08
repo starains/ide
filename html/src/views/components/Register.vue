@@ -24,7 +24,9 @@
             <el-input type="password" v-model="form.password" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
-        <a class="coos-btn bg-orange coos-btn-block mgt-10" @click="doRegister()">注册</a>
+
+        <a class="coos-btn bg-orange coos-btn-block coos-disabled" v-if="loading">注册中</a>
+        <a class="coos-btn bg-orange coos-btn-block" @click="doRegister()" v-if="!loading">注册</a>
         <div class="mgt-10 pdb-20">
           <div class="float-right">
             已有账号？
@@ -44,6 +46,7 @@ export default {
   components: {},
   data() {
     return {
+      loading: false,
       form: {
         name: "",
         email: "",
@@ -83,13 +86,16 @@ export default {
       this.$refs["register-form"].validate(valid => {
         if (valid) {
           let data = this.form;
+          this.loading = true;
           source.do("REGISTER", data).then(res => {
             if (res.errcode == 0) {
               coos.success("注册成功，正在跳转到登录页.");
               window.setTimeout(function() {
+                this.loading = false;
                 that.toLogin();
               }, 500);
             } else {
+              this.loading = false;
               coos.error(res.errmsg);
             }
           });

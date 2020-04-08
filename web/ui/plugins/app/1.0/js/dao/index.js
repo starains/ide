@@ -70,16 +70,12 @@
 
 		$li = $('<li />');
 		$ul.append($li);
-		$li.append('<span class="pdr-10">执行前Class</span>');
-		var $input = $('<input class="input" name="beforeprocessor" />');
-		$input.val(model.beforeprocessor);
-		$li.append($input);
 
-		$li.append('<span class="pdr-10">验证Class</span>');
-		var $input = $('<input class="input" name="validator" />');
-		$input.val(model.validator);
-		$li.append($input);
-		that.bindLiEvent($li, model, false);
+		let $ul_ = $('<ul/>');
+		$li.append($ul_);
+		model.beforeprocessors = model.beforeprocessors || [];
+
+		this.appendCustomProcessors($ul_, model.beforeprocessors, false);
 
 		model.process = model.process || {};
 
@@ -110,11 +106,11 @@
 
 		$li = $('<li />');
 		$ul.append($li);
-		$li.append('<span class="pdr-10">执行后Class</span>');
-		var $input = $('<input class="input" name="afterprocessor" />');
-		$input.val(model.afterprocessor);
-		$li.append($input);
-		that.bindLiEvent($li, model, false);
+		$ul_ = $('<ul/>');
+		$li.append($ul_);
+		model.afterprocessors = model.afterprocessors || [];
+
+		this.appendCustomProcessors($ul_, model.afterprocessors, true);
 
 
 		$li = $('<li />');

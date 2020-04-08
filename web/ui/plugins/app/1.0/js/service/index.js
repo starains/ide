@@ -45,10 +45,7 @@
 		var $input = $('<input class="input" name="name" />');
 		$input.val(model.name);
 		$li.append($input);
-		that.bindLiEvent($li, model, false);
 
-		$li = $('<li />');
-		$ul.append($li);
 		$li.append('<span class="pdr-10">说明</span>');
 		var $input = $('<input class="input" name="comment" />');
 		$input.val(model.comment);
@@ -61,10 +58,7 @@
 		var $input = $('<input class="input" name="requestmapping" />');
 		$input.val(model.requestmapping);
 		$li.append($input);
-		that.bindLiEvent($li, model, false);
 
-		$li = $('<li />');
-		$ul.append($li);
 		$li.append('<span class="pdr-10">请求方法</span>');
 		var $input = $('<select class="input mgr-10" name="requestmethod" ></select>');
 		$li.append($input);
@@ -74,19 +68,12 @@
 		});
 		$input.val(model.requestmethod);
 		$li.append($input);
-		that.bindLiEvent($li, model, false);
 
-		$li = $('<li />');
-		$ul.append($li);
 		$li.append('<span class="pdr-10">请求ContentType</span>');
 		var $input = $('<input class="input" name="requestcontenttype" />');
 		$input.val(model.requestcontenttype);
 		$li.append($input);
-		that.bindLiEvent($li, model, false);
 
-
-		$li = $('<li />');
-		$ul.append($li);
 		$li.append('<span class="pdr-10">响应ContentType</span>');
 		var $input = $('<input class="input" name="responsecontenttype" />');
 		$input.val(model.responsecontenttype);
@@ -95,29 +82,18 @@
 
 		$li = $('<li />');
 		$ul.append($li);
-		$li.append('<span class="pdr-10">执行前Class</span>');
-		var $input = $('<input class="input" name="beforeprocessor" />');
-		$input.val(model.beforeprocessor);
-		$li.append($input);
-		that.bindLiEvent($li, model, false);
+		let $ul_ = $('<ul/>');
+		$li.append($ul_);
+		model.beforeprocessors = model.beforeprocessors || [];
+
+		this.appendCustomProcessors($ul_, model.beforeprocessors);
 
 		$li = $('<li />');
 		$ul.append($li);
-		$li.append('<span class="pdr-10">验证Class</span>');
-		var $input = $('<input class="input" name="validator" />');
-		$input.val(model.validator);
-		$li.append($input);
-		that.bindLiEvent($li, model, false);
-
-
-		$li = $('<li />');
-		$ul.append($li);
-		$li.append('<span class="pdr-10">执行后Class</span>');
-		var $input = $('<input class="input" name="afterprocessor" />');
-		$input.val(model.afterprocessor);
-		$li.append($input);
-		that.bindLiEvent($li, model, false);
-
+		$ul_ = $('<ul/>');
+		$li.append($ul_);
+		model.afterprocessors = model.afterprocessors || [];
+		this.appendCustomProcessors($ul_, model.afterprocessors, true);
 
 		$li = $('<li />');
 		$ul.append($li);
@@ -126,6 +102,8 @@
 		$input.val(model.resultresolve);
 		$li.append($input);
 		that.bindLiEvent($li, model, false);
+
+
 	};
 
 	ServiceEditor.prototype.buildDesign = function() {
@@ -186,26 +164,37 @@
 			}
 			var $node = $(e.target).closest('.process-node');
 			var menus = [];
+			menus.push({
+				text : "添加",
+				onClick : function() {
+					var $service = $design.find('.editor-service');
+					that.toInsertProcess({
+						top : eventData.clientY - $service.offset().top,
+						left : eventData.clientX - $service.offset().left
+					});
+				}
+			});
+
 			if ($node.length > 0) {
 				var process = $node.data('process');
-				menus.push({
-					text : "验证",
-					onClick : function() {
-						that.toViewValidate(process);
-					}
-				});
-				menus.push({
-					text : "变量",
-					onClick : function() {
-						that.toViewVariable(process);
-					}
-				});
-				menus.push({
-					text : "结果",
-					onClick : function() {
-						that.toViewResult(process);
-					}
-				});
+				//				menus.push({
+				//					text : "验证",
+				//					onClick : function() {
+				//						that.toViewValidate(process);
+				//					}
+				//				});
+				//				menus.push({
+				//					text : "变量",
+				//					onClick : function() {
+				//						that.toViewVariable(process);
+				//					}
+				//				});
+				//				menus.push({
+				//					text : "结果",
+				//					onClick : function() {
+				//						that.toViewResult(process);
+				//					}
+				//				});
 				if (process.type == 'START' || process.type == 'END') {
 
 				} else {
@@ -222,25 +211,10 @@
 						}
 					});
 				}
-			} else {
-				menus.push({
-					text : "添加",
-					onClick : function() {
-
-						var $service = that.$el.find('.editor-service');
-						that.toInsertProcess({
-							top : eventData.clientY - $service.offset().top,
-							left : eventData.clientX - $service.offset().left
-						});
-					}
-				});
-
 			}
 
 			source.repository.contextmenu.menus = menus;
-			source.repository.contextmenu.show = true;
-			source.repository.contextmenu.left = e.pageX + "px";
-			source.repository.contextmenu.top = e.pageY + "px";
+			source.repository.contextmenu.callShow(e);
 			e.preventDefault();
 		});
 	};

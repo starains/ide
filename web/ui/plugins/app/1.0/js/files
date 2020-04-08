@@ -13,6 +13,8 @@ event.js
 history.js
 design.js
 
+processor/index.js
+
 app/index.js
 app/html.js
 

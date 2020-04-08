@@ -2,9 +2,11 @@
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	width: 300px;
-	min-height: auto;
+	width: 100%;
 	z-index: 1;
+	height: 180px;
+	overflow: auto;
+	min-height: auto;
 }
 
 .service-view>a {
@@ -15,7 +17,7 @@
 }
 
 .service-view.close {
-	max-height: 40px;
+	max-height: 30px;
 	overflow: hidden;
 }
 

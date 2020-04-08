@@ -960,6 +960,119 @@ var Editor = function(options) {
 	};
 })();
 (function() {
+
+	Editor.prototype.appendCustomProcessors = function($ul, processors, isAfter) {
+		processors = processors || [];
+		var that = this;
+		var $li = $('<li />');
+		$ul.append($li);
+
+		if (isAfter) {
+			$li.append('<span class="pdr-10 color-orange">后置执行自定义</span>');
+		} else {
+			$li.append('<span class="pdr-10 color-orange">前置执行自定义</span>');
+		}
+		$li.append('<span class="pdr-10 color-grey">参数：variableCache（Service变量）,invokeCache（Service结果缓存）,data（Dao变量）,result（Dao结果）,exception（异常）</span>');
+		var $btn = $('<a class="mgr-10 coos-pointer color-green">添加</a>');
+		$li.append($btn);
+		$btn.click(function() {
+			that.recordHistory();
+			var processor = {};
+			processors.push(processor);
+			processor.type = 'CLASS';
+			processor.param = 'data';
+			that.changeModel();
+		});
+
+		$(processors).each(function(index, processor) {
+
+			var $li = $('<li class="pdl-10"/>');
+			$ul.append($li);
+
+			var $subUl = $('<ul class=""/>');
+			$li.append($subUl);
+
+			var $li = $('<li class=""/>');
+			$subUl.append($li);
+
+
+			if (!coos.isEmpty(processor.ifrule)) {
+				$li.append('<span class="pdlr-10">if (</span>');
+				var $input = $('<input class="input input-mini" name="ifrule" />');
+				$input.val(processor.ifrule);
+				$li.append($input);
+				$li.append('<span class="pdlr-10">) //不填或值为true、1则为真</span>');
+
+				var $li = $('<li class="pdl-30"/>');
+				$subUl.append($li);
+
+			}
+
+			var $input = $('<select class="input mgr-10" name="type" ></select>');
+			$li.append($input);
+			$input.append('<option value="CLASS">Class</option>');
+			$input.append('<option value="CODE">CLASS</option>');
+			processor.type = processor.type || 'AND';
+			$input.val(processor.type);
+
+
+
+			if (processor.type == 'CODE') {
+				var $input = $('<textarea class="input" name="processcode" />');
+				$input.val(processor.processcode);
+				$li.append($input);
+
+			} else {
+
+				$li.append('<span class="pdr-10">Class</span>');
+				var $input = $('<input class="input " name="processor" />');
+				$input.val(processor.processor);
+				$li.append($input);
+
+				$li.append('<span class="pdr-10">Method</span>');
+				var $input = $('<input class="input " name="method" />');
+				$input.val(processor.method);
+				$li.append($input);
+
+				$li.append('<span class="pdr-10">Param</span>');
+				var $input = $('<input class="input " name="param" />');
+				$input.val(processor.param);
+				$li.append($input);
+
+				$li.append('<span class="pdr-10"></span>');
+			}
+
+
+
+			if (coos.isEmpty(processor.ifrule)) {
+				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="ifrule" property-value="1=1"  >设置条件</a>');
+			} else {
+				$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="ifrule" property-value="">清空条件</a>');
+			}
+
+			if (isAfter) {
+				if (coos.isTrue(processor.ignoreexception)) {
+					$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="ignoreexception" >始终执行</a>');
+				} else {
+					$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="ignoreexception" >异常终止</a>');
+				}
+			}
+
+			var $btn = $('<a class="mgl-10 coos-pointer color-red">删除</a>');
+			$li.append($btn);
+			$btn.click(function() {
+				that.recordHistory();
+				processors.splice(processors.indexOf(processor), 1);
+				that.changeModel();
+			});
+
+			that.bindPropertyEvent($li, processor);
+			that.bindLiEvent($subUl, processor, false);
+		});
+	};
+
+})();
+(function() {
 	var AppEditor = coos.createClass(Editor);
 	Editor.App = AppEditor;
 
@@ -1797,16 +1910,12 @@ var Editor = function(options) {
 
 		$li = $('<li />');
 		$ul.append($li);
-		$li.append('<span class="pdr-10">执行前Class</span>');
-		var $input = $('<input class="input" name="beforeprocessor" />');
-		$input.val(model.beforeprocessor);
-		$li.append($input);
 
-		$li.append('<span class="pdr-10">验证Class</span>');
-		var $input = $('<input class="input" name="validator" />');
-		$input.val(model.validator);
-		$li.append($input);
-		that.bindLiEvent($li, model, false);
+		let $ul_ = $('<ul/>');
+		$li.append($ul_);
+		model.beforeprocessors = model.beforeprocessors || [];
+
+		this.appendCustomProcessors($ul_, model.beforeprocessors, false);
 
 		model.process = model.process || {};
 
@@ -1837,11 +1946,11 @@ var Editor = function(options) {
 
 		$li = $('<li />');
 		$ul.append($li);
-		$li.append('<span class="pdr-10">执行后Class</span>');
-		var $input = $('<input class="input" name="afterprocessor" />');
-		$input.val(model.afterprocessor);
-		$li.append($input);
-		that.bindLiEvent($li, model, false);
+		$ul_ = $('<ul/>');
+		$li.append($ul_);
+		model.afterprocessors = model.afterprocessors || [];
+
+		this.appendCustomProcessors($ul_, model.afterprocessors, true);
 
 
 		$li = $('<li />');
@@ -3208,10 +3317,7 @@ var Editor = function(options) {
 		var $input = $('<input class="input" name="name" />');
 		$input.val(model.name);
 		$li.append($input);
-		that.bindLiEvent($li, model, false);
 
-		$li = $('<li />');
-		$ul.append($li);
 		$li.append('<span class="pdr-10">说明</span>');
 		var $input = $('<input class="input" name="comment" />');
 		$input.val(model.comment);
@@ -3224,10 +3330,7 @@ var Editor = function(options) {
 		var $input = $('<input class="input" name="requestmapping" />');
 		$input.val(model.requestmapping);
 		$li.append($input);
-		that.bindLiEvent($li, model, false);
 
-		$li = $('<li />');
-		$ul.append($li);
 		$li.append('<span class="pdr-10">请求方法</span>');
 		var $input = $('<select class="input mgr-10" name="requestmethod" ></select>');
 		$li.append($input);
@@ -3237,19 +3340,12 @@ var Editor = function(options) {
 		});
 		$input.val(model.requestmethod);
 		$li.append($input);
-		that.bindLiEvent($li, model, false);
 
-		$li = $('<li />');
-		$ul.append($li);
 		$li.append('<span class="pdr-10">请求ContentType</span>');
 		var $input = $('<input class="input" name="requestcontenttype" />');
 		$input.val(model.requestcontenttype);
 		$li.append($input);
-		that.bindLiEvent($li, model, false);
 
-
-		$li = $('<li />');
-		$ul.append($li);
 		$li.append('<span class="pdr-10">响应ContentType</span>');
 		var $input = $('<input class="input" name="responsecontenttype" />');
 		$input.val(model.responsecontenttype);
@@ -3258,29 +3354,18 @@ var Editor = function(options) {
 
 		$li = $('<li />');
 		$ul.append($li);
-		$li.append('<span class="pdr-10">执行前Class</span>');
-		var $input = $('<input class="input" name="beforeprocessor" />');
-		$input.val(model.beforeprocessor);
-		$li.append($input);
-		that.bindLiEvent($li, model, false);
+		let $ul_ = $('<ul/>');
+		$li.append($ul_);
+		model.beforeprocessors = model.beforeprocessors || [];
+
+		this.appendCustomProcessors($ul_, model.beforeprocessors);
 
 		$li = $('<li />');
 		$ul.append($li);
-		$li.append('<span class="pdr-10">验证Class</span>');
-		var $input = $('<input class="input" name="validator" />');
-		$input.val(model.validator);
-		$li.append($input);
-		that.bindLiEvent($li, model, false);
-
-
-		$li = $('<li />');
-		$ul.append($li);
-		$li.append('<span class="pdr-10">执行后Class</span>');
-		var $input = $('<input class="input" name="afterprocessor" />');
-		$input.val(model.afterprocessor);
-		$li.append($input);
-		that.bindLiEvent($li, model, false);
-
+		$ul_ = $('<ul/>');
+		$li.append($ul_);
+		model.afterprocessors = model.afterprocessors || [];
+		this.appendCustomProcessors($ul_, model.afterprocessors, true);
 
 		$li = $('<li />');
 		$ul.append($li);
@@ -3289,6 +3374,8 @@ var Editor = function(options) {
 		$input.val(model.resultresolve);
 		$li.append($input);
 		that.bindLiEvent($li, model, false);
+
+
 	};
 
 	ServiceEditor.prototype.buildDesign = function() {
@@ -3349,26 +3436,37 @@ var Editor = function(options) {
 			}
 			var $node = $(e.target).closest('.process-node');
 			var menus = [];
+			menus.push({
+				text : "添加",
+				onClick : function() {
+					var $service = $design.find('.editor-service');
+					that.toInsertProcess({
+						top : eventData.clientY - $service.offset().top,
+						left : eventData.clientX - $service.offset().left
+					});
+				}
+			});
+
 			if ($node.length > 0) {
 				var process = $node.data('process');
-				menus.push({
-					text : "验证",
-					onClick : function() {
-						that.toViewValidate(process);
-					}
-				});
-				menus.push({
-					text : "变量",
-					onClick : function() {
-						that.toViewVariable(process);
-					}
-				});
-				menus.push({
-					text : "结果",
-					onClick : function() {
-						that.toViewResult(process);
-					}
-				});
+				//				menus.push({
+				//					text : "验证",
+				//					onClick : function() {
+				//						that.toViewValidate(process);
+				//					}
+				//				});
+				//				menus.push({
+				//					text : "变量",
+				//					onClick : function() {
+				//						that.toViewVariable(process);
+				//					}
+				//				});
+				//				menus.push({
+				//					text : "结果",
+				//					onClick : function() {
+				//						that.toViewResult(process);
+				//					}
+				//				});
 				if (process.type == 'START' || process.type == 'END') {
 
 				} else {
@@ -3385,25 +3483,10 @@ var Editor = function(options) {
 						}
 					});
 				}
-			} else {
-				menus.push({
-					text : "添加",
-					onClick : function() {
-
-						var $service = that.$el.find('.editor-service');
-						that.toInsertProcess({
-							top : eventData.clientY - $service.offset().top,
-							left : eventData.clientX - $service.offset().left
-						});
-					}
-				});
-
 			}
 
 			source.repository.contextmenu.menus = menus;
-			source.repository.contextmenu.show = true;
-			source.repository.contextmenu.left = e.pageX + "px";
-			source.repository.contextmenu.top = e.pageY + "px";
+			source.repository.contextmenu.callShow(e);
 			e.preventDefault();
 		});
 	};
@@ -4561,30 +4644,6 @@ var Editor = function(options) {
 	};
 })();
 (function() {
-	var PageEditor = coos.createClass(Editor);
-	Editor.Page = PageEditor;
-
-	PageEditor.prototype.isHtml = function() {
-		return true;
-	};
-
-	PageEditor.prototype.buildDesign = function() {
-
-		if (!this.pageEditor) {
-			var that = this;
-			this.pageEditor = new coos.PageEditor({
-				onChange : function(page, code) {
-					that.recordHistory();
-					$.extend(true, that.model, page);
-					that.changeModel(false, code);
-					return that.model;
-				}
-			});
-		}
-		this.pageEditor.build(this.$design, this.model);
-	};
-})();
-(function() {
 	var AttributeEditor = coos.createClass(Editor);
 	Editor.Attribute = AttributeEditor;
 
@@ -5247,6 +5306,1850 @@ var Editor = function(options) {
 		var model = this.model;
 
 	};
+})();
+(function() {
+	var PageEditor = coos.createClass(Editor);
+	Editor.Page = PageEditor;
+
+	PageEditor.prototype.buildDesign = function() {
+		var that = this;
+		var $design = this.$design;
+		$design.empty();
+
+		let model = this.model;
+
+		let layout = model.layout || {};
+
+		var $box = $('<div class="page-design-box"></div>');
+		$design.append($box);
+
+		this.bindPageDesignEvent($box);
+
+	};
+
+	PageEditor.prototype.bindPageDesignEvent = function($box) {
+		let that = this;
+		$box.on('contextmenu', function(e) {
+			e = e || window.event;
+
+			that.showPageDesignContextmenu(e);
+			e.preventDefault();
+		});
+
+
+	};
+
+	PageEditor.prototype.showPageDesignContextmenu = function(event) {
+		var eventData = {
+			clientX : event.clientX,
+			clientY : event.clientY
+		};
+		var menus = [];
+
+		menus.push({
+			text : "添加",
+			onClick : function() {}
+		});
+
+
+		source.repository.contextmenu.menus = menus;
+		source.repository.contextmenu.callShow(e);
+	};
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	let BEAN_START = "<!-- page bean start -->";
+	let BEAN_END = "<!-- page bean end -->";
+
+	let TEMPLATE_START = "<!-- page template start -->";
+	let TEMPLATE_END = "<!-- page template end -->";
+
+	let SCRIPT_START = "<!-- page script start -->";
+	let SCRIPT_END = "<!-- page script end -->";
+
+	let OPTION_START = "<!-- vue option start -->";
+	let OPTION_END = "<!-- vue option end -->";
+
+	let STYLE_START = "<!-- page style start -->";
+	let STYLE_END = "<!-- page style end -->";
+
+	PageEditor.prototype.toCode = function(page) {
+		page = page || {};
+		let html = '';
+
+		html += BEAN_START + '\n';
+		html += '<page>\n';
+		if (!coos.isEmpty(page.comment)) {
+			html += '\t<comment>' + page.comment + '</comment>\n';
+		}
+		if (!coos.isEmpty(page.requestmapping)) {
+			html += '\t<requestmapping>' + page.requestmapping + '</requestmapping>\n';
+		}
+		html += '</page>\n';
+		html += BEAN_END + '\n\n';
+
+		html += TEMPLATE_START + '\n';
+		html += '<template>\n';
+		if (!coos.isEmpty(page.template)) {
+			html += page.template;
+		}
+		html += '</template>\n';
+		html += TEMPLATE_END + '\n\n';
+
+		html += SCRIPT_START + '\n';
+		html += '<script>\n';
+		if (!coos.isEmpty(page.script)) {
+			html += page.script;
+		}
+		html += '</script>\n';
+		html += SCRIPT_END + '\n\n';
+
+		html += STYLE_START + '\n';
+		html += '<style>\n';
+		if (!coos.isEmpty(page.style)) {
+			html += page.style;
+		}
+		html += '</style>\n';
+		html += STYLE_END + '\n\n';
+		return html;
+	};
+
+
+	PageEditor.prototype.getScriptOption = function(script) {
+		let optionStr = "let option = {};";
+		script = script || '';
+		let start = script.indexOf(OPTION_START);
+		let end = script.indexOf(OPTION_END);
+		if (start >= 0 && end > start) {
+			optionStr = script.substring(start + OPTION_START.length, end);
+		}
+		let result = toOption(optionStr);
+
+		return result;
+	};
+
+	let toOption = function(optionStr) {
+		try {
+			return eval('(function(){' + optionStr + ';return option;})()');
+		} catch (e) {
+			console.log(e);
+			coos.error(e.message);
+		}
+		return {};
+	};
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+	PageEditor.prototype.bindSortable = function() {
+		coos.plugin.add({
+			sortable : {
+				js : [ _SERVER_URL + "resources/plugins/sortable/sortable.js" ],
+				css : []
+			}
+		});
+
+		let that = this;
+		coos.plugin.load('sortable', function() {
+			that.data.uis.forEach((ui) => {
+				//that.bindUISortable(ui);
+			});
+		});
+	};
+
+	PageEditor.prototype.bindUISortable = function(ui) {
+		ui.groups.forEach((group) => {
+			this.bindUIGroupSortable(ui, group);
+		});
+	};
+
+	PageEditor.prototype.bindUIGroupSortable = function(ui, group) {
+		group.models.forEach((model) => {
+			this.bindUIModelSortable(ui, group, model);
+		});
+	};
+
+	PageEditor.prototype.bindUIModelSortable = function(ui, group, model) {
+		let className = ui.name + '-' + group.name + '-' + model.name;
+		let $model = this.$modelBox.find('.' + className);
+		let name = ui.name + '-' + group.name + '-' + model.name;
+		let options = {
+			sort : false,
+			draggable : '>*',
+			group : {
+				name : name,
+				pull : 'clone'
+			},
+			onStart : function(arg1) {
+				console.log("onStart", arg1);
+			},
+			onEnd : function(arg1) {
+				console.log("onEnd", arg1);
+			},
+			onSort : function(arg1) {
+				console.log("onSort", arg1);
+			}
+		};
+		$model.each(function(index, el) {
+
+			Sortable.create(el, options);
+		});
+
+
+	};
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+
+	PageEditor.prototype.getUIList = function() {
+		let list = [];
+		list.push(this.getTagUI());
+		list.push(this.getElementUI());
+
+		return list;
+	};
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.getTagUI = function() {
+		let ui = {};
+		ui.name = 'base';
+		ui.title = 'Base UI';
+
+		ui.groups = this.getBaseUIGroups();
+
+		return ui;
+	};
+
+	let item_map = {};
+
+	item_map.text = {
+		label : "文案",
+		name : "text"
+	};
+	item_map.title = {
+		label : "标题",
+		name : "title"
+	};
+	item_map.label = {
+		label : "标签",
+		name : "label"
+	};
+	item_map.color = {
+		label : "颜色",
+		name : "color",
+		type : "color"
+	};
+	item_map.bgcolor = {
+		label : "背景颜色",
+		name : "bgcolor",
+		type : "color"
+	};
+	item_map.bdcolor = {
+		label : "边框颜色",
+		name : "bdcolor",
+		type : "color"
+	};
+	PageEditor.prototype.getBaseUIGroups = function() {
+		let groups = [];
+		groups.push({
+			name : 'base',
+			title : '基础',
+			models : this.getBaseUIBaseModels()
+		});
+
+
+		return groups;
+	};
+	let data_names = [ 'class', ':class', 'style', ':style', 'name', ':name', 'v-for', 'v-show', 'v-if', 'v-else-if', 'v-else' ];
+	let getData = function(el) {
+		let data = {};
+		if (el == null) {
+			return data;
+		}
+		let $el = $(el);
+		data_names.forEach((data_name) => {
+			data[data_name] = $el.attr(data_name);
+		});
+		return data;
+	};
+	let setData = function(el, data) {
+		if (el == null || data == null) {
+			return;
+		}
+		let $el = $(el);
+		data_names.forEach((data_name) => {
+			if (!coos.isUndefined(data[data_name])) {
+				$el.attr(data_name, data[data_name])
+			}
+		});
+	};
+
+
+	PageEditor.prototype.getBaseUIBaseModels = function() {
+		let models = [];
+		models.push({
+			name : 'layout',
+			title : '布局',
+			items : [ item_map.color, item_map.bgcolor, item_map.bdcolor ],
+			demos : [ {
+				isBlock : true,
+				html : '<div class="coos-layout"></div>'
+			} ],
+			eq (el) {
+				if ($(el).hasClass('coos-layout')) {
+					return true;
+				}
+			},
+			getData (el) {
+				let data = getData(el);
+
+				return data;
+			},
+			setData (el, data) {
+				setData(el, data);
+			}
+		});
+		models.push({
+			name : 'panel',
+			title : '面板',
+			items : [ item_map.title, item_map.color, item_map.bgcolor, item_map.bdcolor ],
+			demos : [ {
+				isBlock : true,
+				html : `
+				<div class="coos-panel">
+					<div class="coos-panel-header">标题</div>
+					<div class="coos-panel-body">内容</div>
+					<div class="coos-panel-footer">底部</div>
+				</div>
+				`
+			} ],
+			eq (el) {
+				if ($(el).hasClass('coos-panel')) {
+					return true;
+				}
+			},
+			getData (el) {
+				let data = getData(el);
+
+				return data;
+			},
+			setData (el, data) {
+				setData(el, data);
+			}
+		});
+		let demos = [];
+		let tags = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'div', 'span', 'p', 'a' ];
+		models.push({
+			name : 'base',
+			title : '基础标签',
+			demos : demos,
+			eq (el) {
+				let flag = false;
+				tags.forEach((tag) => {
+					if ($(el).hasClass('coos-tag-' + tag)) {
+						flag = true;
+					}
+				});
+				return flag;
+			},
+			getData (el) {
+				let data = getData(el);
+
+				return data;
+			},
+			setData (el, data) {
+				setData(el, data);
+			}
+		});
+		tags.forEach((tag) => {
+			demos.push({
+				html : '<' + tag + ' class="coos-tag-' + tag + '">这是一个' + tag + '</' + tag + '>'
+			});
+		});
+
+		models.push(this.getBaseUIButton());
+		models.push(this.getBaseUILink());
+		return models;
+	};
+
+	PageEditor.prototype.getBaseUIButton = function() {
+		let demos = [];
+
+		let list = [ {
+			text : '默认'
+		}, {
+			text : 'grey',
+			color : 'grey'
+		}, {
+			text : 'green',
+			color : 'green'
+		}, {
+			text : 'blue',
+			color : 'blue'
+		}, {
+			text : 'orange',
+			color : 'orange'
+		}, {
+			text : 'red',
+			color : 'red'
+		} ];
+
+		[ 'xs', 'sm', '', 'md', 'lg' ].forEach(one => {
+			let template = '';
+			template += '<a class="coos-btn color-grey ';
+			if (one != null) {
+				template += 'coos-btn-' + one + ' ';
+			}
+			template += ' " >';
+			template += one || '默认';
+			template += '</a>';
+			demos.push({
+				data : null,
+				html : template
+			})
+		});
+
+		list.forEach(one => {
+			let template = '';
+			template += '<a class="coos-btn ';
+			if (one.color) {
+				template += 'color-' + one.color + ' ';
+			}
+			template += ' " >';
+			template += one.text;
+			template += '</a>';
+			demos.push({
+				data : null,
+				html : template
+			})
+		});
+
+		list.forEach(one => {
+			let template = '';
+			template += '<a class="coos-btn ';
+			if (one.color) {
+				template += 'bg-' + one.color + ' ';
+			}
+			template += ' " >';
+			template += one.text;
+			template += '</a>';
+			demos.push({
+				data : null,
+				html : template
+			})
+		});
+
+		return {
+			name : 'button',
+			title : '按钮',
+			demos : demos,
+			eq (el) {
+				if ($(el).hasClass('coos-btn')) {
+					return true;
+				}
+				if ($(el).hasClass('coos-link')) {
+					return true;
+				}
+			},
+			getData (el) {
+				let data = getData(el);
+
+				return data;
+			},
+			setData (el, data) {
+				setData(el, data);
+			}
+		};
+	};
+
+
+	PageEditor.prototype.getBaseUILink = function() {
+		let demos = [];
+
+		let list = [ {
+			text : '默认'
+		}, {
+			text : 'grey',
+			color : 'grey'
+		}, {
+			text : 'green',
+			color : 'green'
+		}, {
+			text : 'blue',
+			color : 'blue'
+		}, {
+			text : 'orange',
+			color : 'orange'
+		}, {
+			text : 'red',
+			color : 'red'
+		} ];
+
+		list.forEach(one => {
+			let template = '';
+			template += '<a class="coos-btn ';
+			if (one.color) {
+				template += 'color-' + one.color + ' ';
+			}
+			template += ' " >';
+			template += one.text;
+			template += '</a>';
+			demos.push({
+				data : null,
+				html : template
+			})
+		});
+
+		list.forEach(one => {
+			let template = '';
+			template += '<a class="coos-btn ';
+			if (one.color) {
+				template += 'bg-' + one.color + ' ';
+			}
+			template += ' " >';
+			template += one.text;
+			template += '</a>';
+			demos.push({
+				data : null,
+				html : template
+			})
+		});
+
+
+
+		list.forEach(one => {
+			let template = '';
+			template += '<a class="coos-link ';
+			if (one.color) {
+				template += 'color-' + one.color + ' ';
+			}
+			template += ' " >';
+			template += one.text;
+			template += '</a>';
+			demos.push({
+				data : null,
+				html : template
+			})
+		});
+
+		return {
+			name : 'link',
+			title : '链接',
+			demos : demos,
+			eq (el) {
+				if ($(el).hasClass('coos-link')) {
+					return true;
+				}
+			},
+			getData (el) {
+				let data = getData(el);
+
+				return data;
+			},
+			setData (el, data) {
+				setData(el, data);
+			}
+		};
+	};
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.getElementUI = function() {
+		let ui = {};
+		ui.name = 'element-ui';
+		ui.title = 'Element UI';
+
+
+		ui.groups = this.getElementUIGroups();
+
+		return ui;
+	};
+	PageEditor.prototype.getComponentHTML = function(template, data, callback) {
+		data = data || {};
+		return new Vue({
+			data : data,
+			el : $('<div />').append(template)[0],
+			mounted () {
+				this.$nextTick(() => {
+					callback && callback(this.$el.innerHTML);
+				});
+			}
+		}).$el.innerHTML;
+	};
+
+	PageEditor.prototype.getElementUIGroups = function() {
+		let groups = [];
+		groups.push({
+			name : 'base',
+			title : '基础',
+			models : [ this.getElementUIButton(), this.getElementUILink() ]
+		});
+
+		groups.push({
+			name : 'form',
+			title : '表单',
+			models : [
+				this.getElementUIInput()
+				, this.getElementUISelect()
+				, this.getElementUIRadio()
+				, this.getElementUICheckbox()
+				, this.getElementUIInputNumber()
+				, this.getElementUISwitch()
+				, this.getElementUISlider()
+				, this.getElementUITimePicker()
+				, this.getElementUIDatePicker()
+				, this.getElementUIRate()
+				, this.getElementUIColorPicker()
+				, this.getElementUIForm()
+			]
+		});
+
+		groups.push({
+			name : 'data',
+			title : '数据',
+			models : [
+				this.getElementUITable()
+				, this.getElementUITag()
+				, this.getElementUIProgress()
+				, this.getElementUITree()
+				, this.getElementUIPagination()
+				, this.getElementUIBadge()
+			]
+		});
+		return groups;
+	};
+
+	PageEditor.prototype.getElementUIButton = function() {
+		let demos = [];
+
+		let list = [ {
+			text : '默认'
+		}, {
+			text : '主要',
+			type : 'primary'
+		}, {
+			text : '成功',
+			type : 'success'
+		}, {
+			text : '信息',
+			type : 'info'
+		}, {
+			text : '警告',
+			type : 'warning'
+		}, {
+			text : '危险',
+			type : 'danger'
+		} ];
+
+
+		list.forEach(one => {
+			let template = '';
+			template += '<el-button size="mini" ';
+			if (one.type) {
+				template += 'type="' + one.type + '" ';
+			}
+			template += ' >';
+			template += one.text;
+			template += '</el-button>';
+			demos.push({
+				template : template,
+				data : null,
+				html : this.getComponentHTML(template)
+			})
+		});
+		let template = '<el-button plain size="mini">朴素</el-button>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		})
+		template = '<el-button type="primary" plain size="mini">主要</el-button>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		})
+
+		return {
+			name : 'button',
+			title : '按钮',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-button')) {
+					return true;
+				}
+			}
+		};
+	};
+	PageEditor.prototype.getElementUILink = function() {
+
+		let demos = [];
+
+		let list = [ {
+			text : '默认'
+		}, {
+			text : '主要',
+			type : 'primary'
+		}, {
+			text : '成功',
+			type : 'success'
+		}, {
+			text : '信息',
+			type : 'info'
+		}, {
+			text : '警告',
+			type : 'warning'
+		}, {
+			text : '危险',
+			type : 'danger'
+		} ];
+		list.forEach(one => {
+			let template = '';
+			template += '<el-link ';
+			if (one.type) {
+				template += 'type="' + one.type + '" ';
+			}
+			template += ' >';
+			template += one.text;
+			template += '</el-link>';
+			demos.push({
+				template : template,
+				data : null,
+				html : this.getComponentHTML(template)
+			})
+		});
+
+
+		return {
+			name : 'link',
+			title : '文字链接',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-link')) {
+					return true;
+				}
+			}
+		};
+	};
+	PageEditor.prototype.getElementUIRadio = function() {
+		let demos = [];
+		let template = '<el-radio label="1">选项</el-radio>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'radio',
+			title : '单选框',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-radio')) {
+					return true;
+				}
+			}
+		};
+	};
+
+	PageEditor.prototype.getElementUICheckbox = function() {
+		let demos = [];
+		let template = '<el-checkbox label="1">选项</el-checkbox>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'checkbox',
+			title : '复选框',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-checkbox')) {
+					return true;
+				}
+			}
+		};
+	};
+	PageEditor.prototype.getElementUIInput = function() {
+		let demos = [];
+		let template = '<el-input placeholder="请输入内容"></el-input>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'input',
+			title : '输入框',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-input')) {
+					return true;
+				}
+			}
+		};
+	};
+	PageEditor.prototype.getElementUIInputNumber = function() {
+		let demos = [];
+		let template = '<el-input-number style="width: 100%;" :min="1" :max="10" label="描述文字"></el-input-number>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'input-number',
+			title : '计数器',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-input-number')) {
+					return true;
+				}
+			}
+		};
+	};
+	PageEditor.prototype.getElementUISelect = function() {
+		let demos = [];
+		let template = '<el-select placeholder="请选择"><el-option label="选项1" value="值1"></el-option></el-select>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'select',
+			title : '选择器',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-select')) {
+					return true;
+				}
+			}
+		};
+	};
+
+	PageEditor.prototype.getElementUISwitch = function() {
+		let demos = [];
+		let template = '<el-switch active-color="#13ce66" inactive-color="#ff4949"></el-switch>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'switch',
+			title : '开关',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-switch')) {
+					return true;
+				}
+			}
+		};
+	};
+
+	PageEditor.prototype.getElementUISlider = function() {
+		let demos = [];
+		let template = '<el-slider ></el-slider>';
+		demos.push({
+			isBlock : true,
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'slider',
+			title : '滑块',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-slider')) {
+					return true;
+				}
+			}
+		};
+	};
+
+	PageEditor.prototype.getElementUITimePicker = function() {
+		let demos = [];
+		let template = '<el-time-select style="width: 100%;" placeholder="选择时间"></el-time-select>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'time-select',
+			title : '时间选择器',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-time-select')) {
+					return true;
+				}
+			}
+		};
+	};
+
+	PageEditor.prototype.getElementUIDatePicker = function() {
+		let demos = [];
+		let template = '<el-date-picker style="width: 100%;" placeholder="选择日期"></el-date-picker>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'date-picker',
+			title : '日期选择器',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-date-picker')) {
+					return true;
+				}
+			}
+		};
+	};
+
+	PageEditor.prototype.getElementUIRate = function() {
+		let demos = [];
+		let template = '<el-rate value="1"></el-rate>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'rate',
+			title : '评分',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-rate')) {
+					return true;
+				}
+			}
+		};
+	};
+
+
+	PageEditor.prototype.getElementUIColorPicker = function() {
+		let demos = [];
+		let template = '<el-color-picker value="#409EFF"></el-color-picker>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'color-picker',
+			title : '颜色选择器',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-color-picker')) {
+					return true;
+				}
+			}
+		};
+	};
+
+	PageEditor.prototype.getElementUIForm = function() {
+		let demos = [];
+		let template = '';
+		template += '<el-form ref="form" label-width="60px">';
+		template += '<el-form-item label="文本">';
+		template += '<el-input ></el-input>';
+		template += '</el-form-item>';
+		template += '</el-form>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template)
+		});
+		return {
+			name : 'form',
+			title : '表单',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-form')) {
+					return true;
+				}
+			}
+		};
+	};
+	PageEditor.prototype.getElementUITable = function() {
+		let demos = [];
+		let template = '';
+		let data = `
+		[ {
+			value1 : '值1',
+			value2 : '值2'
+		}, {
+			value1 : '值1',
+			value2 : '值2'
+		}, {
+			value1 : '值1',
+			value2 : '值2'
+		} ]
+		`;
+		template += '<el-table :data="' + data + '" style="width: 100%">';
+		template += '<el-table-column prop="value1" label="标题1" ></el-table-column>';
+		template += '<el-table-column prop="value2" label="标题2" ></el-table-column>';
+		template += '</el-table>';
+		demos.push({
+			isBlock : true,
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template, {}, function(html) {
+				demos[0].html = html;
+			})
+		});
+		return {
+			name : 'table',
+			title : '表格',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-table')) {
+					return true;
+				}
+			}
+		};
+	};
+
+
+	PageEditor.prototype.getElementUITag = function() {
+		let demos = [];
+		let list = [ {
+			text : '标签'
+		}, {
+			text : '标签',
+			type : 'primary'
+		}, {
+			text : '标签',
+			type : 'success'
+		}, {
+			text : '标签',
+			type : 'info'
+		}, {
+			text : '标签',
+			type : 'warning'
+		}, {
+			text : '标签',
+			type : 'danger'
+		} ];
+		list.forEach(one => {
+			let template = '';
+			template += '<el-tag ';
+			if (one.type) {
+				template += 'type="' + one.type + '" ';
+			}
+			template += ' >';
+			template += one.text;
+			template += '</el-tag>';
+			demos.push({
+				template : template,
+				data : null,
+				html : this.getComponentHTML(template)
+			})
+		});
+
+		return {
+			name : 'tag',
+			title : '标签',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-tag')) {
+					return true;
+				}
+			}
+		};
+	};
+
+
+	PageEditor.prototype.getElementUIProgress = function() {
+		let demos = [];
+		let list = [ {
+			text : '标签'
+		}, {
+			text : '标签',
+			type : 'success'
+		}, {
+			text : '标签',
+			type : 'warning'
+		}, {
+			type : 'exception'
+		} ];
+
+		list.forEach(one => {
+			let template = '';
+			template += '<el-progress percentage="50">';
+			if (one.type) {
+				template += 'status="' + one.type + '" ';
+			}
+			template += ' >';
+			template += '</el-progress>';
+			demos.push({
+				isBlock : true,
+				template : template,
+				data : null,
+				html : this.getComponentHTML(template)
+			})
+		});
+
+		return {
+			name : 'progress',
+			title : '进度条',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-progress')) {
+					return true;
+				}
+			}
+		};
+	};
+
+
+	PageEditor.prototype.getElementUITree = function() {
+		let data = `
+		[ {
+			label : '一级 1',
+			children : [ {
+				label : '二级 1-1',
+				children : [ {
+					label : '三级 1-1-1'
+				} ]
+			} ]
+		}, {
+			label : '一级 2',
+			children : [ {
+				label : '二级 2-1',
+				children : [ {
+					label : '三级 2-1-1'
+				} ]
+			}, {
+				label : '二级 2-2',
+				children : [ {
+					label : '三级 2-2-1'
+				} ]
+			} ]
+		}, {
+			label : '一级 3',
+			children : [ {
+				label : '二级 3-1',
+				children : [ {
+					label : '三级 3-1-1'
+				} ]
+			}, {
+				label : '二级 3-2',
+				children : [ {
+					label : '三级 3-2-1'
+				} ]
+			} ]
+		} ]
+		`;
+		let defaultProps = `
+			{
+				children : 'children',
+				label : 'label'
+			}
+			`;
+		let template = '<el-tree :data="' + data + '" :props="' + defaultProps + '" ></el-tree>';
+		let demos = [];
+		demos.push({
+			isBlock : true,
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template, {})
+		});
+		return {
+			name : 'tree',
+			title : '树',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-tree')) {
+					return true;
+				}
+			}
+		};
+	};
+	PageEditor.prototype.getElementUIPagination = function() {
+		let demos = [];
+		let template = '<el-pagination layout="prev, pager, next" :total="50"></el-pagination>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template, {})
+		});
+		template = '<el-pagination layout="prev, pager, next" :total="1000"></el-pagination>';
+		demos.push({
+			isBlock : true,
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template, {})
+		});
+		return {
+			name : 'pagination',
+			title : '分页',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-pagination')) {
+					return true;
+				}
+			}
+		};
+	};
+
+	PageEditor.prototype.getElementUIBadge = function() {
+		let demos = [];
+		let template = '<el-badge :value="12" class="item"><el-button size="small">评论</el-button></el-badge>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template, {})
+		});
+		template = '<el-badge :value="12" class="item" type="primary"><el-button size="small">评论</el-button></el-badge>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template, {})
+		});
+		template = '<el-badge :value="12" class="item" type="warning"><el-button size="small">评论</el-button></el-badge>';
+		demos.push({
+			template : template,
+			data : null,
+			html : this.getComponentHTML(template, {})
+		});
+		return {
+			name : 'badge',
+			title : '标记',
+			demos : demos,
+			eq (el) {
+				if ($(el)[0].tagName.toLowerCase() == ('el-badge')) {
+					return true;
+				}
+			}
+		};
+	};
+
+
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.getModelBoxHtml = function() {
+		let html = `
+		<div class="title">UI 模板  <a @click="closeModelBox()" class="ft-12 float-right coos-pointer">关闭</a></div>
+
+		<div class="ui-list">
+		<el-collapse v-for="ui in uis" v-model="ui_active_name" @change="ui_active_change" accordion>
+		<el-collapse-item :title="ui.title" :name="ui.name" >
+
+		<div class="ui-group-list">
+
+		<el-collapse v-for="group in ui.groups" :class="ui.name + '-' + group.name" v-model="ui_group_active_name" @change="ui_group_active_change" accordion>
+		<el-collapse-item :title="group.title" :name="ui.name + '-' + group.name">
+
+		<div class="ui-model-list coos-scrollbar" >
+
+		<div v-for="model in group.models" class="ui-model-one" :class="ui.name + '-' + group.name + '-' + model.name">
+		<div v-if="model.demos != null" v-for="demo in model.demos" class="ui-model-demo" @dblclick="chooseModel(ui, group, model ,demo)" :class="{'ui-model-demo-block' : demo.isBlock}" v-html="demo.html">
+		</div>
+		<div class="ui-model-title"><el-link type="success">{{model.title}}</el-link></div>
+		</div>
+
+		</div>
+
+		</el-collapse-item>
+		</el-collapse>
+
+		</div>
+		</el-collapse-item>
+		</el-collapse>
+		</div>
+		`;
+		return html;
+	};
+
+	PageEditor.prototype.buildModel = function() {};
+
+	PageEditor.prototype.showAppendModel = function($parent) {
+		this.lastAppendParent = $parent;
+		this.$modelBox.addClass('show');
+	};
+
+	PageEditor.prototype.closeAppendModel = function() {
+		this.$modelBox.removeClass('show');
+	};
+
+	PageEditor.prototype.chooseModel = function(ui, group, model, demo) {
+		let $parent = $(this.lastAppendParent);
+		if (coos.isEmpty(demo.template)) {
+			$parent.append(demo.html);
+		} else {
+			$parent.append(demo.template);
+		}
+
+		this.changePage();
+		//		this.closeAppendModel();
+
+
+	};
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.getPageBoxHtml = function() {};
+
+	PageEditor.prototype.buildPage = function(page) {
+		if (this.page && page) {
+			if (this.page.template == page.template
+				&& this.page.script == page.script
+				&& this.page.style == page.style) {
+				return;
+			}
+		}
+		let index = '0';
+		if (this.$template) {
+			if (this.$template.hasClass('coos-choose-page-model')) {
+				index = this.$template.attr('coos-index');
+			} else {
+				index = this.$template.find('.coos-choose-page-model').attr('coos-index');
+			}
+		}
+		if (page != null) {
+			this.page = page ;
+			this.initTemplate();
+			this.initScript();
+		}
+
+		let that = this;
+
+		let $pageBox = this.$pageBox;
+		$pageBox.empty();
+		$pageBox.append(this.$template);
+
+		let el = this.$template[0];
+		this.scriptOption.el = el;
+		let vue = new Vue(this.scriptOption);
+
+		this.bindPageEvent();
+		let e;
+		if (index == '0') {
+			e = $(vue.$el);
+		} else {
+			e = $(vue.$el).find('[coos-index="' + index + '"]');
+		}
+		if (e.length > 0) {
+			this.clickPage(e[0], index);
+		}
+
+	};
+
+	PageEditor.prototype.changePage = function() {
+		let that = this;
+
+		this.bindTemplateEvent(this.$template);
+
+		let $t = that.$template.clone();
+
+		$t.find('.coos-choose-page-model').removeClass('coos-choose-page-model');
+		$t.removeClass('coos-choose-page-model');
+
+		this.removeTemplateEvent($t);
+
+		let template = $t[0].outerHTML;
+		template = '\t' + template + '\n';
+		let script = that.page.script;
+		let style = that.page.style;
+
+		let page = {};
+		Object.assign(page, that.page);
+		page.template = template;
+		page.style = style;
+		page.script = script;
+		let code = that.toCode(page);
+
+		//let page_ = that.options.onChange(page, code);
+		that.refreshPage();
+	};
+
+
+	PageEditor.prototype.refreshPage = function() {
+		this.buildPage();
+	};
+
+
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+
+	PageEditor.prototype.bindPageEvent = function() {
+		let $pageBox = this.$pageBox;
+		let $template = this.$template;
+		let that = this;
+		$pageBox.unbind('click').on('click', function() {
+			that.clickPage($pageBox.find('.coos-page:first'), "0");
+		});
+
+	};
+
+	PageEditor.prototype.add_child = function() {
+		this.showAppendModel($(this.lastChoosePageTemplate));
+	};
+	PageEditor.prototype.add_before = function() {
+		this.showAppendModel($(this.lastChoosePageTemplate));
+	};
+	PageEditor.prototype.add_after = function() {
+		this.showAppendModel($(this.lastChoosePageTemplate));
+	};
+	PageEditor.prototype.choose_pro = function() {
+		this.showAppendModel($(this.lastChoosePageTemplate));
+	};
+	PageEditor.prototype.choose_next = function() {
+		this.showAppendModel($(this.lastChoosePageTemplate));
+	};
+	PageEditor.prototype.move_up = function() {
+		let $el = $(this.lastChoosePageTemplate);
+		var list = $el.parent().children();
+		var thisLocation = list.index($el);
+		if (thisLocation < 1) {
+
+		} else {
+			let $prev = $el.prev();
+			$prev.before($el); //上移动
+			this.changePage();
+		}
+	};
+	PageEditor.prototype.move_dw = function() {
+		let $el = $(this.lastChoosePageTemplate);
+		var list = $el.parent().children();
+		var thisLocation = list.index($el);
+		if (thisLocation >= list.length - 1) {
+
+		} else {
+
+			let $next = $el.next();
+			$next.after($el); //下移动
+			this.changePage();
+		}
+	};
+	PageEditor.prototype.remove = function() {
+		$(this.lastChoosePageTemplate).remove();
+		this.changePage();
+	};
+
+	PageEditor.prototype.initChoosePlaces = function(element) {
+		let places = this.form_data.places;
+		places.splice(0, places.length);
+		function addPlace(el) {
+			let $el = $(el);
+			if ($el.length == 0) {
+
+				return;
+			}
+			if ($el.parent().hasClass('page-editor-page-box')) {
+				return;
+			}
+			addPlace($el.parent());
+			places.push({
+				name : $el[0].tagName,
+				el : $el[0]
+			});
+		}
+
+		addPlace(element);
+	};
+	PageEditor.prototype.initChooseAction = function() {};
+
+	PageEditor.prototype.clickPage = function(el, index) {
+		let remark = '';
+		let model = null;
+		let $el = null;
+		if (index) {
+			$el = this.$template.find('[coos-index="' + index + '"]');
+			if (index == '0') {
+				$el = this.$template;
+			}
+			model = $el.data('model');
+			let ui = $el.data('ui');
+			let group = $el.data('group');
+			if (ui) {
+				remark += ui.title + "/";
+			}
+			if (group) {
+				remark += group.title + "/";
+			}
+			if (model) {
+				remark += model.title;
+			}
+		}
+		this.choosePageTemplate($el, model);
+		this.form_data.remark = remark;
+
+		this.$template.find('.coos-choose-page-model').removeClass('coos-choose-page-model');
+		this.$template.removeClass('coos-choose-page-model');
+		$el.addClass('coos-choose-page-model');
+
+		this.$pageBox.find('.coos-choose-page-model').removeClass('coos-choose-page-model');
+		$(el).addClass('coos-choose-page-model');
+	};
+	PageEditor.prototype.choosePageTemplate = function($el, model) {
+		this.lastChoosePageTemplate = $el;
+		model = model || {};
+		let data = {};
+		let items = [];
+		if (model.items) {
+			items = model.items;
+		}
+		if (model.getData) {
+			data = model.getData($el);
+		}
+		let $form = $(this.getFormBoxHtml());
+		this.$formBox.empty();
+		this.$formBox.append($form);
+		this.form_data = {
+			remark : "",
+			data : data,
+			rules : {},
+			items : items,
+			places : [],
+			has_add_child : true,
+			has_add_before : true,
+			has_add_after : true,
+			has_move_up : true,
+			has_move_dw : true,
+			has_remove : true,
+			open_base : false
+		}
+		let that = this;
+		let vue = new Vue({
+			el : $form[0],
+			data : this.form_data,
+			methods : {
+				add_child () {
+					that.add_child();
+				},
+				add_before () {
+					that.add_before();
+				},
+				add_after () {
+					that.add_after();
+				},
+				move_up () {
+					that.move_up();
+				},
+				move_dw () {
+					that.move_dw();
+				},
+				remove () {
+					that.remove();
+				},
+				formDataChange (value, name) {
+					that.formDataChange(value, name);
+				},
+				clickPlace (place) {
+					console.log(place);
+				}
+			}
+		});
+
+		this.initChoosePlaces($el);
+		this.initChooseAction($el);
+	};
+
+	PageEditor.prototype.formDataChange = function(value, name) {
+		let model = $(this.lastChoosePageTemplate).data('model');
+		if (model && model.setData) {
+			model.setData(this.lastChoosePageTemplate, this.form_data.data);
+			this.changePage();
+		}
+	};
+
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.initTemplate = function() {
+
+		this.$template = $('<div class="coos-page"/>');
+		this.$template.html(this.page.template);
+		if (this.$template.find('.coos-page').length > 0) {
+			this.$template = $(this.page.template);
+		}
+
+
+		let that = this;
+
+		let click_page_method_name = 'click_page_' + coos.getNumber();
+		this.click_page_method_name = click_page_method_name;
+		window[click_page_method_name] = function(event, index) {
+			window.event.preventDefault();
+			window.event.stopPropagation();
+			that.clickPage(event.currentTarget, index);
+		};
+		this.bindTemplateEvent(this.$template);
+
+
+	};
+
+	PageEditor.prototype.bindTemplateEvent = function($template) {
+		this.removeTemplateEvent($template);
+		let that = this;
+		let uis = this.data.uis;
+		let index = 0;
+		function bind(el) {
+			let $el = $(el);
+			uis.forEach((ui) => {
+				ui.groups.forEach((group) => {
+					group.models.forEach((model) => {
+						if (model.eq && model.eq($el)) {
+							index++;
+							$el.data("ui", ui);
+							$el.data("group", group);
+							$el.data("model", model);
+							let oldClick = $el.attr('v-on:click');
+							$el.attr('coos-index', '' + index);
+							$el.attr('v-on:click', that.click_page_method_name + '($event, "' + index + '")');
+							if (!coos.isEmpty(oldClick)) {
+								$el.attr('v-on:old-click', oldClick)
+							}
+						}
+					});
+				});
+			});
+			$el.children().each(function(i, element) {
+				bind(element);
+			});
+		}
+		$template.attr('coos-index', '' + index);
+		$template.data("model", {
+			title : "页面"
+		});
+		bind($template);
+	};
+
+	PageEditor.prototype.removeTemplateEvent = function($template) {
+		function remove(el) {
+			let $el = $(el);
+			if ($el.attr('coos-index')) {
+				$el.removeAttr('coos-index')
+				$el.removeAttr('v-on:click')
+				let oldClick = $el.attr('v-on:old-click');
+				if (!coos.isEmpty(oldClick)) {
+					$el.attr('v-on:click', oldClick);
+				}
+			}
+			$el.children().each(function(i, element) {
+				remove(element);
+			});
+		}
+
+		remove($template);
+	};
+
+
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.getFormBoxHtml = function() {
+		let html = `
+		<div class="">
+		<div class="title">设置</div>
+		<div class="pd-5">
+			<div class="remark color-grey">UI：{{remark}}
+			</div>
+			<div class="place color-grey">位置：HTML
+				<template v-for="place in places"><span>&gt;</span><a class="coos-link color-green" @click="clickPlace(place)">{{place.name}}</a></template>
+			</div>
+			<div class="">
+				<a class="coos-btn coos-btn-xs color-green mgr-5 mgb-5" :class="{'coos-disabled' : !has_add_child}" @click="add_child()">添加子模块</a>
+				<a class="coos-btn coos-btn-xs color-green mgr-5 mgb-5" :class="{'coos-disabled' : !has_add_before}" @click="add_before()">之前添加</a>
+				<a class="coos-btn coos-btn-xs color-green mgr-5 mgb-5" :class="{'coos-disabled' : !has_add_after}" @click="add_after()">之后添加</a>
+			</div>
+			<div class="">
+				<a class="coos-btn coos-btn-xs color-orange mgr-5 mgb-5" :class="{'coos-disabled' : !has_move_up}" @click="move_up()">上移</a>
+				<a class="coos-btn coos-btn-xs color-orange mgr-5 mgb-5" :class="{'coos-disabled' : !has_move_dw}" @click="move_dw()">下移</a>
+				<a class="coos-btn coos-btn-xs color-red mgr-5 mgb-5" :class="{'coos-disabled' : !has_remove}" @click="remove()">删除</a>
+			</div>
+			<div class="">
+				<el-form :model="data" size="mini" :rules="rules" ref="form" label-width="60px">
+					<h4 class="color-grey ft-12">基础属性</h4>
+					<el-form-item class label="name" prop="name">
+						<el-input type="text" v-model="data.name" @change="formDataChange($event,'name')" autocomplete="off">
+						</el-input>
+					</el-form-item>
+					<el-form-item class label="class" prop="class">
+						<el-input type="textarea" autosize v-model="data.class" @change="formDataChange($event,'class')" autocomplete="off">
+						</el-input>
+					</el-form-item>
+					<el-form-item class label="style" prop="style">
+						<el-input type="textarea" autosize v-model="data.style" @change="formDataChange($event,'style')" autocomplete="off">
+						</el-input>
+					</el-form-item>
+					<el-form-item class label="v-if" prop="v-if">
+						<el-input type="textarea" autosize v-model="data['v-if']" @change="formDataChange($event,'v-if')" autocomplete="off">
+						</el-input>
+					</el-form-item>
+					<el-form-item class label="v-for" prop="v-for">
+						<el-input type="textarea" autosize v-model="data['v-for']" @change="formDataChange($event,'v-for')" autocomplete="off">
+						</el-input>
+					</el-form-item>
+					<el-form-item class label="v-show" prop="v-show">
+						<el-input type="textarea" autosize v-model="data['v-show']" @change="formDataChange($event,'v-show')" autocomplete="off">
+						</el-input>
+					</el-form-item>
+					<h4 class="color-grey ft-12">基础属性扩展<a class="coos-link color-orange float-right" v-on:click="open_base=(open_base?false:true)">{{open_base?'收起':'展开'}}</a></h4>
+					<div class="" v-show="open_base">
+						<el-form-item class label=":class" prop=":class">
+							<el-input type="textarea" autosize v-model="data[':class']" @change="formDataChange($event,':class')" autocomplete="off">
+							</el-input>
+						</el-form-item>
+						<el-form-item class label=":style" prop=":style">
+							<el-input type="textarea" autosize v-model="data[':style']" @change="formDataChange($event,':style')" autocomplete="off">
+							</el-input>
+						</el-form-item>
+						<el-form-item class label="v-else-if" prop="v-else-if">
+							<el-input type="textarea" autosize v-model="data['v-else-if']" @change="formDataChange($event,'v-else-if')" autocomplete="off">
+							</el-input>
+						</el-form-item>
+						<el-form-item class label="v-else" prop="v-else">
+							<el-input type="textarea" autosize v-model="data['v-else']" @change="formDataChange($event,'v-else')" autocomplete="off">
+							</el-input>
+						</el-form-item>
+					</div>
+					<h4 class="color-grey ft-12">组件属性</h4>
+					<template v-for="item in items">
+						<template v-if="item.type == 'textarea'">
+							<el-form-item class :label="item.label" :prop="item.prop">
+								<el-input type="textarea" autosize v-model="data[item.name]" @change="formDataChange($event, item.name)" autocomplete="off"></el-input>
+							</el-form-item>
+						</template>
+						<template v-else-if="item.type == 'color'">
+							<el-form-item class :label="item.label" :prop="item.prop">
+								<el-color-picker v-model="data[item.name]" @change="formDataChange($event, item.name)"></el-color-picker>
+							</el-form-item>
+						</template>
+						<template v-else-if="item.type == 'switch'">
+							<el-form-item class :label="item.label" :prop="item.prop">
+								<el-switch v-model="data[item.name]" @change="formDataChange($event, item.name)"></el-switch>
+							</el-form-item>
+						</template>
+						<template v-else-if="item.type == 'slider'">
+							<el-form-item class :label="item.label" :prop="item.prop">
+								<el-slider v-model="data[item.name]" @change="formDataChange($event, item.name)"></el-slider>
+							</el-form-item>
+						</template>
+						<template v-else-if="item.type == 'select'">
+							<el-form-item class :label="item.label" :prop="item.prop">
+								<el-select v-model="data[item.name]" @change="formDataChange($event, item.name)" placeholder="请选择">
+									<el-option v-for="option in item.options" :key="option.value" :value="option.value" :label="option.text" />
+								</el-select>
+							</el-form-item>
+						</template>
+						<template v-else-if="item.type == 'radio'">
+							<el-form-item class :label="item.label" :prop="item.prop">
+								<el-radio-group v-model="data[item.name]" @change="formDataChange($event, item.name)">
+									<el-radio v-for="option in item.options" :key="option.value" :label="option.value" >{{option.text}}</el-radio>
+								</el-radio-group>
+							</el-form-item>
+						</template>
+						<template v-else-if="item.type == 'checkbox'">
+							<el-form-item class :label="item.label" :prop="item.prop">
+								<el-checkbox-group v-model="data[item.name]" @change="formDataChange($event, item.name)">
+									<el-checkbox v-for="option in item.options" :key="option.value" :label="option.value" >{{option.text}}</el-checkbox>
+								</el-checkbox-group>
+							</el-form-item>
+						</template>
+						<template v-else>
+							<el-form-item class :label="item.label" :prop="item.prop">
+								<el-input v-model="data[item.name]" @change="formDataChange($event, item.name)" autocomplete="off"></el-input>
+							</el-form-item>
+						</template>
+					</template>
+				</el-form>
+			</div>
+		</div>
+		</div>
+		`;
+		return html;
+	};
+
+	PageEditor.prototype.buildForm = function() {};
+
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.initScript = function() {
+		this.scriptOption = this.getScriptOption(this.page.script);
+		this.scriptOption = this.scriptOption || {};
+	};
+
+
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.getVueDataHtml = function() {
+		let html = `
+		
+		`;
+
+		return html;
+	};
+
+
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.getVueMethodHtml = function() {
+		let html = `
+		
+		`;
+
+		return html;
+	};
+
+
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.getVueServiceHtml = function() {
+		let html = `
+		
+		`;
+
+		return html;
+	};
+
+
+})();
+
+(function() {
+	var PageEditor = Editor.Page;
+
+	PageEditor.prototype.initStyle = function() {};
+
+
 })();
 
 })(window);

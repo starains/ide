@@ -36,28 +36,55 @@
 		return html;
 	};
 
-	PageEditor.prototype.buildModel = function() {};
 
-	PageEditor.prototype.showAppendModel = function($parent) {
-		this.lastAppendParent = $parent;
-		this.$modelBox.addClass('show');
+	PageEditor.prototype.buildPageModel = function($box) {
+		let that = this;
+
+		let data = {};
+		data.show = false;
+		data.uis = this.getUIList();
+		data.ui_active_name = data.uis[0].name;
+		data.ui_group_active_name = data.ui_active_name + '-' + data.uis[0].groups[0].name;
+
+		this.page_model_data = data;
+
+		let $modelBox = $('<div class="page-editor-model-box" :class="{\'page-editor-model-box-show\':show}">' + this.getModelBoxHtml() + '</div>');
+		$box.append($modelBox);
+		new Vue({
+			el : $modelBox[0],
+			data : data,
+			methods : {
+				chooseModel (ui, group, model, demo) {
+					that.onChoosePageModel(ui, group, model, demo);
+				},
+				closeModelBox () {
+					this.show = false;
+				},
+				ui_active_change (activeName) {
+					this.$nextTick().then(res => {
+						this.uis.forEach(ui => {
+							if (activeName == (ui.name)) {
+								if (ui.lastActiveName) {
+									this.ui_group_active_name = ui.lastActiveName;
+								} else {
+									this.ui_group_active_name = ui.name + '-' + ui.groups[0].name;
+								}
+							}
+						});
+					});
+				},
+				ui_group_active_change (activeName) {}
+			}
+		});
+
+	};
+	PageEditor.prototype.choosePageModel = function(callback) {
+		this.lastChoosePageModelCallback = callback;
+		this.page_model_data.show = true;
+	};
+	PageEditor.prototype.onChoosePageModel = function(ui, group, model, demo) {
+		console.log(demo);
 	};
 
-	PageEditor.prototype.closeAppendModel = function() {
-		this.$modelBox.removeClass('show');
-	};
 
-	PageEditor.prototype.chooseModel = function(ui, group, model, demo) {
-		let $parent = $(this.lastAppendParent);
-		if (coos.isEmpty(demo.template)) {
-			$parent.append(demo.html);
-		} else {
-			$parent.append(demo.template);
-		}
-
-		this.changePage();
-		//		this.closeAppendModel();
-
-
-	};
 })();

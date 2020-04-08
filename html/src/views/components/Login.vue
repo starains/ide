@@ -17,7 +17,9 @@
           <el-form-item class="aaaaa">
             <el-checkbox v-model="form.rememberpassword" class="rememberpassword">记住密码</el-checkbox>
           </el-form-item>
-          <a class="coos-btn bg-green coos-btn-block" @click="doLogin()">登录</a>
+
+          <a class="coos-btn bg-green coos-btn-block coos-disabled" v-if="loading">登录中</a>
+          <a class="coos-btn bg-green coos-btn-block" @click="doLogin()" v-if="!loading">登录</a>
         </el-form>
         <div class="mgt-10 pdb-20" v-if="source.CONFIGURE.openregister">
           <div class="float-right">
@@ -48,6 +50,7 @@ export default {
     }
     return {
       source: source,
+      loading: false,
       form: {
         loginname: loginname,
         password: password,
@@ -71,6 +74,7 @@ export default {
       this.$refs["login-form"].validate(valid => {
         if (valid) {
           let data = this.form;
+          this.loading = true;
           source.do("LOGIN", data).then(res => {
             if (res.errcode == 0) {
               coos.success("登录成功.");
@@ -88,10 +92,12 @@ export default {
                 }
               } catch (e) {}
               window.setTimeout(() => {
+                this.loading = false;
                 window.location.reload();
               }, 300);
             } else {
               coos.error(res.errmsg);
+              this.loading = false;
             }
           });
         } else {
