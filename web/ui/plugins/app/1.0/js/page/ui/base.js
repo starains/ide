@@ -82,10 +82,11 @@
 		models.push({
 			name : 'layout',
 			title : '布局',
+			isBlock : true,
+			template : `<div class="coos-layout"></div>`,
 			items : [ item_map.color, item_map.bgcolor, item_map.bdcolor ],
 			demos : [ {
-				isBlock : true,
-				html : '<div class="coos-layout"></div>'
+				data : {}
 			} ],
 			eq (el) {
 				if ($(el).hasClass('coos-layout')) {
@@ -104,16 +105,17 @@
 		models.push({
 			name : 'panel',
 			title : '面板',
+			isBlock : true,
+			template : `
+			<div class="coos-panel">
+				<div class="coos-panel-header">标题</div>
+				<div class="coos-panel-body">内容</div>
+				<div class="coos-panel-footer">底部</div>
+			</div>
+			`,
 			items : [ item_map.title, item_map.color, item_map.bgcolor, item_map.bdcolor ],
 			demos : [ {
-				isBlock : true,
-				html : `
-				<div class="coos-panel">
-					<div class="coos-panel-header">标题</div>
-					<div class="coos-panel-body">内容</div>
-					<div class="coos-panel-footer">底部</div>
-				</div>
-				`
+				data : {}
 			} ],
 			eq (el) {
 				if ($(el).hasClass('coos-panel')) {
@@ -129,33 +131,34 @@
 				setData(el, data);
 			}
 		});
-		let demos = [];
 		let tags = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'div', 'span', 'p', 'a' ];
-		models.push({
-			name : 'base',
-			title : '基础标签',
-			demos : demos,
-			eq (el) {
-				let flag = false;
-				tags.forEach((tag) => {
-					if ($(el).hasClass('coos-tag-' + tag)) {
-						flag = true;
-					}
-				});
-				return flag;
-			},
-			getData (el) {
-				let data = getData(el);
 
-				return data;
-			},
-			setData (el, data) {
-				setData(el, data);
-			}
-		});
 		tags.forEach((tag) => {
-			demos.push({
-				html : '<' + tag + ' class="coos-tag-' + tag + '">这是一个' + tag + '</' + tag + '>'
+			models.push({
+				name : '' + tag,
+				title : '标签' + tag,
+				isBlock : true,
+				template : '<' + tag + ' class="coos-tag-' + tag + '">这是一个' + tag + '</' + tag + '>',
+				demos : [ {
+					data : {}
+				} ],
+				eq (el) {
+					let flag = false;
+					tags.forEach((tag) => {
+						if ($(el).hasClass('coos-tag-' + tag)) {
+							flag = true;
+						}
+					});
+					return flag;
+				},
+				getData (el) {
+					let data = getData(el);
+
+					return data;
+				},
+				setData (el, data) {
+					setData(el, data);
+				}
 			});
 		});
 
@@ -165,83 +168,16 @@
 	};
 
 	PageEditor.prototype.getBaseUIButton = function() {
-		let demos = [];
 
-		let list = [ {
-			text : '默认'
-		}, {
-			text : 'grey',
-			color : 'grey'
-		}, {
-			text : 'green',
-			color : 'green'
-		}, {
-			text : 'blue',
-			color : 'blue'
-		}, {
-			text : 'orange',
-			color : 'orange'
-		}, {
-			text : 'red',
-			color : 'red'
-		} ];
-
-		[ 'xs', 'sm', '', 'md', 'lg' ].forEach(one => {
-			let template = '';
-			template += '<a class="coos-btn color-grey ';
-			if (one != null) {
-				template += 'coos-btn-' + one + ' ';
-			}
-			template += ' " >';
-			template += one || '默认';
-			template += '</a>';
-			demos.push({
-				data : null,
-				html : template
-			})
-		});
-
-		list.forEach(one => {
-			let template = '';
-			template += '<a class="coos-btn ';
-			if (one.color) {
-				template += 'color-' + one.color + ' ';
-			}
-			template += ' " >';
-			template += one.text;
-			template += '</a>';
-			demos.push({
-				data : null,
-				html : template
-			})
-		});
-
-		list.forEach(one => {
-			let template = '';
-			template += '<a class="coos-btn ';
-			if (one.color) {
-				template += 'bg-' + one.color + ' ';
-			}
-			template += ' " >';
-			template += one.text;
-			template += '</a>';
-			demos.push({
-				data : null,
-				html : template
-			})
-		});
-
-		return {
-			name : 'button',
+		let model = {
+			name : 'btn',
 			title : '按钮',
-			demos : demos,
+			template : `<a class="coos-btn color-grey ">按钮</a>`,
+			demos : [ {} ],
 			eq (el) {
 				if ($(el).hasClass('coos-btn')) {
 					return true;
 				}
-				if ($(el).hasClass('coos-link')) {
-					return true;
-				}
 			},
 			getData (el) {
 				let data = getData(el);
@@ -252,82 +188,18 @@
 				setData(el, data);
 			}
 		};
+
+		return model;
 	};
 
 
 	PageEditor.prototype.getBaseUILink = function() {
-		let demos = [];
 
-		let list = [ {
-			text : '默认'
-		}, {
-			text : 'grey',
-			color : 'grey'
-		}, {
-			text : 'green',
-			color : 'green'
-		}, {
-			text : 'blue',
-			color : 'blue'
-		}, {
-			text : 'orange',
-			color : 'orange'
-		}, {
-			text : 'red',
-			color : 'red'
-		} ];
-
-		list.forEach(one => {
-			let template = '';
-			template += '<a class="coos-btn ';
-			if (one.color) {
-				template += 'color-' + one.color + ' ';
-			}
-			template += ' " >';
-			template += one.text;
-			template += '</a>';
-			demos.push({
-				data : null,
-				html : template
-			})
-		});
-
-		list.forEach(one => {
-			let template = '';
-			template += '<a class="coos-btn ';
-			if (one.color) {
-				template += 'bg-' + one.color + ' ';
-			}
-			template += ' " >';
-			template += one.text;
-			template += '</a>';
-			demos.push({
-				data : null,
-				html : template
-			})
-		});
-
-
-
-		list.forEach(one => {
-			let template = '';
-			template += '<a class="coos-link ';
-			if (one.color) {
-				template += 'color-' + one.color + ' ';
-			}
-			template += ' " >';
-			template += one.text;
-			template += '</a>';
-			demos.push({
-				data : null,
-				html : template
-			})
-		});
-
-		return {
+		let model = {
 			name : 'link',
 			title : '链接',
-			demos : demos,
+			template : `<a class="coos-btn color-grey ">链接</a>`,
+			demos : [ {} ],
 			eq (el) {
 				if ($(el).hasClass('coos-link')) {
 					return true;
@@ -342,5 +214,7 @@
 				setData(el, data);
 			}
 		};
+
+		return model;
 	};
 })();

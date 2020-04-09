@@ -39,14 +39,19 @@
 		let $view = null;
 		let id = this.getLayoutID(layout);
 		layout_map[id] = layout;
-		if (coos.isEmpty(layout.template)) {
-			if (coos.isEmpty(layout.html)) {
-				$view = $('<div ></div>');
+		let ui = this.ui_map[layout.key];
+		if (ui) {
+			if (coos.isEmpty(ui.template)) {
+				if (coos.isEmpty(ui.html)) {
+					$view = $('<div ></div>');
+				} else {
+					$view = $(ui.html);
+				}
 			} else {
-				$view = $(layout.html);
+				$view = $(ui.template);
 			}
 		} else {
-			$view = $(layout.template);
+			$view = $('<div ></div>');
 		}
 		$view.attr('layout-id', id);
 
