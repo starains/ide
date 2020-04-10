@@ -2,21 +2,36 @@
 (function() {
 	var PageEditor = Editor.Page;
 
-	PageEditor.prototype.getModelBoxHtml = function() {
+	PageEditor.prototype.getUIList = function() {
+		let list = [];
+
+		list.push(new Editor.Page.UI.CoosXUI());
+		list.push(new Editor.Page.UI.ElementUI());
+
+		return list;
+	};
+	PageEditor.prototype.getPageUIBoxHtml = function() {
 		let html = `
-<div class="page-editor-model-box" :class="{'page-editor-model-box-show':show}">
-	<div class="title">UI 模板  <a @click="closeModelBox()" class="ft-12 float-right coos-pointer">关闭</a></div>
+<div class="page-editor-ui-box" :class="{'page-editor-ui-box-show':show}">
+	<div class="title">UI 模板  <a @click="closeUIBox()" class="ft-12 float-right coos-pointer">关闭</a></div>
 	<div class="ui-list">
 	    <el-collapse v-for="ui in uis" v-model="ui_active_name" @change="ui_active_change" accordion>
-			<el-collapse-item :title="ui.title" :name="ui.name" >
+			<el-collapse-item :title="ui.title" :name="ui.key" >
 				<div class="ui-group-list">
-					<el-collapse v-for="group in ui.groups" :class="ui.name + '-' + group.name" v-model="ui_group_active_name" @change="ui_group_active_change" accordion>
-						<el-collapse-item :title="group.title" :name="ui.name + '-' + group.name">
-							<div class="ui-model-list coos-scrollbar" >
-								<div v-for="model in group.models" class="ui-model-one" :class="ui.name + '-' + group.name + '-' + model.name">
-									<div v-if="model.demos != null" v-for="demo in model.demos" class="ui-model-demo" @dblclick="chooseModel(ui, group, model ,demo)" :class="{'ui-model-demo-block' : model.isBlock || demo.isBlock}" v-html="demo.html">
+					<div v-if="ui.groups.length == 0" class="color-orange text-center pdtb-10">暂无组数据</div>
+					<el-collapse v-for="group in ui.groups" :class="group.key" v-model="ui_group_active_name" @change="ui_group_active_change" accordion>
+						<el-collapse-item :title="group.title" :name="group.key">
+							<div v-if="group.templates.length == 0" class="color-orange text-center pdtb-10">暂无模板数据</div>
+							<div class="ui-template-list coos-scrollbar" >
+								<div v-for="template in group.templates" class="ui-template-one" :class="template.key">
+									<div v-if="template.demos.length == 0" class="color-orange text-center pdtb-10">暂无样式数据</div>
+									<div class="ui-demo-list" >
+										<template v-for="demo in template.demos" >
+											<div v-if="demo.divider" class="ui-template-demo-divider" ></div>
+											<div v-if="!demo.divider" class="ui-template-demo" @dblclick="chooseTemplate(ui, group, template ,demo)" :class="{'ui-template-demo-block' : template.isBlock}" v-html="demo.html"></div>
+										</template>
 									</div>
-									<div class="ui-model-title"><el-link type="success">{{model.title}}</el-link></div>
+									<div class="ui-template-title"><el-link type="success">{{template.title}}</el-link></div>
 								</div>
 							</div>
 						</el-collapse-item>
@@ -31,58 +46,84 @@
 	};
 
 
-	PageEditor.prototype.buildPageModel = function($box) {
-		if (this.buildPageModeled) {
+	PageEditor.prototype.buildPageUI = function($box) {
+		if (this.buildPageUIed) {
 			return;
 		}
-		this.buildPageModeled = true;
+		this.buildPageUIed = true;
 		let that = this;
 
 		let data = {};
 		data.show = false;
 		data.uis = this.getUIList();
-		data.ui_active_name = data.uis[0].name;
-		data.ui_group_active_name = data.ui_active_name + '-' + data.uis[0].groups[0].name;
 
-		this.page_model_data = data;
 		this.ui_map = {};
-		data.uis.forEach((ui) => {
-			ui.groups.forEach((group) => {
-				group.models.forEach((model) => {
-					let key = 'ui-' + ui.name + '-' + group.name + '-' + model.name;
-					model.key = key;
-					this.ui_map[key] = model;
+		this.group_map = {};
+		this.template_map = {};
 
-					if (model.template) {
-						model.demos.forEach((demo) => {
+		data.uis.forEach((ui) => {
+			ui.key = ui.name;
+			this.ui_map[ui.key] = ui;
+			ui.groups = ui.groups || [];
+			ui.groups.forEach((group) => {
+				group.key = ui.name + '-' + group.name;
+				group.templates = group.templates || [];
+				this.group_map[group.key] = group;
+				group.templates.forEach((template) => {
+					template.key = ui.name + '-' + group.name + '-' + template.name;
+					this.template_map[template.key] = template;
+
+					template.demos = template.demos || [];
+
+					let $el = $('<div />');
+					$el.append(template.code);
+					template.demos.forEach((demo) => {
+						if (demo.divider) {
+
+						} else {
 							let vue = new Vue({
-								el : $('<div>' + model.template + '</div>')[0],
+								el : $el[0],
+								computed : demo.computed,
+								methods : demo.methods,
 								data : demo.data
 							});
 							demo.html = vue.$el.innerHTML;
-						});
-					}
+						}
+					});
 				});
 			});
 		});
 
-		let $modelBox = $(this.getModelBoxHtml());
-		$box.append($modelBox);
+		data.ui_active_name = null;
+		data.ui_group_active_name = null;
+		if (data.uis.length > 0) {
+			data.ui_active_name = data.uis[0].key;
+			if (data.uis[0].groups.length > 0) {
+				data.ui_group_active_name = data.uis[0].groups[0].key;
+			}
+		}
+
+		this.page_ui_data = data;
+
+		let $pageUIBox = $(this.getPageUIBoxHtml());
+		$box.append($pageUIBox);
 		new Vue({
-			el : $modelBox[0],
+			el : $pageUIBox[0],
 			data : data,
 			mounted () {
+				let width = $(this.$el).find('.ui-list').width();
 				let height = $(this.$el).find('.ui-list').height();
 				this.uis.forEach((ui, index) => {
 					let groupList = $(this.$el).find('.ui-group-list')[index];
-					$(groupList).find('.ui-model-list').css('height', height - 30 * this.uis.length - 30 * ui.groups.length)
+					$(groupList).find('.ui-template-list').css('height', height - 30 * this.uis.length - 30 * ui.groups.length)
 				});
+				$(this.$el).css('left', ($($box).width() - width) / 2);
 			},
 			methods : {
-				chooseModel (ui, group, model, demo) {
-					that.onChoosePageModel(ui, group, model, demo);
+				chooseTemplate (ui, group, template, demo) {
+					that.onChoosePageTemplate(ui, group, template, demo);
 				},
-				closeModelBox () {
+				closeUIBox () {
 					this.show = false;
 				},
 				ui_active_change (activeName) {
@@ -92,7 +133,11 @@
 								if (ui.lastActiveName) {
 									this.ui_group_active_name = ui.lastActiveName;
 								} else {
-									this.ui_group_active_name = ui.name + '-' + ui.groups[0].name;
+									if (ui.groups.length > 0) {
+										this.ui_group_active_name = ui.groups[0].key;
+									} else {
+										this.ui_group_active_name = null;
+									}
 								}
 							}
 						});
@@ -103,14 +148,16 @@
 		});
 
 	};
-	PageEditor.prototype.choosePageModel = function(callback) {
-		this.lastChoosePageModelCallback = callback;
-		this.page_model_data.show = true;
+	PageEditor.prototype.choosePageTemplate = function(callback) {
+		this.lastChoosePageTemplateCallback = callback;
+		this.page_ui_data.show = true;
 	};
-	PageEditor.prototype.onChoosePageModel = function(ui, group, model, demo) {
+	PageEditor.prototype.onChoosePageTemplate = function(ui, group, template, demo) {
 		let layout = {};
-		layout.key = model.key;
-		this.lastChoosePageModelCallback && this.lastChoosePageModelCallback(layout);
+		layout.key = template.key;
+		layout.option = {};
+		layout.option.data = $.extend(true, {}, demo.data);
+		this.lastChoosePageTemplateCallback && this.lastChoosePageTemplateCallback(layout);
 	};
 
 

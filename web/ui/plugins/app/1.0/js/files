@@ -95,9 +95,6 @@ page/index.js
 page/code.js
 page/sortable.js
 
-page/ui/index.js
-page/ui/base.js
-page/ui/element-ui.js
 
 page/model/index.js
 
@@ -112,5 +109,13 @@ page/script/index.js
 page/script/data.js
 page/script/method.js
 page/script/service.js
-
 page/style/index.js
+
+page/ui/index.js
+page/ui/CoosX/index.js
+page/ui/CoosX/base.js
+page/ui/CoosX/panel.js
+page/ui/ElementUI/index.js
+page/ui/ElementUI/base.js
+page/ui/ElementUI/form.js
+page/ui/ElementUI/panel.js

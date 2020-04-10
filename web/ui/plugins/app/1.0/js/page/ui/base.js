@@ -2,7 +2,7 @@
 (function() {
 	var PageEditor = Editor.Page;
 
-	PageEditor.prototype.getTagUI = function() {
+	PageEditor.prototype.getBaseUI = function() {
 		let ui = {};
 		ui.name = 'base';
 		ui.title = 'Base UI';
@@ -198,7 +198,7 @@
 		let model = {
 			name : 'link',
 			title : '链接',
-			template : `<a class="coos-btn color-grey ">链接</a>`,
+			template : `<a class="coos-link color-grey ">链接</a>`,
 			demos : [ {} ],
 			eq (el) {
 				if ($(el).hasClass('coos-link')) {

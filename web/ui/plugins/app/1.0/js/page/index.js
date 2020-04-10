@@ -9,11 +9,12 @@
 		let id = this.getLayoutID(root);
 		$box.attr('layout-id', id);
 		layout_map[id] = root;
-		let $view = this.appendLayoutView($box, root);
+		let data = {};
+		let $view = this.appendLayoutView($box, root, data);
 
 		new Vue({
 			el : $view[0],
-			data : {},
+			data : data,
 			mounted () {}
 		});
 		$box.on('mouseover', function(e) {
@@ -32,31 +33,27 @@
 		}
 	};
 
-	PageEditor.prototype.appendLayoutView = function($parent, layout) {
+	PageEditor.prototype.appendLayoutView = function($parent, layout, data) {
 		if (!layout) {
 			return;
 		}
 		let $view = null;
 		let id = this.getLayoutID(layout);
 		layout_map[id] = layout;
-		let ui = this.ui_map[layout.key];
-		if (ui) {
-			if (coos.isEmpty(ui.template)) {
-				if (coos.isEmpty(ui.html)) {
-					$view = $('<div ></div>');
-				} else {
-					$view = $(ui.html);
-				}
-			} else {
-				$view = $(ui.template);
-			}
+		let template = this.template_map[layout.key];
+		if (template && coos.isNotEmpty(template.code)) {
+			$view = $(template.code);
 		} else {
 			$view = $('<div ></div>');
 		}
 		$view.attr('layout-id', id);
 
 		$parent.append($view);
-
+		if (layout.option) {
+			if (layout.option.data) {
+				Object.assign(data, layout.option.data);
+			}
+		}
 		if (layout.layouts) {
 			layout.layouts.forEach(one => {
 				this.appendLayoutView($view, one);
@@ -72,7 +69,7 @@
 		var $box = $('<div class="page-design-box"></div>');
 		$design.append($box);
 
-		this.buildPageModel($design);
+		this.buildPageUI($design);
 		this.buildPageView($box);
 		this.bindPageDesignEvent($box);
 
@@ -146,7 +143,7 @@
 		menus.push({
 			text : "添加",
 			onClick : function() {
-				that.choosePageModel(function(res) {
+				that.choosePageTemplate(function(res) {
 					that.recordHistory();
 					layout.layouts = layout.layouts || [];
 					layout.layouts.push(res);
@@ -159,7 +156,7 @@
 			menus.push({
 				text : "前边添加",
 				onClick : function() {
-					that.choosePageModel(function(res) {
+					that.choosePageTemplate(function(res) {
 						that.recordHistory();
 						parentLayout.layouts.splice(0, 0, res);
 						that.changeModel();
@@ -170,7 +167,7 @@
 			menus.push({
 				text : "后边添加",
 				onClick : function() {
-					that.choosePageModel(function(res) {
+					that.choosePageTemplate(function(res) {
 						that.recordHistory();
 						parentLayout.layouts.push(res);
 						that.changeModel();
