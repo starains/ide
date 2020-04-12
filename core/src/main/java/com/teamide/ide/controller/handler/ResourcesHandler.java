@@ -111,17 +111,7 @@ public class ResourcesHandler {
 			js.add("resources/plugins/dropzone/dropzone.min.js");
 			js.add("resources/plugins/dropzone/dropzone-amd-module.min.js");
 
-			if (hasUI) {
-				// css.add("resources/coos/merge/coos.css?v=" + VERSION);
-				js.add("resources/coos/merge/coos.js");
-				// css.add("resources/coos/merge/coos.layout.css?v=" + VERSION);
-				// js.add("resources/coos/merge/coos.layout.js?v=" + VERSION);
-			} else {
-				// css.add("resources/coos/css/coos.css?v=" + VERSION);
-				js.add("resources/coos/js/coos.js?v=" + VERSION);
-				// css.add("resources/coos/css/coos.layout.css?v=" + VERSION);
-				// js.add("resources/coos/js/coos.layout.js?v=" + VERSION);
-			}
+			js.add("resources/coos/js/coos.min.js?v=" + VERSION);
 
 			List<IDEPlugin> plugins = PluginHandler.getPlugins();
 

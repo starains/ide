@@ -3,20 +3,6 @@
     class="app-repository"
     :class="{'show' : $route.path == '/','repository-fullscreen':repository.fullscreen}"
   >
-    <div class="repository-screen-control-toolbar">
-      <a
-        class="repository-screen-control coos-icon coos-icon-fullscreen"
-        @click="source.fullScreen()"
-        v-if="!repository.fullscreen"
-        title="撑满屏幕"
-      ></a>
-      <a
-        class="repository-screen-control repository-screen-control-active coos-icon coos-icon-fullscreen-exit"
-        @click="source.fullScreenExit()"
-        v-if="repository.fullscreen"
-        title="还原屏幕"
-      ></a>
-    </div>
     <div
       class="repository-box"
       v-loading="repository.loading"
@@ -26,7 +12,24 @@
       <div class="repository-left">
         <Project :repository="repository"></Project>
       </div>
-      <div class="repository-center">
+      <div
+        class="repository-center"
+        :class="{'show' : $route.path == '/','repository-center-fullscreen':repository.fullscreencenter}"
+      >
+        <div class="repository-screen-control-toolbar">
+          <a
+            class="repository-screen-control coos-icon coos-icon-fullscreen"
+            @click="source.fullScreenCenter()"
+            v-if="!repository.fullscreencenter"
+            title="撑满屏幕"
+          ></a>
+          <a
+            class="repository-screen-control repository-screen-control-active coos-icon coos-icon-fullscreen-exit"
+            @click="source.fullScreenExitCenter()"
+            v-if="repository.fullscreencenter"
+            title="还原屏幕"
+          ></a>
+        </div>
         <Tabs :repository="repository"></Tabs>
       </div>
       <div class="repository-contextmenu">
@@ -180,5 +183,9 @@ export default {
   right: 0px;
   background-color: #fff;
   box-shadow: 0px 0px 10px #ddd;
+}
+.repository-box .repository-center.repository-center-fullscreen {
+  top: -105px;
+  left: 0px;
 }
 </style>

@@ -91,25 +91,11 @@ jexl/html.js
 
 
 page/index.js
-
-page/code.js
-page/sortable.js
-
-
-page/model/index.js
+page/base.js
 
 page/page/index.js
-page/page/event.js
-
-page/template/index.js
-page/template/form.js
-page/template/event.js
-
-page/script/index.js
-page/script/data.js
-page/script/method.js
-page/script/service.js
-page/style/index.js
+page/model/index.js
+page/option/index.js
 
 page/ui/index.js
 page/ui/CoosX/index.js

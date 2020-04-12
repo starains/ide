@@ -12,7 +12,7 @@
 	};
 	PageEditor.prototype.getPageUIBoxHtml = function() {
 		let html = `
-<div class="page-editor-ui-box" :class="{'page-editor-ui-box-show':show}">
+<div class="page-design-ui-box" :class="{'page-design-ui-box-show':show}">
 	<div class="title">UI 模板  <a @click="closeUIBox()" class="ft-12 float-right coos-pointer">关闭</a></div>
 	<div class="ui-list">
 	    <el-collapse v-for="ui in uis" v-model="ui_active_name" @change="ui_active_change" accordion>
@@ -75,12 +75,22 @@
 
 					template.demos = template.demos || [];
 
-					let $el = $('<div />');
-					$el.append(template.code);
 					template.demos.forEach((demo) => {
 						if (demo.divider) {
 
 						} else {
+
+							let $el = $('<div />');
+							let $template = $(template.code);
+							if (demo.attr) {
+								Object.keys(demo.attr).forEach(attrKey => {
+									$template.attr(attrKey, demo.attr[attrKey]);
+								});
+							}
+							if (demo.slot) {
+								$template.append(demo.slot) ;
+							}
+							$el.append($template);
 							let vue = new Vue({
 								el : $el[0],
 								computed : demo.computed,
@@ -110,15 +120,22 @@
 		new Vue({
 			el : $pageUIBox[0],
 			data : data,
-			mounted () {
-				let width = $(this.$el).find('.ui-list').width();
-				let height = $(this.$el).find('.ui-list').height();
-				this.uis.forEach((ui, index) => {
-					let groupList = $(this.$el).find('.ui-group-list')[index];
-					$(groupList).find('.ui-template-list').css('height', height - 30 * this.uis.length - 30 * ui.groups.length)
-				});
-				$(this.$el).css('left', ($($box).width() - width) / 2);
+			watch : {
+				show (value) {
+					if (value) {
+						this.$nextTick().then(res => {
+							let width = $(this.$el).find('.ui-list').width();
+							let height = $(this.$el).find('.ui-list').height();
+							this.uis.forEach((ui, index) => {
+								let groupList = $(this.$el).find('.ui-group-list')[index];
+								$(groupList).find('.ui-template-list').css('height', height - 30 * this.uis.length - 30 * ui.groups.length)
+							});
+							$(this.$el).css('left', ($($box).width() - width) / 2);
+						});
+					}
+				}
 			},
+			mounted () {},
 			methods : {
 				chooseTemplate (ui, group, template, demo) {
 					that.onChoosePageTemplate(ui, group, template, demo);
@@ -156,7 +173,8 @@
 		let layout = {};
 		layout.key = template.key;
 		layout.option = {};
-		layout.option.data = $.extend(true, {}, demo.data);
+		layout.option.attr = $.extend(true, {}, demo.attr);
+		layout.option.slot = demo.slot;
 		this.lastChoosePageTemplateCallback && this.lastChoosePageTemplateCallback(layout);
 	};
 

@@ -45,6 +45,17 @@
         </template>
       </div>
       <div class="repository-project-nav-group">
+        <a class @click="source.fullScreen()" v-if="!repository.fullscreen" title="撑满屏幕">
+          <i class="coos-icon coos-icon-fullscreen" />
+        </a>
+        <a
+          class="active"
+          @click="source.fullScreenExit()"
+          v-if="repository.fullscreen"
+          title="还原屏幕"
+        >
+          <i class="coos-icon coos-icon-fullscreen-exit" />
+        </a>
         <a class title="控制台，可查看启动项目日志" @click="source.openStarterBox()">
           <el-badge :is-dot="repository.starters.length >1">
             <a
@@ -824,6 +835,7 @@ export default {
 .repository-project-nav-group > a .el-badge {
   vertical-align: inherit;
 }
+.repository-project-nav-group > a.active,
 .repository-project-nav-group > a:hover {
   background-color: #ddd;
 }

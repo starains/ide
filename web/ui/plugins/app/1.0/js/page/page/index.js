@@ -1,86 +1,174 @@
-
 (function() {
 	var PageEditor = Editor.Page;
 
-	PageEditor.prototype.getPageBoxHtml = function() {};
+	PageEditor.prototype.buildPageView = function($box) {
+		this.layout_id_name = 'layout-id';
+		this.layout_map = {};
+		let root = this.getLayoutRoot();
+		let id = this.getLayoutID(root);
+		$box.attr(this.layout_id_name, id);
+		this.layout_map[id] = root;
+		let data = {};
+		let $view = this.appendLayoutView($box, root, data);
 
-	PageEditor.prototype.buildPage = function(page) {
-		if (this.page && page) {
-			if (this.page.template == page.template
-				&& this.page.script == page.script
-				&& this.page.style == page.style) {
-				return;
-			}
+		new Vue({
+			el : $view[0],
+			data : data,
+			mounted () {}
+		});
+		this.$pageBox = $box;
+		this.bindPageEvent($box);
+	};
+
+	PageEditor.prototype.appendLayoutView = function($parent, layout, data) {
+		if (!layout) {
+			return;
 		}
-		let index = '0';
-		if (this.$template) {
-			if (this.$template.hasClass('coos-choose-page-model')) {
-				index = this.$template.attr('coos-index');
-			} else {
-				index = this.$template.find('.coos-choose-page-model').attr('coos-index');
-			}
-		}
-		if (page != null) {
-			this.page = page ;
-			this.initTemplate();
-			this.initScript();
-		}
-
-		let that = this;
-
-		let $pageBox = this.$pageBox;
-		$pageBox.empty();
-		$pageBox.append(this.$template);
-
-		let el = this.$template[0];
-		this.scriptOption.el = el;
-		let vue = new Vue(this.scriptOption);
-
-		this.bindPageEvent();
-		let e;
-		if (index == '0') {
-			e = $(vue.$el);
+		let $view = null;
+		let id = this.getLayoutID(layout);
+		this.layout_map[id] = layout;
+		let template = this.getTemplateFromLayout(layout);
+		if (template && coos.isNotEmpty(template.code)) {
+			$view = $(template.code);
 		} else {
-			e = $(vue.$el).find('[coos-index="' + index + '"]');
+			$view = $('<div ></div>');
 		}
-		if (e.length > 0) {
-			this.clickPage(e[0], index);
+		$view.attr(this.layout_id_name, id);
+		if (template) {
+			if (template.isBlock) {
+				$view.addClass('page-design-layout-block');
+			}
 		}
 
+		$parent.append($view);
+		if (layout.option) {
+			let attr = layout.option.attr;
+			if (attr) {
+				Object.keys(attr).forEach(attrKey => {
+					$view.attr(attrKey, attr[attrKey]);
+				});
+			}
+			let slot = layout.option.slot;
+
+			if (slot) {
+				$view.append(slot);
+			}
+		}
+		if (layout.layouts) {
+			layout.layouts.forEach(one => {
+				this.appendLayoutView($view, one);
+			});
+		}
+		return $view;
 	};
 
-	PageEditor.prototype.changePage = function() {
+	PageEditor.prototype.bindPageEvent = function($box) {
 		let that = this;
 
-		this.bindTemplateEvent(this.$template);
+		$box.on('mouseover', function(e) {
+			//let $layout = $(e.target).closest('[layout-id]');
+			//$box.find('.page-design-layout-over').removeClass('page-design-layout-over');
+			//$layout.addClass('page-design-layout-over');
+		});
+		$box.on('contextmenu', function(e) {
+			e = e || window.event;
 
-		let $t = that.$template.clone();
-
-		$t.find('.coos-choose-page-model').removeClass('coos-choose-page-model');
-		$t.removeClass('coos-choose-page-model');
-
-		this.removeTemplateEvent($t);
-
-		let template = $t[0].outerHTML;
-		template = '\t' + template + '\n';
-		let script = that.page.script;
-		let style = that.page.style;
-
-		let page = {};
-		Object.assign(page, that.page);
-		page.template = template;
-		page.style = style;
-		page.script = script;
-		let code = that.toCode(page);
-
-		//let page_ = that.options.onChange(page, code);
-		that.refreshPage();
+			that.onPageContextmenu(e);
+			e.preventDefault();
+		});
+		$box.on('click', function(e) {
+			e = e || window.event;
+			that.onPageClick(e);
+			e.preventDefault();
+		});
+		$box.on('scroll', function(e) {
+			e = e || window.event;
+			that.lastScrollTop = $box.scrollTop();
+		});
+		this.clickElByLayout(this.lastClickLayout);
+		$box.scrollTop(that.lastScrollTop);
 	};
 
-
-	PageEditor.prototype.refreshPage = function() {
-		this.buildPage();
+	PageEditor.prototype.clickElByLayout = function(layout) {
+		let id = this.getLayoutID(layout);
+		let $el = this.$pageBox.find('[' + this.layout_id_name + '="' + id + '"]');
+		layout = this.getLayoutFromEl($el);
+		this.lastClickLayout = layout;
+		let template = this.getTemplateFromLayout(layout);
+		this.onSelectPageLayout(layout, template);
 	};
 
+	PageEditor.prototype.onPageClick = function(event) {
 
+		this.onPageClickEl(event.target);
+
+	};
+	PageEditor.prototype.onPageClickEl = function(el) {
+
+		let layout = this.getLayoutFromEl(el);
+		this.lastClickLayout = layout;
+		if (layout == null) {
+			return;
+		}
+		let template = this.getTemplateFromLayout(layout);
+		this.onSelectPageLayout(layout, template);
+
+	};
+	PageEditor.prototype.onPageContextmenu = function(event) {
+		let that = this;
+		var eventData = {
+			clientX : event.clientX,
+			clientY : event.clientY
+		};
+		var menus = [];
+
+
+		let layout = this.getLayoutFromEvent(event);
+		if (layout == null) {
+			return;
+		}
+		let parentLayout = this.getLayoutParent(layout);
+
+		menus.push({
+			text : "添加",
+			onClick : function() {
+				that.addPageLayoutChild(layout);
+			}
+		});
+		if (parentLayout) {
+			menus.push({
+				text : "前边添加",
+				onClick : function() {
+					that.addPageLayoutBefore(layout, parentLayout);
+				}
+			});
+			menus.push({
+				text : "后边添加",
+				onClick : function() {
+					that.addPageLayoutAfter(layout, parentLayout);
+				}
+			});
+			menus.push({
+				text : "上移",
+				onClick : function() {
+					that.moveUpPageLayout(layout, parentLayout);
+				}
+			});
+			menus.push({
+				text : "下移",
+				onClick : function() {
+					that.moveDwPageLayout(layout, parentLayout);
+				}
+			});
+			menus.push({
+				text : "删除",
+				onClick : function() {
+					that.removePageLayout(layout, parentLayout);
+				}
+			});
+		}
+
+		source.repository.contextmenu.menus = menus;
+		source.repository.contextmenu.callShow(event);
+	};
 })();

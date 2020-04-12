@@ -28,16 +28,19 @@
 	var Template = function(options) {
 		options = options || {};
 		this.options = options;
-		this.init();
+		this._init();
 	};
 
-	Template.prototype.init = function() {
+	Template.prototype._init = function() {
 		this.name = this.getName();
 		this.title = this.getTitle();
 		this.code = this.getCode();
 		this.option = this.getOption();
 		this.demos = this.getDemos();
+		this.init();
 	};
+
+	Template.prototype.init = function() {};
 
 	UI.Group = Group;
 	UI.Template = Template;

@@ -2,7 +2,7 @@
 (function() {
 	var PageEditor = Editor.Page;
 
-	PageEditor.prototype.getFormBoxHtml = function() {
+	PageEditor.prototype.getPageOptionEventHtml = function() {
 		let html = `
 		<div class="">
 		<div class="title">设置</div>
@@ -125,6 +125,5 @@
 		return html;
 	};
 
-	PageEditor.prototype.buildForm = function() {};
 
 })();

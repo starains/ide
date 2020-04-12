@@ -9,10 +9,17 @@ import starter from "@/source/repository/starter";
 source.repository.branchs = [];
 source.repository.projects = [];
 source.repository.fullscreen = false;
+source.repository.fullscreencenter = false;
 source.repository.REPOSITORY_PERMISSIONS = [];
 source.repository.PROJECT_PERMISSIONS = [];
 source.NOT_FOUND_REPOSITORY_BRANCH = null;
 (function () {
+    source.fullScreenCenter = function () {
+        source.repository.fullscreencenter = true;
+    };
+    source.fullScreenExitCenter = function () {
+        source.repository.fullscreencenter = false;
+    };
     source.fullScreen = function () {
         source.repository.fullscreen = true;
     };
