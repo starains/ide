@@ -6134,6 +6134,10 @@ var Editor = function(options) {
 						<el-switch type="text" v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" autocomplete="off">
 						</el-switch>
 					</template>
+					<template v-else-if="attr.type == 'textarea'">
+						<el-input type="textarea" v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" autocomplete="off">
+						</el-input>
+					</template>
 					<template v-else>
 						<el-input type="text" v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" autocomplete="off">
 						</el-input>
@@ -6455,7 +6459,7 @@ var Editor = function(options) {
 		attrs.push({
 			name : 'title',
 			text : '标题',
-			type : 'text'
+			type : 'textarea'
 		});
 		attrs.push({
 			name : 'bdcolor',
@@ -6572,7 +6576,8 @@ var Editor = function(options) {
 		let attrs = [];
 		attrs.push({
 			name : 'text',
-			text : '文案'
+			text : '文案',
+			type : "textarea"
 		});
 		attrs.push({
 			name : 'color',
@@ -6689,7 +6694,8 @@ var Editor = function(options) {
 		let attrs = [];
 		attrs.push({
 			name : 'text',
-			text : '文案'
+			text : '文案',
+			type : "textarea"
 		});
 		attrs.push({
 			name : 'color',
@@ -6943,7 +6949,7 @@ var Editor = function(options) {
 		attrs.push({
 			name : 'title',
 			text : '标题',
-			type : 'text'
+			type : 'textarea'
 		});
 		attrs.push({
 			name : 'bdcolor',
