@@ -51,14 +51,28 @@ public class ResourcesHandler {
 			List<String> js = new ArrayList<String>();
 			List<String> css = new ArrayList<String>();
 
-			css.add("resources/coos/font/iconfont.css");
+			css.add("resources/font/iconfont.css");
 			css.add("resources/plugins/element-ui/2.12.0/index.css");
-
-			css.add("resources/plugins/codemirror/lib/codemirror.css");
-			css.add("resources/plugins/codemirror/theme/lesser-dark.css");
 
 			js.add("resources/plugins/vue/vue.min.js");
 			js.add("resources/plugins/element-ui/2.12.0/index.js");
+
+			js.add("resources/plugins/jquery/jquery.js");
+			css.add("resources/plugins/jquery/jquery-ui.css");
+			js.add("resources/plugins/jquery/jquery-ui.js");
+
+			js.add("resources/plugins/jsplumb/jsplumb.min.js");
+
+			css.add("resources/plugins/dropzone/basic.min.css");
+			css.add("resources/plugins/dropzone/dropzone.min.css");
+			js.add("resources/plugins/dropzone/dropzone.min.js");
+			js.add("resources/plugins/dropzone/dropzone-amd-module.min.js");
+
+			js.add("resources/plugins/coos/js/coos.min.js?v=" + VERSION);
+
+			// codemirror
+			css.add("resources/plugins/codemirror/lib/codemirror.css");
+			css.add("resources/plugins/codemirror/theme/lesser-dark.css");
 
 			// keymap
 			js.add("resources/plugins/codemirror/lib/codemirror.js");
@@ -99,19 +113,6 @@ public class ResourcesHandler {
 			js.add("resources/plugins/codemirror/mode/http/http.js");
 			js.add("resources/plugins/codemirror/mode/nginx/nginx.js");
 			js.add("resources/plugins/codemirror/mode/go/go.js");
-
-			js.add("resources/plugins/jsplumb/jsplumb.min.js");
-
-			js.add("resources/plugins/jquery/jquery.js");
-			css.add("resources/plugins/jquery/jquery-ui.css");
-			js.add("resources/plugins/jquery/jquery-ui.js");
-
-			css.add("resources/plugins/dropzone/basic.min.css");
-			css.add("resources/plugins/dropzone/dropzone.min.css");
-			js.add("resources/plugins/dropzone/dropzone.min.js");
-			js.add("resources/plugins/dropzone/dropzone-amd-module.min.js");
-
-			js.add("resources/coos/js/coos.min.js?v=" + VERSION);
 
 			List<IDEPlugin> plugins = PluginHandler.getPlugins();
 

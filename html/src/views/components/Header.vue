@@ -22,7 +22,7 @@
     <div class="app-header-center">
       <ul class="coos-nav coos-nav-ul app-header-nav">
         <li>
-          <a target="_blank" :href="_SERVER_URL + '/resources/coos/font/demo_index.html'">IconFont</a>
+          <a target="_blank" :href="_SERVER_URL + '/resources/font/demo_index.html'">IconFont</a>
         </li>
         <li class="coos-nav-left" v-if="source.isManager">
           <a>系统管理</a>
