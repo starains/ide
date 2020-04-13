@@ -7,6 +7,10 @@
 <div class="pd-10">
 	<div class="color-orange pdtb-5 ft-15">基础属性</div>
 	<el-form v-if="attrData != null" :model="attrData" size="mini" :rules="attrRules" ref="form" label-width="60px">
+		<el-form-item class label="名称" >
+			<el-input type="text" v-model="layout.name" @change="layoutNameChange($event, layout)" autocomplete="off">
+			</el-input>
+		</el-form-item>
 		<template v-for="(attr, index) in attrs">
 			<el-form-item class :label="attr.text" :prop="attr.name">
 				<div class="coos-row ft-12 color-grey">
@@ -19,7 +23,7 @@
 				<template v-else>
 					<template v-if="attr.type == 'select'">
 						<el-select v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" clearable placeholder="请选择" >
-							<el-option v-for="option in attr.options" :value="option.value" >
+							<el-option v-for="option in attr.options" :value="option.value" :label="option.text" >
 							<c-color :color="option.color" :bg="option.bg" >{{option.text}}</c-color>
 							</el-option>
 						</el-select>
@@ -34,6 +38,12 @@
 					</template>
 				</template>
 			</el-form-item>
+		</template>
+		<template v-if="template.hasSlot">
+		<el-form-item class label="内容" >
+			<el-input type="textarea" v-model="layout.option.slot" @change="layoutSlotChange($event, layout)" autocomplete="off">
+			</el-input>
+		</el-form-item>
 		</template>
 	</el-form>
 	<div class="pdtb-10">

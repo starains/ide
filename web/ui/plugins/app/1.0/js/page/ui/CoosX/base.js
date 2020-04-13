@@ -67,6 +67,13 @@
 			custom : true,
 			options : UI.colors
 		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances
+		});
 		return attrs;
 	};
 
@@ -116,6 +123,13 @@
 			custom : true,
 			options : UI.colors
 		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances
+		});
 		return attrs;
 	};
 
@@ -130,6 +144,10 @@
 	};
 
 	var Btn = coos.createClass(Editor.Page.UI.Template);
+
+	Btn.prototype.init = function() {
+		this.hasSlot = true;
+	};
 
 	Btn.prototype.getName = function() {
 		return 'btn';
@@ -250,6 +268,10 @@
 
 	var Link = coos.createClass(Editor.Page.UI.Template);
 
+	Link.prototype.init = function() {
+		this.hasSlot = true;
+	};
+
 	Link.prototype.getName = function() {
 		return 'link';
 	};
@@ -339,6 +361,13 @@
 			custom : true,
 			options : UI.colors
 		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances
+		});
 		return attrs;
 	};
 
@@ -386,6 +415,13 @@
 			type : 'select',
 			custom : true,
 			options : UI.colors
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances
 		});
 		return attrs;
 	};
@@ -439,6 +475,13 @@
 			type : 'select',
 			custom : true,
 			options : UI.colors
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances
 		});
 		return attrs;
 	};

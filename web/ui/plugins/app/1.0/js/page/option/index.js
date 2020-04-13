@@ -130,7 +130,9 @@
 					that.recordHistory();
 					this.layout.option.attrs = optionAttrs;
 					that.changeModel();
-				}
+				},
+				layoutNameChange () {},
+				layoutSlotChange () {}
 			}
 		});
 

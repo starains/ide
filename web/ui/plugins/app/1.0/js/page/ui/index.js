@@ -34,6 +34,15 @@
 			size : size
 		});
 	});
+
+	UI.distances = [];
+	coos.style.config.distances.forEach(distance => {
+		UI.distances.push({
+			text : distance + 'px',
+			value : distance
+		});
+	});
+
 	UI.prototype.init = function() {
 		this.name = this.getName();
 		this.title = this.getTitle();
