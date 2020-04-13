@@ -1,8 +1,8 @@
 
 (function() {
-	var CoosXUI = coos.createClass(Editor.Page.UI);
-
-	Editor.Page.UI.CoosXUI = CoosXUI;
+	var UI = Editor.Page.UI;
+	var CoosXUI = coos.createClass(UI);
+	UI.CoosXUI = CoosXUI;
 
 	CoosXUI.prototype.getName = function() {
 		return 'coosx-ui';

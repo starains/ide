@@ -96,6 +96,8 @@ page/base.js
 page/page/index.js
 page/model/index.js
 page/option/index.js
+page/option/form.js
+page/option/event.js
 
 page/ui/index.js
 page/ui/CoosX/index.js

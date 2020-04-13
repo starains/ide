@@ -10,6 +10,27 @@
 
 		return list;
 	};
+	PageEditor.prototype.formatTemplateView = function($view, template, option) {
+		if ($view == null || template == null || option == null) {
+			return;
+		}
+		$view = $($view);
+		if (option.attrs) {
+			option.attrs.forEach(attr => {
+				if (attr) {
+					if (attr.isBind) {
+						$view.attr(':' + attr.name, attr.bindName);
+					} else {
+						$view.attr(attr.name, attr.value);
+					}
+				}
+			});
+		}
+		if (option.slot) {
+			$view.append(option.slot) ;
+		}
+
+	};
 	PageEditor.prototype.getPageUIBoxHtml = function() {
 		let html = `
 <div class="page-design-ui-box" :class="{'page-design-ui-box-show':show}">
@@ -82,14 +103,7 @@
 
 							let $el = $('<div />');
 							let $template = $(template.code);
-							if (demo.attr) {
-								Object.keys(demo.attr).forEach(attrKey => {
-									$template.attr(attrKey, demo.attr[attrKey]);
-								});
-							}
-							if (demo.slot) {
-								$template.append(demo.slot) ;
-							}
+							this.formatTemplateView($template, template, demo);
 							$el.append($template);
 							let vue = new Vue({
 								el : $el[0],
@@ -173,7 +187,7 @@
 		let layout = {};
 		layout.key = template.key;
 		layout.option = {};
-		layout.option.attr = $.extend(true, {}, demo.attr);
+		layout.option.attrs = $.extend(true, [], demo.attrs);
 		layout.option.slot = demo.slot;
 		this.lastChoosePageTemplateCallback && this.lastChoosePageTemplateCallback(layout);
 	};

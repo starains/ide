@@ -7,6 +7,33 @@
 	};
 	Editor.Page.UI = UI;
 
+	UI.colors = [];
+	UI.bgs = [];
+	coos.style.config.colors.forEach(color => {
+		UI.colors.push({
+			text : color.text,
+			value : color.value,
+			colors : color.colors,
+			color : color.value,
+			bg : color.value == 'white' ? 'black' : ''
+		});
+		UI.bgs.push({
+			text : color.text,
+			value : color.value,
+			colors : color.colors,
+			color : color.value == 'white' ? 'black' : 'white',
+			bg : color.value
+		});
+	});
+
+	UI.sizes = [];
+	coos.style.config.sizes.forEach(size => {
+		UI.sizes.push({
+			text : size.text,
+			value : size.name,
+			size : size
+		});
+	});
 	UI.prototype.init = function() {
 		this.name = this.getName();
 		this.title = this.getTitle();
@@ -37,6 +64,7 @@
 		this.code = this.getCode();
 		this.option = this.getOption();
 		this.demos = this.getDemos();
+		this.attrs = this.getAttrs();
 		this.init();
 	};
 

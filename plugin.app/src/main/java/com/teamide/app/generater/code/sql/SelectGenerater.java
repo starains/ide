@@ -424,16 +424,19 @@ public class SelectGenerater extends SqlGenerater {
 			sql.append(getGroupSql(group));
 			sql.append(" ");
 
+			String contentSql = formatCustomToContentSql(sql.toString(), tab);
+			String mapperSql = formatCustomToMapperSql(sql.toString());
+
 			content.append(getTab(tab_));
-			content.append("groupSql.append(isGroupFirst ? \"\" : \",\").append(\"" + sql + "\");").append("\n");
+			content.append("groupSql.append(isGroupFirst ? \"\" : \",\").append(\"" + contentSql + "\");").append("\n");
 			content.append(getTab(tab_));
 			content.append("isGroupFirst = false;").append("\n");
 
 			content_mapper.append(getTab(tab_));
-			content_mapper.append(sql).append("\n");
+			content_mapper.append(contentSql).append("\n");
 
 			content_count_mapper.append(getTab(tab_));
-			content_count_mapper.append(sql).append("\n");
+			content_count_mapper.append(mapperSql).append("\n");
 
 			if (StringUtil.isNotTrimEmpty(group.getIfrule())) {
 				content.append(getTab(tab)).append("}").append("\n");
@@ -450,13 +453,17 @@ public class SelectGenerater extends SqlGenerater {
 
 	public StringBuffer getGroupSql(Group group) {
 		StringBuffer sql = new StringBuffer();
-		String name = StringUtil.trim(group.getName());
-		if (!StringUtil.isEmpty(name)) {
-			String tablealias = StringUtil.trim(group.getTablealias());
-			if (!StringUtil.isEmpty(tablealias)) {
-				sql.append(tablealias).append(".");
+		if (ObjectUtil.isTrue(group.getCustom())) {
+			sql.append(group.getCustomsql());
+		} else {
+			String name = StringUtil.trim(group.getName());
+			if (!StringUtil.isEmpty(name)) {
+				String tablealias = StringUtil.trim(group.getTablealias());
+				if (!StringUtil.isEmpty(tablealias)) {
+					sql.append(tablealias).append(".");
+				}
+				sql.append(name);
 			}
-			sql.append(name);
 		}
 		return sql;
 
@@ -501,9 +508,12 @@ public class SelectGenerater extends SqlGenerater {
 			sql.append(getHavingSql(having));
 			sql.append(" ");
 
-			content.append("sql.append(\"" + sql + "\");").append("\n");
+			String contentSql = formatCustomToContentSql(sql.toString(), tab);
+			String mapperSql = formatCustomToMapperSql(sql.toString());
 
-			content_mapper.append(sql).append("\n");
+			content.append("sql.append(\"" + contentSql + "\");").append("\n");
+
+			content_mapper.append(mapperSql).append("\n");
 
 			if (StringUtil.isNotTrimEmpty(having.getIfrule())) {
 				content.append(getTab(tab)).append("}").append("\n");
@@ -519,13 +529,17 @@ public class SelectGenerater extends SqlGenerater {
 
 	public StringBuffer getHavingSql(Having having) {
 		StringBuffer sql = new StringBuffer();
-		String name = StringUtil.trim(having.getName());
-		if (!StringUtil.isEmpty(name)) {
-			String tablealias = StringUtil.trim(having.getTablealias());
-			if (!StringUtil.isEmpty(tablealias)) {
-				sql.append(tablealias).append(".");
+		if (ObjectUtil.isTrue(having.getCustom())) {
+			sql.append(having.getCustomsql());
+		} else {
+			String name = StringUtil.trim(having.getName());
+			if (!StringUtil.isEmpty(name)) {
+				String tablealias = StringUtil.trim(having.getTablealias());
+				if (!StringUtil.isEmpty(tablealias)) {
+					sql.append(tablealias).append(".");
+				}
+				sql.append(name);
 			}
-			sql.append(name);
 		}
 		return sql;
 
@@ -570,13 +584,16 @@ public class SelectGenerater extends SqlGenerater {
 			sql.append(getOrderSql(order));
 			sql.append(" ");
 
+			String contentSql = formatCustomToContentSql(sql.toString(), tab);
+			String mapperSql = formatCustomToMapperSql(sql.toString());
+
 			content.append(getTab(tab_));
-			content.append("sql.append(isOrderFirst ? \"\" : \",\").append(\"" + sql + "\");").append("\n");
+			content.append("sql.append(isOrderFirst ? \"\" : \",\").append(\"" + contentSql + "\");").append("\n");
 			content.append(getTab(tab_));
 			content.append("isOrderFirst = false;").append("\n");
 
 			content_mapper.append(getTab(tab_));
-			content_mapper.append(sql).append("\n");
+			content_mapper.append(mapperSql).append("\n");
 
 			if (StringUtil.isNotTrimEmpty(order.getIfrule())) {
 				content.append(getTab(tab)).append("}").append("\n");
@@ -590,19 +607,23 @@ public class SelectGenerater extends SqlGenerater {
 
 	public StringBuffer getOrderSql(Order order) {
 		StringBuffer sql = new StringBuffer();
-		String name = StringUtil.trim(order.getName());
-		if (!StringUtil.isEmpty(name)) {
-			String tablealias = StringUtil.trim(order.getTablealias());
-			if (!StringUtil.isEmpty(tablealias)) {
-				sql.append(tablealias).append(".");
+		if (ObjectUtil.isTrue(order.getCustom())) {
+			sql.append(order.getCustomsql());
+		} else {
+			String name = StringUtil.trim(order.getName());
+			if (!StringUtil.isEmpty(name)) {
+				String tablealias = StringUtil.trim(order.getTablealias());
+				if (!StringUtil.isEmpty(tablealias)) {
+					sql.append(tablealias).append(".");
+				}
+				sql.append(name);
 			}
-			sql.append(name);
-		}
 
-		String ord = StringUtil.trim(order.getOrder());
-		if (!StringUtil.isEmpty(ord)) {
-			sql.append(" ");
-			sql.append(ord);
+			String ord = StringUtil.trim(order.getOrder());
+			if (!StringUtil.isEmpty(ord)) {
+				sql.append(" ");
+				sql.append(ord);
+			}
 		}
 		return sql;
 

@@ -34,6 +34,7 @@
 		</ul>
 		<div class="page-design-option-panels" >
 			<div class="page-design-option-form-box coos-scrollbar" v-show="active_option_tab == 'form'">
+			` + this.getPageOptionFormHtml() + `
 			</div>
 			<div class="page-design-option-extend-box coos-scrollbar" v-show="active_option_tab == 'extend'">
 			</div>
@@ -68,7 +69,11 @@
 			active_option_tab : 'form',
 			layout : null,
 			template : null,
-			parent : null
+			parent : null,
+			attrs : [],
+			expandAttrs : [],
+			attrData : null,
+			attrRules : []
 		};
 
 		this.page_option_data = data;
@@ -100,7 +105,32 @@
 				remove () {
 					that.removePageLayout(this.layout, this.parent);
 				},
-				clickPlace (place) {}
+				clickPlace (place) {},
+				attrFormDataChange ($event, attr) {},
+				saveAttrData () {
+					if (this.template == null || this.layout == null) {
+						return;
+					}
+					let attrs = this.template.attrs || [];
+
+					this.layout.option = this.layout.option || {}
+					let optionAttrs = [];
+					attrs.forEach(attr => {
+						let optionAttr = {
+							name : attr.name,
+							value : this.attrData[attr.name]
+						};
+						if (coos.isTrue(optionAttr.isBind)) {
+							optionAttr.isBind = true;
+							optionAttr.bindName = attr.bindName;
+						}
+						optionAttrs.push(optionAttr);
+					});
+
+					that.recordHistory();
+					this.layout.option.attrs = optionAttrs;
+					that.changeModel();
+				}
 			}
 		});
 
@@ -111,7 +141,36 @@
 		this.page_option_data.template = template;
 		this.page_option_data.parent = parent;
 		this.page_option_data.has_add_child = true;
+
 		this.initPageOptionPlaces(layout);
+
+		this.page_option_data.attrData = null;
+		coos.trimList(this.page_option_data.attrs);
+
+		if (template && layout) {
+			let option = layout.option || {};
+			let attrData = {};
+			if (template.attrs) {
+				template.attrs.forEach(attr => {
+					attr = Object.assign({}, attr);
+					attr.isBind = false;
+					attr.bindName = null;
+					this.page_option_data.attrs.push(attr);
+					attrData[attr.name] = undefined;
+					if (option.attrs) {
+						option.attrs.forEach(optionAttr => {
+							if (optionAttr.name == attr.name) {
+								attr.isBind = coos.isTrue(optionAttr.isBind);
+								attrData[attr.name] = optionAttr.value;
+								attrData.bindName = optionAttr.bindName;
+							}
+						});
+					}
+				});
+			}
+			this.page_option_data.attrData = attrData;
+		}
+
 	};
 	PageEditor.prototype.initPageOptionPlaces = function(layout) {
 		let that = this;

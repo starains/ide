@@ -41,19 +41,8 @@
 		}
 
 		$parent.append($view);
-		if (layout.option) {
-			let attr = layout.option.attr;
-			if (attr) {
-				Object.keys(attr).forEach(attrKey => {
-					$view.attr(attrKey, attr[attrKey]);
-				});
-			}
-			let slot = layout.option.slot;
+		this.formatTemplateView($view, template, layout.option);
 
-			if (slot) {
-				$view.append(slot);
-			}
-		}
 		if (layout.layouts) {
 			layout.layouts.forEach(one => {
 				this.appendLayoutView($view, one);
@@ -107,7 +96,7 @@
 
 		let layout = this.getLayoutFromEl(el);
 		this.lastClickLayout = layout;
-		if (layout == null) {
+		if (layout == null || layout == this.getLayoutRoot()) {
 			return;
 		}
 		let template = this.getTemplateFromLayout(layout);

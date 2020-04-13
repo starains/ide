@@ -396,19 +396,32 @@
 				$ul.append($li);
 			}
 
-			var $input = $('<input class="input input-mini" name="tablealias" />');
-			$input.val(group.tablealias);
-			$li.append($input);
-			$li.append('<span class="pdlr-10">.</span>');
-			var $input = $('<input class="input" name="name" />');
-			app.autocomplete({
-				$input : $input,
-				datas : that.getModelColumnOptions()
-			})
-			$input.val(group.name);
-			$li.append($input);
+
+			if (coos.isTrue(group.custom)) {
+				var $input = $('<input class="input" name="customsql" />');
+				$input.val(group.customsql);
+				$li.append($input);
+			} else {
+				var $input = $('<input class="input input-mini" name="tablealias" />');
+				$input.val(group.tablealias);
+				$li.append($input);
+				$li.append('<span class="pdlr-10">.</span>');
+				var $input = $('<input class="input" name="name" />');
+				app.autocomplete({
+					$input : $input,
+					datas : that.getModelColumnOptions()
+				})
+				$input.val(group.name);
+				$li.append($input);
+
+			}
 
 
+			if (!coos.isTrue(group.custom)) {
+				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="custom"  >设为自定义</a>');
+			} else {
+				$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="custom" >设为非自定义</a>');
+			}
 			if (coos.isEmpty(group.ifrule)) {
 				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="ifrule" property-value="1=1"  >设置条件</a>');
 			} else {
@@ -463,22 +476,33 @@
 				$ul.append($li);
 			}
 
-			var $input = $('<input class="input input-mini" name="tablealias" />');
-			$input.val(order.tablealias);
-			$li.append($input);
-			$li.append('<span class="pdlr-10">.</span>');
-			var $input = $('<input class="input" name="name" />');
-			app.autocomplete({
-				$input : $input,
-				datas : that.getModelColumnOptions()
-			})
-			$input.val(order.name);
-			$li.append($input);
-			$li.append('<span class="pdlr-10"></span>');
-			var $input = $('<input class="input" name="order" />');
-			$input.val(order.order);
-			$li.append($input);
+			if (coos.isTrue(order.custom)) {
+				var $input = $('<input class="input" name="customsql" />');
+				$input.val(order.customsql);
+				$li.append($input);
+			} else {
+				var $input = $('<input class="input input-mini" name="tablealias" />');
+				$input.val(order.tablealias);
+				$li.append($input);
+				$li.append('<span class="pdlr-10">.</span>');
+				var $input = $('<input class="input" name="name" />');
+				app.autocomplete({
+					$input : $input,
+					datas : that.getModelColumnOptions()
+				})
+				$input.val(order.name);
+				$li.append($input);
+				$li.append('<span class="pdlr-10"></span>');
+				var $input = $('<input class="input" name="order" />');
+				$input.val(order.order);
+				$li.append($input);
+			}
 
+			if (!coos.isTrue(order.custom)) {
+				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="custom"  >设为自定义</a>');
+			} else {
+				$li.append('<a class="mgl-10 coos-pointer color-orange updatePropertyBtn" property-type="custom" >设为非自定义</a>');
+			}
 			if (coos.isEmpty(order.ifrule)) {
 				$li.append('<a class="mgl-10 coos-pointer color-green updatePropertyBtn" property-type="ifrule" property-value="1=1"  >设置条件</a>');
 			} else {
