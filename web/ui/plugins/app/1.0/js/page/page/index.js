@@ -5,9 +5,9 @@
 		this.layout_id_name = 'layout-id';
 		this.layout_map = {};
 		let root = this.getLayoutRoot();
-		let id = this.getLayoutID(root);
-		$box.attr(this.layout_id_name, id);
-		this.layout_map[id] = root;
+		root.id = 0;
+		$box.attr(this.layout_id_name, root.id);
+		this.layout_map[root.id] = root;
 		let data = {};
 		let $view = this.appendLayoutView($box, root, data);
 
@@ -25,15 +25,15 @@
 			return;
 		}
 		let $view = null;
-		let id = this.getLayoutID(layout);
-		this.layout_map[id] = layout;
+		layout.id = coos.getNumber();
+		this.layout_map[layout.id] = layout;
 		let template = this.getTemplateFromLayout(layout);
 		if (template && coos.isNotEmpty(template.code)) {
 			$view = $(template.code);
 		} else {
 			$view = $('<div ></div>');
 		}
-		$view.attr(this.layout_id_name, id);
+		$view.attr(this.layout_id_name, layout.id);
 		if (template) {
 			if (template.isBlock) {
 				$view.addClass('page-design-layout-block');
@@ -79,12 +79,18 @@
 	};
 
 	PageEditor.prototype.clickElByLayout = function(layout) {
-		let id = this.getLayoutID(layout);
+		if (layout == null) {
+			return;
+		}
+		let id = layout.id;
 		let $el = this.$pageBox.find('[' + this.layout_id_name + '="' + id + '"]');
-		layout = this.getLayoutFromEl($el);
-		this.lastClickLayout = layout;
-		let template = this.getTemplateFromLayout(layout);
-		this.onSelectPageLayout(layout, template);
+		if ($el.length > 0) {
+			this.onPageClickEl($el);
+		} else {
+			this.lastClickLayout = null;
+			this.onSelectPageLayout(null, null);
+		}
+
 	};
 
 	PageEditor.prototype.onPageClick = function(event) {
@@ -96,9 +102,14 @@
 
 		let layout = this.getLayoutFromEl(el);
 		this.lastClickLayout = layout;
-		if (layout == null || layout == this.getLayoutRoot()) {
+		if (layout == null) {
 			return;
 		}
+
+		let $layout = $(el).closest('[layout-id]');
+		this.$pageBox.find('.page-design-layout-selected').removeClass('page-design-layout-selected');
+		$layout.addClass('page-design-layout-selected');
+
 		let template = this.getTemplateFromLayout(layout);
 		this.onSelectPageLayout(layout, template);
 

@@ -6,23 +6,19 @@
 		let html = `
 <div class="pd-10">
 	<div class="color-orange pdtb-5 ft-15">基础属性</div>
-	<el-form v-if="attrData != null" :model="attrData" size="mini" :rules="attrRules" ref="form" label-width="60px">
-		<el-form-item class label="名称" >
-			<el-input type="text" v-model="layout.name" @change="layoutNameChange($event, layout)" autocomplete="off">
-			</el-input>
-		</el-form-item>
+	<el-form v-if="attrData != null" :model="attrData" size="mini" :rules="attrRules" ref="form" label-width="90px">
 		<template v-for="(attr, index) in attrs">
-			<el-form-item class :label="attr.text" :prop="attr.name">
-				<div class="coos-row ft-12 color-grey">
-					绑定data属性：<el-switch v-model="attr.isBind" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
-				</div>
+			<el-form-item class :prop="attr.name">
+				<label slot="label">{{attr.isBind?':'+attr.text:attr.text}}
+					<el-checkbox v-model="attr.isBind" class="ft-12 color-grey" title="绑定data"></el-checkbox>
+				</label>
 				<template v-if="attr.isBind">
 					<el-input type="text" v-model="attr.bindName" @change="attrFormDataChange($event, attr)" autocomplete="off">
 					</el-input>
 				</template>
 				<template v-else>
 					<template v-if="attr.type == 'select'">
-						<el-select v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" clearable placeholder="请选择" >
+						<el-select :multiple="attr.multiple" v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" clearable placeholder="请选择" >
 							<el-option v-for="option in attr.options" :value="option.value" :label="option.text" >
 							<c-color :color="option.color" :bg="option.bg" >{{option.text}}</c-color>
 							</el-option>
@@ -31,6 +27,10 @@
 					<template v-else-if="attr.type == 'switch'">
 						<el-switch type="text" v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" autocomplete="off">
 						</el-switch>
+					</template>
+					<template v-else-if="attr.type == 'textarea'">
+						<el-input type="textarea" v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" autocomplete="off">
+						</el-input>
 					</template>
 					<template v-else>
 						<el-input type="text" v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" autocomplete="off">
@@ -41,7 +41,7 @@
 		</template>
 		<template v-if="template.hasSlot">
 		<el-form-item class label="内容" >
-			<el-input type="textarea" v-model="layout.option.slot" @change="layoutSlotChange($event, layout)" autocomplete="off">
+			<el-input type="textarea" v-model="form.slot" @change="layoutSlotChange($event, layout)" autocomplete="off">
 			</el-input>
 		</el-form-item>
 		</template>

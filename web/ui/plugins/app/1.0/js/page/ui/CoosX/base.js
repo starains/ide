@@ -58,7 +58,7 @@
 		attrs.push({
 			name : 'title',
 			text : '标题',
-			type : 'text'
+			type : 'textarea'
 		});
 		attrs.push({
 			name : 'bdcolor',
@@ -66,6 +66,13 @@
 			type : 'select',
 			custom : true,
 			options : UI.colors
+		});
+		attrs.push({
+			name : 'bdwidth',
+			text : '边框宽度',
+			type : 'select',
+			custom : true,
+			options : UI.distances
 		});
 		attrs.push({
 			name : 'pd',
@@ -145,9 +152,7 @@
 
 	var Btn = coos.createClass(Editor.Page.UI.Template);
 
-	Btn.prototype.init = function() {
-		this.hasSlot = true;
-	};
+	Btn.prototype.init = function() {};
 
 	Btn.prototype.getName = function() {
 		return 'btn';
@@ -168,6 +173,11 @@
 
 	Btn.prototype.getAttrs = function() {
 		let attrs = [];
+		attrs.push({
+			name : 'text',
+			text : '文案',
+			type : "textarea"
+		});
 		attrs.push({
 			name : 'color',
 			text : '颜色',
@@ -196,28 +206,14 @@
 		return attrs;
 	};
 
-
-	Btn.prototype.getDemos = function() {
-		let attrs = [];
-
-		attrs.push({
-			name : 'color'
-		});
-		attrs.push({
-			name : 'bg'
-		});
-		attrs.push({
-			name : 'size'
-		});
-		return attrs;
-	};
-
 	Btn.prototype.getDemos = function() {
 		let demos = [];
 
 		demos.push({
-			attrs : [],
-			slot : '按钮'
+			attrs : [ {
+				name : 'text',
+				value : '按钮'
+			} ]
 		});
 
 		UI.colors.forEach(color => {
@@ -226,8 +222,10 @@
 					attrs : [ {
 						name : 'color',
 						value : color.value
-					} ],
-					slot : '按钮'
+					}, {
+						name : 'text',
+						value : '按钮'
+					} ]
 				});
 			}
 		});
@@ -242,8 +240,10 @@
 					attrs : [ {
 						name : 'bg',
 						value : color.value
-					} ],
-					slot : '按钮'
+					}, {
+						name : 'text',
+						value : '按钮'
+					} ]
 				});
 			}
 		});
@@ -257,8 +257,10 @@
 				attrs : [ {
 					name : 'size',
 					value : size.value
-				} ],
-				slot : '按钮'
+				}, {
+					name : 'text',
+					value : '按钮'
+				} ]
 			});
 		});
 
@@ -268,9 +270,7 @@
 
 	var Link = coos.createClass(Editor.Page.UI.Template);
 
-	Link.prototype.init = function() {
-		this.hasSlot = true;
-	};
+	Link.prototype.init = function() {};
 
 	Link.prototype.getName = function() {
 		return 'link';
@@ -292,6 +292,11 @@
 	Link.prototype.getAttrs = function() {
 		let attrs = [];
 		attrs.push({
+			name : 'text',
+			text : '文案',
+			type : "textarea"
+		});
+		attrs.push({
 			name : 'color',
 			text : '颜色',
 			type : 'select',
@@ -310,7 +315,10 @@
 		let demos = [];
 
 		demos.push({
-			slot : '链接'
+			attrs : [ {
+				name : 'text',
+				value : '链接'
+			} ]
 		});
 
 		UI.colors.forEach(color => {
@@ -319,8 +327,10 @@
 					attrs : [ {
 						name : 'color',
 						value : color.value
-					} ],
-					slot : '链接'
+					}, {
+						name : 'text',
+						value : '链接'
+					} ]
 				});
 			}
 		});
@@ -538,7 +548,7 @@
 		attrs.push({
 			name : 'title',
 			text : '标题',
-			type : 'text'
+			type : 'textarea'
 		});
 		attrs.push({
 			name : 'bdcolor',
@@ -546,6 +556,32 @@
 			type : 'select',
 			custom : true,
 			options : UI.colors
+		});
+		attrs.push({
+			name : 'bdplace',
+			text : '边框位置',
+			type : 'select',
+			multiple : true,
+			options : [ {
+				text : '顶部',
+				value : 'top'
+			}, {
+				text : '左侧',
+				value : 'left'
+			}, {
+				text : '右侧',
+				value : 'right'
+			}, {
+				text : '底部',
+				value : 'bottom'
+			} ]
+		});
+		attrs.push({
+			name : 'bdwidth',
+			text : '边框宽度',
+			type : 'select',
+			custom : true,
+			options : UI.distances
 		});
 		return attrs;
 	};

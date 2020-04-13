@@ -73,6 +73,9 @@
 			attrs : [],
 			expandAttrs : [],
 			attrData : null,
+			form : {
+				slot : null
+			},
 			attrRules : []
 		};
 
@@ -111,11 +114,10 @@
 					if (this.template == null || this.layout == null) {
 						return;
 					}
-					let attrs = this.template.attrs || [];
 
 					this.layout.option = this.layout.option || {}
 					let optionAttrs = [];
-					attrs.forEach(attr => {
+					this.attrs.forEach(attr => {
 						let optionAttr = {
 							name : attr.name,
 							value : this.attrData[attr.name]
@@ -124,11 +126,21 @@
 							optionAttr.isBind = true;
 							optionAttr.bindName = attr.bindName;
 						}
-						optionAttrs.push(optionAttr);
+						if (optionAttr.isBind) {
+							if (coos.isNotEmpty(optionAttr.bindName)) {
+								optionAttrs.push(optionAttr);
+							}
+						} else {
+							if (coos.isNotEmpty(optionAttr.value)) {
+								optionAttrs.push(optionAttr);
+							}
+						}
 					});
 
 					that.recordHistory();
 					this.layout.option.attrs = optionAttrs;
+					this.layout.option.name = this.form.name;
+					this.layout.option.slot = this.form.slot;
 					that.changeModel();
 				},
 				layoutNameChange () {},
@@ -151,25 +163,49 @@
 
 		if (template && layout) {
 			let option = layout.option || {};
-			let attrData = {};
+			this.page_option_data.form.slot = option.slot;
+			let templateAttrs = [];
+			templateAttrs.push({
+				name : 'name',
+				text : '名称'
+			});
+			templateAttrs.push({
+				name : 'class',
+				text : '类'
+			});
 			if (template.attrs) {
 				template.attrs.forEach(attr => {
-					attr = Object.assign({}, attr);
-					attr.isBind = false;
-					attr.bindName = null;
-					this.page_option_data.attrs.push(attr);
-					attrData[attr.name] = undefined;
-					if (option.attrs) {
-						option.attrs.forEach(optionAttr => {
-							if (optionAttr.name == attr.name) {
-								attr.isBind = coos.isTrue(optionAttr.isBind);
-								attrData[attr.name] = optionAttr.value;
-								attrData.bindName = optionAttr.bindName;
-							}
-						});
-					}
+					templateAttrs.push(Object.assign({}, attr));
 				});
 			}
+			templateAttrs.push({
+				name : 'if',
+				text : 'if'
+			});
+			templateAttrs.push({
+				name : 'else-if',
+				text : 'else-if'
+			});
+			templateAttrs.push({
+				name : 'else',
+				text : 'else'
+			});
+			let attrData = {};
+			templateAttrs.forEach(attr => {
+				attr.isBind = false;
+				attr.bindName = null;
+				this.page_option_data.attrs.push(attr);
+				attrData[attr.name] = undefined;
+				if (option.attrs) {
+					option.attrs.forEach(optionAttr => {
+						if (optionAttr.name == attr.name) {
+							attr.isBind = coos.isTrue(optionAttr.isBind);
+							attrData[attr.name] = optionAttr.value;
+							attrData.bindName = optionAttr.bindName;
+						}
+					});
+				}
+			});
 			this.page_option_data.attrData = attrData;
 		}
 

@@ -1,24 +1,6 @@
 (function() {
 	var PageEditor = Editor.Page;
 
-	PageEditor.prototype.getLayoutID = function(layout) {
-		let root = this.getLayoutRoot();
-		if (root == layout) {
-			return 0;
-		} else {
-			let id = null;
-			Object.keys(this.layout_map).forEach(key => {
-				if (this.layout_map[key] == layout) {
-					id = key;
-				}
-			});
-			if (id == null) {
-				return coos.getNumber();
-			}
-			return id;
-		}
-	};
-
 	PageEditor.prototype.getTemplateFromLayout = function(layout) {
 		if (layout == null || layout.key == null) {
 			return null;

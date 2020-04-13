@@ -5361,24 +5361,6 @@ var Editor = function(options) {
 (function() {
 	var PageEditor = Editor.Page;
 
-	PageEditor.prototype.getLayoutID = function(layout) {
-		let root = this.getLayoutRoot();
-		if (root == layout) {
-			return 0;
-		} else {
-			let id = null;
-			Object.keys(this.layout_map).forEach(key => {
-				if (this.layout_map[key] == layout) {
-					id = key;
-				}
-			});
-			if (id == null) {
-				return coos.getNumber();
-			}
-			return id;
-		}
-	};
-
 	PageEditor.prototype.getTemplateFromLayout = function(layout) {
 		if (layout == null || layout.key == null) {
 			return null;
@@ -5442,9 +5424,9 @@ var Editor = function(options) {
 		this.layout_id_name = 'layout-id';
 		this.layout_map = {};
 		let root = this.getLayoutRoot();
-		let id = this.getLayoutID(root);
-		$box.attr(this.layout_id_name, id);
-		this.layout_map[id] = root;
+		root.id = 0;
+		$box.attr(this.layout_id_name, root.id);
+		this.layout_map[root.id] = root;
 		let data = {};
 		let $view = this.appendLayoutView($box, root, data);
 
@@ -5462,15 +5444,15 @@ var Editor = function(options) {
 			return;
 		}
 		let $view = null;
-		let id = this.getLayoutID(layout);
-		this.layout_map[id] = layout;
+		layout.id = coos.getNumber();
+		this.layout_map[layout.id] = layout;
 		let template = this.getTemplateFromLayout(layout);
 		if (template && coos.isNotEmpty(template.code)) {
 			$view = $(template.code);
 		} else {
 			$view = $('<div ></div>');
 		}
-		$view.attr(this.layout_id_name, id);
+		$view.attr(this.layout_id_name, layout.id);
 		if (template) {
 			if (template.isBlock) {
 				$view.addClass('page-design-layout-block');
@@ -5516,12 +5498,18 @@ var Editor = function(options) {
 	};
 
 	PageEditor.prototype.clickElByLayout = function(layout) {
-		let id = this.getLayoutID(layout);
+		if (layout == null) {
+			return;
+		}
+		let id = layout.id;
 		let $el = this.$pageBox.find('[' + this.layout_id_name + '="' + id + '"]');
-		layout = this.getLayoutFromEl($el);
-		this.lastClickLayout = layout;
-		let template = this.getTemplateFromLayout(layout);
-		this.onSelectPageLayout(layout, template);
+		if ($el.length > 0) {
+			this.onPageClickEl($el);
+		} else {
+			this.lastClickLayout = null;
+			this.onSelectPageLayout(null, null);
+		}
+
 	};
 
 	PageEditor.prototype.onPageClick = function(event) {
@@ -5533,9 +5521,14 @@ var Editor = function(options) {
 
 		let layout = this.getLayoutFromEl(el);
 		this.lastClickLayout = layout;
-		if (layout == null || layout == this.getLayoutRoot()) {
+		if (layout == null) {
 			return;
 		}
+
+		let $layout = $(el).closest('[layout-id]');
+		this.$pageBox.find('.page-design-layout-selected').removeClass('page-design-layout-selected');
+		$layout.addClass('page-design-layout-selected');
+
 		let template = this.getTemplateFromLayout(layout);
 		this.onSelectPageLayout(layout, template);
 
@@ -5869,6 +5862,9 @@ var Editor = function(options) {
 			attrs : [],
 			expandAttrs : [],
 			attrData : null,
+			form : {
+				slot : null
+			},
 			attrRules : []
 		};
 
@@ -5907,11 +5903,10 @@ var Editor = function(options) {
 					if (this.template == null || this.layout == null) {
 						return;
 					}
-					let attrs = this.template.attrs || [];
 
 					this.layout.option = this.layout.option || {}
 					let optionAttrs = [];
-					attrs.forEach(attr => {
+					this.attrs.forEach(attr => {
 						let optionAttr = {
 							name : attr.name,
 							value : this.attrData[attr.name]
@@ -5920,13 +5915,25 @@ var Editor = function(options) {
 							optionAttr.isBind = true;
 							optionAttr.bindName = attr.bindName;
 						}
-						optionAttrs.push(optionAttr);
+						if (optionAttr.isBind) {
+							if (coos.isNotEmpty(optionAttr.bindName)) {
+								optionAttrs.push(optionAttr);
+							}
+						} else {
+							if (coos.isNotEmpty(optionAttr.value)) {
+								optionAttrs.push(optionAttr);
+							}
+						}
 					});
 
 					that.recordHistory();
 					this.layout.option.attrs = optionAttrs;
+					this.layout.option.name = this.form.name;
+					this.layout.option.slot = this.form.slot;
 					that.changeModel();
-				}
+				},
+				layoutNameChange () {},
+				layoutSlotChange () {}
 			}
 		});
 
@@ -5945,25 +5952,49 @@ var Editor = function(options) {
 
 		if (template && layout) {
 			let option = layout.option || {};
-			let attrData = {};
+			this.page_option_data.form.slot = option.slot;
+			let templateAttrs = [];
+			templateAttrs.push({
+				name : 'name',
+				text : '名称'
+			});
+			templateAttrs.push({
+				name : 'class',
+				text : '类'
+			});
 			if (template.attrs) {
 				template.attrs.forEach(attr => {
-					attr = Object.assign({}, attr);
-					attr.isBind = false;
-					attr.bindName = null;
-					this.page_option_data.attrs.push(attr);
-					attrData[attr.name] = undefined;
-					if (option.attrs) {
-						option.attrs.forEach(optionAttr => {
-							if (optionAttr.name == attr.name) {
-								attr.isBind = coos.isTrue(optionAttr.isBind);
-								attrData[attr.name] = optionAttr.value;
-								attrData.bindName = optionAttr.bindName;
-							}
-						});
-					}
+					templateAttrs.push(Object.assign({}, attr));
 				});
 			}
+			templateAttrs.push({
+				name : 'if',
+				text : 'if'
+			});
+			templateAttrs.push({
+				name : 'else-if',
+				text : 'else-if'
+			});
+			templateAttrs.push({
+				name : 'else',
+				text : 'else'
+			});
+			let attrData = {};
+			templateAttrs.forEach(attr => {
+				attr.isBind = false;
+				attr.bindName = null;
+				this.page_option_data.attrs.push(attr);
+				attrData[attr.name] = undefined;
+				if (option.attrs) {
+					option.attrs.forEach(optionAttr => {
+						if (optionAttr.name == attr.name) {
+							attr.isBind = coos.isTrue(optionAttr.isBind);
+							attrData[attr.name] = optionAttr.value;
+							attrData.bindName = optionAttr.bindName;
+						}
+					});
+				}
+			});
 			this.page_option_data.attrData = attrData;
 		}
 
@@ -6081,20 +6112,20 @@ var Editor = function(options) {
 		let html = `
 <div class="pd-10">
 	<div class="color-orange pdtb-5 ft-15">基础属性</div>
-	<el-form v-if="attrData != null" :model="attrData" size="mini" :rules="attrRules" ref="form" label-width="60px">
+	<el-form v-if="attrData != null" :model="attrData" size="mini" :rules="attrRules" ref="form" label-width="90px">
 		<template v-for="(attr, index) in attrs">
-			<el-form-item class :label="attr.text" :prop="attr.name">
-				<div class="coos-row ft-12 color-grey">
-					绑定data属性：<el-switch v-model="attr.isBind" active-color="#13ce66" inactive-color="#ff4949" ></el-switch>
-				</div>
+			<el-form-item class :prop="attr.name">
+				<label slot="label">{{attr.isBind?':'+attr.text:attr.text}}
+					<el-checkbox v-model="attr.isBind" class="ft-12 color-grey" title="绑定data"></el-checkbox>
+				</label>
 				<template v-if="attr.isBind">
 					<el-input type="text" v-model="attr.bindName" @change="attrFormDataChange($event, attr)" autocomplete="off">
 					</el-input>
 				</template>
 				<template v-else>
 					<template v-if="attr.type == 'select'">
-						<el-select v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" clearable placeholder="请选择" >
-							<el-option v-for="option in attr.options" :value="option.value" >
+						<el-select :multiple="attr.multiple" v-model="attrData['' + attrs[index].name]" @change="attrFormDataChange($event, attr)" clearable placeholder="请选择" >
+							<el-option v-for="option in attr.options" :value="option.value" :label="option.text" >
 							<c-color :color="option.color" :bg="option.bg" >{{option.text}}</c-color>
 							</el-option>
 						</el-select>
@@ -6109,6 +6140,12 @@ var Editor = function(options) {
 					</template>
 				</template>
 			</el-form-item>
+		</template>
+		<template v-if="template.hasSlot">
+		<el-form-item class label="内容" >
+			<el-input type="textarea" v-model="form.slot" @change="layoutSlotChange($event, layout)" autocomplete="off">
+			</el-input>
+		</el-form-item>
 		</template>
 	</el-form>
 	<div class="pdtb-10">
@@ -6286,6 +6323,15 @@ var Editor = function(options) {
 			size : size
 		});
 	});
+
+	UI.distances = [];
+	coos.style.config.distances.forEach(distance => {
+		UI.distances.push({
+			text : distance + 'px',
+			value : distance
+		});
+	});
+
 	UI.prototype.init = function() {
 		this.name = this.getName();
 		this.title = this.getTitle();
@@ -6418,6 +6464,20 @@ var Editor = function(options) {
 			custom : true,
 			options : UI.colors
 		});
+		attrs.push({
+			name : 'bdwidth',
+			text : '边框宽度',
+			type : 'select',
+			custom : true,
+			options : UI.distances
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances
+		});
 		return attrs;
 	};
 
@@ -6467,6 +6527,13 @@ var Editor = function(options) {
 			custom : true,
 			options : UI.colors
 		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances
+		});
 		return attrs;
 	};
 
@@ -6481,6 +6548,8 @@ var Editor = function(options) {
 	};
 
 	var Btn = coos.createClass(Editor.Page.UI.Template);
+
+	Btn.prototype.init = function() {};
 
 	Btn.prototype.getName = function() {
 		return 'btn';
@@ -6501,6 +6570,10 @@ var Editor = function(options) {
 
 	Btn.prototype.getAttrs = function() {
 		let attrs = [];
+		attrs.push({
+			name : 'text',
+			text : '文案'
+		});
 		attrs.push({
 			name : 'color',
 			text : '颜色',
@@ -6529,28 +6602,14 @@ var Editor = function(options) {
 		return attrs;
 	};
 
-
-	Btn.prototype.getDemos = function() {
-		let attrs = [];
-
-		attrs.push({
-			name : 'color'
-		});
-		attrs.push({
-			name : 'bg'
-		});
-		attrs.push({
-			name : 'size'
-		});
-		return attrs;
-	};
-
 	Btn.prototype.getDemos = function() {
 		let demos = [];
 
 		demos.push({
-			attrs : [],
-			slot : '按钮'
+			attrs : [ {
+				name : 'text',
+				value : '按钮'
+			} ]
 		});
 
 		UI.colors.forEach(color => {
@@ -6559,8 +6618,10 @@ var Editor = function(options) {
 					attrs : [ {
 						name : 'color',
 						value : color.value
-					} ],
-					slot : '按钮'
+					}, {
+						name : 'text',
+						value : '按钮'
+					} ]
 				});
 			}
 		});
@@ -6575,8 +6636,10 @@ var Editor = function(options) {
 					attrs : [ {
 						name : 'bg',
 						value : color.value
-					} ],
-					slot : '按钮'
+					}, {
+						name : 'text',
+						value : '按钮'
+					} ]
 				});
 			}
 		});
@@ -6590,8 +6653,10 @@ var Editor = function(options) {
 				attrs : [ {
 					name : 'size',
 					value : size.value
-				} ],
-				slot : '按钮'
+				}, {
+					name : 'text',
+					value : '按钮'
+				} ]
 			});
 		});
 
@@ -6600,6 +6665,8 @@ var Editor = function(options) {
 
 
 	var Link = coos.createClass(Editor.Page.UI.Template);
+
+	Link.prototype.init = function() {};
 
 	Link.prototype.getName = function() {
 		return 'link';
@@ -6621,6 +6688,10 @@ var Editor = function(options) {
 	Link.prototype.getAttrs = function() {
 		let attrs = [];
 		attrs.push({
+			name : 'text',
+			text : '文案'
+		});
+		attrs.push({
 			name : 'color',
 			text : '颜色',
 			type : 'select',
@@ -6639,7 +6710,10 @@ var Editor = function(options) {
 		let demos = [];
 
 		demos.push({
-			slot : '链接'
+			attrs : [ {
+				name : 'text',
+				value : '链接'
+			} ]
 		});
 
 		UI.colors.forEach(color => {
@@ -6648,8 +6722,10 @@ var Editor = function(options) {
 					attrs : [ {
 						name : 'color',
 						value : color.value
-					} ],
-					slot : '链接'
+					}, {
+						name : 'text',
+						value : '链接'
+					} ]
 				});
 			}
 		});
@@ -6689,6 +6765,13 @@ var Editor = function(options) {
 			type : 'select',
 			custom : true,
 			options : UI.colors
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances
 		});
 		return attrs;
 	};
@@ -6737,6 +6820,13 @@ var Editor = function(options) {
 			type : 'select',
 			custom : true,
 			options : UI.colors
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances
 		});
 		return attrs;
 	};
@@ -6790,6 +6880,13 @@ var Editor = function(options) {
 			type : 'select',
 			custom : true,
 			options : UI.colors
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances
 		});
 		return attrs;
 	};
@@ -6854,6 +6951,32 @@ var Editor = function(options) {
 			type : 'select',
 			custom : true,
 			options : UI.colors
+		});
+		attrs.push({
+			name : 'bdplace',
+			text : '边框位置',
+			type : 'select',
+			multiple : true,
+			options : [ {
+				text : '顶部',
+				value : 'top'
+			}, {
+				text : '左侧',
+				value : 'left'
+			}, {
+				text : '右侧',
+				value : 'right'
+			}, {
+				text : '底部',
+				value : 'bottom'
+			} ]
+		});
+		attrs.push({
+			name : 'bdwidth',
+			text : '边框宽度',
+			type : 'select',
+			custom : true,
+			options : UI.distances
 		});
 		return attrs;
 	};
