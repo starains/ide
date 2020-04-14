@@ -23,13 +23,19 @@ var Editor = function(options) {
 		} else {
 			this.model = $.extend(true, {});
 		}
+
 		this.historys = [];
-		this.data = {
-			view : '',
-			file : this.file
-		};
 		this.navs = this.getNavs();
 	};
+
+	Editor.prototype.getVersion = function() {
+		return '1.0';
+	};
+
+	Editor.prototype.getSupportVersions = function() {
+		return [ '1.0', '1.1', '1.2' ];
+	};
+
 	Editor.prototype.getApp = function() {
 		return this.project.attribute.app;
 	};
@@ -124,6 +130,30 @@ var Editor = function(options) {
 
 	};
 	Editor.prototype.buildDesignView = function(callBuild) {
+
+
+		let version = this.getVersion();
+
+		if (coos.isEmpty(this.model.designerversion)) {
+			this.model.designerversion = version;
+		}
+		let supportVersions = this.getSupportVersions();
+
+		if (supportVersions.indexOf(this.model.designerversion) < 0) {
+			let error = '设计器不识别模型版本，当前设计器支持版本<span class="color-green pdlr-10">' + supportVersions.join('，') + '</span>！';
+			var $design = this.$design;
+			$design.empty();
+			$design.append('<div class="color-red font-lg pdtb-80 text-center">' + error + '</div>');
+			this.notSupportVersion = true;
+			return;
+		} else {
+			if (this.notSupportVersion) {
+				var $design = this.$design;
+				$design.empty();
+				this.notSupportVersion = false;
+			}
+		}
+
 		this.buildDesign();
 		if (this.designScrollTop >= 0) {
 			this.$design.scrollTop(this.designScrollTop);

@@ -4,7 +4,7 @@
 
 	PageEditor.prototype.getPageOptionHtml = function() {
 		let html = `
-<div class="">
+<div class="page-design-option-box">
 	<div class="title">设置</div>
 	<template v-if="layout != null && template != null">
 	<div class="pd-5 ft-12">
@@ -53,10 +53,9 @@
 
 
 	PageEditor.prototype.buildPageOption = function($box) {
-		if (this.buildPageOptioned) {
+		if ($box.find('.page-design-option-box').length > 0) {
 			return;
 		}
-		this.buildPageOptioned = true;
 		let that = this;
 
 		let data = {

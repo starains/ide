@@ -15,11 +15,9 @@
 			var $box = $('<div class="page-design-box"></div>');
 			var $pageBox = $('<div class="page-design-view-box"></div>');
 			$box.append($pageBox);
-			var $optionBox = $('<div class="page-design-option-box"></div>');
-			$box.append($optionBox);
 			$design.append($box);
 			this.buildPageUI($design);
-			this.buildPageOption($optionBox);
+			this.buildPageOption($design);
 			this.buildPageView($pageBox);
 		}
 	};

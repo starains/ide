@@ -68,10 +68,9 @@
 
 
 	PageEditor.prototype.buildPageUI = function($box) {
-		if (this.buildPageUIed) {
+		if ($box.find('.page-design-ui-box').length > 0) {
 			return;
 		}
-		this.buildPageUIed = true;
 		let that = this;
 
 		let data = {};

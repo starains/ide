@@ -208,10 +208,13 @@
 		options.type = type;
 		options.plugin = this;
 		options.project = project;
-		let modeDesigner = createEditor(options);
-
-		options.editor.isYaml = true;
-		options.editor.addDesigner(modeDesigner);
+		try {
+			options.editor.isYaml = true;
+			let modeDesigner = createEditor(options);
+			options.editor.addDesigner(modeDesigner);
+		} catch (e) {
+			coos.error(e.message);
+		}
 	};
 
 	let createEditor = function(options) {
