@@ -36,11 +36,11 @@
 <div class="page-design-ui-box" :class="{'page-design-ui-box-show':show}">
 	<div class="title">UI 模板  <a @click="closeUIBox()" class="ft-12 float-right coos-pointer">关闭</a></div>
 	<div class="ui-list">
-	    <el-collapse v-for="ui in uis" v-model="ui_active_name" @change="ui_active_change" accordion>
-			<el-collapse-item :title="ui.title" :name="ui.key" >
+		<el-tabs v-model="ui_active_name" >
+			<el-tab-pane v-for="ui in uis" :label="ui.title" :name="ui.key">
 				<div class="ui-group-list">
 					<div v-if="ui.groups.length == 0" class="color-orange text-center pdtb-10">暂无组数据</div>
-					<el-collapse v-for="group in ui.groups" :class="group.key" v-model="ui_group_active_name" @change="ui_group_active_change" accordion>
+					<el-collapse v-for="group in ui.groups" :class="group.key" v-model="ui.group_active_name" @change="ui_group_active_change" accordion>
 						<el-collapse-item :title="group.title" :name="group.key">
 							<div v-if="group.templates.length == 0" class="color-orange text-center pdtb-10">暂无模板数据</div>
 							<div class="ui-template-list coos-scrollbar" >
@@ -58,8 +58,8 @@
 						</el-collapse-item>
 					</el-collapse>
 				</div>
-			</el-collapse-item>
-		</el-collapse>
+			</el-tab-pane>
+		</el-tabs>
 	</div>
 </div>
 		`;
@@ -91,7 +91,7 @@
 				group.templates = group.templates || [];
 				this.group_map[group.key] = group;
 				group.templates.forEach((template) => {
-					template.key = ui.name + '-' + group.name + '-' + template.name;
+					template.key = ui.name + '-' + template.name;
 					this.template_map[template.key] = template;
 
 					template.demos = template.demos || [];
@@ -116,15 +116,14 @@
 					});
 				});
 			});
+			if (ui.groups.length > 0) {
+				ui.group_active_name = ui.groups[0].key;
+			}
 		});
 
 		data.ui_active_name = null;
-		data.ui_group_active_name = null;
 		if (data.uis.length > 0) {
 			data.ui_active_name = data.uis[0].key;
-			if (data.uis[0].groups.length > 0) {
-				data.ui_group_active_name = data.uis[0].groups[0].key;
-			}
 		}
 
 		this.page_ui_data = data;
@@ -139,17 +138,22 @@
 					if (value) {
 						this.$nextTick().then(res => {
 							let width = $(this.$el).find('.ui-list').width();
-							let height = $(this.$el).find('.ui-list').height();
+							let height = $(this.$el).find('.ui-list .el-tabs__content').height();
 							this.uis.forEach((ui, index) => {
 								let groupList = $(this.$el).find('.ui-group-list')[index];
-								$(groupList).find('.ui-template-list').css('height', height - 30 * this.uis.length - 30 * ui.groups.length)
+
+								$(groupList).find('.ui-template-list').css('height', height - 30 * ui.groups.length)
 							});
 							$(this.$el).css('left', ($($box).width() - width) / 2);
 						});
 					}
 				}
 			},
-			mounted () {},
+			mounted () {
+				$(this.$el).draggable({
+					handle : ".title"
+				});
+			},
 			methods : {
 				chooseTemplate (ui, group, template, demo) {
 					that.onChoosePageTemplate(ui, group, template, demo);

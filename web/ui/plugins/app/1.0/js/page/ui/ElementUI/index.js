@@ -15,7 +15,10 @@
 	ElementUI.prototype.getGroups = function() {
 		let groups = [];
 
-		groups.push(new ElementUI.BaseGroup());
+		groups.push(new ElementUI.BasicGroup());
+		groups.push(new ElementUI.FormGroup());
+		groups.push(new ElementUI.PanelGroup());
+		groups.push(new ElementUI.DataGroup());
 
 		return groups;
 	};

@@ -101,9 +101,11 @@ page/option/event.js
 
 page/ui/index.js
 page/ui/CoosX/index.js
-page/ui/CoosX/base.js
+page/ui/CoosX/basic.js
 page/ui/CoosX/panel.js
+
 page/ui/ElementUI/index.js
-page/ui/ElementUI/base.js
+page/ui/ElementUI/basic.js
 page/ui/ElementUI/form.js
 page/ui/ElementUI/panel.js
+page/ui/ElementUI/data.js

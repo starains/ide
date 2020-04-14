@@ -5598,7 +5598,7 @@ var Editor = function(options) {
 	PageEditor.prototype.getUIList = function() {
 		let list = [];
 
-		list.push(new Editor.Page.UI.CoosXUI());
+		list.push(new Editor.Page.UI.CoosUI());
 		list.push(new Editor.Page.UI.ElementUI());
 
 		return list;
@@ -5629,11 +5629,11 @@ var Editor = function(options) {
 <div class="page-design-ui-box" :class="{'page-design-ui-box-show':show}">
 	<div class="title">UI 模板  <a @click="closeUIBox()" class="ft-12 float-right coos-pointer">关闭</a></div>
 	<div class="ui-list">
-	    <el-collapse v-for="ui in uis" v-model="ui_active_name" @change="ui_active_change" accordion>
-			<el-collapse-item :title="ui.title" :name="ui.key" >
+		<el-tabs v-model="ui_active_name" >
+			<el-tab-pane v-for="ui in uis" :label="ui.title" :name="ui.key">
 				<div class="ui-group-list">
 					<div v-if="ui.groups.length == 0" class="color-orange text-center pdtb-10">暂无组数据</div>
-					<el-collapse v-for="group in ui.groups" :class="group.key" v-model="ui_group_active_name" @change="ui_group_active_change" accordion>
+					<el-collapse v-for="group in ui.groups" :class="group.key" v-model="ui.group_active_name" @change="ui_group_active_change" accordion>
 						<el-collapse-item :title="group.title" :name="group.key">
 							<div v-if="group.templates.length == 0" class="color-orange text-center pdtb-10">暂无模板数据</div>
 							<div class="ui-template-list coos-scrollbar" >
@@ -5651,8 +5651,8 @@ var Editor = function(options) {
 						</el-collapse-item>
 					</el-collapse>
 				</div>
-			</el-collapse-item>
-		</el-collapse>
+			</el-tab-pane>
+		</el-tabs>
 	</div>
 </div>
 		`;
@@ -5684,7 +5684,7 @@ var Editor = function(options) {
 				group.templates = group.templates || [];
 				this.group_map[group.key] = group;
 				group.templates.forEach((template) => {
-					template.key = ui.name + '-' + group.name + '-' + template.name;
+					template.key = ui.name + '-' + template.name;
 					this.template_map[template.key] = template;
 
 					template.demos = template.demos || [];
@@ -5709,15 +5709,14 @@ var Editor = function(options) {
 					});
 				});
 			});
+			if (ui.groups.length > 0) {
+				ui.group_active_name = ui.groups[0].key;
+			}
 		});
 
 		data.ui_active_name = null;
-		data.ui_group_active_name = null;
 		if (data.uis.length > 0) {
 			data.ui_active_name = data.uis[0].key;
-			if (data.uis[0].groups.length > 0) {
-				data.ui_group_active_name = data.uis[0].groups[0].key;
-			}
 		}
 
 		this.page_ui_data = data;
@@ -5732,17 +5731,22 @@ var Editor = function(options) {
 					if (value) {
 						this.$nextTick().then(res => {
 							let width = $(this.$el).find('.ui-list').width();
-							let height = $(this.$el).find('.ui-list').height();
+							let height = $(this.$el).find('.ui-list .el-tabs__content').height();
 							this.uis.forEach((ui, index) => {
 								let groupList = $(this.$el).find('.ui-group-list')[index];
-								$(groupList).find('.ui-template-list').css('height', height - 30 * this.uis.length - 30 * ui.groups.length)
+
+								$(groupList).find('.ui-template-list').css('height', height - 30 * ui.groups.length)
 							});
 							$(this.$el).css('left', ($($box).width() - width) / 2);
 						});
 					}
 				}
 			},
-			mounted () {},
+			mounted () {
+				$(this.$el).draggable({
+					handle : ".title"
+				});
+			},
 			methods : {
 				chooseTemplate (ui, group, template, demo) {
 					that.onChoosePageTemplate(ui, group, template, demo);
@@ -6390,21 +6394,22 @@ var Editor = function(options) {
 
 (function() {
 	var UI = Editor.Page.UI;
-	var CoosXUI = coos.createClass(UI);
-	UI.CoosXUI = CoosXUI;
+	var CoosUI = coos.createClass(UI);
+	UI.CoosUI = CoosUI;
 
-	CoosXUI.prototype.getName = function() {
-		return 'coosx-ui';
+	CoosUI.prototype.getName = function() {
+		return 'coos-ui';
 	};
 
-	CoosXUI.prototype.getTitle = function() {
-		return 'CoosX UI';
+	CoosUI.prototype.getTitle = function() {
+		return 'Coos UI';
 	};
 
-	CoosXUI.prototype.getGroups = function() {
+	CoosUI.prototype.getGroups = function() {
 		let groups = [];
 
-		groups.push(new CoosXUI.BaseGroup());
+		groups.push(new CoosUI.BasicGroup());
+		groups.push(new CoosUI.PanelGroup());
 
 		return groups;
 	};
@@ -6414,33 +6419,27 @@ var Editor = function(options) {
 
 (function() {
 	var UI = Editor.Page.UI;
-	var BaseGroup = coos.createClass(UI.Group);
-	UI.CoosXUI.BaseGroup = BaseGroup;
+	var BasicGroup = coos.createClass(UI.Group);
+	UI.CoosUI.BasicGroup = BasicGroup;
 
-	BaseGroup.prototype.getName = function() {
-		return 'base';
+	BasicGroup.prototype.getName = function() {
+		return 'basic';
 	};
 
-	BaseGroup.prototype.getTitle = function() {
+	BasicGroup.prototype.getTitle = function() {
 		return '基础';
 	};
 
-	BaseGroup.prototype.getTemplates = function() {
+	BasicGroup.prototype.getTemplates = function() {
 		let templates = [];
 
 		templates.push(new Header());
 		templates.push(new Body());
-		templates.push(new Panel());
-		templates.push(new Row());
-		templates.push(new Col());
-		templates.push(new Layout());
 		templates.push(new Btn());
 		templates.push(new Link());
 
 		return templates;
 	};
-
-
 
 	var Header = coos.createClass(Editor.Page.UI.Template);
 
@@ -6551,6 +6550,8 @@ var Editor = function(options) {
 
 		return demos;
 	};
+
+
 
 	var Btn = coos.createClass(Editor.Page.UI.Template);
 
@@ -6766,6 +6767,32 @@ var Editor = function(options) {
 		return demos;
 	};
 
+})();
+
+(function() {
+	var UI = Editor.Page.UI;
+	var PanelGroup = coos.createClass(UI.Group);
+	UI.CoosUI.PanelGroup = PanelGroup;
+
+	PanelGroup.prototype.getName = function() {
+		return 'panel';
+	};
+
+	PanelGroup.prototype.getTitle = function() {
+		return '面板';
+	};
+
+	PanelGroup.prototype.getTemplates = function() {
+		let templates = [];
+
+		templates.push(new Row());
+		templates.push(new Col());
+		templates.push(new Layout());
+		templates.push(new Panel());
+
+		return templates;
+	};
+	
 	var Layout = coos.createClass(Editor.Page.UI.Template);
 
 	Layout.prototype.init = function() {
@@ -7055,7 +7082,1268 @@ var Editor = function(options) {
 		return 'Element UI';
 	};
 
-	ElementUI.prototype.getGroups = function() {};
+	ElementUI.prototype.getGroups = function() {
+		let groups = [];
+
+		groups.push(new ElementUI.BasicGroup());
+		groups.push(new ElementUI.FormGroup());
+		groups.push(new ElementUI.PanelGroup());
+		groups.push(new ElementUI.DataGroup());
+
+		return groups;
+	};
+})();
+
+(function() {
+	var UI = Editor.Page.UI;
+	var BasicGroup = coos.createClass(UI.Group);
+	UI.ElementUI.BasicGroup = BasicGroup;
+
+	BasicGroup.prototype.getName = function() {
+		return 'basic';
+	};
+
+	BasicGroup.prototype.getTitle = function() {
+		return '基础';
+	};
+
+	BasicGroup.prototype.getTemplates = function() {
+		let templates = [];
+
+		templates.push(new Header());
+		templates.push(new Body());
+		templates.push(new Btn());
+		templates.push(new Link());
+
+		return templates;
+	};
+
+	var Header = coos.createClass(Editor.Page.UI.Template);
+
+	Header.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Header.prototype.getName = function() {
+		return 'header';
+	};
+
+	Header.prototype.getTitle = function() {
+		return '头部';
+	};
+
+	Header.prototype.getCode = function() {
+		return `<c-header ></c-header>`;
+	};
+
+	Header.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Header.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'title',
+			text : '标题',
+			type : 'textarea'
+		});
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Header.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : [ {
+				name : 'title',
+				value : '标题'
+			} ]
+		});
+
+		return demos;
+	};
+
+	var Body = coos.createClass(Editor.Page.UI.Template);
+
+	Body.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Body.prototype.getName = function() {
+		return 'body';
+	};
+
+	Body.prototype.getTitle = function() {
+		return '体部';
+	};
+
+	Body.prototype.getCode = function() {
+		return `<c-body ></c-body>`;
+	};
+
+	Body.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Body.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Body.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : []
+		});
+
+		return demos;
+	};
+
+
+
+	var Btn = coos.createClass(Editor.Page.UI.Template);
+
+	Btn.prototype.init = function() {};
+
+	Btn.prototype.getName = function() {
+		return 'btn';
+	};
+
+	Btn.prototype.getTitle = function() {
+		return '按钮';
+	};
+
+	Btn.prototype.getCode = function() {
+		return `<c-btn ></c-btn>`;
+	};
+
+	Btn.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Btn.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'text',
+			text : '文案'
+		});
+		attrs.push({
+			name : 'html',
+			text : '内容',
+			type : "textarea"
+		});
+		attrs.push({
+			name : 'color',
+			text : '颜色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'bg',
+			text : '背景色',
+			type : 'select',
+			custom : true,
+			options : UI.bgs,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'size',
+			text : '尺寸',
+			type : 'select',
+			options : UI.sizes,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'circle',
+			text : '圆形',
+			type : 'switch',
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'disabled',
+			text : '禁用',
+			type : 'switch'
+		});
+		return attrs;
+	};
+
+	Btn.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : [ {
+				name : 'html',
+				value : '按钮'
+			} ]
+		});
+
+		UI.colors.forEach(color => {
+			if (coos.isNotEmpty(color.value) && color.value != 'white') {
+				demos.push({
+					attrs : [ {
+						name : 'color',
+						value : color.value
+					}, {
+						name : 'html',
+						value : '按钮'
+					} ]
+				});
+			}
+		});
+
+		demos.push({
+			divider : true
+		});
+
+		UI.colors.forEach(color => {
+			if (coos.isNotEmpty(color.value) && color.value != 'white') {
+				demos.push({
+					attrs : [ {
+						name : 'bg',
+						value : color.value
+					}, {
+						name : 'html',
+						value : '按钮'
+					} ]
+				});
+			}
+		});
+
+		demos.push({
+			divider : true
+		});
+
+		UI.sizes.forEach(size => {
+			demos.push({
+				attrs : [ {
+					name : 'size',
+					value : size.value
+				}, {
+					name : 'html',
+					value : '按钮'
+				} ]
+			});
+		});
+
+		return demos;
+	};
+
+
+	var Link = coos.createClass(Editor.Page.UI.Template);
+
+	Link.prototype.init = function() {};
+
+	Link.prototype.getName = function() {
+		return 'link';
+	};
+
+	Link.prototype.getTitle = function() {
+		return '链接';
+	};
+
+	Link.prototype.getCode = function() {
+		return `<c-link ></c-link>`;
+	};
+
+	Link.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Link.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'text',
+			text : '文案'
+		});
+		attrs.push({
+			name : 'html',
+			text : '内容',
+			type : "textarea"
+		});
+		attrs.push({
+			name : 'color',
+			text : '颜色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'disabled',
+			text : '禁用',
+			type : 'switch'
+		});
+		return attrs;
+	};
+
+	Link.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : [ {
+				name : 'html',
+				value : '链接'
+			} ]
+		});
+
+		UI.colors.forEach(color => {
+			if (coos.isNotEmpty(color.value) && color.value != 'white') {
+				demos.push({
+					attrs : [ {
+						name : 'color',
+						value : color.value
+					}, {
+						name : 'html',
+						value : '链接'
+					} ]
+				});
+			}
+		});
+
+		return demos;
+	};
+
+})();
+
+(function() {
+	var UI = Editor.Page.UI;
+	var FormGroup = coos.createClass(UI.Group);
+	UI.ElementUI.FormGroup = FormGroup;
+
+	FormGroup.prototype.getName = function() {
+		return 'form';
+	};
+
+	FormGroup.prototype.getTitle = function() {
+		return '表单';
+	};
+
+	FormGroup.prototype.getTemplates = function() {
+		let templates = [];
+
+		templates.push(new Row());
+		templates.push(new Col());
+		templates.push(new Layout());
+		templates.push(new Panel());
+
+		return templates;
+	};
+
+	var Layout = coos.createClass(Editor.Page.UI.Template);
+
+	Layout.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Layout.prototype.getName = function() {
+		return 'layout';
+	};
+
+	Layout.prototype.getTitle = function() {
+		return '布局';
+	};
+
+	Layout.prototype.getCode = function() {
+		return `<c-layout ></c-layout>`;
+	};
+
+	Layout.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Layout.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Layout.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : []
+		});
+
+		return demos;
+	};
+
+
+
+	var Row = coos.createClass(Editor.Page.UI.Template);
+
+	Row.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Row.prototype.getName = function() {
+		return 'row';
+	};
+
+	Row.prototype.getTitle = function() {
+		return '行';
+	};
+
+	Row.prototype.getCode = function() {
+		return `<c-row ></c-row>`;
+	};
+
+	Row.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Row.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Row.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attr : {}
+		});
+
+		return demos;
+	};
+
+
+
+	var Col = coos.createClass(Editor.Page.UI.Template);
+
+	Col.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Col.prototype.getName = function() {
+		return 'col';
+	};
+
+	Col.prototype.getTitle = function() {
+		return '列';
+	};
+
+	Col.prototype.getCode = function() {
+		return `<c-col ></c-col>`;
+	};
+
+	Col.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Col.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'col',
+			text : '列',
+			type : 'select',
+			options : UI.cols
+		});
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Col.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : [ {
+				name : 'col',
+				value : 6
+			} ]
+		});
+
+		demos.push({
+			attrs : [ {
+				name : 'col',
+				value : 12
+			} ]
+		});
+
+		return demos;
+	};
+
+
+
+
+	var Panel = coos.createClass(Editor.Page.UI.Template);
+
+	Panel.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Panel.prototype.getName = function() {
+		return 'panel';
+	};
+
+	Panel.prototype.getTitle = function() {
+		return '面板';
+	};
+
+	Panel.prototype.getCode = function() {
+		return `<c-panel ></c-panel>`;
+	};
+
+	Panel.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Panel.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'title',
+			text : '标题',
+			type : 'textarea'
+		});
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Panel.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : [ {
+				name : 'title',
+				value : '标题'
+			} ]
+		});
+
+		return demos;
+	};
+})();
+
+(function() {
+	var UI = Editor.Page.UI;
+	var PanelGroup = coos.createClass(UI.Group);
+	UI.ElementUI.PanelGroup = PanelGroup;
+
+	PanelGroup.prototype.getName = function() {
+		return 'panel';
+	};
+
+	PanelGroup.prototype.getTitle = function() {
+		return '面板';
+	};
+
+	PanelGroup.prototype.getTemplates = function() {
+		let templates = [];
+
+		templates.push(new Row());
+		templates.push(new Col());
+		templates.push(new Layout());
+		templates.push(new Panel());
+
+		return templates;
+	};
+	
+	var Layout = coos.createClass(Editor.Page.UI.Template);
+
+	Layout.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Layout.prototype.getName = function() {
+		return 'layout';
+	};
+
+	Layout.prototype.getTitle = function() {
+		return '布局';
+	};
+
+	Layout.prototype.getCode = function() {
+		return `<c-layout ></c-layout>`;
+	};
+
+	Layout.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Layout.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Layout.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : []
+		});
+
+		return demos;
+	};
+
+
+
+	var Row = coos.createClass(Editor.Page.UI.Template);
+
+	Row.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Row.prototype.getName = function() {
+		return 'row';
+	};
+
+	Row.prototype.getTitle = function() {
+		return '行';
+	};
+
+	Row.prototype.getCode = function() {
+		return `<c-row ></c-row>`;
+	};
+
+	Row.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Row.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Row.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attr : {}
+		});
+
+		return demos;
+	};
+
+
+
+	var Col = coos.createClass(Editor.Page.UI.Template);
+
+	Col.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Col.prototype.getName = function() {
+		return 'col';
+	};
+
+	Col.prototype.getTitle = function() {
+		return '列';
+	};
+
+	Col.prototype.getCode = function() {
+		return `<c-col ></c-col>`;
+	};
+
+	Col.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Col.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'col',
+			text : '列',
+			type : 'select',
+			options : UI.cols
+		});
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Col.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : [ {
+				name : 'col',
+				value : 6
+			} ]
+		});
+
+		demos.push({
+			attrs : [ {
+				name : 'col',
+				value : 12
+			} ]
+		});
+
+		return demos;
+	};
+
+
+
+
+	var Panel = coos.createClass(Editor.Page.UI.Template);
+
+	Panel.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Panel.prototype.getName = function() {
+		return 'panel';
+	};
+
+	Panel.prototype.getTitle = function() {
+		return '面板';
+	};
+
+	Panel.prototype.getCode = function() {
+		return `<c-panel ></c-panel>`;
+	};
+
+	Panel.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Panel.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'title',
+			text : '标题',
+			type : 'textarea'
+		});
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Panel.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : [ {
+				name : 'title',
+				value : '标题'
+			} ]
+		});
+
+		return demos;
+	};
+})();
+
+(function() {
+	var UI = Editor.Page.UI;
+	var DataGroup = coos.createClass(UI.Group);
+	UI.ElementUI.DataGroup = DataGroup;
+
+	DataGroup.prototype.getName = function() {
+		return 'data';
+	};
+
+	DataGroup.prototype.getTitle = function() {
+		return '数据';
+	};
+
+	DataGroup.prototype.getTemplates = function() {
+		let templates = [];
+
+		templates.push(new Row());
+		templates.push(new Col());
+		templates.push(new Layout());
+		templates.push(new Panel());
+
+		return templates;
+	};
+
+	var Layout = coos.createClass(Editor.Page.UI.Template);
+
+	Layout.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Layout.prototype.getName = function() {
+		return 'layout';
+	};
+
+	Layout.prototype.getTitle = function() {
+		return '布局';
+	};
+
+	Layout.prototype.getCode = function() {
+		return `<c-layout ></c-layout>`;
+	};
+
+	Layout.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Layout.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Layout.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : []
+		});
+
+		return demos;
+	};
+
+
+
+	var Row = coos.createClass(Editor.Page.UI.Template);
+
+	Row.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Row.prototype.getName = function() {
+		return 'row';
+	};
+
+	Row.prototype.getTitle = function() {
+		return '行';
+	};
+
+	Row.prototype.getCode = function() {
+		return `<c-row ></c-row>`;
+	};
+
+	Row.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Row.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Row.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attr : {}
+		});
+
+		return demos;
+	};
+
+
+
+	var Col = coos.createClass(Editor.Page.UI.Template);
+
+	Col.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Col.prototype.getName = function() {
+		return 'col';
+	};
+
+	Col.prototype.getTitle = function() {
+		return '列';
+	};
+
+	Col.prototype.getCode = function() {
+		return `<c-col ></c-col>`;
+	};
+
+	Col.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Col.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'col',
+			text : '列',
+			type : 'select',
+			options : UI.cols
+		});
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'pd',
+			text : '内边距',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Col.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : [ {
+				name : 'col',
+				value : 6
+			} ]
+		});
+
+		demos.push({
+			attrs : [ {
+				name : 'col',
+				value : 12
+			} ]
+		});
+
+		return demos;
+	};
+
+
+
+
+	var Panel = coos.createClass(Editor.Page.UI.Template);
+
+	Panel.prototype.init = function() {
+		this.isBlock = true;
+		this.hasSlot = true;
+	};
+
+	Panel.prototype.getName = function() {
+		return 'panel';
+	};
+
+	Panel.prototype.getTitle = function() {
+		return '面板';
+	};
+
+	Panel.prototype.getCode = function() {
+		return `<c-panel ></c-panel>`;
+	};
+
+	Panel.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+
+	Panel.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'title',
+			text : '标题',
+			type : 'textarea'
+		});
+		attrs.push({
+			name : 'bdcolor',
+			text : '边框配色',
+			type : 'select',
+			custom : true,
+			options : UI.colors,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
+		});
+		return attrs;
+	};
+
+	Panel.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : [ {
+				name : 'title',
+				value : '标题'
+			} ]
+		});
+
+		return demos;
+	};
 })();
 
 })(window);

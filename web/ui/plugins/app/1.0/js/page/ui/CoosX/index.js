@@ -15,7 +15,8 @@
 	CoosUI.prototype.getGroups = function() {
 		let groups = [];
 
-		groups.push(new CoosUI.BaseGroup());
+		groups.push(new CoosUI.BasicGroup());
+		groups.push(new CoosUI.PanelGroup());
 
 		return groups;
 	};

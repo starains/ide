@@ -7,8 +7,14 @@
         closable
         @tab-remove="removeTab"
         @tab-click="clickTab"
+        class="repository-tabs"
       >
-        <el-tab-pane v-for="(item) in repository.tabs" :key="item.name" :name="item.name">
+        <el-tab-pane
+          class="repository-tab-span"
+          v-for="(item) in repository.tabs"
+          :key="item.name"
+          :name="item.name"
+        >
           <span slot="label" :title="item.title" :path="item.path">
             {{item.text}}
             <i
@@ -21,7 +27,6 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <div class="repository-tab-editor-box display-none"></div>
   </div>
 </template>
 
@@ -101,7 +106,7 @@ export default {
     let that = this;
     $(document).on(
       "contextmenu",
-      ".repository-file-tabs .el-tabs__item",
+      ".repository-file-tabs > .el-tabs .el-tabs__item",
       function(e) {
         let $item = $(e.target).closest(".el-tabs__item");
         let $span = $item.find("span:first");
@@ -109,15 +114,17 @@ export default {
       }
     );
 
-    $(document).on("mouseup", ".repository-file-tabs .el-tabs__item", function(
-      e
-    ) {
-      if (e.button == 1) {
-        let $item = $(e.target).closest(".el-tabs__item");
-        let $span = $item.find("span:first");
-        source.closeTab($span.attr("path"));
+    $(document).on(
+      "mouseup",
+      ".repository-file-tabs > .el-tabs .el-tabs__item",
+      function(e) {
+        if (e.button == 1) {
+          let $item = $(e.target).closest(".el-tabs__item");
+          let $span = $item.find("span:first");
+          source.closeTab($span.attr("path"));
+        }
       }
-    });
+    );
   }
 };
 </script>
@@ -127,42 +134,42 @@ export default {
 .repository-tab-box {
   margin-right: 25px;
 }
-.repository-tab-box .el-tabs__header {
+.repository-tabs > .el-tabs__header {
   margin: 0px;
 }
-.repository-tab-box .el-tabs__nav-next,
-.repository-tab-box .el-tabs__nav-prev {
+.repository-tabs > .el-tabs__header .el-tabs__nav-next,
+.repository-tabs > .el-tabs__header .el-tabs__nav-prev {
   height: 25px;
   line-height: 25px;
 }
-.repository-tab-box .el-tabs__nav {
+.repository-tabs > .el-tabs__header .el-tabs__nav {
   height: 25px;
 }
-.repository-tab-box .el-tabs__nav-scroll {
+.repository-tabs > .el-tabs__header .el-tabs__nav-scroll {
   margin-left: -1px;
 }
-.repository-tab-box .el-tabs__nav:first-child {
+.repository-tabs > .el-tabs__header .el-tabs__nav:first-child {
   border-left: 0px;
 }
-.repository-tab-box .el-tabs--card > .el-tabs__header .el-tabs__item {
+.repository-tabs > .el-tabs__header .el-tabs__item {
   font-size: 12px;
   padding-left: 10px !important;
   padding-right: 10px !important;
   height: 25px;
   line-height: 25px;
 }
-.repository-tab-box .el-tabs__item.is-active,
-.repository-tab-box .el-tabs__item:hover {
+.repository-tabs > .el-tabs__header .el-tabs__item.is-active,
+.repository-tabs > .el-tabs__header .el-tabs__item:hover {
   color: #008992;
 }
-.repository-tab-box .el-tabs__content {
+.repository-tabs > .el-tabs__content {
   position: absolute;
   bottom: 0px;
   top: 25px;
   left: 0px;
   right: 0px;
 }
-.repository-tab-box .el-tabs__content .el-tab-pane {
+.repository-tabs > .el-tabs__content > .el-tab-pane {
   width: 100%;
   height: 100%;
 }
