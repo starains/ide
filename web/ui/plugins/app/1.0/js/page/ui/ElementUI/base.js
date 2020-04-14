@@ -2,7 +2,7 @@
 (function() {
 	var UI = Editor.Page.UI;
 	var BaseGroup = coos.createClass(UI.Group);
-	UI.CoosUI.BaseGroup = BaseGroup;
+	UI.ElementUI.BaseGroup = BaseGroup;
 
 	BaseGroup.prototype.getName = function() {
 		return 'base';

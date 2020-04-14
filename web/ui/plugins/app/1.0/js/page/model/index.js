@@ -5,7 +5,7 @@
 	PageEditor.prototype.getUIList = function() {
 		let list = [];
 
-		list.push(new Editor.Page.UI.CoosXUI());
+		list.push(new Editor.Page.UI.CoosUI());
 		list.push(new Editor.Page.UI.ElementUI());
 
 		return list;

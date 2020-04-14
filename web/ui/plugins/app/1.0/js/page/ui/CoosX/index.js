@@ -1,21 +1,21 @@
 
 (function() {
 	var UI = Editor.Page.UI;
-	var CoosXUI = coos.createClass(UI);
-	UI.CoosXUI = CoosXUI;
+	var CoosUI = coos.createClass(UI);
+	UI.CoosUI = CoosUI;
 
-	CoosXUI.prototype.getName = function() {
-		return 'coosx-ui';
+	CoosUI.prototype.getName = function() {
+		return 'coos-ui';
 	};
 
-	CoosXUI.prototype.getTitle = function() {
-		return 'CoosX UI';
+	CoosUI.prototype.getTitle = function() {
+		return 'Coos UI';
 	};
 
-	CoosXUI.prototype.getGroups = function() {
+	CoosUI.prototype.getGroups = function() {
 		let groups = [];
 
-		groups.push(new CoosXUI.BaseGroup());
+		groups.push(new CoosUI.BaseGroup());
 
 		return groups;
 	};

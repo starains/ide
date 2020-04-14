@@ -12,5 +12,11 @@
 		return 'Element UI';
 	};
 
-	ElementUI.prototype.getGroups = function() {};
+	ElementUI.prototype.getGroups = function() {
+		let groups = [];
+
+		groups.push(new ElementUI.BaseGroup());
+
+		return groups;
+	};
 })();
