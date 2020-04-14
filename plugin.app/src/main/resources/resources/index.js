@@ -5962,6 +5962,10 @@ var Editor = function(options) {
 				name : 'class',
 				text : '类'
 			});
+			templateAttrs.push({
+				name : 'style',
+				text : '样式'
+			});
 			if (template.attrs) {
 				template.attrs.forEach(attr => {
 					templateAttrs.push(Object.assign({}, attr));
@@ -5990,7 +5994,7 @@ var Editor = function(options) {
 						if (optionAttr.name == attr.name) {
 							attr.isBind = coos.isTrue(optionAttr.isBind);
 							attrData[attr.name] = optionAttr.value;
-							attrData.bindName = optionAttr.bindName;
+							attr.bindName = optionAttr.bindName;
 						}
 					});
 				}
@@ -6336,6 +6340,14 @@ var Editor = function(options) {
 		});
 	});
 
+	UI.cols = [];
+	coos.style.config.cols.forEach(col => {
+		UI.cols.push({
+			text : col.text,
+			value : col.value
+		});
+	});
+
 	UI.prototype.init = function() {
 		this.name = this.getName();
 		this.title = this.getTitle();
@@ -6466,21 +6478,16 @@ var Editor = function(options) {
 			text : '边框配色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
-		});
-		attrs.push({
-			name : 'bdwidth',
-			text : '边框宽度',
-			type : 'select',
-			custom : true,
-			options : UI.distances
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'pd',
 			text : '内边距',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};
@@ -6525,18 +6532,12 @@ var Editor = function(options) {
 	Body.prototype.getAttrs = function() {
 		let attrs = [];
 		attrs.push({
-			name : 'bdcolor',
-			text : '边框配色',
-			type : 'select',
-			custom : true,
-			options : UI.colors
-		});
-		attrs.push({
 			name : 'pd',
 			text : '内边距',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};
@@ -6576,7 +6577,11 @@ var Editor = function(options) {
 		let attrs = [];
 		attrs.push({
 			name : 'text',
-			text : '文案',
+			text : '文案'
+		});
+		attrs.push({
+			name : 'html',
+			text : '内容',
 			type : "textarea"
 		});
 		attrs.push({
@@ -6584,20 +6589,37 @@ var Editor = function(options) {
 			text : '颜色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'bg',
 			text : '背景色',
 			type : 'select',
 			custom : true,
-			options : UI.bgs
+			options : UI.bgs,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'size',
 			text : '尺寸',
 			type : 'select',
-			options : UI.sizes
+			options : UI.sizes,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'circle',
+			text : '圆形',
+			type : 'switch',
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'disabled',
@@ -6612,7 +6634,7 @@ var Editor = function(options) {
 
 		demos.push({
 			attrs : [ {
-				name : 'text',
+				name : 'html',
 				value : '按钮'
 			} ]
 		});
@@ -6624,7 +6646,7 @@ var Editor = function(options) {
 						name : 'color',
 						value : color.value
 					}, {
-						name : 'text',
+						name : 'html',
 						value : '按钮'
 					} ]
 				});
@@ -6642,7 +6664,7 @@ var Editor = function(options) {
 						name : 'bg',
 						value : color.value
 					}, {
-						name : 'text',
+						name : 'html',
 						value : '按钮'
 					} ]
 				});
@@ -6659,7 +6681,7 @@ var Editor = function(options) {
 					name : 'size',
 					value : size.value
 				}, {
-					name : 'text',
+					name : 'html',
 					value : '按钮'
 				} ]
 			});
@@ -6694,7 +6716,11 @@ var Editor = function(options) {
 		let attrs = [];
 		attrs.push({
 			name : 'text',
-			text : '文案',
+			text : '文案'
+		});
+		attrs.push({
+			name : 'html',
+			text : '内容',
 			type : "textarea"
 		});
 		attrs.push({
@@ -6702,7 +6728,8 @@ var Editor = function(options) {
 			text : '颜色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'disabled',
@@ -6717,7 +6744,7 @@ var Editor = function(options) {
 
 		demos.push({
 			attrs : [ {
-				name : 'text',
+				name : 'html',
 				value : '链接'
 			} ]
 		});
@@ -6729,7 +6756,7 @@ var Editor = function(options) {
 						name : 'color',
 						value : color.value
 					}, {
-						name : 'text',
+						name : 'html',
 						value : '链接'
 					} ]
 				});
@@ -6770,14 +6797,24 @@ var Editor = function(options) {
 			text : '边框配色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'pd',
 			text : '内边距',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};
@@ -6825,14 +6862,24 @@ var Editor = function(options) {
 			text : '边框配色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'pd',
 			text : '内边距',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};
@@ -6878,21 +6925,32 @@ var Editor = function(options) {
 		attrs.push({
 			name : 'col',
 			text : '列',
-			type : 'number'
+			type : 'select',
+			options : UI.cols
 		});
 		attrs.push({
 			name : 'bdcolor',
 			text : '边框配色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'pd',
 			text : '内边距',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};
@@ -6956,33 +7014,16 @@ var Editor = function(options) {
 			text : '边框配色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
-			name : 'bdplace',
-			text : '边框位置',
-			type : 'select',
-			multiple : true,
-			options : [ {
-				text : '顶部',
-				value : 'top'
-			}, {
-				text : '左侧',
-				value : 'left'
-			}, {
-				text : '右侧',
-				value : 'right'
-			}, {
-				text : '底部',
-				value : 'bottom'
-			} ]
-		});
-		attrs.push({
-			name : 'bdwidth',
-			text : '边框宽度',
+			name : 'rd',
+			text : '边框圆角',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};

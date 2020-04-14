@@ -65,21 +65,16 @@
 			text : '边框配色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
-		});
-		attrs.push({
-			name : 'bdwidth',
-			text : '边框宽度',
-			type : 'select',
-			custom : true,
-			options : UI.distances
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'pd',
 			text : '内边距',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};
@@ -124,18 +119,12 @@
 	Body.prototype.getAttrs = function() {
 		let attrs = [];
 		attrs.push({
-			name : 'bdcolor',
-			text : '边框配色',
-			type : 'select',
-			custom : true,
-			options : UI.colors
-		});
-		attrs.push({
 			name : 'pd',
 			text : '内边距',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};
@@ -175,7 +164,11 @@
 		let attrs = [];
 		attrs.push({
 			name : 'text',
-			text : '文案',
+			text : '文案'
+		});
+		attrs.push({
+			name : 'html',
+			text : '内容',
 			type : "textarea"
 		});
 		attrs.push({
@@ -183,20 +176,37 @@
 			text : '颜色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'bg',
 			text : '背景色',
 			type : 'select',
 			custom : true,
-			options : UI.bgs
+			options : UI.bgs,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'size',
 			text : '尺寸',
 			type : 'select',
-			options : UI.sizes
+			options : UI.sizes,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'circle',
+			text : '圆形',
+			type : 'switch',
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'disabled',
@@ -211,7 +221,7 @@
 
 		demos.push({
 			attrs : [ {
-				name : 'text',
+				name : 'html',
 				value : '按钮'
 			} ]
 		});
@@ -223,7 +233,7 @@
 						name : 'color',
 						value : color.value
 					}, {
-						name : 'text',
+						name : 'html',
 						value : '按钮'
 					} ]
 				});
@@ -241,7 +251,7 @@
 						name : 'bg',
 						value : color.value
 					}, {
-						name : 'text',
+						name : 'html',
 						value : '按钮'
 					} ]
 				});
@@ -258,7 +268,7 @@
 					name : 'size',
 					value : size.value
 				}, {
-					name : 'text',
+					name : 'html',
 					value : '按钮'
 				} ]
 			});
@@ -293,7 +303,11 @@
 		let attrs = [];
 		attrs.push({
 			name : 'text',
-			text : '文案',
+			text : '文案'
+		});
+		attrs.push({
+			name : 'html',
+			text : '内容',
 			type : "textarea"
 		});
 		attrs.push({
@@ -301,7 +315,8 @@
 			text : '颜色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'disabled',
@@ -316,7 +331,7 @@
 
 		demos.push({
 			attrs : [ {
-				name : 'text',
+				name : 'html',
 				value : '链接'
 			} ]
 		});
@@ -328,7 +343,7 @@
 						name : 'color',
 						value : color.value
 					}, {
-						name : 'text',
+						name : 'html',
 						value : '链接'
 					} ]
 				});
@@ -369,14 +384,24 @@
 			text : '边框配色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'pd',
 			text : '内边距',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};
@@ -424,14 +449,24 @@
 			text : '边框配色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'pd',
 			text : '内边距',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};
@@ -477,21 +512,32 @@
 		attrs.push({
 			name : 'col',
 			text : '列',
-			type : 'number'
+			type : 'select',
+			options : UI.cols
 		});
 		attrs.push({
 			name : 'bdcolor',
 			text : '边框配色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
 			name : 'pd',
 			text : '内边距',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'rd',
+			text : '边框圆角',
+			type : 'select',
+			custom : true,
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};
@@ -555,33 +601,16 @@
 			text : '边框配色',
 			type : 'select',
 			custom : true,
-			options : UI.colors
+			options : UI.colors,
+			isStyle : true
 		});
 		attrs.push({
-			name : 'bdplace',
-			text : '边框位置',
-			type : 'select',
-			multiple : true,
-			options : [ {
-				text : '顶部',
-				value : 'top'
-			}, {
-				text : '左侧',
-				value : 'left'
-			}, {
-				text : '右侧',
-				value : 'right'
-			}, {
-				text : '底部',
-				value : 'bottom'
-			} ]
-		});
-		attrs.push({
-			name : 'bdwidth',
-			text : '边框宽度',
+			name : 'rd',
+			text : '边框圆角',
 			type : 'select',
 			custom : true,
-			options : UI.distances
+			options : UI.distances,
+			isStyle : true
 		});
 		return attrs;
 	};

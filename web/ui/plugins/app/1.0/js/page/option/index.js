@@ -173,6 +173,10 @@
 				name : 'class',
 				text : '类'
 			});
+			templateAttrs.push({
+				name : 'style',
+				text : '样式'
+			});
 			if (template.attrs) {
 				template.attrs.forEach(attr => {
 					templateAttrs.push(Object.assign({}, attr));
@@ -201,7 +205,7 @@
 						if (optionAttr.name == attr.name) {
 							attr.isBind = coos.isTrue(optionAttr.isBind);
 							attrData[attr.name] = optionAttr.value;
-							attrData.bindName = optionAttr.bindName;
+							attr.bindName = optionAttr.bindName;
 						}
 					});
 				}

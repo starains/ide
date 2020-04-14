@@ -43,6 +43,14 @@
 		});
 	});
 
+	UI.cols = [];
+	coos.style.config.cols.forEach(col => {
+		UI.cols.push({
+			text : col.text,
+			value : col.value
+		});
+	});
+
 	UI.prototype.init = function() {
 		this.name = this.getName();
 		this.title = this.getTitle();

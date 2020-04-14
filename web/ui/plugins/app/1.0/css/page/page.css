@@ -1,20 +1,80 @@
-.page-editor-page-box {
-	
+.ui-template-demo .coos-body, .page-design-view-box .coos-body {
+	padding-top: 30px;
+	position: relative;
 }
 
-.page-editor-page-box .page-editor-toolbar {
+.ui-template-demo .coos-body:before, .page-design-view-box .coos-body:before
+	{
+	content: "体部";
 	position: absolute;
-	right: 0px;
 	top: 0px;
+	left: 0px;
+	background-color: #ababab;
+	color: #ffffff;
 	font-size: 12px;
-	line-height: 16px;
-	padding: 3px 10px;
+	line-height: 25px;
+	padding: 0px 10px;
+	border-radius: 3px;
+	border-top-left-radius: 0px;
 }
 
-.page-editor-page-box .coos-page {
-	
+.ui-template-demo .coos-panel-body, .page-design-view-box .coos-panel-body
+	{
+	padding-top: 30px;
+	position: relative;
 }
 
-.page-editor-page-box .coos-panel {
-	
+.ui-template-demo .coos-panel-body:before, .page-design-view-box .coos-panel-body:before
+	{
+	content: "面板体部";
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: #ababab;
+	color: #ffffff;
+	font-size: 12px;
+	line-height: 25px;
+	padding: 0px 10px;
+	border-radius: 3px;
+	border-top-left-radius: 0px;
+}
+
+.ui-template-demo .coos-row, .page-design-view-box .coos-row {
+	padding-top: 30px;
+	position: relative;
+}
+
+.ui-template-demo .coos-row:before, .page-design-view-box .coos-row:before
+	{
+	content: "行";
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: #ababab;
+	color: #ffffff;
+	font-size: 12px;
+	line-height: 25px;
+	padding: 0px 10px;
+	border-radius: 3px;
+	border-top-left-radius: 0px;
+}
+
+.ui-template-demo .coos-col, .page-design-view-box .coos-col {
+	padding-top: 30px;
+	position: relative;
+}
+
+.ui-template-demo .coos-col:before, .page-design-view-box .coos-col:before
+	{
+	content: "列";
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: #ababab;
+	color: #ffffff;
+	font-size: 12px;
+	line-height: 25px;
+	padding: 0px 10px;
+	border-radius: 3px;
+	border-top-left-radius: 0px;
 }

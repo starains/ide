@@ -167,6 +167,7 @@
 .page-design-ui-box .ui-template-one .ui-template-demo.ui-template-demo-block
 	{
 	display: block;
+	overflow: hidden;
 }
 
 .page-design-ui-box .ui-template-one .ui-template-demo:after {
