@@ -5452,6 +5452,7 @@ var Editor = function(options) {
 	var PageEditor = Editor.Page;
 
 	PageEditor.prototype.buildPageView = function($box) {
+		let that = this;
 		this.layout_id_name = 'layout-id';
 		this.layout_map = {};
 		let root = this.getLayoutRoot();
@@ -5464,10 +5465,12 @@ var Editor = function(options) {
 		new Vue({
 			el : $view[0],
 			data : data,
-			mounted () {}
+			mounted () {
+				that.$pageBox = $box;
+				that.bindPageLayoutNav($box);
+				that.bindPageEvent($box);
+			}
 		});
-		this.$pageBox = $box;
-		this.bindPageEvent($box);
 	};
 
 	PageEditor.prototype.appendLayoutView = function($parent, layout, data) {
@@ -5491,7 +5494,7 @@ var Editor = function(options) {
 		}
 
 		$parent.append($view);
-		this.formatTemplateView($view, template, layout.option);
+		this.formatTemplateView($view, template, layout);
 
 		if (layout.layouts) {
 			layout.layouts.forEach(one => {
@@ -5501,6 +5504,43 @@ var Editor = function(options) {
 		return $view;
 	};
 
+	PageEditor.prototype.bindPageLayoutNav = function($box) {
+		let that = this;
+		$box.find('.page-design-layout-has-nav').each((index, el) => {
+			let $el = $(el);
+			if ($el.attr(this.layout_id_name) == null) {
+				return;
+			}
+			let layout = this.getLayoutFromEl($el);
+			let template = this.getTemplateFromLayout(layout);
+
+			let $nav = $(`
+			<el-dropdown class="page-design-layout-nav" @command="clickNav">
+			      <span class="el-dropdown-link coos-pointer">
+			        <i class="el-icon-arrow-down el-icon--right"></i>
+			      </span>
+			      <el-dropdown-menu slot="dropdown">
+			        <el-dropdown-item v-for="nav in navs" :command="nav">{{nav.text}}</el-dropdown-item>
+			      </el-dropdown-menu>
+			    </el-dropdown>
+			`);
+			let vue = new Vue({
+				el : $nav[0],
+				data : {
+					navs : template.navs
+				},
+				methods : {
+					clickNav (nav) {
+						if (nav.onClick) {
+							nav.onClick(that, layout);
+						}
+					}
+				}
+			});
+			$el.append(vue.$el);
+		});
+
+	};
 	PageEditor.prototype.bindPageEvent = function($box) {
 		let that = this;
 
@@ -5556,7 +5596,7 @@ var Editor = function(options) {
 			return;
 		}
 
-		let $layout = $(el).closest('[layout-id]');
+		let $layout = $(el).closest('[' + this.layout_id_name + ']');
 		this.$pageBox.find('.page-design-layout-selected').removeClass('page-design-layout-selected');
 		$layout.addClass('page-design-layout-selected');
 
@@ -5634,11 +5674,21 @@ var Editor = function(options) {
 
 		return list;
 	};
+
 	PageEditor.prototype.formatTemplateView = function($view, template, option) {
 		if ($view == null || template == null || option == null) {
 			return;
 		}
+		let layout = null;
+		if (coos.isNotEmpty(option.id)) {
+			layout = option;
+			option = layout.option || {};
+		}
+
 		$view = $($view);
+		if (template.navs) {
+			$view.addClass('page-design-layout-has-nav');
+		}
 		if (option.attrs) {
 			option.attrs.forEach(attr => {
 				if (attr) {
@@ -6412,6 +6462,9 @@ var Editor = function(options) {
 		this.option = this.getOption();
 		this.demos = this.getDemos();
 		this.attrs = this.getAttrs();
+		if (this.getNavs) {
+			this.navs = this.getNavs();
+		}
 		this.init();
 	};
 
@@ -7139,260 +7192,230 @@ var Editor = function(options) {
 	BasicGroup.prototype.getTemplates = function() {
 		let templates = [];
 
-		templates.push(new Header());
-		templates.push(new Body());
-		templates.push(new Btn());
+		templates.push(new Button());
 		templates.push(new Link());
 
 		return templates;
 	};
 
-	var Header = coos.createClass(Editor.Page.UI.Template);
 
-	Header.prototype.init = function() {
-		this.isBlock = true;
-		this.hasSlot = true;
+	var Button = coos.createClass(Editor.Page.UI.Template);
+
+	Button.prototype.init = function() {
+		this.isSlot = true;
 	};
 
-	Header.prototype.getName = function() {
-		return 'header';
+	Button.prototype.getName = function() {
+		return 'button';
 	};
 
-	Header.prototype.getTitle = function() {
-		return '头部';
-	};
-
-	Header.prototype.getCode = function() {
-		return `<c-header ></c-header>`;
-	};
-
-	Header.prototype.getOption = function() {
-		let option = {};
-		return option;
-	};
-
-	Header.prototype.getAttrs = function() {
-		let attrs = [];
-		attrs.push({
-			name : 'title',
-			text : '标题',
-			type : 'textarea'
-		});
-		attrs.push({
-			name : 'bdcolor',
-			text : '边框配色',
-			type : 'select',
-			custom : true,
-			options : UI.colors,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'pd',
-			text : '内边距',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
-		});
-		return attrs;
-	};
-
-	Header.prototype.getDemos = function() {
-		let demos = [];
-
-		demos.push({
-			attrs : [ {
-				name : 'title',
-				value : '标题'
-			} ]
-		});
-
-		return demos;
-	};
-
-	var Body = coos.createClass(Editor.Page.UI.Template);
-
-	Body.prototype.init = function() {
-		this.isBlock = true;
-		this.hasSlot = true;
-	};
-
-	Body.prototype.getName = function() {
-		return 'body';
-	};
-
-	Body.prototype.getTitle = function() {
-		return '体部';
-	};
-
-	Body.prototype.getCode = function() {
-		return `<c-body ></c-body>`;
-	};
-
-	Body.prototype.getOption = function() {
-		let option = {};
-		return option;
-	};
-
-	Body.prototype.getAttrs = function() {
-		let attrs = [];
-		attrs.push({
-			name : 'pd',
-			text : '内边距',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
-		});
-		return attrs;
-	};
-
-	Body.prototype.getDemos = function() {
-		let demos = [];
-
-		demos.push({
-			attrs : []
-		});
-
-		return demos;
-	};
-
-
-
-	var Btn = coos.createClass(Editor.Page.UI.Template);
-
-	Btn.prototype.init = function() {};
-
-	Btn.prototype.getName = function() {
-		return 'btn';
-	};
-
-	Btn.prototype.getTitle = function() {
+	Button.prototype.getTitle = function() {
 		return '按钮';
 	};
 
-	Btn.prototype.getCode = function() {
-		return `<c-btn ></c-btn>`;
+	Button.prototype.getCode = function() {
+		return `<el-button ></el-button>`;
 	};
 
-	Btn.prototype.getOption = function() {
+	Button.prototype.getOption = function() {
 		let option = {};
 		return option;
 	};
-
-	Btn.prototype.getAttrs = function() {
+	let types = [ {
+		text : '文字',
+		value : 'text'
+	}, {
+		text : '主要',
+		value : 'primary'
+	}, {
+		text : '成功',
+		value : 'success'
+	}, {
+		text : '信息',
+		value : 'info'
+	}, {
+		text : '警告',
+		value : 'warning'
+	}, {
+		text : '危险',
+		value : 'danger'
+	} ];
+	let sizes = [ {
+		text : '中等',
+		value : 'medium'
+	}, {
+		text : '小型',
+		value : 'small'
+	}, {
+		text : '超小',
+		value : 'mini'
+	} ];
+	Button.prototype.getAttrs = function() {
 		let attrs = [];
 		attrs.push({
-			name : 'text',
-			text : '文案'
-		});
-		attrs.push({
-			name : 'html',
-			text : '内容',
-			type : "textarea"
-		});
-		attrs.push({
-			name : 'color',
-			text : '颜色',
+			name : 'type',
+			text : '类型',
 			type : 'select',
 			custom : true,
-			options : UI.colors,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'bg',
-			text : '背景色',
-			type : 'select',
-			custom : true,
-			options : UI.bgs,
+			options : types,
 			isStyle : true
 		});
 		attrs.push({
 			name : 'size',
 			text : '尺寸',
 			type : 'select',
-			options : UI.sizes,
+			custom : true,
+			options : sizes,
 			isStyle : true
+		});
+		attrs.push({
+			name : 'plain',
+			text : '朴素',
+			type : 'switch'
+		});
+		attrs.push({
+			name : 'round',
+			text : '圆角',
+			type : 'switch'
 		});
 		attrs.push({
 			name : 'circle',
 			text : '圆形',
-			type : 'switch',
-			isStyle : true
+			type : 'switch'
 		});
 		attrs.push({
-			name : 'rd',
-			text : '边框圆角',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
+			name : 'icon',
+			text : '图标',
+			type : 'text'
 		});
 		attrs.push({
-			name : 'disabled',
-			text : '禁用',
+			name : 'loading',
+			text : '加载中',
 			type : 'switch'
 		});
 		return attrs;
 	};
 
-	Btn.prototype.getDemos = function() {
+	Button.prototype.getDemos = function() {
 		let demos = [];
 
 		demos.push({
-			attrs : [ {
-				name : 'html',
-				value : '按钮'
-			} ]
+			slot : "默认按钮",
+			attrs : []
 		});
 
-		UI.colors.forEach(color => {
-			if (coos.isNotEmpty(color.value) && color.value != 'white') {
-				demos.push({
-					attrs : [ {
-						name : 'color',
-						value : color.value
-					}, {
-						name : 'html',
-						value : '按钮'
-					} ]
-				});
-			}
-		});
-
-		demos.push({
-			divider : true
-		});
-
-		UI.colors.forEach(color => {
-			if (coos.isNotEmpty(color.value) && color.value != 'white') {
-				demos.push({
-					attrs : [ {
-						name : 'bg',
-						value : color.value
-					}, {
-						name : 'html',
-						value : '按钮'
-					} ]
-				});
-			}
-		});
-
-		demos.push({
-			divider : true
-		});
-
-		UI.sizes.forEach(size => {
+		types.forEach(type => {
 			demos.push({
+				slot : type.text + "按钮",
 				attrs : [ {
-					name : 'size',
-					value : size.value
-				}, {
-					name : 'html',
-					value : '按钮'
+					name : 'type',
+					value : type.value
 				} ]
 			});
 		});
+
+		demos.push({
+			divider : true
+		});
+
+		demos.push({
+			slot : "朴素按钮",
+			attrs : [ {
+				name : "plain",
+				value : true
+			} ]
+		});
+
+		types.forEach(type => {
+			demos.push({
+				slot : type.text + "按钮",
+				attrs : [ {
+					name : 'type',
+					value : type.value
+				}, {
+					name : "plain",
+					value : true
+				} ]
+			});
+		});
+
+		demos.push({
+			divider : true
+		});
+
+		demos.push({
+			slot : "圆角按钮",
+			attrs : [ {
+				name : "round",
+				value : true
+			} ]
+		});
+
+		types.forEach(type => {
+			demos.push({
+				slot : type.text + "按钮",
+				attrs : [ {
+					name : 'type',
+					value : type.value
+				}, {
+					name : "round",
+					value : true
+				} ]
+			});
+		});
+
+
+
+		demos.push({
+			divider : true
+		});
+
+		demos.push({
+			slot : "圆角按钮",
+			attrs : [ {
+				name : "round",
+				value : true
+			}, {
+				name : "icon",
+				value : "el-icon-search"
+			} ]
+		});
+
+		types.forEach(type => {
+			demos.push({
+				attrs : [ {
+					name : 'type',
+					value : type.value
+				}, {
+					name : "circle",
+					value : true
+				}, {
+					name : "icon",
+					value : "el-icon-search"
+				} ]
+			});
+		});
+
+		demos.push({
+			divider : true
+		});
+
+
+		demos.push({
+			slot : "默认按钮",
+			attrs : []
+		});
+
+		sizes.forEach(size => {
+			demos.push({
+				slot : size.text + "按钮",
+				attrs : [ {
+					name : 'size',
+					value : size.value
+				} ]
+			});
+		});
+
 
 		return demos;
 	};
@@ -7400,7 +7423,9 @@ var Editor = function(options) {
 
 	var Link = coos.createClass(Editor.Page.UI.Template);
 
-	Link.prototype.init = function() {};
+	Link.prototype.init = function() {
+		this.isSlot = true;
+	};
 
 	Link.prototype.getName = function() {
 		return 'link';
@@ -7411,7 +7436,7 @@ var Editor = function(options) {
 	};
 
 	Link.prototype.getCode = function() {
-		return `<c-link ></c-link>`;
+		return `<el-link ></el-link>`;
 	};
 
 	Link.prototype.getOption = function() {
@@ -7422,25 +7447,44 @@ var Editor = function(options) {
 	Link.prototype.getAttrs = function() {
 		let attrs = [];
 		attrs.push({
-			name : 'text',
-			text : '文案'
-		});
-		attrs.push({
-			name : 'html',
-			text : '内容',
-			type : "textarea"
-		});
-		attrs.push({
-			name : 'color',
-			text : '颜色',
+			name : 'type',
+			text : '类型',
 			type : 'select',
 			custom : true,
-			options : UI.colors,
+			options : types,
 			isStyle : true
 		});
 		attrs.push({
-			name : 'disabled',
-			text : '禁用',
+			name : 'size',
+			text : '尺寸',
+			type : 'select',
+			custom : true,
+			options : sizes,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'plain',
+			text : '朴素',
+			type : 'switch'
+		});
+		attrs.push({
+			name : 'round',
+			text : '圆角',
+			type : 'switch'
+		});
+		attrs.push({
+			name : 'circle',
+			text : '圆形',
+			type : 'switch'
+		});
+		attrs.push({
+			name : 'icon',
+			text : '图标',
+			type : 'text'
+		});
+		attrs.push({
+			name : 'loading',
+			text : '加载中',
 			type : 'switch'
 		});
 		return attrs;
@@ -7450,24 +7494,18 @@ var Editor = function(options) {
 		let demos = [];
 
 		demos.push({
-			attrs : [ {
-				name : 'html',
-				value : '链接'
-			} ]
+			slot : "默认按钮",
+			attrs : []
 		});
 
-		UI.colors.forEach(color => {
-			if (coos.isNotEmpty(color.value) && color.value != 'white') {
-				demos.push({
-					attrs : [ {
-						name : 'color',
-						value : color.value
-					}, {
-						name : 'html',
-						value : '链接'
-					} ]
-				});
-			}
+		types.forEach(type => {
+			demos.push({
+				slot : type.text + "按钮",
+				attrs : [ {
+					name : 'type',
+					value : type.value
+				} ]
+			});
 		});
 
 		return demos;
@@ -7491,68 +7529,243 @@ var Editor = function(options) {
 	FormGroup.prototype.getTemplates = function() {
 		let templates = [];
 
-		templates.push(new Row());
-		templates.push(new Col());
-		templates.push(new Layout());
-		templates.push(new Panel());
+		templates.push(new Form());
+		templates.push(new FormItem());
+		templates.push(new Radio());
+		templates.push(new Checkbox());
+		templates.push(new Input());
+		templates.push(new InputNumber());
+		templates.push(new Select());
+		templates.push(new Switch());
+		templates.push(new Slider());
+		templates.push(new TimeSelect());
+		templates.push(new DatePicker());
+		templates.push(new Rate());
+		templates.push(new ColorPicker());
 
 		return templates;
 	};
 
-	var Layout = coos.createClass(Editor.Page.UI.Template);
-
-	Layout.prototype.init = function() {
+	var Form = coos.createClass(Editor.Page.UI.Template);
+	Form.prototype.init = function() {
+		this.isSlot = true;
 		this.isBlock = true;
-		this.hasSlot = true;
 	};
-
-	Layout.prototype.getName = function() {
-		return 'layout';
+	Form.prototype.getName = function() {
+		return 'form';
 	};
-
-	Layout.prototype.getTitle = function() {
-		return '布局';
+	Form.prototype.getTitle = function() {
+		return '表单';
 	};
-
-	Layout.prototype.getCode = function() {
-		return `<c-layout ></c-layout>`;
+	Form.prototype.getCode = function() {
+		return `<el-form ></el-form>`;
 	};
-
-	Layout.prototype.getOption = function() {
+	Form.prototype.getOption = function() {
 		let option = {};
 		return option;
 	};
+	Form.prototype.getNavs = function() {
+		let navs = [];
 
-	Layout.prototype.getAttrs = function() {
+		let list = [];
+		list.push(new Radio());
+		list.push(new Checkbox());
+		list.push(new Input());
+		list.push(new InputNumber());
+		list.push(new Select());
+		list.push(new Switch());
+		list.push(new Slider());
+		list.push(new TimeSelect());
+		list.push(new DatePicker());
+		list.push(new Rate());
+		list.push(new ColorPicker());
+
+		list.forEach((one) => {
+			navs.push({
+				text : "添加" + one.title,
+				onClick (designer, layout) {
+					designer.recordHistory();
+					layout.layouts = layout.layouts || [];
+
+					let inputLayout = {
+						key : "element-ui-" + one.name,
+						option : {
+							attrs : []
+						}
+					};
+					if (one.name == 'radio' || one.name == 'checkbox') {
+						inputLayout.option.slot = '选项1';
+						inputLayout.option.attrs.push({
+							name : 'label',
+							value : '值1'
+						});
+					}
+					layout.layouts.push({
+						key : "element-ui-form-item",
+						option : {
+							attrs : [ {
+								name : "label",
+								value : "标签"
+							} ]
+						},
+						layouts : [ inputLayout ]
+					});
+					designer.changeModel();
+				}
+			});
+		});
+		return navs;
+	};
+	Form.prototype.getAttrs = function() {
 		let attrs = [];
 		attrs.push({
-			name : 'bdcolor',
-			text : '边框配色',
-			type : 'select',
-			custom : true,
-			options : UI.colors,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'pd',
-			text : '内边距',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'rd',
-			text : '边框圆角',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
+			name : 'label-width',
+			text : '标签宽度'
 		});
 		return attrs;
 	};
+	Form.prototype.getDemos = function() {
+		let demos = [];
+		demos.push({});
+		return demos;
+	};
 
-	Layout.prototype.getDemos = function() {
+	var FormItem = coos.createClass(Editor.Page.UI.Template);
+	FormItem.prototype.init = function() {
+		this.isSlot = true;
+		this.isBlock = true;
+	};
+	FormItem.prototype.getName = function() {
+		return 'form-item';
+	};
+	FormItem.prototype.getTitle = function() {
+		return '表单元素';
+	};
+	FormItem.prototype.getCode = function() {
+		return `<el-form-item ></el-form-item>`;
+	};
+	FormItem.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+	FormItem.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'label',
+			text : '标签'
+		});
+		attrs.push({
+			name : 'label-width',
+			text : '标签宽度'
+		});
+		return attrs;
+	};
+	FormItem.prototype.getDemos = function() {
+		let demos = [];
+		return demos;
+	};
+
+	var Radio = coos.createClass(Editor.Page.UI.Template);
+	Radio.prototype.init = function() {
+		this.isSlot = true;
+	};
+	Radio.prototype.getName = function() {
+		return 'radio';
+	};
+	Radio.prototype.getTitle = function() {
+		return '单选框';
+	};
+	Radio.prototype.getCode = function() {
+		return `<el-radio ></el-radio>`;
+	};
+	Radio.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+	Radio.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'label',
+			text : '值'
+		});
+		return attrs;
+	};
+	Radio.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			slot : '选项1',
+			attrs : [ {
+				name : 'label',
+				value : '值1'
+			} ]
+		});
+
+		return demos;
+	};
+
+
+	var Checkbox = coos.createClass(Editor.Page.UI.Template);
+	Checkbox.prototype.init = function() {
+		this.isSlot = true;
+	};
+	Checkbox.prototype.getName = function() {
+		return 'checkbox';
+	};
+	Checkbox.prototype.getTitle = function() {
+		return '复选框';
+	};
+	Checkbox.prototype.getCode = function() {
+		return `<el-checkbox ></el-checkbox>`;
+	};
+	Checkbox.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+	Checkbox.prototype.getAttrs = function() {
+		let attrs = [];
+		attrs.push({
+			name : 'label',
+			text : '值'
+		});
+		return attrs;
+	};
+	Checkbox.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			slot : '选项1',
+			attrs : [ {
+				name : 'label',
+				value : '值1'
+			} ]
+		});
+
+		return demos;
+	};
+
+	var Input = coos.createClass(Editor.Page.UI.Template);
+	Input.prototype.init = function() {
+		this.isSlot = true;
+	};
+	Input.prototype.getName = function() {
+		return 'input';
+	};
+	Input.prototype.getTitle = function() {
+		return '输入框';
+	};
+	Input.prototype.getCode = function() {
+		return `<el-input ></el-input>`;
+	};
+	Input.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+	Input.prototype.getAttrs = function() {
+		let attrs = [];
+		return attrs;
+	};
+	Input.prototype.getDemos = function() {
 		let demos = [];
 
 		demos.push({
@@ -7563,212 +7776,251 @@ var Editor = function(options) {
 	};
 
 
-
-	var Row = coos.createClass(Editor.Page.UI.Template);
-
-	Row.prototype.init = function() {
-		this.isBlock = true;
-		this.hasSlot = true;
+	var InputNumber = coos.createClass(Editor.Page.UI.Template);
+	InputNumber.prototype.init = function() {
+		this.isSlot = true;
 	};
-
-	Row.prototype.getName = function() {
-		return 'row';
+	InputNumber.prototype.getName = function() {
+		return 'input-number';
 	};
-
-	Row.prototype.getTitle = function() {
-		return '行';
+	InputNumber.prototype.getTitle = function() {
+		return '计数器';
 	};
-
-	Row.prototype.getCode = function() {
-		return `<c-row ></c-row>`;
+	InputNumber.prototype.getCode = function() {
+		return `<el-input-number ></el-input-number>`;
 	};
-
-	Row.prototype.getOption = function() {
+	InputNumber.prototype.getOption = function() {
 		let option = {};
 		return option;
 	};
-
-	Row.prototype.getAttrs = function() {
+	InputNumber.prototype.getAttrs = function() {
 		let attrs = [];
-		attrs.push({
-			name : 'bdcolor',
-			text : '边框配色',
-			type : 'select',
-			custom : true,
-			options : UI.colors,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'pd',
-			text : '内边距',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'rd',
-			text : '边框圆角',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
-		});
 		return attrs;
 	};
-
-	Row.prototype.getDemos = function() {
+	InputNumber.prototype.getDemos = function() {
 		let demos = [];
 
 		demos.push({
-			attr : {}
+			attrs : []
+		});
+
+		return demos;
+	};
+
+	var Select = coos.createClass(Editor.Page.UI.Template);
+	Select.prototype.init = function() {
+		this.isSlot = true;
+	};
+	Select.prototype.getName = function() {
+		return 'select';
+	};
+	Select.prototype.getTitle = function() {
+		return '选择器';
+	};
+	Select.prototype.getCode = function() {
+		return `<el-select ></el-select>`;
+	};
+	Select.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+	Select.prototype.getAttrs = function() {
+		let attrs = [];
+		return attrs;
+	};
+	Select.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : []
 		});
 
 		return demos;
 	};
 
 
-
-	var Col = coos.createClass(Editor.Page.UI.Template);
-
-	Col.prototype.init = function() {
-		this.isBlock = true;
-		this.hasSlot = true;
+	var Switch = coos.createClass(Editor.Page.UI.Template);
+	Switch.prototype.init = function() {
+		this.isSlot = true;
 	};
-
-	Col.prototype.getName = function() {
-		return 'col';
+	Switch.prototype.getName = function() {
+		return 'switch';
 	};
-
-	Col.prototype.getTitle = function() {
-		return '列';
+	Switch.prototype.getTitle = function() {
+		return '开关';
 	};
-
-	Col.prototype.getCode = function() {
-		return `<c-col ></c-col>`;
+	Switch.prototype.getCode = function() {
+		return `<el-switch ></el-switch>`;
 	};
-
-	Col.prototype.getOption = function() {
+	Switch.prototype.getOption = function() {
 		let option = {};
 		return option;
 	};
-
-	Col.prototype.getAttrs = function() {
+	Switch.prototype.getAttrs = function() {
 		let attrs = [];
-		attrs.push({
-			name : 'col',
-			text : '列',
-			type : 'select',
-			options : UI.cols
-		});
-		attrs.push({
-			name : 'bdcolor',
-			text : '边框配色',
-			type : 'select',
-			custom : true,
-			options : UI.colors,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'pd',
-			text : '内边距',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'rd',
-			text : '边框圆角',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
-		});
 		return attrs;
 	};
-
-	Col.prototype.getDemos = function() {
+	Switch.prototype.getDemos = function() {
 		let demos = [];
 
 		demos.push({
-			attrs : [ {
-				name : 'col',
-				value : 6
-			} ]
-		});
-
-		demos.push({
-			attrs : [ {
-				name : 'col',
-				value : 12
-			} ]
+			attrs : []
 		});
 
 		return demos;
 	};
 
-
-
-
-	var Panel = coos.createClass(Editor.Page.UI.Template);
-
-	Panel.prototype.init = function() {
+	var Slider = coos.createClass(Editor.Page.UI.Template);
+	Slider.prototype.init = function() {
+		this.isSlot = true;
 		this.isBlock = true;
-		this.hasSlot = true;
 	};
-
-	Panel.prototype.getName = function() {
-		return 'panel';
+	Slider.prototype.getName = function() {
+		return 'slider';
 	};
-
-	Panel.prototype.getTitle = function() {
-		return '面板';
+	Slider.prototype.getTitle = function() {
+		return '滑块';
 	};
-
-	Panel.prototype.getCode = function() {
-		return `<c-panel ></c-panel>`;
+	Slider.prototype.getCode = function() {
+		return `<el-slider ></el-slider>`;
 	};
-
-	Panel.prototype.getOption = function() {
+	Slider.prototype.getOption = function() {
 		let option = {};
 		return option;
 	};
-
-	Panel.prototype.getAttrs = function() {
+	Slider.prototype.getAttrs = function() {
 		let attrs = [];
-		attrs.push({
-			name : 'title',
-			text : '标题',
-			type : 'textarea'
-		});
-		attrs.push({
-			name : 'bdcolor',
-			text : '边框配色',
-			type : 'select',
-			custom : true,
-			options : UI.colors,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'rd',
-			text : '边框圆角',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
-		});
 		return attrs;
 	};
-
-	Panel.prototype.getDemos = function() {
+	Slider.prototype.getDemos = function() {
 		let demos = [];
 
 		demos.push({
-			attrs : [ {
-				name : 'title',
-				value : '标题'
-			} ]
+			attrs : []
+		});
+
+		return demos;
+	};
+
+	var TimeSelect = coos.createClass(Editor.Page.UI.Template);
+	TimeSelect.prototype.init = function() {
+		this.isSlot = true;
+	};
+	TimeSelect.prototype.getName = function() {
+		return 'time-select';
+	};
+	TimeSelect.prototype.getTitle = function() {
+		return '时间选择器';
+	};
+	TimeSelect.prototype.getCode = function() {
+		return `<el-time-select ></el-time-select>`;
+	};
+	TimeSelect.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+	TimeSelect.prototype.getAttrs = function() {
+		let attrs = [];
+		return attrs;
+	};
+	TimeSelect.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : []
+		});
+
+		return demos;
+	};
+
+	var DatePicker = coos.createClass(Editor.Page.UI.Template);
+	DatePicker.prototype.init = function() {
+		this.isSlot = true;
+	};
+	DatePicker.prototype.getName = function() {
+		return 'date-picker';
+	};
+	DatePicker.prototype.getTitle = function() {
+		return '日期选择器';
+	};
+	DatePicker.prototype.getCode = function() {
+		return `<el-date-picker ></el-date-picker>`;
+	};
+	DatePicker.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+	DatePicker.prototype.getAttrs = function() {
+		let attrs = [];
+		return attrs;
+	};
+	DatePicker.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : []
+		});
+
+		return demos;
+	};
+
+	var Rate = coos.createClass(Editor.Page.UI.Template);
+	Rate.prototype.init = function() {
+		this.isSlot = true;
+	};
+	Rate.prototype.getName = function() {
+		return 'rate';
+	};
+	Rate.prototype.getTitle = function() {
+		return '评分';
+	};
+	Rate.prototype.getCode = function() {
+		return `<el-rate ></rate>`;
+	};
+	Rate.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+	Rate.prototype.getAttrs = function() {
+		let attrs = [];
+		return attrs;
+	};
+	Rate.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : []
+		});
+
+		return demos;
+	};
+
+	var ColorPicker = coos.createClass(Editor.Page.UI.Template);
+	ColorPicker.prototype.init = function() {
+		this.isSlot = true;
+	};
+	ColorPicker.prototype.getName = function() {
+		return 'color-picker';
+	};
+	ColorPicker.prototype.getTitle = function() {
+		return '颜色选择器';
+	};
+	ColorPicker.prototype.getCode = function() {
+		return `<el-color-picker ></color-picker>`;
+	};
+	ColorPicker.prototype.getOption = function() {
+		let option = {};
+		return option;
+	};
+	ColorPicker.prototype.getAttrs = function() {
+		let attrs = [];
+		return attrs;
+	};
+	ColorPicker.prototype.getDemos = function() {
+		let demos = [];
+
+		demos.push({
+			attrs : []
 		});
 
 		return demos;

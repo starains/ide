@@ -4,12 +4,12 @@
 
 .page-design-ui-box .el-tabs__header .el-tabs__nav-next,
 	.page-design-ui-box .el-tabs__header .el-tabs__nav-prev {
-	height: 25px;
-	line-height: 25px;
+	height: 35px;
+	line-height: 35px;
 }
 
 .page-design-ui-box .el-tabs__header .el-tabs__nav {
-	height: 25px;
+	height: 35px;
 }
 
 .page-design-ui-box .el-tabs__header .el-tabs__nav-scroll {
@@ -21,11 +21,11 @@
 }
 
 .page-design-ui-box .el-tabs__header .el-tabs__item {
-	font-size: 12px;
+	font-size: 15px;
 	padding-left: 10px !important;
 	padding-right: 10px !important;
-	height: 25px;
-	line-height: 25px;
+	height: 35px;
+	line-height: 35px;
 }
 
 .page-design-ui-box .el-tabs__header .el-tabs__item.is-active,
@@ -36,7 +36,7 @@
 .page-design-ui-box .el-tabs__content {
 	position: absolute;
 	bottom: 5px;
-	top: 30px;
+	top: 40px;
 	left: 5px;
 	right: 5px;
 	outline: 1px solid #ddd;
@@ -57,8 +57,7 @@
 }
 
 .page-design-ui-box .el-collapse-item__header {
-	color: #ffffff;
-	background: #ff9b00ed;
+	background: #e0e0e0ed;
 	height: 30px;
 	line-height: 30px;
 	border-bottom: 1px solid #fff;

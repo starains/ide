@@ -10,11 +10,21 @@
 
 		return list;
 	};
+
 	PageEditor.prototype.formatTemplateView = function($view, template, option) {
 		if ($view == null || template == null || option == null) {
 			return;
 		}
+		let layout = null;
+		if (coos.isNotEmpty(option.id)) {
+			layout = option;
+			option = layout.option || {};
+		}
+
 		$view = $($view);
+		if (template.navs) {
+			$view.addClass('page-design-layout-has-nav');
+		}
 		if (option.attrs) {
 			option.attrs.forEach(attr => {
 				if (attr) {

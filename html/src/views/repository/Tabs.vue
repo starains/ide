@@ -106,7 +106,7 @@ export default {
     let that = this;
     $(document).on(
       "contextmenu",
-      ".repository-file-tabs > .el-tabs .el-tabs__item",
+      ".repository-tabs > .el-tabs__header .el-tabs__item",
       function(e) {
         let $item = $(e.target).closest(".el-tabs__item");
         let $span = $item.find("span:first");
@@ -116,7 +116,7 @@ export default {
 
     $(document).on(
       "mouseup",
-      ".repository-file-tabs > .el-tabs .el-tabs__item",
+      ".repository-tabs > .el-tabs__header .el-tabs__item",
       function(e) {
         if (e.button == 1) {
           let $item = $(e.target).closest(".el-tabs__item");

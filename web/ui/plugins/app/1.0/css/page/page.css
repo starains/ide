@@ -78,3 +78,49 @@
 	border-radius: 3px;
 	border-top-left-radius: 0px;
 }
+
+.ui-template-demo .el-form, .page-design-view-box .el-form {
+	padding-top: 30px;
+	position: relative;
+}
+
+.ui-template-demo .el-form:before, .page-design-view-box .el-form:before
+	{
+	content: "表单";
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: #ababab;
+	color: #ffffff;
+	font-size: 12px;
+	line-height: 25px;
+	padding: 0px 10px;
+	border-radius: 3px;
+	border-top-left-radius: 0px;
+}
+
+/* .ui-template-demo .el-form-item, .page-design-view-box .el-form-item {
+	padding-top: 30px;
+	position: relative;
+}
+
+.ui-template-demo .el-form-item:before, .page-design-view-box .el-form-item:before
+	{
+	content: "表单项";
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: #ababab;
+	color: #ffffff;
+	font-size: 12px;
+	line-height: 25px;
+	padding: 0px 10px;
+	border-radius: 3px;
+	border-top-left-radius: 0px;
+} */
+
+.page-design-layout-nav {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}

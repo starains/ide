@@ -2,6 +2,7 @@
 	var PageEditor = Editor.Page;
 
 	PageEditor.prototype.buildPageView = function($box) {
+		let that = this;
 		this.layout_id_name = 'layout-id';
 		this.layout_map = {};
 		let root = this.getLayoutRoot();
@@ -14,10 +15,12 @@
 		new Vue({
 			el : $view[0],
 			data : data,
-			mounted () {}
+			mounted () {
+				that.$pageBox = $box;
+				that.bindPageLayoutNav($box);
+				that.bindPageEvent($box);
+			}
 		});
-		this.$pageBox = $box;
-		this.bindPageEvent($box);
 	};
 
 	PageEditor.prototype.appendLayoutView = function($parent, layout, data) {
@@ -41,7 +44,7 @@
 		}
 
 		$parent.append($view);
-		this.formatTemplateView($view, template, layout.option);
+		this.formatTemplateView($view, template, layout);
 
 		if (layout.layouts) {
 			layout.layouts.forEach(one => {
@@ -51,6 +54,43 @@
 		return $view;
 	};
 
+	PageEditor.prototype.bindPageLayoutNav = function($box) {
+		let that = this;
+		$box.find('.page-design-layout-has-nav').each((index, el) => {
+			let $el = $(el);
+			if ($el.attr(this.layout_id_name) == null) {
+				return;
+			}
+			let layout = this.getLayoutFromEl($el);
+			let template = this.getTemplateFromLayout(layout);
+
+			let $nav = $(`
+			<el-dropdown class="page-design-layout-nav" @command="clickNav">
+			      <span class="el-dropdown-link coos-pointer">
+			        <i class="el-icon-arrow-down el-icon--right"></i>
+			      </span>
+			      <el-dropdown-menu slot="dropdown">
+			        <el-dropdown-item v-for="nav in navs" :command="nav">{{nav.text}}</el-dropdown-item>
+			      </el-dropdown-menu>
+			    </el-dropdown>
+			`);
+			let vue = new Vue({
+				el : $nav[0],
+				data : {
+					navs : template.navs
+				},
+				methods : {
+					clickNav (nav) {
+						if (nav.onClick) {
+							nav.onClick(that, layout);
+						}
+					}
+				}
+			});
+			$el.append(vue.$el);
+		});
+
+	};
 	PageEditor.prototype.bindPageEvent = function($box) {
 		let that = this;
 
@@ -106,7 +146,7 @@
 			return;
 		}
 
-		let $layout = $(el).closest('[layout-id]');
+		let $layout = $(el).closest('[' + this.layout_id_name + ']');
 		this.$pageBox.find('.page-design-layout-selected').removeClass('page-design-layout-selected');
 		$layout.addClass('page-design-layout-selected');
 

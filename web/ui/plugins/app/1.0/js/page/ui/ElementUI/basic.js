@@ -15,260 +15,230 @@
 	BasicGroup.prototype.getTemplates = function() {
 		let templates = [];
 
-		templates.push(new Header());
-		templates.push(new Body());
-		templates.push(new Btn());
+		templates.push(new Button());
 		templates.push(new Link());
 
 		return templates;
 	};
 
-	var Header = coos.createClass(Editor.Page.UI.Template);
 
-	Header.prototype.init = function() {
-		this.isBlock = true;
-		this.hasSlot = true;
+	var Button = coos.createClass(Editor.Page.UI.Template);
+
+	Button.prototype.init = function() {
+		this.isSlot = true;
 	};
 
-	Header.prototype.getName = function() {
-		return 'header';
+	Button.prototype.getName = function() {
+		return 'button';
 	};
 
-	Header.prototype.getTitle = function() {
-		return '头部';
-	};
-
-	Header.prototype.getCode = function() {
-		return `<c-header ></c-header>`;
-	};
-
-	Header.prototype.getOption = function() {
-		let option = {};
-		return option;
-	};
-
-	Header.prototype.getAttrs = function() {
-		let attrs = [];
-		attrs.push({
-			name : 'title',
-			text : '标题',
-			type : 'textarea'
-		});
-		attrs.push({
-			name : 'bdcolor',
-			text : '边框配色',
-			type : 'select',
-			custom : true,
-			options : UI.colors,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'pd',
-			text : '内边距',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
-		});
-		return attrs;
-	};
-
-	Header.prototype.getDemos = function() {
-		let demos = [];
-
-		demos.push({
-			attrs : [ {
-				name : 'title',
-				value : '标题'
-			} ]
-		});
-
-		return demos;
-	};
-
-	var Body = coos.createClass(Editor.Page.UI.Template);
-
-	Body.prototype.init = function() {
-		this.isBlock = true;
-		this.hasSlot = true;
-	};
-
-	Body.prototype.getName = function() {
-		return 'body';
-	};
-
-	Body.prototype.getTitle = function() {
-		return '体部';
-	};
-
-	Body.prototype.getCode = function() {
-		return `<c-body ></c-body>`;
-	};
-
-	Body.prototype.getOption = function() {
-		let option = {};
-		return option;
-	};
-
-	Body.prototype.getAttrs = function() {
-		let attrs = [];
-		attrs.push({
-			name : 'pd',
-			text : '内边距',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
-		});
-		return attrs;
-	};
-
-	Body.prototype.getDemos = function() {
-		let demos = [];
-
-		demos.push({
-			attrs : []
-		});
-
-		return demos;
-	};
-
-
-
-	var Btn = coos.createClass(Editor.Page.UI.Template);
-
-	Btn.prototype.init = function() {};
-
-	Btn.prototype.getName = function() {
-		return 'btn';
-	};
-
-	Btn.prototype.getTitle = function() {
+	Button.prototype.getTitle = function() {
 		return '按钮';
 	};
 
-	Btn.prototype.getCode = function() {
-		return `<c-btn ></c-btn>`;
+	Button.prototype.getCode = function() {
+		return `<el-button ></el-button>`;
 	};
 
-	Btn.prototype.getOption = function() {
+	Button.prototype.getOption = function() {
 		let option = {};
 		return option;
 	};
-
-	Btn.prototype.getAttrs = function() {
+	let types = [ {
+		text : '文字',
+		value : 'text'
+	}, {
+		text : '主要',
+		value : 'primary'
+	}, {
+		text : '成功',
+		value : 'success'
+	}, {
+		text : '信息',
+		value : 'info'
+	}, {
+		text : '警告',
+		value : 'warning'
+	}, {
+		text : '危险',
+		value : 'danger'
+	} ];
+	let sizes = [ {
+		text : '中等',
+		value : 'medium'
+	}, {
+		text : '小型',
+		value : 'small'
+	}, {
+		text : '超小',
+		value : 'mini'
+	} ];
+	Button.prototype.getAttrs = function() {
 		let attrs = [];
 		attrs.push({
-			name : 'text',
-			text : '文案'
-		});
-		attrs.push({
-			name : 'html',
-			text : '内容',
-			type : "textarea"
-		});
-		attrs.push({
-			name : 'color',
-			text : '颜色',
+			name : 'type',
+			text : '类型',
 			type : 'select',
 			custom : true,
-			options : UI.colors,
-			isStyle : true
-		});
-		attrs.push({
-			name : 'bg',
-			text : '背景色',
-			type : 'select',
-			custom : true,
-			options : UI.bgs,
+			options : types,
 			isStyle : true
 		});
 		attrs.push({
 			name : 'size',
 			text : '尺寸',
 			type : 'select',
-			options : UI.sizes,
+			custom : true,
+			options : sizes,
 			isStyle : true
+		});
+		attrs.push({
+			name : 'plain',
+			text : '朴素',
+			type : 'switch'
+		});
+		attrs.push({
+			name : 'round',
+			text : '圆角',
+			type : 'switch'
 		});
 		attrs.push({
 			name : 'circle',
 			text : '圆形',
-			type : 'switch',
-			isStyle : true
+			type : 'switch'
 		});
 		attrs.push({
-			name : 'rd',
-			text : '边框圆角',
-			type : 'select',
-			custom : true,
-			options : UI.distances,
-			isStyle : true
+			name : 'icon',
+			text : '图标',
+			type : 'text'
 		});
 		attrs.push({
-			name : 'disabled',
-			text : '禁用',
+			name : 'loading',
+			text : '加载中',
 			type : 'switch'
 		});
 		return attrs;
 	};
 
-	Btn.prototype.getDemos = function() {
+	Button.prototype.getDemos = function() {
 		let demos = [];
 
 		demos.push({
-			attrs : [ {
-				name : 'html',
-				value : '按钮'
-			} ]
+			slot : "默认按钮",
+			attrs : []
 		});
 
-		UI.colors.forEach(color => {
-			if (coos.isNotEmpty(color.value) && color.value != 'white') {
-				demos.push({
-					attrs : [ {
-						name : 'color',
-						value : color.value
-					}, {
-						name : 'html',
-						value : '按钮'
-					} ]
-				});
-			}
-		});
-
-		demos.push({
-			divider : true
-		});
-
-		UI.colors.forEach(color => {
-			if (coos.isNotEmpty(color.value) && color.value != 'white') {
-				demos.push({
-					attrs : [ {
-						name : 'bg',
-						value : color.value
-					}, {
-						name : 'html',
-						value : '按钮'
-					} ]
-				});
-			}
-		});
-
-		demos.push({
-			divider : true
-		});
-
-		UI.sizes.forEach(size => {
+		types.forEach(type => {
 			demos.push({
+				slot : type.text + "按钮",
 				attrs : [ {
-					name : 'size',
-					value : size.value
-				}, {
-					name : 'html',
-					value : '按钮'
+					name : 'type',
+					value : type.value
 				} ]
 			});
 		});
+
+		demos.push({
+			divider : true
+		});
+
+		demos.push({
+			slot : "朴素按钮",
+			attrs : [ {
+				name : "plain",
+				value : true
+			} ]
+		});
+
+		types.forEach(type => {
+			demos.push({
+				slot : type.text + "按钮",
+				attrs : [ {
+					name : 'type',
+					value : type.value
+				}, {
+					name : "plain",
+					value : true
+				} ]
+			});
+		});
+
+		demos.push({
+			divider : true
+		});
+
+		demos.push({
+			slot : "圆角按钮",
+			attrs : [ {
+				name : "round",
+				value : true
+			} ]
+		});
+
+		types.forEach(type => {
+			demos.push({
+				slot : type.text + "按钮",
+				attrs : [ {
+					name : 'type',
+					value : type.value
+				}, {
+					name : "round",
+					value : true
+				} ]
+			});
+		});
+
+
+
+		demos.push({
+			divider : true
+		});
+
+		demos.push({
+			slot : "圆角按钮",
+			attrs : [ {
+				name : "round",
+				value : true
+			}, {
+				name : "icon",
+				value : "el-icon-search"
+			} ]
+		});
+
+		types.forEach(type => {
+			demos.push({
+				attrs : [ {
+					name : 'type',
+					value : type.value
+				}, {
+					name : "circle",
+					value : true
+				}, {
+					name : "icon",
+					value : "el-icon-search"
+				} ]
+			});
+		});
+
+		demos.push({
+			divider : true
+		});
+
+
+		demos.push({
+			slot : "默认按钮",
+			attrs : []
+		});
+
+		sizes.forEach(size => {
+			demos.push({
+				slot : size.text + "按钮",
+				attrs : [ {
+					name : 'size',
+					value : size.value
+				} ]
+			});
+		});
+
 
 		return demos;
 	};
@@ -276,7 +246,9 @@
 
 	var Link = coos.createClass(Editor.Page.UI.Template);
 
-	Link.prototype.init = function() {};
+	Link.prototype.init = function() {
+		this.isSlot = true;
+	};
 
 	Link.prototype.getName = function() {
 		return 'link';
@@ -287,7 +259,7 @@
 	};
 
 	Link.prototype.getCode = function() {
-		return `<c-link ></c-link>`;
+		return `<el-link ></el-link>`;
 	};
 
 	Link.prototype.getOption = function() {
@@ -298,25 +270,44 @@
 	Link.prototype.getAttrs = function() {
 		let attrs = [];
 		attrs.push({
-			name : 'text',
-			text : '文案'
-		});
-		attrs.push({
-			name : 'html',
-			text : '内容',
-			type : "textarea"
-		});
-		attrs.push({
-			name : 'color',
-			text : '颜色',
+			name : 'type',
+			text : '类型',
 			type : 'select',
 			custom : true,
-			options : UI.colors,
+			options : types,
 			isStyle : true
 		});
 		attrs.push({
-			name : 'disabled',
-			text : '禁用',
+			name : 'size',
+			text : '尺寸',
+			type : 'select',
+			custom : true,
+			options : sizes,
+			isStyle : true
+		});
+		attrs.push({
+			name : 'plain',
+			text : '朴素',
+			type : 'switch'
+		});
+		attrs.push({
+			name : 'round',
+			text : '圆角',
+			type : 'switch'
+		});
+		attrs.push({
+			name : 'circle',
+			text : '圆形',
+			type : 'switch'
+		});
+		attrs.push({
+			name : 'icon',
+			text : '图标',
+			type : 'text'
+		});
+		attrs.push({
+			name : 'loading',
+			text : '加载中',
 			type : 'switch'
 		});
 		return attrs;
@@ -326,24 +317,18 @@
 		let demos = [];
 
 		demos.push({
-			attrs : [ {
-				name : 'html',
-				value : '链接'
-			} ]
+			slot : "默认按钮",
+			attrs : []
 		});
 
-		UI.colors.forEach(color => {
-			if (coos.isNotEmpty(color.value) && color.value != 'white') {
-				demos.push({
-					attrs : [ {
-						name : 'color',
-						value : color.value
-					}, {
-						name : 'html',
-						value : '链接'
-					} ]
-				});
-			}
+		types.forEach(type => {
+			demos.push({
+				slot : type.text + "按钮",
+				attrs : [ {
+					name : 'type',
+					value : type.value
+				} ]
+			});
 		});
 
 		return demos;

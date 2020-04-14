@@ -82,6 +82,9 @@
 		this.option = this.getOption();
 		this.demos = this.getDemos();
 		this.attrs = this.getAttrs();
+		if (this.getNavs) {
+			this.navs = this.getNavs();
+		}
 		this.init();
 	};
 
