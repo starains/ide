@@ -18,7 +18,6 @@ import com.teamide.ide.controller.handler.DownloadHandler;
 import com.teamide.ide.controller.handler.PluginEventHandler;
 import com.teamide.ide.controller.handler.PluginResourcesHandler;
 import com.teamide.ide.controller.handler.ResourcesHandler;
-import com.teamide.ide.controller.handler.ResourcesMergeHandler;
 import com.teamide.ide.controller.handler.UploadHandler;
 import com.teamide.ide.controller.handler.ListenHandler;
 import com.teamide.ide.controller.handler.WorkspaceHandler;
@@ -35,8 +34,6 @@ public class RootController extends HttpServlet {
 	private static final long serialVersionUID = 4357127201255115763L;
 
 	ResourcesHandler resourcesHandler = new ResourcesHandler();
-
-	ResourcesMergeHandler resourcesMergeHandler = new ResourcesMergeHandler();
 
 	DataHandler dataHandler = new DataHandler();
 
@@ -88,11 +85,7 @@ public class RootController extends HttpServlet {
 					|| path.endsWith(".css")
 
 					|| path.endsWith(".html")) {
-				if (path.startsWith("/resources/coos/merge/")) {
-					resourcesMergeHandler.handle(path, request, response);
-				} else {
-					resourcesHandler.handle(path, request, response);
-				}
+				resourcesHandler.handle(path, request, response);
 			} else if (path.startsWith("/api/data/")) {
 				dataHandler.handle(path, request, response);
 			} else if (path.startsWith("/api/listen")) {
