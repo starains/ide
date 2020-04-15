@@ -26,7 +26,7 @@ public class JavaInternalTomcatInstall extends JavaInstall {
 	@Override
 	public File getServer() throws Exception {
 
-		File tomcat_folder = new File(IDEConstant.PLUGINS_SERVER_FOLDER, param.option.getInternaltomcat());
+		File tomcat_folder = new File(IDEConstant.PLUGINS_TOMCAT_FOLDER, param.option.getInternaltomcat());
 		if (!tomcat_folder.exists()) {
 			throw new Exception(param.option.getInternaltomcat() + " is not defind");
 		}

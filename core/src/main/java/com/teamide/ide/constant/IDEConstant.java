@@ -14,19 +14,13 @@ public class IDEConstant {
 
 	public static final String PLUGINS_FOLDER = HOME + "plugins/";
 
-	public static final String PLUGINS_SERVER_FOLDER = PLUGINS_FOLDER + "server/";
-
-	public static final String PLUGIN_DEPLOYER_FOLDER = PLUGINS_FOLDER + "deployer/";
-
-	public static final String PLUGIN_STARTER_JAR = PLUGINS_FOLDER + "starter/starter.jar";
+	public static final String PLUGINS_TOMCAT_FOLDER = PLUGINS_FOLDER + "tomcat/";
 
 	public static final String WORKSPACES_FOLDER = HOME + "workspaces/";
 
 	public static final String WORKSPACES_TOMCAT_FOLDER = WORKSPACES_FOLDER + "tomcat/";
 
 	public static final String WORKSPACES_STARTER_FOLDER = WORKSPACES_FOLDER + "starter/";
-
-	public static final String WORKSPACES_DEPLOYER_FOLDER = WORKSPACES_FOLDER + "deployer/";
 
 	public static final String WORKSPACES_TEMP_FOLDER = WORKSPACES_FOLDER + "temp/";
 
