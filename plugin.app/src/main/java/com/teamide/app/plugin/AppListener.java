@@ -226,7 +226,7 @@ public class AppListener implements IDEListener {
 					ResponseUtil.outCSS(response, content);
 				}
 			} else {
-				InputStream stream = ResourceUtil.load(name);
+				InputStream stream = ResourceUtil.load(this.getClass().getClassLoader(), name);
 				if (stream != null) {
 					try {
 						byte[] bytes = IOUtil.read(stream);
