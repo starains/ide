@@ -1,4 +1,4 @@
-package com.teamide.ide.controller.handler;
+package com.teamide.app.plugin;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,16 +14,16 @@ import com.teamide.util.StringUtil;
 @Resource
 public class ResourcePluginMergeService {
 
-	private static String SRC_PATH = "ui/plugins/";
+	private static String SRC_PATH = "/TeamIDE/code/designer/src/";
 
-	public StringBuffer getJS(String name, String version) {
+	public StringBuffer getJS() {
 
-		return getJSContent(name + "/" + version + "/js");
+		return getJSContent("js");
 	}
 
-	public StringBuffer getCSS(String name, String version) {
+	public StringBuffer getCSS() {
 
-		return getCSSContent(name + "/" + version + "/css");
+		return getCSSContent("css");
 	}
 
 	public StringBuffer getCSSContent(String folder) {

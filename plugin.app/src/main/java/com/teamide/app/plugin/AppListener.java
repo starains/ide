@@ -1,6 +1,8 @@
 package com.teamide.app.plugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,9 @@ import com.teamide.db.bean.Table;
 import com.teamide.ide.plugin.IDEListener;
 import com.teamide.ide.plugin.PluginParam;
 import com.teamide.param.DataParam;
+import com.teamide.util.IOUtil;
 import com.teamide.util.RequestUtil;
+import com.teamide.util.ResourceUtil;
 import com.teamide.util.ResponseUtil;
 import com.teamide.util.StringUtil;
 
@@ -206,5 +210,34 @@ public class AppListener implements IDEListener {
 	@Override
 	public Object onLoadEvent(PluginParam param, String event, JSONObject data) {
 		return null;
+	}
+
+	@Override
+	public void onResources(String name, HttpServletRequest request, HttpServletResponse response) {
+		if (StringUtil.isNotEmpty(name)) {
+
+			String isDev = request.getParameter("isDev");
+			if (StringUtil.isNotEmpty(isDev) && isDev.equals("true")) {
+				if (name.endsWith(".js")) {
+					String content = new ResourcePluginMergeService().getJS().toString();
+					ResponseUtil.outJS(response, content);
+				} else if (name.endsWith(".css")) {
+					String content = new ResourcePluginMergeService().getCSS().toString();
+					ResponseUtil.outCSS(response, content);
+				}
+			} else {
+				InputStream stream = ResourceUtil.load(name);
+				if (stream != null) {
+					try {
+						byte[] bytes = IOUtil.read(stream);
+						response.getOutputStream().write(bytes);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		}
+
 	}
 }

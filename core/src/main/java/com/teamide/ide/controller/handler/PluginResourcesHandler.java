@@ -1,13 +1,11 @@
 package com.teamide.ide.controller.handler;
 
-import java.io.InputStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.teamide.ide.plugin.IDEListener;
+import com.teamide.ide.plugin.IDEPlugin;
 import com.teamide.ide.plugin.PluginHandler;
-import com.teamide.ide.plugin.PluginLoader;
-import com.teamide.util.IOUtil;
 import com.teamide.util.StringUtil;
 
 public class PluginResourcesHandler {
@@ -38,17 +36,12 @@ public class PluginResourcesHandler {
 			throw new Exception("version is null.");
 		}
 
-		if (StringUtil.isNotEmpty(resourceName)) {
-			PluginLoader loader = PluginHandler.getPluginLoader(name, version);
-			if (loader != null) {
-				InputStream stream = loader.load(resourceName);
-				if (stream != null) {
-					byte[] bytes = IOUtil.read(stream);
-					response.getOutputStream().write(bytes);
-				}
-			}
-		}
+		IDEPlugin plugin = PluginHandler.getPlugin(name, version);
+		if (plugin != null && plugin.getListener() != null) {
+			IDEListener listener = plugin.getListener();
 
+			listener.onResources(resourceName, request, response);
+		}
 	}
 
 }

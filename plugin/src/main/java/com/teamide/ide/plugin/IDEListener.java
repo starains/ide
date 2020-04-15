@@ -7,6 +7,8 @@ import com.alibaba.fastjson.JSONObject;
 
 public interface IDEListener {
 
+	public void onResources(String name, HttpServletRequest request, HttpServletResponse response);
+
 	public void onServletEvent(PluginParam param, String event, HttpServletRequest request,
 			HttpServletResponse response);
 

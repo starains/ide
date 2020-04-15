@@ -19,18 +19,18 @@ import com.teamide.util.StringUtil;
 
 public class ResourcesHandler {
 
-	private static Boolean hasUI;
+	private static Boolean isDev;
 
 	private static final long VERSION = System.currentTimeMillis();
 
 	public void handle(String path, HttpServletRequest request, HttpServletResponse response) {
 
-		if (hasUI == null) {
-			File file = new File("ui/coos.ui.properties");
+		if (isDev == null) {
+			File file = new File("ide.dev.properties");
 			if (file.exists()) {
-				hasUI = true;
+				isDev = true;
 			} else {
-				hasUI = false;
+				isDev = false;
 			}
 		}
 
@@ -116,37 +116,29 @@ public class ResourcesHandler {
 
 			List<IDEPlugin> plugins = PluginHandler.getPlugins();
 
-			if (hasUI) {
-				for (IDEPlugin plugin : plugins) {
-					if (plugin == null || plugin.getResources() == null) {
-						continue;
-					}
-					css.add("resources/plugin/merge/" + plugin.getName() + "/" + plugin.getVersion() + "/index.css");
-					js.add("resources/plugin/merge/" + plugin.getName() + "/" + plugin.getVersion() + "/index.js");
-
+			for (IDEPlugin plugin : plugins) {
+				if (plugin == null || plugin.getResources() == null) {
+					continue;
 				}
-			} else {
-				for (IDEPlugin plugin : plugins) {
-					if (plugin == null || plugin.getResources() == null) {
+				List<IDEResource> resources = plugin.getResources();
+				for (IDEResource resource : resources) {
+					if (resource == null || resource.getType() == null || StringUtil.isEmpty(resource.getName())) {
 						continue;
 					}
-					List<IDEResource> resources = plugin.getResources();
-					for (IDEResource resource : resources) {
-						if (resource == null || resource.getType() == null || StringUtil.isEmpty(resource.getName())) {
-							continue;
-						}
-						String url = PluginResourcesHandler.PATH_PREFIX;
-						url += plugin.getName() + "/" + plugin.getVersion() + "/";
-						url += resource.getName();
-						url += "?v=" + VERSION;
-						switch (resource.getType()) {
-						case CSS:
-							css.add(url);
-							break;
-						case JS:
-							js.add(url);
-							break;
-						}
+					String url = PluginResourcesHandler.PATH_PREFIX;
+					url += plugin.getName() + "/" + plugin.getVersion() + "/";
+					url += resource.getName();
+					url += "?v=" + VERSION;
+					if (isDev) {
+						url += "&isDev=true";
+					}
+					switch (resource.getType()) {
+					case CSS:
+						css.add(url);
+						break;
+					case JS:
+						js.add(url);
+						break;
 					}
 				}
 			}
