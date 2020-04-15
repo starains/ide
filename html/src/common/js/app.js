@@ -205,6 +205,9 @@ window.app = app;
                     items: options.items
                 }
             },
+            mounted() {
+                this.validate();
+            },
             methods: {
                 change(value, name) {
                     this.validate();
@@ -229,7 +232,21 @@ window.app = app;
         $box.find('textarea').css('max-height', '150px').css('height', '150px');
         $box.find('textarea').data('data', data);
         $box.find('input').data('data', data);
-        return coos.confirm($box, options);
+
+        return new Promise((resolve, reject) => {
+            coos.confirm($box, options, function () {
+                if (!vue.valid) {
+                    return false;
+                }
+                if (resolve) {
+                    return resolve(data);
+                }
+            }, function () {
+                if (reject) {
+                    return reject();
+                }
+            });
+        });
     };
 
 })();
