@@ -128,9 +128,10 @@ public class ResourcesHandler {
 					String url = PluginResourcesHandler.PATH_PREFIX;
 					url += plugin.getName() + "/" + plugin.getVersion() + "/";
 					url += resource.getName();
-					url += "?v=" + VERSION;
 					if (isDev) {
-						url += "&isDev=true";
+						url += "?isDev=true";
+					} else {
+						url += "?v=" + VERSION;
 					}
 					switch (resource.getType()) {
 					case CSS:
