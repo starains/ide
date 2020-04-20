@@ -422,13 +422,19 @@ public class RepositoryFile extends RepositoryBase {
 			}
 
 		}
-		if (StringUtil.isNotEmpty(fullPath) && !"undefined".equals(fullPath) && fileItems.size() == 1) {
-
+		if (fileItems.size() > 0) {
 			FileItem fileItem = fileItems.get(0);
-
-			File file = param.getFile(fullPath);
-			if (StringUtil.isNotEmpty(parent)) {
-				file = param.getFile(parent + "/" + fullPath);
+			File file = null;
+			if (StringUtil.isNotEmpty(fullPath) || !"undefined".equals(fullPath)) {
+				file = param.getFile(fileItem.getName());
+				if (StringUtil.isNotEmpty(parent)) {
+					file = param.getFile(parent + "/" + fileItem.getName());
+				}
+			} else {
+				file = param.getFile(fullPath);
+				if (StringUtil.isNotEmpty(parent)) {
+					file = param.getFile(parent + "/" + fullPath);
+				}
 			}
 			if (file.exists()) {
 				if (StringUtil.isEmpty(repeat) || repeat.equals("IGNORE")) {
