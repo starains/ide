@@ -37,39 +37,39 @@
     margin: 0px auto;
   }
 
-.coos-nav {
+.app-nav {
 	font-size: 15px;
     position: relative;
     display: block;
 	border-collapse: separate;
 }
 
-.coos-nav>li {
+.app-nav>li {
     display: block;
     float: left;
 }
 
-.coos-nav-full.coos-nav {
+.app-nav-full.app-nav {
     width: 100%;
     display: table;
 }
-.coos-nav-full.coos-nav>li{
+.app-nav-full.app-nav>li{
     display: table-cell;
     float: none;
     text-align: center;
 }
 
-.coos-nav ul {
+.app-nav ul {
 	position: relative;
 }
 
-.coos-nav, .coos-nav li {
+.app-nav, .app-nav li {
 	margin: 0px;
 	padding: 0px;
 	position: relative;
 }
 
-.coos-nav li {
+.app-nav li {
 	list-style: none;
 	white-space: nowrap;
 	display: block;
@@ -78,17 +78,17 @@
 	border-radius: 0px;
 }
 
-.coos-nav-bd>li>a {
+.app-nav-bd>li>a {
 	border-bottom: 2px solid transparent;
 }
 
-.coos-nav ul:after, .coos-nav li:after {
+.app-nav ul:after, .app-nav li:after {
 	content: "";
 	display: table;
 	clear: both;
 }
 
-.coos-nav li a {
+.app-nav li a {
 	padding: 2px 10px 2px;
 	line-height: 36px;
 	list-style: none;
@@ -105,7 +105,7 @@
 	-webkit-tap-highlight-color: transparent;
 }
 
-.coos-nav li a input, .coos-nav li a select {
+.app-nav li a input, .app-nav li a select {
 	vertical-align: 0px;
 	height: 28px;
 	padding: 0px 10px;
@@ -114,27 +114,27 @@
 	border-radius: 3px;
 }
 
-.coos-nav li a>* {
+.app-nav li a>* {
 	display: inline;
 	vertical-align: bottom;
 }
 
-.coos-nav li a .coos-icon {
+.app-nav li a .coos-icon {
 	font-size: 20px;
 	margin: 0px 5px;
 	vertical-align: -2px;
 }
 
-.coos-nav li.coos-line {
+.app-nav li.coos-line {
 	border-right: 1px solid #ddd;
 	width: .0001px;
 }
 
-.coos-nav li.coos-line:after {
+.app-nav li.coos-line:after {
 	display: none;
 }
 
-.coos-nav li a img {
+.app-nav li a img {
 	width: 32px;
 	height: 32px;
 	border-radius: 100px;
@@ -142,27 +142,27 @@
 	vertical-align: -10px;
 }
 
-.coos-nav li a:link, .coos-nav li a:visited, .coos-nav li a:active, .coos-nav li a:hover {
+.app-nav li a:link, .app-nav li a:visited, .app-nav li a:active, .app-nav li a:hover {
 	color: inherit;
 }
 
-.coos-nav li ul {
+.app-nav li ul {
 	display: none;
 }
 
-.coos-nav li ul a {
+.app-nav li ul a {
 	padding-left: 30px;
 }
 
-.coos-nav li.coos-open>ul {
+.app-nav li.coos-open>ul {
 	display: block;
 }
 
-.coos-nav li:hover>ul {
+.app-nav li:hover>ul {
 	display: block;
 }
 
-.coos-nav ul {
+.app-nav ul {
 	position: absolute;
 	background: #ffffff;
 	color: #262626;
@@ -179,29 +179,29 @@
 	z-index: 3;
 }
 
-.coos-nav ul.coos-nav-left, .coos-nav li.coos-nav-left>ul {
+.app-nav ul.app-nav-left, .app-nav li.app-nav-left>ul {
 	right: 0px;
 	left: auto;
 }
 
-.coos-nav ul ul.coos-nav-left, .coos-nav ul li.coos-nav-left>ul {
+.app-nav ul ul.app-nav-left, .app-nav ul li.app-nav-left>ul {
 	right: 100%;
 	left: auto;
 }
 
-.coos-nav ul.coos-nav-top, .coos-nav li.coos-nav-top>ul {
+.app-nav ul.app-nav-top, .app-nav li.app-nav-top>ul {
 	bottom: 100%;
 	top: auto;
 }
 
-.coos-nav li ul ul {
+.app-nav li ul ul {
 	left: 100%;
 	top: 0px;
 	margin-top: -6px;
 	margin-right: 1px;
 }
 
-.coos-nav ul li a {
+.app-nav ul li a {
 	clear: both !important;
 	font-weight: 400 !important;
 	color: #777 !important;
@@ -212,161 +212,161 @@
     width: auto;
 }
 
-.coos-nav ul li a:hover, .coos-nav ul li a:focus {
+.app-nav ul li a:hover, .app-nav ul li a:focus {
 	color: #262626 !important;
 	text-decoration: none;
 	background-color: #f5f5f5 !important;
 }
 
-.coos-nav ul li:hover {
+.app-nav ul li:hover {
 	background-color: #f7f7f7;
 }
 
-.coos-nav li a .coos-caret {
+.app-nav li a .coos-caret {
 	margin-left: 5px;
 	font-size: 12px;
 	vertical-align: 1px;
 }
 
-.coos-nav li a .coos-caret:before {
+.app-nav li a .coos-caret:before {
 	content: "\e600";
 	font-family: "coos-font" !important;
 	font-style: normal;
 }
 
-.coos-nav.coos-nav-vertical>li>a {
+.app-nav.app-nav-vertical>li>a {
 	text-align: center;
 	line-height: 24px;
 	display: block;
 }
 
-.coos-nav.coos-nav-vertical>li>a .coos-icon {
+.app-nav.app-nav-vertical>li>a .coos-icon {
 	display: block;
 	clear: both;
 	float: none;
 	margin: auto !important;
 }
 
-.coos-nav.coos-nav-vertical>li>a img {
+.app-nav.app-nav-vertical>li>a img {
 	display: block;
 	width: 22px;
 	height: 22px;
 	margin: 0px auto !important;
 }
 
-.coos-nav.coos-nav-xs li a {
+.app-nav.app-nav-xs li a {
 	padding: 2px 5px 2px;
 	font-size: 12px;
 	line-height: 18px;
 	border-bottom-width: 1px;
 }
 
-.coos-nav.coos-nav-xs li a input, .coos-nav.coos-nav-xs li a select {
+.app-nav.app-nav-xs li a input, .app-nav.app-nav-xs li a select {
 	height: 18px;
 }
 
-.coos-nav.coos-nav-xs li a img {
+.app-nav.app-nav-xs li a img {
 	width: 16px;
 	height: 16px;
 	margin: 0px 2px;
 	vertical-align: -4px;
 }
 
-.coos-nav.coos-nav-xs li a .coos-icon {
+.app-nav.app-nav-xs li a .coos-icon {
 	font-size: 16px;
 	margin: 0px 2px;
 }
 
-.coos-nav.coos-nav-xs li a .coos-caret {
+.app-nav.app-nav-xs li a .coos-caret {
 	font-size: 12px;
 }
 
-.coos-nav.coos-nav-sm li a {
+.app-nav.app-nav-sm li a {
 	padding: 4px 6px 4px;
 	font-size: 14px;
 	line-height: 20px;
 	border-bottom-width: 1px;
 }
 
-.coos-nav.coos-nav-sm li a input, .coos-nav.coos-nav-sm li a select {
+.app-nav.app-nav-sm li a input, .app-nav.app-nav-sm li a select {
 	height: 20px;
 }
 
-.coos-nav.coos-nav-sm li a img {
+.app-nav.app-nav-sm li a img {
 	width: 20px;
 	height: 20px;
 	margin: 0px 3px;
 	vertical-align: -5px;
 }
 
-.coos-nav.coos-nav-sm li a .coos-icon {
+.app-nav.app-nav-sm li a .coos-icon {
 	font-size: 18px;
 	margin: 0px 3px;
 }
 
-.coos-nav.coos-nav-sm li a .coos-caret {
+.app-nav.app-nav-sm li a .coos-caret {
 	font-size: 12px;
 }
 
-.coos-nav.coos-nav-md li a {
+.app-nav.app-nav-md li a {
 	padding: 6px 10px 6px;
 	font-size: 18px;
 	line-height: 36px;
 	border-bottom-width: 3px;
 }
 
-.coos-nav.coos-nav-md li a input, .coos-nav.coos-nav-md li a select {
+.app-nav.app-nav-md li a input, .app-nav.app-nav-md li a select {
 	height: 36px;
 }
 
-.coos-nav.coos-nav-md li a img {
+.app-nav.app-nav-md li a img {
 	width: 36px;
 	height: 36px;
 	vertical-align: -12px;
 }
 
-.coos-nav.coos-nav-md li a .coos-icon {
+.app-nav.app-nav-md li a .coos-icon {
 	font-size: 25px;
 }
 
-.coos-nav.coos-nav-md li a .coos-caret {
+.app-nav.app-nav-md li a .coos-caret {
 	margin-left: 10px;
 	font-size: 12px;
 }
 
-.coos-nav.coos-nav-lg li a {
+.app-nav.app-nav-lg li a {
 	padding: 7px 10px 7px;
 	font-size: 19px;
 	line-height: 40px;
 	border-bottom-width: 4px;
 }
 
-.coos-nav.coos-nav-lg li a input, .coos-nav.coos-nav-lg li a select {
+.app-nav.app-nav-lg li a input, .app-nav.app-nav-lg li a select {
 	height: 40px;
 }
 
-.coos-nav.coos-nav-lg li a img {
+.app-nav.app-nav-lg li a img {
 	width: 40px;
 	height: 40px;
 	vertical-align: -13px;
 }
 
-.coos-nav.coos-nav-lg li a .coos-icon {
+.app-nav.app-nav-lg li a .coos-icon {
 	font-size: 25px;
 }
 
-.coos-nav.coos-nav-lg li a .coos-caret {
+.app-nav.app-nav-lg li a .coos-caret {
 	margin-left: 10px;
 	font-size: 12px;
 }
 
-.coos-nav>li.coos-active>a, .coos-nav>li.coos-hover>a {
+.app-nav>li.coos-active>a, .app-nav>li.coos-hover>a {
 	color: #888787;
 	border-color: #888787;
 }
 
 @media ( hover : hover) {
-	.coos-nav>li>a:hover {
+	.app-nav>li>a:hover {
 		color: #888787;
 		border-color: #888787;
 	}

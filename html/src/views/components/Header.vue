@@ -1,7 +1,7 @@
 <template>
   <div class="app-header">
     <div class="app-header-left">
-      <ul class="coos-nav coos-nav-ul app-header-nav">
+      <ul class="app-nav bg-teal app-header-nav">
         <li>
           <a :href="_ROOT_URL">
             <img class :src="_SERVER_URL+'/resources/images/coos-30.jpg'" />
@@ -20,13 +20,13 @@
       </ul>
     </div>
     <div class="app-header-center">
-      <ul class="coos-nav coos-nav-ul app-header-nav">
+      <ul class="app-nav app-nav-ul app-header-nav">
         <li>
           <a target="_blank" :href="_SERVER_URL + '/resources/font/demo_index.html'">IconFont</a>
         </li>
-        <li class="coos-nav-left" v-if="source.isManager">
+        <li class="app-nav-left" v-if="source.isManager">
           <a>系统管理</a>
-          <ul class="coos-nav-ul">
+          <ul class="app-nav-ul">
             <li class>
               <router-link to="/manage/configure">系统设置</router-link>
             </li>
@@ -44,13 +44,13 @@
       </ul>
     </div>
     <div class="app-header-right">
-      <ul class="coos-nav coos-nav-ul app-header-nav">
-        <li class="coos-nav-left" v-if="source.LOGIN_USER != null">
+      <ul class="app-nav app-nav-ul app-header-nav">
+        <li class="app-nav-left" v-if="source.LOGIN_USER != null">
           <a>
             <img class :src="_SERVER_URL+'/resources/images/coos-30.jpg'" />
             {{source.LOGIN_USER.name}}
           </a>
-          <ul class="coos-nav-ul">
+          <ul class="app-nav-ul">
             <li class>
               <a :href="app.getSpaceUrl(source.LOGIN_USER.space)" style>我的仓库</a>
             </li>
@@ -62,10 +62,10 @@
             </li>
           </ul>
         </li>
-        <li class="coos-nav-left" v-if="source.LOGIN_USER != null">
+        <li class="app-nav-left" v-if="source.LOGIN_USER != null">
           <a @click="source.toPreference()">偏好设置</a>
         </li>
-        <li class="coos-nav-left" v-if="source.LOGIN_USER == null">
+        <li class="app-nav-left" v-if="source.LOGIN_USER == null">
           <a @click="source.toLogin()">登录</a>
         </li>
       </ul>
@@ -114,16 +114,16 @@ export default {
 .app-header-left {
   position: relative;
   float: left;
-  padding: 0px 10px 0px 100px;
+  padding: 0px 0px 0px 100px;
 }
 .app-header-center {
   position: relative;
   float: left;
-  padding: 0px 10px;
+  padding: 0px 0px;
 }
 .app-header-right {
   position: relative;
   float: right;
-  padding: 0px 100px 0px 10px;
+  padding: 0px 100px 0px 0px;
 }
 </style>

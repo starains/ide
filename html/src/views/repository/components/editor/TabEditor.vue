@@ -19,7 +19,7 @@
           >
             <div class="editor-designer-toolbar" v-if="item.navs && item.navs.length>0">
               <div
-                class="coos-nav coos-nav-full bg-blue-grey coos-nav-full coos-nav-vertical coos-nav-xs"
+                class="app-nav app-nav-full bg-blue-grey app-nav-full app-nav-vertical app-nav-xs"
               >
                 <template v-for="(nav, index) in item.navs">
                   <li :key="index" v-if="nav.line"></li>
