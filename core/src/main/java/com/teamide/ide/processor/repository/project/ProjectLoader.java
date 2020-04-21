@@ -39,11 +39,15 @@ public class ProjectLoader {
 		File pomFile = new File(folder, "pom.xml");
 		if (pomFile.exists()) {
 			String path = param.getPath(folder);
-			if (project_map.get(path) == null) {
-				ProjectBean project = createProject(path);
-				if (project != null) {
-					project_map.put(path, project);
-					project_caches.add(project);
+			if (path.indexOf("target/classes") >= 0) {
+
+			} else {
+				if (project_map.get(path) == null) {
+					ProjectBean project = createProject(path);
+					if (project != null) {
+						project_map.put(path, project);
+						project_caches.add(project);
+					}
 				}
 			}
 		}
