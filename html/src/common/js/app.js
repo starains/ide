@@ -120,7 +120,7 @@ window.app = app;
 
     app.formDialog = function (options) {
         options = options || {};
-        let $form = $('<el-form :model="form" ref="form" :rules="rules"/>');
+        let $form = $('<el-form :model="form" ref="form" :rules="rules" @submit.native.prevent/>');
         $form.attr('label-width', options['label-width'] || '120px');
         $form.attr('size', options['size'] || 'mini');
 
