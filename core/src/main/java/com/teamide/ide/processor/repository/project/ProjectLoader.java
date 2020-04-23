@@ -33,7 +33,7 @@ public class ProjectLoader {
 
 	public void appendProjects(File folder) {
 
-		if (folder != null && folder.isFile()) {
+		if (folder == null || folder.isFile()) {
 			return;
 		}
 		if (folder.getName().equals(".git") || folder.getName().equals("target")
