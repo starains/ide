@@ -36,18 +36,19 @@ public class ProjectLoader {
 		if (folder != null && folder.isFile()) {
 			return;
 		}
+		if (folder.getName().equals(".git") || folder.getName().equals("target")
+				|| folder.getName().equals("node_modules")) {
+			return;
+		}
 		File pomFile = new File(folder, "pom.xml");
 		if (pomFile.exists()) {
 			String path = param.getPath(folder);
-			if (path.indexOf("target/classes") >= 0) {
 
-			} else {
-				if (project_map.get(path) == null) {
-					ProjectBean project = createProject(path);
-					if (project != null) {
-						project_map.put(path, project);
-						project_caches.add(project);
-					}
+			if (project_map.get(path) == null) {
+				ProjectBean project = createProject(path);
+				if (project != null) {
+					project_map.put(path, project);
+					project_caches.add(project);
 				}
 			}
 		}
