@@ -161,7 +161,7 @@ window.app = app;
                 item.options = item.options || [];
                 $option.attr('v-for', 'option in items[' + index + '].options');
             }
-            $input.attr('v-model', 'form.' + item.name);
+            $input.attr('v-model', 'form["' + item.name + '"]');
             $input.attr('form-name', item.name);
             $input.attr('v-on:change', "change($event, '" + item.name + "')");
             $input.addClass(item['class-name']);
