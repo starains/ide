@@ -19,7 +19,7 @@
           <span slot="label" :title="item.title">{{item.text}}</span>
           <div class>
             <div class="coos-row text-right pdr-10 pdt-5 starter-btns">
-              <template v-if="item.option != null">
+              <template v-if="item.spaceid != null">
                 <template
                   v-if="item.deploy_status == 'UPLOADING' ||item.deploy_status == 'DEPLOYING' "
                 >

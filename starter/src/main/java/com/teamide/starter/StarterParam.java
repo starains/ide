@@ -7,10 +7,14 @@ import java.io.InputStreamReader;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.LogTool;
+import com.teamide.starter.bean.JavaOptionBean;
+import com.teamide.starter.bean.OtherOptionBean;
+import com.teamide.starter.bean.StarterOptionBean;
 import com.teamide.starter.enums.DeployStatus;
 import com.teamide.starter.enums.InstallStatus;
 import com.teamide.starter.enums.StarterStatus;
 import com.teamide.util.FileUtil;
+import com.teamide.util.StringUtil;
 
 public class StarterParam {
 
@@ -30,16 +34,14 @@ public class StarterParam {
 
 	public final File installStatusFile;
 
-	public final File workFolder;
-
-	public final JSONObject starterJSON;
+	public final StarterOptionBean option;
 
 	public final LogTool log;
 
 	public StarterParam(File starterFolder) {
 		this.starterFolder = starterFolder;
 		this.starterServerFolder = new File(this.starterFolder, "server");
-		this.workFolder = new File(this.starterFolder, "work");
+		// this.workFolder = new File(this.starterFolder, "work");
 		this.starterJSONFile = new File(this.starterFolder, "starter.json");
 
 		this.starterEventFile = new File(this.starterFolder, "starter.event");
@@ -51,19 +53,16 @@ public class StarterParam {
 		if (starterJSON == null || starterJSON.isEmpty()) {
 			throw new RuntimeException(starterFolder + " starter json is null.");
 		}
-		this.starterJSON = starterJSON;
+		if (StringUtil.isNotEmpty(starterJSON.getString("language"))
+				&& starterJSON.getString("language").equalsIgnoreCase("JAVA")) {
+			option = starterJSON.toJavaObject(JavaOptionBean.class);
+		} else {
+			option = starterJSON.toJavaObject(OtherOptionBean.class);
+		}
 
-		this.token = starterJSON.getString("token");
+		this.token = option.getToken();
 		log = LogTool.get("starter", new File(starterFolder, "log"));
 
-	}
-
-	public String getOptionString(String key) {
-		if (this.starterJSON == null && this.starterJSON.get("option") == null) {
-			return null;
-		}
-		JSONObject option = this.starterJSON.getJSONObject("option");
-		return option.getString(key);
 	}
 
 	public void read(InputStream stream, boolean isError) {

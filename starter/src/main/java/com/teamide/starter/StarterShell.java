@@ -27,5 +27,10 @@ public abstract class StarterShell {
 
 	public abstract File getPIDFile() throws Exception;
 
-	public abstract void copyWorkFolder() throws Exception;
+	// public abstract void copyWorkFolder() throws Exception;
+
+	public abstract void startReady() throws Exception;
+
+	public abstract File getWorkFolder() throws Exception;
+
 }

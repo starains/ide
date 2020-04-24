@@ -1,21 +1,22 @@
 package com.teamide.ide.deployer.install;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.InputStream;
 import java.io.PrintWriter;
-
-import org.apache.commons.io.FileUtils;
 
 import com.teamide.util.StringUtil;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.deployer.DeployInstall;
 import com.teamide.ide.deployer.DeployParam;
+import com.teamide.starter.bean.OtherOptionBean;
 
 public class DefaultInstall extends DeployInstall {
 
+	protected final OtherOptionBean option;
+
 	public DefaultInstall(DeployParam param) {
 		super(param);
+		this.option = (OtherOptionBean) param.starter.option;
 	}
 
 	@Override
@@ -25,10 +26,7 @@ public class DefaultInstall extends DeployInstall {
 
 	@Override
 	public void compile() throws Exception {
-		String command = null;
-		if (param.option != null) {
-			command = param.option.getCompilecommand();
-		}
+		String command = option.getCompilecommand();
 		if (StringUtil.isEmpty(command)) {
 			return;
 		}
@@ -41,7 +39,7 @@ public class DefaultInstall extends DeployInstall {
 		Process process = Runtime.getRuntime().exec(cmd);
 
 		PrintWriter writer = new PrintWriter(process.getOutputStream());
-		writer.println("cd " + this.param.projectFolder);
+		writer.println("cd " + this.param.codeFolder);
 		writer.println(command);
 		writer.flush();
 		writer.close();
@@ -50,26 +48,6 @@ public class DefaultInstall extends DeployInstall {
 		this.param.starter.read(inputStream, false);
 		this.param.starter.read(errorStream, true);
 		process.destroy();
-	}
-
-	@Override
-	public void copyProject() throws Exception {
-
-		FileUtils.deleteDirectory(this.param.starter.workFolder);
-
-		FileUtils.copyDirectory(this.param.projectFolder, this.param.starter.workFolder, new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				if (pathname.isDirectory()) {
-					if (pathname.getName().equals(".git")) {
-						return false;
-					} else if (pathname.getName().equals("node_modules")) {
-						return false;
-					}
-				}
-				return true;
-			}
-		});
 	}
 
 }

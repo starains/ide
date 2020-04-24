@@ -1,39 +1,52 @@
 package com.teamide.starter.shell.java;
 
+import java.io.File;
+
 import com.teamide.starter.StarterParam;
 import com.teamide.starter.StarterShell;
+import com.teamide.starter.bean.JavaOptionBean;
+import com.teamide.util.StringUtil;
 
 public abstract class JavaStarterShell extends StarterShell {
 
-	private final String java_home;
-
-	private final String maven_home;
+	protected final JavaOptionBean option;
 
 	public JavaStarterShell(StarterParam param) {
 		super(param);
-
-		this.java_home = param.starterJSON.getString("java_home");
-		this.maven_home = param.starterJSON.getString("maven_home");
+		this.option = (JavaOptionBean) param.option;
 	}
 
 	public String getJavaEnvp() {
-		return param.getOptionString("javaenvp");
+		return option.getJavaenvp();
 	}
 
 	public String getMavenEnvp() {
-		return param.getOptionString("mavenenvp");
+		return option.getMavenenvp();
 	}
 
 	public String getContextpath() {
-		return param.getOptionString("contextpath");
+		return option.getContextpath();
 	}
 
 	public String getJavaHome() {
-		return java_home;
+		return option.getJava_home();
 	}
 
 	public String getMavenHome() {
-		return maven_home;
+		return option.getMaven_home();
 	}
 
+	@Override
+	public void startReady() throws Exception {
+
+	}
+
+	@Override
+	public File getWorkFolder() throws Exception {
+		if (StringUtil.isEmpty(option.getRemoteid())) {
+			return new File(this.option.getPath(), "target");
+		} else {
+			return new File(this.param.starterFolder, "work");
+		}
+	}
 }

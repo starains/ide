@@ -1,9 +1,8 @@
-package com.teamide.ide.bean;
+package com.teamide.starter.bean;
 
-public class StarterOption {
-	private String name;
+public class JavaOptionBean extends StarterOptionBean {
+
 	private String remoteid;
-	private String language;
 	private String mode;
 	private String jar;
 	private String main;
@@ -18,10 +17,34 @@ public class StarterOption {
 	private String contextpath;
 	private String nodeenvironmentid;
 	private String nodecommand;
-	private String compilecommand;
-	private String startcommand;
-	private String stopcommand;
-	private String pidfile;
+
+	private String java_home;
+	private String maven_home;
+	private String internal_tomcat;
+
+	public String getInternal_tomcat() {
+		return internal_tomcat;
+	}
+
+	public void setInternal_tomcat(String internal_tomcat) {
+		this.internal_tomcat = internal_tomcat;
+	}
+
+	public String getJava_home() {
+		return java_home;
+	}
+
+	public void setJava_home(String java_home) {
+		this.java_home = java_home;
+	}
+
+	public String getMaven_home() {
+		return maven_home;
+	}
+
+	public void setMaven_home(String maven_home) {
+		this.maven_home = maven_home;
+	}
 
 	public String getRemoteid() {
 		return remoteid;
@@ -29,54 +52,6 @@ public class StarterOption {
 
 	public void setRemoteid(String remoteid) {
 		this.remoteid = remoteid;
-	}
-
-	public String getStopcommand() {
-		return stopcommand;
-	}
-
-	public void setStopcommand(String stopcommand) {
-		this.stopcommand = stopcommand;
-	}
-
-	public String getPidfile() {
-		return pidfile;
-	}
-
-	public void setPidfile(String pidfile) {
-		this.pidfile = pidfile;
-	}
-
-	public String getCompilecommand() {
-		return compilecommand;
-	}
-
-	public void setCompilecommand(String compilecommand) {
-		this.compilecommand = compilecommand;
-	}
-
-	public String getStartcommand() {
-		return startcommand;
-	}
-
-	public void setStartcommand(String startcommand) {
-		this.startcommand = startcommand;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
 	}
 
 	public String getMode() {

@@ -14,6 +14,5 @@ public abstract class DeployInstall {
 
 	public abstract File getServer() throws Exception;
 
-	public abstract void copyProject() throws Exception;
-
+	// public abstract File getWorkFolder() throws Exception;
 }

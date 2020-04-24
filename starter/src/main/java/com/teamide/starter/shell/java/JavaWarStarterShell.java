@@ -9,7 +9,7 @@ public class JavaWarStarterShell extends JavaInternalTomcatStarterShell {
 	}
 
 	@Override
-	public void copyWorkFolder() throws Exception {
+	public void startReady() throws Exception {
 		outAppWar(param.starterServerFolder);
 	}
 

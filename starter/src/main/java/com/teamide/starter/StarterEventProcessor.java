@@ -4,15 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import com.alibaba.fastjson.JSONObject;
 import com.sun.jna.Platform;
+import com.teamide.starter.bean.JavaOptionBean;
 import com.teamide.starter.enums.StarterStatus;
 import com.teamide.starter.shell.DefaultStarterShell;
 import com.teamide.starter.shell.java.JavaInternalTomcatStarterShell;
 import com.teamide.starter.shell.java.JavaJarStarterShell;
 import com.teamide.starter.shell.java.JavaMainStarterShell;
 import com.teamide.starter.shell.java.JavaWarStarterShell;
-import com.teamide.starter.shell.node.NodeStarterShell;
 import com.teamide.terminal.TerminalProcess;
 import com.teamide.terminal.TerminalProcessListener;
 import com.teamide.terminal.TerminalUtil;
@@ -66,8 +65,8 @@ public class StarterEventProcessor extends StarterParam {
 		writeStatus(StarterStatus.STARTING);
 		kill();
 		try {
-			starterShell.copyWorkFolder();
-			File workFolder = this.workFolder;
+			starterShell.startReady();
+			File workFolder = starterShell.getWorkFolder();
 			File pidFile = this.starterShell.getPIDFile();
 
 			String command = getStartShell();
@@ -75,7 +74,7 @@ public class StarterEventProcessor extends StarterParam {
 				TerminalProcess process = new TerminalProcess();
 
 				getLog().info("start shell command:" + command);
-				process.start(command, workFolder, new TerminalProcessListener() {
+				process.process(command, workFolder, new TerminalProcessListener() {
 
 					@Override
 					public void onStop() {
@@ -149,10 +148,10 @@ public class StarterEventProcessor extends StarterParam {
 			String command = getStopShell();
 			if (StringUtil.isNotEmpty(command)) {
 				TerminalProcess process = new TerminalProcess();
-				File workFolder = this.workFolder;
+				File workFolder = starterShell.getWorkFolder();
 
 				getLog().info("stop shell command:" + command);
-				process.start(command, workFolder, new TerminalProcessListener() {
+				process.process(command, workFolder, new TerminalProcessListener() {
 					@Override
 					public void onStop() {
 					}
@@ -235,7 +234,7 @@ public class StarterEventProcessor extends StarterParam {
 		} else {
 			command = "kill -9 " + pid;
 		}
-		process.start(command, null, listener);
+		process.process(command, null, listener);
 	}
 
 	protected String getStartShell() throws Exception {
@@ -281,15 +280,10 @@ public class StarterEventProcessor extends StarterParam {
 	}
 
 	public StarterShell createStarterShell() {
-		if (this.starterJSON == null && this.starterJSON.get("option") == null) {
-			return null;
-		}
-		JSONObject option = this.starterJSON.getJSONObject("option");
 		StarterShell shell = null;
-		String language = option.getString("language");
-		switch (String.valueOf(language)) {
-		case "JAVA":
-			String mode = option.getString("mode");
+		if (option instanceof JavaOptionBean) {
+			JavaOptionBean javaOption = (JavaOptionBean) option;
+			String mode = javaOption.getMode();
 			switch (String.valueOf(mode)) {
 			case "MAIN":
 				shell = new JavaMainStarterShell(this);
@@ -304,10 +298,6 @@ public class StarterEventProcessor extends StarterParam {
 				shell = new JavaInternalTomcatStarterShell(this);
 				break;
 			}
-			break;
-		case "NODE":
-			shell = new NodeStarterShell(this);
-			break;
 		}
 		if (shell == null) {
 			shell = new DefaultStarterShell(this);

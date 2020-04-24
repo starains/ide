@@ -5,12 +5,16 @@ import java.io.File;
 import com.teamide.shell.Shell;
 import com.teamide.starter.StarterParam;
 import com.teamide.starter.StarterShell;
+import com.teamide.starter.bean.OtherOptionBean;
 import com.teamide.util.StringUtil;
 
 public class DefaultStarterShell extends StarterShell {
 
+	protected final OtherOptionBean option;
+
 	public DefaultStarterShell(StarterParam param) {
 		super(param);
+		this.option = (OtherOptionBean) param.option;
 	}
 
 	@Override
@@ -28,14 +32,14 @@ public class DefaultStarterShell extends StarterShell {
 			if (pidFile != null) {
 				command = command.replaceAll("\\$STARTER_PID_PATH", pidFile.getAbsolutePath());
 			}
-			command = command.replaceAll("\\$WORK_PATH", param.workFolder.getAbsolutePath());
+			command = command.replaceAll("\\$WORK_PATH", getWorkFolder().getAbsolutePath());
 		}
 		return command;
 	}
 
 	@Override
 	public String getStartShell() throws Exception {
-		String command = param.getOptionString("startcommand");
+		String command = option.getStartcommand();
 		command = formatCommand(command);
 
 		return command;
@@ -43,7 +47,7 @@ public class DefaultStarterShell extends StarterShell {
 
 	@Override
 	public String getStopShell() throws Exception {
-		String command = param.getOptionString("stopcommand");
+		String command = option.getStopcommand();
 		command = formatCommand(command);
 
 		return command;
@@ -51,11 +55,11 @@ public class DefaultStarterShell extends StarterShell {
 
 	@Override
 	public File getPIDFile() throws Exception {
-		String pidfile = param.getOptionString("pidfile");
+		String pidfile = option.getPidfile();
 		if (StringUtil.isNotEmpty(pidfile)) {
 			return new File(pidfile);
 		}
-		String startcommand = param.getOptionString("startcommand");
+		String startcommand = option.getStartcommand();
 		if (StringUtil.isNotEmpty(startcommand)) {
 			if (startcommand.indexOf("$STARTER_PID_PATH") >= 0) {
 				return new File(param.starterFolder, "starter.pid");
@@ -65,8 +69,13 @@ public class DefaultStarterShell extends StarterShell {
 	}
 
 	@Override
-	public void copyWorkFolder() throws Exception {
+	public void startReady() throws Exception {
 
+	}
+
+	@Override
+	public File getWorkFolder() throws Exception {
+		return new File(this.option.getPath());
 	}
 
 }

@@ -2,7 +2,7 @@ package com.teamide.ide.deployer.install.java;
 
 import java.io.File;
 
-import org.apache.maven.shared.utils.io.FileUtils;
+import org.apache.commons.io.FileUtils;
 
 import com.teamide.ide.deployer.DeployParam;
 
@@ -10,12 +10,6 @@ public class JavaJarInstall extends JavaInstall {
 
 	public JavaJarInstall(DeployParam param) {
 		super(param);
-	}
-
-	@Override
-	public void compile() throws Exception {
-		super.compile();
-
 	}
 
 	public File getJarFile() {
@@ -29,13 +23,13 @@ public class JavaJarInstall extends JavaInstall {
 	}
 
 	@Override
-	public void copyProject() throws Exception {
+	public void readyRemoteWorkFolder() throws Exception {
 		if (jarFile != null && jarFile.exists()) {
-			File appJarFile = new File(param.starter.workFolder, jarFile.getName());
+			File appJarFile = new File(getRemoteWorkFolder(), jarFile.getName());
 			if (appJarFile.exists()) {
-				FileUtils.delete(appJarFile);
+				FileUtils.forceDelete(appJarFile);
 			}
-			org.apache.commons.io.FileUtils.copyFile(jarFile, appJarFile);
+			FileUtils.copyFile(jarFile, appJarFile);
 		}
 	}
 

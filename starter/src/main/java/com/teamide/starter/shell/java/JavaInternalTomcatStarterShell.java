@@ -15,12 +15,9 @@ import com.teamide.util.StringUtil;
 
 public class JavaInternalTomcatStarterShell extends JavaStarterShell {
 
-	protected final String internal_tomcat;
-
 	public JavaInternalTomcatStarterShell(StarterParam param) {
 		super(param);
 
-		this.internal_tomcat = param.starterJSON.getString("internal_tomcat");
 	}
 
 	@Override
@@ -34,10 +31,10 @@ public class JavaInternalTomcatStarterShell extends JavaStarterShell {
 	@Override
 	public String getStartShell() throws Exception {
 
-		String hostname = param.getOptionString("hostname");
-		String port = param.getOptionString("port");
+		String hostname = option.getHostname();
+		Integer port = option.getPort();
 		String app = appFolder.getAbsolutePath();
-		String contextpath = param.getOptionString("contextpath");
+		String contextpath = option.getContextpath();
 
 		JavaShell shell = (JavaShell) this.shell;
 		shell.setJava_home(getJavaHome());
@@ -48,8 +45,9 @@ public class JavaInternalTomcatStarterShell extends JavaStarterShell {
 		shell.setLib_folders(lib_folders);
 
 		Map<String, String> envps = new HashMap<String, String>();
+		envps.put("STARTER_TOKEN", param.token);
 		envps.put("SERVER_ROOT", param.starterServerFolder.getAbsolutePath());
-		envps.put("SERVER_PORT", port);
+		envps.put("SERVER_PORT", String.valueOf(port));
 		envps.put("SERVER_HOSTNAME", hostname);
 		envps.put("SERVER_CONTEXTPATH", contextpath);
 		envps.put("SERVER_APP", app);
@@ -71,7 +69,7 @@ public class JavaInternalTomcatStarterShell extends JavaStarterShell {
 	}
 
 	@Override
-	public void copyWorkFolder() throws Exception {
+	public void startReady() throws Exception {
 		outAppFolder(param.starterServerFolder);
 	}
 
@@ -90,7 +88,8 @@ public class JavaInternalTomcatStarterShell extends JavaStarterShell {
 	}
 
 	protected void outAppFolder(File tomcatFolder) throws Exception {
-		File targetWebappFolder = new File(param.workFolder, "webapp");
+		File folder = new File(this.param.starterFolder, "work");
+		File targetWebappFolder = new File(folder, "webapp");
 		if (targetWebappFolder.exists() && targetWebappFolder.listFiles().length > 0) {
 			targetWebappFolder = targetWebappFolder.listFiles()[0];
 		}
@@ -121,9 +120,10 @@ public class JavaInternalTomcatStarterShell extends JavaStarterShell {
 	}
 
 	protected void outAppWar(File tomcatFolder) throws Exception {
+		File folder = new File(this.param.starterFolder, "work");
 
 		File warFile = null;
-		for (File file : param.workFolder.listFiles()) {
+		for (File file : folder.listFiles()) {
 			if (file.getName().endsWith(".war")) {
 				warFile = file;
 				break;

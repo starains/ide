@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.teamide.starter.bean.StarterOptionBean;
 import com.teamide.starter.enums.StarterStatus;
 import com.teamide.starter.enums.TerminalEvent;
 
@@ -42,15 +42,10 @@ public class Starter extends StarterParam {
 		log.clean();
 	}
 
-	public JSONObject getStarterInfo() {
-		JSONObject json = starterJSON;
-		if (json != null) {
-			json = (JSONObject) json.clone();
-			json.put("status", readStatus());
-			json.put("deploy_status", readDeployStatus());
-			json.put("install_status", readInstallStatus());
-		}
-
-		return json;
+	public StarterOptionBean getStarterOption() {
+		option.setStatus(readStatus());
+		option.setInstall_status(readInstallStatus());
+		option.setDeploy_status(readDeployStatus());
+		return option;
 	}
 }

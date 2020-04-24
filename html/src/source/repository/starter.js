@@ -167,7 +167,7 @@ source.repository.starterActive = "0";
         value = value || [];
         if (source.repository.starters.length == 0) {
             source.repository.starters.push({
-                text: "库控制台信息", token: "0", logs: [], status: null, option: null
+                text: "库控制台信息", token: "0", logs: [], status: null
             })
         }
         value.forEach(one => {
@@ -178,10 +178,6 @@ source.repository.starterActive = "0";
                 one.removed = false;
                 if (one.name) {
                     one.text = '' + one.name;
-                } else {
-                    if (one.option) {
-                        one.text = '' + one.option.name;
-                    }
                 }
                 source.repository.starters.push(one);
             } else {

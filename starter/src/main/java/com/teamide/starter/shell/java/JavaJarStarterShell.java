@@ -2,7 +2,9 @@ package com.teamide.starter.shell.java;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.teamide.shell.Shell;
 import com.teamide.shell.java.JavaShell;
@@ -28,11 +30,11 @@ public class JavaJarStarterShell extends JavaStarterShell {
 		shell.setJava_envp(getJavaEnvp());
 
 		List<File> lib_folders = new ArrayList<File>();
-		lib_folders.add(new File(param.workFolder, "lib"));
+		lib_folders.add(new File(getWorkFolder(), "lib"));
 		shell.setLib_folders(lib_folders);
 
 		File jarFile = null;
-		for (File file : param.workFolder.listFiles()) {
+		for (File file : getWorkFolder().listFiles()) {
 			if (file.getName().endsWith(".jar")) {
 				jarFile = file;
 				break;
@@ -40,6 +42,10 @@ public class JavaJarStarterShell extends JavaStarterShell {
 		}
 
 		shell.setJar_file(jarFile);
+
+		Map<String, String> envps = new HashMap<String, String>();
+		envps.put("STARTER_TOKEN", param.token);
+		shell.setEnvps(envps);
 
 		return shell.getShellString();
 	}
@@ -59,8 +65,4 @@ public class JavaJarStarterShell extends JavaStarterShell {
 		return shell.getPIDFile();
 	}
 
-	@Override
-	public void copyWorkFolder() throws Exception {
-
-	}
 }

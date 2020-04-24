@@ -18,7 +18,7 @@ public class TerminalProcess {
 
 	}
 
-	public void start(String command, File workFolder, TerminalProcessListener listener) throws Exception {
+	public void process(String command, File workFolder, TerminalProcessListener listener) throws Exception {
 		String[] cmd = null;
 		if (Platform.isWindows()) {
 			cmd = new String[] { "cmd" };

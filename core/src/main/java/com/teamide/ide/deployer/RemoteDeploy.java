@@ -3,10 +3,12 @@ package com.teamide.ide.deployer;
 import java.io.File;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.http.HttpRequest;
 import com.teamide.http.HttpResponse;
 import com.teamide.ide.bean.RemoteBean;
+import com.teamide.ide.deployer.install.java.JavaInstall;
 import com.teamide.ide.handler.RemoteHandler;
 import com.teamide.starter.enums.DeployStatus;
 import com.teamide.starter.enums.InstallStatus;
@@ -76,12 +78,11 @@ public class RemoteDeploy extends Deploy {
 	public void start() throws Exception {
 		installProject();
 
-		deployInstall.copyProject();
 		this.starter.writeInstallStatus(InstallStatus.WORK_UPLOADING);
 		RemoteBean remote = RemoteHandler.get(remoteid);
 		HttpRequest request = getHttpRequest(RemoteHandler.getStarterStartUrl(remote));
 
-		String root = starter.workFolder.toURI().getPath();
+		String root = ((JavaInstall) deployInstall).getRemoteWorkFolder().toURI().getPath();
 		List<File> files = FileUtil.loadAllFiles(root);
 
 		for (File file : files) {
@@ -128,7 +129,7 @@ public class RemoteDeploy extends Deploy {
 			json.put("install_status", this.starter.readInstallStatus());
 			return json;
 		}
-		return this.starter.getStarterInfo();
+		return (JSONObject) JSON.toJSON(this.starter.getStarterOption());
 	}
 
 	@Override

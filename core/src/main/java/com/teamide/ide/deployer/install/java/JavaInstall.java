@@ -7,18 +7,16 @@ import org.apache.maven.model.Model;
 
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
+import com.alibaba.fastjson.JSON;
 import com.teamide.ide.bean.EnvironmentBean;
 import com.teamide.ide.deployer.DeployInstall;
 import com.teamide.ide.deployer.DeployParam;
 import com.teamide.ide.maven.MavenUtil;
 import com.teamide.ide.processor.repository.hanlder.RepositoryHanlder;
 import com.teamide.ide.service.impl.EnvironmentService;
+import com.teamide.starter.bean.JavaOptionBean;
 
 public abstract class JavaInstall extends DeployInstall {
-
-	private final String java_home;
-
-	private final String maven_home;
 
 	protected File libFolder;
 
@@ -30,13 +28,18 @@ public abstract class JavaInstall extends DeployInstall {
 
 	protected File warFolder;
 
+	protected final JavaOptionBean option;
+
+	public final EnvironmentBean environment;
+
 	public JavaInstall(DeployParam param) {
 		super(param);
+		this.option = (JavaOptionBean) param.starter.option;
 		String java_home = null;
 		String maven_home = null;
-		if (!StringUtil.isEmpty(param.option.getJavaenvironmentid())) {
+		if (!StringUtil.isEmpty(this.option.getJavaenvironmentid())) {
 			try {
-				EnvironmentBean environment = new EnvironmentService().get(param.option.getJavaenvironmentid());
+				EnvironmentBean environment = new EnvironmentService().get(this.option.getJavaenvironmentid());
 				if (environment != null) {
 					java_home = environment.getPath();
 				}
@@ -44,9 +47,9 @@ public abstract class JavaInstall extends DeployInstall {
 				e.printStackTrace();
 			}
 		}
-		if (!StringUtil.isEmpty(param.option.getMavenenvironmentid())) {
+		if (!StringUtil.isEmpty(this.option.getMavenenvironmentid())) {
 			try {
-				EnvironmentBean environment = new EnvironmentService().get(param.option.getMavenenvironmentid());
+				EnvironmentBean environment = new EnvironmentService().get(this.option.getMavenenvironmentid());
 				if (environment != null) {
 					maven_home = environment.getPath();
 				}
@@ -54,47 +57,64 @@ public abstract class JavaInstall extends DeployInstall {
 				e.printStackTrace();
 			}
 		}
-		this.java_home = param.starter.formatToRoot(java_home);
-		this.maven_home = param.starter.formatToRoot(maven_home);
+		option.setJava_home(param.starter.formatToRoot(java_home));
+		option.setMaven_home(param.starter.formatToRoot(maven_home));
 
+		EnvironmentBean environment = null;
+
+		String environmentid = this.option.getEnvironmentid();
+		if (!StringUtil.isEmpty(environmentid)) {
+			try {
+				environment = new EnvironmentService().get(environmentid);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		this.environment = environment;
 		try {
-			param.starter.starterJSON.put("java_home", java_home);
-			param.starter.starterJSON.put("maven_home", maven_home);
-			FileUtil.write(param.starter.starterJSON.toJSONString().getBytes(), param.starter.starterJSONFile);
+			FileUtil.write(JSON.toJSONString(option).getBytes(), param.starter.starterJSONFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public String getJavaEnvp() {
-		return param.option.getJavaenvp();
+		return option.getJavaenvp();
 	}
 
 	public String getMavenEnvp() {
-		return param.option.getMavenenvp();
+		return option.getMavenenvp();
 	}
 
 	public String getContextpath() {
-		return param.option.getContextpath();
+		return option.getContextpath();
 	}
 
 	public String getJavaHome() {
-		return java_home;
+		return option.getJava_home();
 	}
 
 	public String getMavenHome() {
-		return maven_home;
+		return option.getMaven_home();
 	}
 
 	public void compile() throws Exception {
-		Model model = RepositoryHanlder.getPomModel(new File(param.projectFolder, "pom.xml"));
+		Model model = RepositoryHanlder.getPomModel(new File(param.codeFolder, "pom.xml"));
 		if (model != null) {
 			mavenCompileAndPackage(model);
 		} else {
 			classCompile();
 		}
+		if (StringUtil.isNotEmpty(option.getRemoteid())) {
 
+		}
 	}
+
+	public File getRemoteWorkFolder() {
+		return new File(param.starter.starterFolder, "work");
+	}
+
+	protected abstract void readyRemoteWorkFolder() throws Exception;
 
 	protected boolean mavenCompileAndPackage(Model model) throws Exception {
 
@@ -106,10 +126,10 @@ public abstract class JavaInstall extends DeployInstall {
 
 		MavenUtil mavenUtil = new MavenUtil(getMavenHome());
 
-		File libFolder = new File(param.projectFolder, "target/lib");
+		File libFolder = new File(param.codeFolder, "target/lib");
 		mavenUtil.setLibPath(libFolder.getAbsolutePath());
 
-		boolean flag = mavenUtil.doPackage(param.projectFolder, null, this.param.starter.getLog(), getMavenEnvp());
+		boolean flag = mavenUtil.doPackage(param.codeFolder, null, this.param.starter.getLog(), getMavenEnvp());
 		if (!flag) {
 			this.param.starter.getLog().error("maven package error.");
 			throw new Exception("maven package error.");
@@ -121,10 +141,10 @@ public abstract class JavaInstall extends DeployInstall {
 			}
 		} else {
 			this.libFolder = libFolder;
-			File classesFolder = new File(param.projectFolder, "target/classes");
+			File classesFolder = new File(param.codeFolder, "target/classes");
 			this.classesFolder = classesFolder;
 		}
-		File targetFolder = new File(param.projectFolder, "target");
+		File targetFolder = new File(param.codeFolder, "target");
 		if (targetFolder.exists()) {
 			File[] files = targetFolder.listFiles();
 			for (File file : files) {
@@ -143,4 +163,5 @@ public abstract class JavaInstall extends DeployInstall {
 	protected void classCompile() throws Exception {
 
 	}
+
 }

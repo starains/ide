@@ -11,14 +11,6 @@
         zIndex="100"
         @submit.native.prevent
       >
-        <el-form-item>
-          <small class="pdb-10 color-red" style="line-height: 14px;">
-            环境变量：
-            <div>$SOURCE_PATH：为代码源文件目录</div>
-            <div>$STARTER_LOG_PATH：为进程启动日志路径</div>
-            <div>$STARTER_PID_PATH：为进程启动PID路径</div>
-          </small>
-        </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input
             v-model="form.name"
@@ -28,19 +20,31 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="远程服务器">
-          <el-radio v-model="form.remoteid" label>本地运行</el-radio>
-          <el-radio
-            v-for="one in source.data.REMOTES"
-            :key="one.id"
-            v-model="form.remoteid"
-            :label="one.id"
-          >{{one.name}}</el-radio>
-        </el-form-item>
-
         <el-form-item label="语言" prop="language">
           <el-radio v-model="form.language" label="JAVA">Java</el-radio>
           <el-radio v-model="form.language" label="OTHER">其它</el-radio>
+        </el-form-item>
+
+        <template v-if="form.language == 'OTHER'">
+          <el-form-item>
+            <small class="pdb-10 color-red" style="line-height: 14px;">
+              环境变量：
+              <div>$SOURCE_PATH：为代码源文件目录</div>
+              <div>$STARTER_LOG_PATH：为进程启动日志路径</div>
+              <div>$STARTER_PID_PATH：为进程启动PID路径</div>
+            </small>
+          </el-form-item>
+        </template>
+        <el-form-item label="远程服务器">
+          <el-radio v-model="form.remoteid" label>本地运行</el-radio>
+          <template v-if="form.language == 'JAVA'">
+            <el-radio
+              v-for="one in source.data.REMOTES"
+              :key="one.id"
+              v-model="form.remoteid"
+              :label="one.id"
+            >{{one.name}}</el-radio>
+          </template>
         </el-form-item>
 
         <template v-if="form.language == 'JAVA'">

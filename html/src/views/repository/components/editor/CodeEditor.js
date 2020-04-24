@@ -84,6 +84,8 @@ CodeEditor.prototype.build = function ($box) {
         mode = "python";
     } else if (file.type == "php") {
         mode = "php";
+    } else if (file.type == "json") {
+        mode = "application/json";
     } else {
         if (this.editor.isYaml) {
             mode = "yaml";

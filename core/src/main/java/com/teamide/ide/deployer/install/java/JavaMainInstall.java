@@ -2,7 +2,7 @@ package com.teamide.ide.deployer.install.java;
 
 import java.io.File;
 
-import org.apache.maven.shared.utils.io.FileUtils;
+import org.apache.commons.io.FileUtils;
 
 import com.teamide.ide.deployer.DeployParam;
 
@@ -12,14 +12,8 @@ public class JavaMainInstall extends JavaInstall {
 		super(param);
 	}
 
-	@Override
-	public void compile() throws Exception {
-		super.compile();
-
-	}
-
 	public String getMain() {
-		return param.option.getMain();
+		return option.getMain();
 	}
 
 	@Override
@@ -28,10 +22,10 @@ public class JavaMainInstall extends JavaInstall {
 	}
 
 	@Override
-	public void copyProject() throws Exception {
+	public void readyRemoteWorkFolder() throws Exception {
 
 		if (libFolder != null && libFolder.exists()) {
-			File targetLibFolder = new File(param.starter.workFolder, "lib");
+			File targetLibFolder = new File(getRemoteWorkFolder(), "lib");
 			if (targetLibFolder.exists()) {
 				FileUtils.deleteDirectory(targetLibFolder);
 			}
@@ -39,7 +33,7 @@ public class JavaMainInstall extends JavaInstall {
 		}
 		if (classesFolder != null && classesFolder.exists()) {
 
-			File targetClassesFolder = new File(param.starter.workFolder, "classes");
+			File targetClassesFolder = new File(getRemoteWorkFolder(), "classes");
 			if (targetClassesFolder.exists()) {
 				FileUtils.deleteDirectory(targetClassesFolder);
 			}

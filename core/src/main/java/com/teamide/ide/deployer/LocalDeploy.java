@@ -2,6 +2,7 @@ package com.teamide.ide.deployer;
 
 import java.io.File;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.starter.enums.DeployStatus;
 import com.teamide.starter.enums.StarterStatus;
@@ -27,7 +28,6 @@ public class LocalDeploy extends Deploy {
 		this.starter.writeStatus(StarterStatus.STARTING);
 
 		installProject();
-		deployInstall.copyProject();
 		this.starter.start();
 	}
 
@@ -41,7 +41,7 @@ public class LocalDeploy extends Deploy {
 	}
 
 	public JSONObject getStatus() {
-		return this.starter.getStarterInfo();
+		return (JSONObject) JSON.toJSON(this.starter.getStarterOption());
 	}
 
 	@Override

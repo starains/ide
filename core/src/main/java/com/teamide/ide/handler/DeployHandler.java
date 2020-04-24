@@ -19,6 +19,7 @@ import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.param.ProjectOption;
 import com.teamide.starter.StarterServer;
+import com.teamide.starter.bean.JavaOptionBean;
 
 public class DeployHandler {
 
@@ -100,8 +101,11 @@ public class DeployHandler {
 			return;
 		}
 		Deploy deploy = new LocalDeploy(starterFolder);
-		if (deploy.option != null && StringUtil.isNotEmpty(deploy.option.getRemoteid())) {
-			deploy = new RemoteDeploy(deploy.option.getRemoteid(), starterFolder);
+		if (deploy != null && deploy.starter.option instanceof JavaOptionBean) {
+			JavaOptionBean javaOption = (JavaOptionBean) deploy.starter.option;
+			if (StringUtil.isNotEmpty(javaOption.getRemoteid())) {
+				deploy = new RemoteDeploy(javaOption.getRemoteid(), starterFolder);
+			}
 		}
 		CACHE.put(deploy.starter.token, deploy);
 	}
@@ -137,35 +141,34 @@ public class DeployHandler {
 
 	public static Deploy create(ProjectProcessorParam param, String path, JSONObject option) throws Exception {
 		String token = IDGenerateUtil.generateShort();
-		JSONObject json = new JSONObject();
-		json.put("spaceid", param.getSpaceid());
-		json.put("branch", param.getBranch());
-		json.put("token", token);
-		json.put("path", path);
-		json.put("option", option);
-		json.put("timestamp", System.currentTimeMillis());
-		if (option != null) {
-			json.put("name", option.get("name"));
-		}
+		option = option == null ? new JSONObject() : option;
+		option.put("spaceid", param.getSpaceid());
+		option.put("branch", param.getBranch());
+		option.put("token", token);
+		option.put("path", param.getFile(path).toURI().getPath());
+		option.put("timestamp", System.currentTimeMillis());
 
 		File starterFolder = getStarterFolder(token);
 
-		FileUtil.write(json.toJSONString().getBytes(), new File(starterFolder, "starter.json"));
+		FileUtil.write(option.toJSONString().getBytes(), new File(starterFolder, "starter.json"));
 
 		return get(token);
 	}
 
 	public static List<Deploy> getStarters(RepositoryProcessorParam param) throws Exception {
 
-		List<Deploy> starters = new ArrayList<Deploy>();
+		List<Deploy> deploys = new ArrayList<Deploy>();
 		for (String token : CACHE.keySet()) {
-			Deploy starter = get(token);
-			if (param.getSpaceid().equals(starter.spaceid) && param.getBranch().equals(starter.branch)) {
-				starters.add(starter);
+			Deploy deploy = get(token);
+			if (deploy != null) {
+				if (param.getSpaceid().equals(deploy.starter.option.getSpaceid())
+						&& param.getBranch().equals(deploy.starter.option.getBranch())) {
+					deploys.add(deploy);
+				}
 			}
 		}
 
-		return starters;
+		return deploys;
 	}
 
 	public static File getWorkspacesStarterFolder() {
