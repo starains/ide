@@ -1,5 +1,7 @@
 package com.teamide.ide.processor;
 
+import java.util.Date;
+
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.util.PasswordMD5Tool;
 import com.teamide.ide.util.TokenUtil;
@@ -14,6 +16,8 @@ import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.bean.UserPreferenceBean;
 import com.teamide.ide.configure.IDEConfigure;
+import com.teamide.ide.enums.UserActiveStatus;
+import com.teamide.ide.enums.UserStatus;
 import com.teamide.ide.exception.NoPermissionException;
 import com.teamide.ide.param.ProcessorParam;
 import com.teamide.ide.plugin.PluginHandler;
@@ -25,6 +29,7 @@ import com.teamide.ide.service.IEnvironmentService;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.ILoginService;
 import com.teamide.ide.service.IUserService;
+import com.teamide.ide.service.impl.BaseService;
 import com.teamide.ide.service.impl.ConfigureService;
 import com.teamide.ide.service.impl.RemoteService;
 import com.teamide.ide.service.impl.EnvironmentService;
@@ -209,6 +214,67 @@ public class Processor extends ProcessorLoad {
 		case PLUGIN_UPDATE:
 			checkPermission(processorType);
 
+			break;
+		case USER_INSERT:
+			user = data.toJavaObject(UserBean.class);
+			new UserService().save(param.getSession(), user);
+			break;
+		case USER_UPDATE:
+			id = data.getString("id");
+			if (StringUtil.isNotEmpty(id)) {
+				user = data.toJavaObject(UserBean.class);
+				new UserService().update(param.getSession(), user);
+			}
+			break;
+		case USER_ACTIVE:
+			id = data.getString("id");
+			if (StringUtil.isNotEmpty(id)) {
+				user = new UserBean();
+				user.setId(id);
+				user.setActivestatus(UserActiveStatus.OK.getValue());
+				user.setActivetime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
+				new UserService().update(param.getSession(), user);
+			}
+			break;
+		case USER_DISABLE:
+			id = data.getString("id");
+			if (StringUtil.isNotEmpty(id)) {
+				user = new UserBean();
+				user.setId(id);
+				user.setStatus(UserStatus.DISABLE.getValue());
+				user.setDisabletime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
+				new UserService().update(param.getSession(), user);
+			}
+			break;
+		case USER_ENABLE:
+			id = data.getString("id");
+			if (StringUtil.isNotEmpty(id)) {
+				user = new UserBean();
+				user.setId(id);
+				user.setStatus(UserStatus.OK.getValue());
+				user.setEnabletime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
+				new UserService().update(param.getSession(), user);
+			}
+			break;
+		case USER_LOCK:
+			id = data.getString("id");
+			if (StringUtil.isNotEmpty(id)) {
+				user = new UserBean();
+				user.setId(id);
+				user.setStatus(UserStatus.LOCK.getValue());
+				user.setLocktime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
+				new UserService().update(param.getSession(), user);
+			}
+			break;
+		case USER_UNLOCK:
+			id = data.getString("id");
+			if (StringUtil.isNotEmpty(id)) {
+				user = new UserBean();
+				user.setId(id);
+				user.setStatus(UserStatus.OK.getValue());
+				user.setUnlocktime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
+				new UserService().update(param.getSession(), user);
+			}
 			break;
 		}
 

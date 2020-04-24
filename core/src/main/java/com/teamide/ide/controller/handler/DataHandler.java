@@ -15,6 +15,8 @@ import com.teamide.ide.enums.PublicType;
 import com.teamide.ide.enums.SpacePermission;
 import com.teamide.ide.enums.SpaceTeamType;
 import com.teamide.ide.enums.SpaceType;
+import com.teamide.ide.enums.UserActiveStatus;
+import com.teamide.ide.enums.UserStatus;
 import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.filter.IDEFilter;
 import com.teamide.ide.plugin.PluginHandler;
@@ -168,6 +170,24 @@ public class DataHandler {
 			array.add(one);
 			one.put("text", method.name());
 			one.put("value", method.name());
+		}
+
+		array = new JSONArray();
+		ENUM_MAP.put("USER_STATUS", array);
+		for (UserStatus status : UserStatus.values()) {
+			JSONObject one = new JSONObject();
+			array.add(one);
+			one.put("text", status.getText());
+			one.put("value", status.getValue());
+		}
+
+		array = new JSONArray();
+		ENUM_MAP.put("USER_ACTIVE_STATUS", array);
+		for (UserActiveStatus status : UserActiveStatus.values()) {
+			JSONObject one = new JSONObject();
+			array.add(one);
+			one.put("text", status.getText());
+			one.put("value", status.getValue());
 		}
 
 		ENUM_MAP.putAll(PluginHandler.getEnumMap());

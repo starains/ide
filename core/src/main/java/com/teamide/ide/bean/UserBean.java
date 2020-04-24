@@ -32,6 +32,72 @@ public class UserBean extends BaseBean {
 	@Column(name = "status")
 	private Integer status;
 
+	@Column(name = "disabletime")
+	private String disabletime;
+
+	@Column(name = "enabletime")
+	private String enabletime;
+
+	@Column(name = "locktime")
+	private String locktime;
+
+	@Column(name = "unlocktime")
+	private String unlocktime;
+
+	@Column(name = "activestatus")
+	private Integer activestatus;
+
+	@Column(name = "activetime")
+	private String activetime;
+
+	public String getDisabletime() {
+		return disabletime;
+	}
+
+	public void setDisabletime(String disabletime) {
+		this.disabletime = disabletime;
+	}
+
+	public String getEnabletime() {
+		return enabletime;
+	}
+
+	public void setEnabletime(String enabletime) {
+		this.enabletime = enabletime;
+	}
+
+	public String getUnlocktime() {
+		return unlocktime;
+	}
+
+	public void setUnlocktime(String unlocktime) {
+		this.unlocktime = unlocktime;
+	}
+
+	public String getActivetime() {
+		return activetime;
+	}
+
+	public void setActivetime(String activetime) {
+		this.activetime = activetime;
+	}
+
+	public String getLocktime() {
+		return locktime;
+	}
+
+	public void setLocktime(String locktime) {
+		this.locktime = locktime;
+	}
+
+	public Integer getActivestatus() {
+		return activestatus;
+	}
+
+	public void setActivestatus(Integer activestatus) {
+		this.activestatus = activestatus;
+	}
+
 	public String getSpaceid() {
 		return spaceid;
 	}

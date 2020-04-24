@@ -15,9 +15,23 @@ public enum ProcessorType {
 	AUTO_LOGIN("AUTO_LOGIN", "自动登录"),
 
 	LOGOUT("LOGOUT", "登出"),
-	
+
 	REGISTER("REGISTER", "注册"),
-	
+
+	USER_UPDATE("USER_UPDATE", "修改用户"),
+
+	USER_INSERT("USER_INSERT", "新增用户"),
+
+	USER_DISABLE("USER_DISABLE", "禁用用户"),
+
+	USER_ENABLE("USER_ENABLE", "启用用户"),
+
+	USER_LOCK("USER_LOCK", "锁定用户"),
+
+	USER_UNLOCK("USER_UNLOCK", "解锁用户"),
+
+	USER_ACTIVE("USER_ACTIVE", "激活用户"),
+
 	UPDATE_PASSWORD("UPDATE_PASSWORD", "修改密码"),
 
 	CONFIGURE_UPDATE("CONFIGURE_UPDATE", "配置修改"),

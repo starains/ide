@@ -39,6 +39,9 @@
             <li class>
               <router-link to="/manage/plugin">插件管理</router-link>
             </li>
+            <li class>
+              <router-link to="/manage/user">用户管理</router-link>
+            </li>
           </ul>
         </li>
       </ul>

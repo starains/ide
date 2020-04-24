@@ -11,7 +11,7 @@
         <el-table :data="source.data.PLUGINS" style="width: 100%">
           <el-table-column prop="name" label="名称" width="100"></el-table-column>
           <el-table-column prop="version" label="版本" width="100"></el-table-column>
-          <el-table-column>
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <a class="coos-btn bg-green" @click="toUpdate(scope.row)">修改</a>
               <a class="coos-btn bg-red" @click="toDelete(scope.row)">删除</a>

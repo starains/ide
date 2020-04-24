@@ -56,6 +56,9 @@
       <template v-else-if="$route.params.page == 'plugin'">
         <ManagePluginIndex></ManagePluginIndex>
       </template>
+      <template v-else-if="$route.params.page == 'user'">
+        <ManageUserIndex></ManageUserIndex>
+      </template>
       <template v-else>
         <Error404></Error404>
       </template>
@@ -83,6 +86,7 @@ import ManageConfigureIndex from "@/views/manage/configure/Index";
 import ManageEnvironmentIndex from "@/views/manage/environment/Index";
 import ManageRemoteIndex from "@/views/manage/remote/Index";
 import ManagePluginIndex from "@/views/manage/plugin/Index";
+import ManageUserIndex from "@/views/manage/user/Index";
 
 import UserCenter from "@/views/user/Center";
 
@@ -103,6 +107,7 @@ export default {
     ManageEnvironmentIndex,
     ManageRemoteIndex,
     ManagePluginIndex,
+    ManageUserIndex,
     UserCenter
   },
   data() {

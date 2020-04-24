@@ -29,11 +29,44 @@ public class IDEConfigure extends BaseBean {
 	@Column(name = "openaccountlock")
 	private Boolean openaccountlock;
 
+	@Column(name = "openaccountactivation")
+	private Boolean openaccountactivation;
+
 	@Column(name = "passworderrorlimit")
 	private Integer passworderrorlimit;
 
+	@Column(name = "accountunlockminute")
+	private Integer accountunlockminute;
+
 	@Column(name = "defaultpassword")
 	private String defaultpassword;
+
+	@Column(name = "mailbox")
+	private String mailbox;
+
+	public Integer getAccountunlockminute() {
+		return accountunlockminute;
+	}
+
+	public void setAccountunlockminute(Integer accountunlockminute) {
+		this.accountunlockminute = accountunlockminute;
+	}
+
+	public Boolean getOpenaccountactivation() {
+		return openaccountactivation;
+	}
+
+	public void setOpenaccountactivation(Boolean openaccountactivation) {
+		this.openaccountactivation = openaccountactivation;
+	}
+
+	public String getMailbox() {
+		return mailbox;
+	}
+
+	public void setMailbox(String mailbox) {
+		this.mailbox = mailbox;
+	}
 
 	public Boolean getOpenregister() {
 
