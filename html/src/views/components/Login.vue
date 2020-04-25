@@ -21,7 +21,10 @@
           <a class="coos-btn bg-green coos-btn-block coos-disabled" v-if="loading">登录中</a>
           <a class="coos-btn bg-green coos-btn-block" @click="doLogin()" v-if="!loading">登录</a>
         </el-form>
-        <div class="mgt-10 pdb-20" v-if="source.CONFIGURE.openregister">
+        <div
+          class="mgt-10 pdb-20"
+          v-if="source.CONFIGURE.account!=null && source.CONFIGURE.account.openregister"
+        >
           <div class="float-right">
             暂无账号？
             <a class="coos-link color-white" @click="toRegister()">注册账号</a>

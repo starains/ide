@@ -11,7 +11,6 @@ import com.teamide.db.bean.Database;
 import com.teamide.service.IService;
 import com.teamide.util.FileUtil;
 import com.teamide.ide.util.PasswordMD5Tool;
-import com.teamide.ide.bean.ConfigureBean;
 import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.configure.IDEOptions;
@@ -71,12 +70,9 @@ public class InstallService implements IInstallService {
 		}
 		IConfigureService configureService = new ConfigureService();
 
-		ConfigureBean configure = json.getJSONObject("configure").toJavaObject(ConfigureBean.class);
+		IDEConfigure configure = json.getJSONObject("configure").toJavaObject(IDEConfigure.class);
 
-		configure.setId("0");
 		configureService.save(null, configure);
-
-		IDEConfigure.loadConfigure();
 
 		IUserService userService = new UserService();
 

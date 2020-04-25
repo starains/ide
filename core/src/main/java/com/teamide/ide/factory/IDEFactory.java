@@ -67,10 +67,10 @@ public class IDEFactory {
 
 	public static String getDefaultPassword() {
 
-		IDEConfigure setting = IDEConfigure.get();
+		IDEConfigure configure = IDEConfigure.get();
 		String password = null;
-		if (setting != null) {
-			password = setting.getDefaultpassword();
+		if (configure != null && configure.getAccount() != null) {
+			password = configure.getAccount().getDefaultpassword();
 		}
 		if (StringUtil.isEmpty(password)) {
 			password = "123456";

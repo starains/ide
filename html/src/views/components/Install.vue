@@ -66,17 +66,17 @@
         >
           <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange mgb-20">系统设置</h3>
           <el-form
-            :model="configure.form"
+            :model="configure.account"
             status-icon
             :rules="configure.rules"
-            ref="configure-form"
+            ref="configure-account"
             label-width="100px"
           >
             <el-form-item class label="开启注册" prop="openregister">
-              <el-switch v-model="configure.form.openregister"></el-switch>
+              <el-switch v-model="configure.account.openregister"></el-switch>
             </el-form-item>
             <el-form-item class label="默认密码" prop="defaultpassword">
-              <el-input type="text" v-model="configure.form.defaultpassword" autocomplete="off"></el-input>
+              <el-input type="text" v-model="configure.account.defaultpassword" autocomplete="off"></el-input>
             </el-form-item>
           </el-form>
           <div class="coos-row">
@@ -153,7 +153,7 @@ export default {
         }
       },
       configure: {
-        form: {
+        account: {
           openregister: true,
           defaultpassword: "123456"
         },
@@ -194,7 +194,7 @@ export default {
       });
     },
     submitConfigure() {
-      this.$refs["configure-form"].validate(valid => {
+      this.$refs["configure-account"].validate(valid => {
         if (valid) {
           this.show = "install";
           this.doInstall();
@@ -207,7 +207,7 @@ export default {
       var data = {};
       data.database = this.database.form;
       data.admin = this.admin.form;
-      data.configure = this.configure.form;
+      data.configure = this.configure;
 
       source.do("INSTALL", data).then(res => {
         res = res || {};

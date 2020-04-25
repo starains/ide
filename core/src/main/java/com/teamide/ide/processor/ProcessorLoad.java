@@ -8,6 +8,7 @@ import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.bean.UserPreferenceBean;
+import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.configure.IDEOptions;
 import com.teamide.ide.handler.RemoteHandler;
 import com.teamide.ide.handler.SpaceHandler;
@@ -15,12 +16,10 @@ import com.teamide.ide.handler.UserHandler;
 import com.teamide.ide.param.ProcessorParam;
 import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.processor.enums.ModelType;
-import com.teamide.ide.service.IConfigureService;
 import com.teamide.ide.service.IRemoteService;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.ide.service.IUserService;
-import com.teamide.ide.service.impl.ConfigureService;
 import com.teamide.ide.service.impl.RemoteService;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.service.impl.InstallService;
@@ -99,8 +98,7 @@ public class ProcessorLoad extends ProcessorBase {
 			value = IDEOptions.get().jdbc;
 			break;
 		case CONFIGURE:
-			IConfigureService configureService = new ConfigureService();
-			value = configureService.get("0");
+			value = IDEConfigure.get();
 			break;
 		case ENVIRONMENTS:
 			EnvironmentService environmentService = new EnvironmentService();

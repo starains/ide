@@ -9,7 +9,6 @@ import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.IDEShare;
-import com.teamide.ide.bean.ConfigureBean;
 import com.teamide.ide.bean.EnvironmentBean;
 import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.bean.SpaceEventBean;
@@ -85,9 +84,6 @@ public class Processor extends ProcessorLoad {
 			installService.install(data);
 			break;
 		case REGISTER:
-			if (!ObjectUtil.isTrue(IDEConfigure.get().getOpenregister())) {
-				throw new Exception("未开放注册，请联系管理员！");
-			}
 			doRegister(data);
 			break;
 		case LOGIN:
@@ -136,9 +132,8 @@ public class Processor extends ProcessorLoad {
 			checkPermission(processorType);
 
 			IConfigureService configureService = new ConfigureService();
-			ConfigureBean configure = data.toJavaObject(ConfigureBean.class);
-			configure.setId("0");
-			configureService.update(this.param.getSession(), configure);
+			IDEConfigure configure = data.toJavaObject(IDEConfigure.class);
+			configureService.save(this.param.getSession(), configure);
 
 			break;
 		case ENVIRONMENT_CREATE:
@@ -216,10 +211,14 @@ public class Processor extends ProcessorLoad {
 
 			break;
 		case USER_INSERT:
+			checkPermission(processorType);
+			
 			user = data.toJavaObject(UserBean.class);
 			new UserService().save(param.getSession(), user);
 			break;
 		case USER_UPDATE:
+			checkPermission(processorType);
+			
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = data.toJavaObject(UserBean.class);
@@ -227,6 +226,8 @@ public class Processor extends ProcessorLoad {
 			}
 			break;
 		case USER_ACTIVE:
+			checkPermission(processorType);
+			
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = new UserBean();
@@ -237,6 +238,8 @@ public class Processor extends ProcessorLoad {
 			}
 			break;
 		case USER_DISABLE:
+			checkPermission(processorType);
+			
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = new UserBean();
@@ -247,6 +250,8 @@ public class Processor extends ProcessorLoad {
 			}
 			break;
 		case USER_ENABLE:
+			checkPermission(processorType);
+			
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = new UserBean();
@@ -257,6 +262,8 @@ public class Processor extends ProcessorLoad {
 			}
 			break;
 		case USER_LOCK:
+			checkPermission(processorType);
+			
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = new UserBean();
@@ -267,6 +274,8 @@ public class Processor extends ProcessorLoad {
 			}
 			break;
 		case USER_UNLOCK:
+			checkPermission(processorType);
+			
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = new UserBean();
@@ -288,6 +297,12 @@ public class Processor extends ProcessorLoad {
 	}
 
 	private UserBean doRegister(JSONObject data) throws Exception {
+
+		IDEConfigure configure = IDEConfigure.get();
+		if (configure.getAccount() != null && !ObjectUtil.isTrue(configure.getAccount().getOpenregister())) {
+			throw new Exception("未开放注册，请联系管理员！");
+		}
+
 		String email = data.getString("email");
 		String name = data.getString("name");
 		String loginname = data.getString("loginname");

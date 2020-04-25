@@ -1,11 +1,8 @@
 package com.teamide.ide.configure;
 
-import javax.persistence.Column;
-
-import com.teamide.ide.bean.BaseBean;
 import com.teamide.ide.service.impl.ConfigureService;
 
-public class IDEConfigure extends BaseBean {
+public class IDEConfigure {
 
 	private static IDEConfigure CONFIGURE;
 
@@ -23,89 +20,54 @@ public class IDEConfigure extends BaseBean {
 		return CONFIGURE;
 	}
 
-	@Column(name = "openregister")
-	private Boolean openregister;
+	private IDEConfigureAccount account = new IDEConfigureAccount();
 
-	@Column(name = "openaccountlock")
-	private Boolean openaccountlock;
+	private IDEConfigureLogin login = new IDEConfigureLogin();
 
-	@Column(name = "openaccountactivation")
-	private Boolean openaccountactivation;
+	private IDEConfigureMailbox mailbox = new IDEConfigureMailbox();
 
-	@Column(name = "passworderrorlimit")
-	private Integer passworderrorlimit;
+	private IDEConfigureSpace space = new IDEConfigureSpace();
 
-	@Column(name = "accountunlockminute")
-	private Integer accountunlockminute;
+	private IDEConfigureRepository repository = new IDEConfigureRepository();
 
-	@Column(name = "defaultpassword")
-	private String defaultpassword;
-
-	@Column(name = "mailbox")
-	private String mailbox;
-
-	public Integer getAccountunlockminute() {
-		return accountunlockminute;
+	public IDEConfigureAccount getAccount() {
+		return account;
 	}
 
-	public void setAccountunlockminute(Integer accountunlockminute) {
-		this.accountunlockminute = accountunlockminute;
+	public void setAccount(IDEConfigureAccount account) {
+		this.account = account;
 	}
 
-	public Boolean getOpenaccountactivation() {
-		return openaccountactivation;
+	public IDEConfigureLogin getLogin() {
+		return login;
 	}
 
-	public void setOpenaccountactivation(Boolean openaccountactivation) {
-		this.openaccountactivation = openaccountactivation;
+	public void setLogin(IDEConfigureLogin login) {
+		this.login = login;
 	}
 
-	public String getMailbox() {
+	public IDEConfigureMailbox getMailbox() {
 		return mailbox;
 	}
 
-	public void setMailbox(String mailbox) {
+	public void setMailbox(IDEConfigureMailbox mailbox) {
 		this.mailbox = mailbox;
 	}
 
-	public Boolean getOpenregister() {
-
-		return openregister;
+	public IDEConfigureSpace getSpace() {
+		return space;
 	}
 
-	public void setOpenregister(Boolean openregister) {
-
-		this.openregister = openregister;
+	public void setSpace(IDEConfigureSpace space) {
+		this.space = space;
 	}
 
-	public Boolean getOpenaccountlock() {
-
-		return openaccountlock;
+	public IDEConfigureRepository getRepository() {
+		return repository;
 	}
 
-	public void setOpenaccountlock(Boolean openaccountlock) {
-
-		this.openaccountlock = openaccountlock;
-	}
-
-	public Integer getPassworderrorlimit() {
-
-		return passworderrorlimit;
-	}
-
-	public void setPassworderrorlimit(Integer passworderrorlimit) {
-
-		this.passworderrorlimit = passworderrorlimit;
-	}
-
-	public String getDefaultpassword() {
-
-		return defaultpassword;
-	}
-
-	public void setDefaultpassword(String defaultpassword) {
-
-		this.defaultpassword = defaultpassword;
+	public void setRepository(IDEConfigureRepository repository) {
+		this.repository = repository;
 	}
 
 }

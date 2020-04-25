@@ -82,9 +82,11 @@ public class LoginService implements ILoginService {
 		case DISABLE:
 			throw new Exception("账号已禁用，请联系管理员！");
 		case LOCK:
-			Integer accountunlockminute = configure.getAccountunlockminute();
-
-			if (accountunlockminute == null || accountunlockminute <= 0) {
+			Integer unlockminute = 0;
+			if (configure.getLogin() != null) {
+				unlockminute = configure.getLogin().getUnlockminute();
+			}
+			if (unlockminute == null || unlockminute <= 0) {
 				throw new Exception("账号已锁定，，请联系管理员解锁！");
 			}
 
@@ -100,7 +102,7 @@ public class LoginService implements ILoginService {
 			Date lockdate = BaseService.PURE_DATETIME_FORMAT.parse(locktime);
 
 			long time = new Date().getTime() - lockdate.getTime();
-			long waittime = accountunlockminute * 60 * 1000 - time;
+			long waittime = unlockminute * 60 * 1000 - time;
 			if (waittime > 0) {
 				throw new Exception("账号已锁定，请等待“" + (waittime / 60 / 1000) + 1 + "”分钟后自动解锁，或联系管理员解锁！");
 			} else {
@@ -114,7 +116,7 @@ public class LoginService implements ILoginService {
 			break;
 		}
 
-		if (ObjectUtil.isTrue(configure.getOpenaccountactivation())) {
+		if (configure.getAccount() != null && ObjectUtil.isTrue(configure.getAccount().getOpenactivation())) {
 			UserActiveStatus activeStatus = UserActiveStatus.get(user.getActivestatus());
 			switch (activeStatus) {
 			case NOT_ACTIVE:

@@ -2,19 +2,49 @@ package com.teamide.ide.service.impl;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.ConfigureBean;
 import com.teamide.ide.configure.IDEConfigure;
+import com.teamide.ide.configure.IDEConfigureAccount;
+import com.teamide.ide.configure.IDEConfigureLogin;
+import com.teamide.ide.configure.IDEConfigureMailbox;
+import com.teamide.ide.configure.IDEConfigureRepository;
+import com.teamide.ide.configure.IDEConfigureSpace;
 import com.teamide.ide.service.IConfigureService;
+import com.teamide.util.StringUtil;
 
 @Resource
 public class ConfigureService extends BaseService<ConfigureBean> implements IConfigureService {
 
 	@Override
-	public ConfigureBean get() {
+	public IDEConfigure get() {
 
 		try {
-			return get("0");
+			ConfigureBean bean = get("0");
+			if (bean != null) {
+				IDEConfigure configure = new IDEConfigure();
+
+				if (StringUtil.isNotEmpty(bean.getAccountconfigure())) {
+					configure.setAccount(JSONObject.parseObject(bean.getAccountconfigure(), IDEConfigureAccount.class));
+				}
+				if (StringUtil.isNotEmpty(bean.getLoginconfigure())) {
+					configure.setLogin(JSONObject.parseObject(bean.getLoginconfigure(), IDEConfigureLogin.class));
+				}
+				if (StringUtil.isNotEmpty(bean.getMailboxconfigure())) {
+					configure.setMailbox(JSONObject.parseObject(bean.getMailboxconfigure(), IDEConfigureMailbox.class));
+				}
+				if (StringUtil.isNotEmpty(bean.getSpaceconfigure())) {
+					configure.setSpace(JSONObject.parseObject(bean.getSpaceconfigure(), IDEConfigureSpace.class));
+				}
+				if (StringUtil.isNotEmpty(bean.getRepositoryconfigure())) {
+					configure.setRepository(
+							JSONObject.parseObject(bean.getRepositoryconfigure(), IDEConfigureRepository.class));
+				}
+
+				return configure;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -22,10 +52,30 @@ public class ConfigureService extends BaseService<ConfigureBean> implements ICon
 	}
 
 	@Override
-	public ConfigureBean update(ClientSession session, ConfigureBean t) throws Exception {
-		ConfigureBean res = super.update(session, t);
+	public IDEConfigure save(ClientSession session, IDEConfigure configure) throws Exception {
+		ConfigureBean t = new ConfigureBean();
+		t.setId("0");
+		if (configure != null) {
+			if (configure.getAccount() != null) {
+				t.setAccountconfigure(JSON.toJSONString(configure.getAccount()));
+			}
+			if (configure.getLogin() != null) {
+				t.setLoginconfigure(JSON.toJSONString(configure.getLogin()));
+			}
+			if (configure.getMailbox() != null) {
+				t.setMailboxconfigure(JSON.toJSONString(configure.getMailbox()));
+			}
+			if (configure.getSpace() != null) {
+				t.setSpaceconfigure(JSON.toJSONString(configure.getSpace()));
+			}
+			if (configure.getRepository() != null) {
+				t.setRepositoryconfigure(JSON.toJSONString(configure.getRepository()));
+			}
+		}
+		super.save(session, t);
+
 		IDEConfigure.loadConfigure();
-		return res;
+		return get();
 	}
 
 }

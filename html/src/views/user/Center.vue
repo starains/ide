@@ -32,7 +32,7 @@
 
 <script>
 export default {
-  name: "ConfigureIndex",
+  name: "UserCenter",
   data() {
     return {
       source,
