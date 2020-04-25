@@ -47,7 +47,7 @@ public class ResourcesHandler {
 			if (!contextPath.startsWith("/")) {
 				contextPath = "/" + contextPath;
 			}
-			if (!contextPath.startsWith("/")) {
+			if (!contextPath.endsWith("/")) {
 				contextPath = contextPath + "/";
 			}
 			content.append("var _ROOT_URL = \"" + contextPath + "\";\n");

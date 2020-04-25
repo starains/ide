@@ -7,7 +7,7 @@
     source.screen = {
         show() {
             if ($('.app-screen-message-box').length == 0) {
-                $screen.find('.app-screen-message-img').css({ backgroundImage: 'url(' + _SERVER_URL + '/resources/images/loading.gif)' });
+                $screen.find('.app-screen-message-img').css({ backgroundImage: 'url(' + _SERVER_URL + 'resources/images/loading.gif)' });
                 $('body').append($screen);
                 window.setTimeout(() => {
                     $screen.addClass('app-screen-message-show');

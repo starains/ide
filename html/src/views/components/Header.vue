@@ -4,7 +4,7 @@
       <ul class="app-nav bg-teal app-header-nav">
         <li>
           <a :href="_ROOT_URL">
-            <img class :src="_SERVER_URL+'/resources/images/coos-30.jpg'" />
+            <img class :src="_SERVER_URL+'resources/images/coos-30.jpg'" />
           </a>
         </li>
         <li>
@@ -22,7 +22,7 @@
     <div class="app-header-center">
       <ul class="app-nav app-nav-ul app-header-nav">
         <li>
-          <a target="_blank" :href="_SERVER_URL + '/resources/font/demo_index.html'">IconFont</a>
+          <a target="_blank" :href="_SERVER_URL + 'resources/font/demo_index.html'">IconFont</a>
         </li>
         <li class="app-nav-left" v-if="source.isManager">
           <a>系统管理</a>
@@ -50,7 +50,7 @@
       <ul class="app-nav app-nav-ul app-header-nav">
         <li class="app-nav-left" v-if="source.LOGIN_USER != null">
           <a>
-            <img class :src="_SERVER_URL+'/resources/images/coos-30.jpg'" />
+            <img class :src="_SERVER_URL+'resources/images/coos-30.jpg'" />
             {{source.LOGIN_USER.name}}
           </a>
           <ul class="app-nav-ul">

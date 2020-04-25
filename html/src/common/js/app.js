@@ -19,8 +19,8 @@ window.app = app;
     };
 
     app.getURL = function (path) {
-        if (!_ROOT_URL.endsWith('/') && !path.startsWith('/')) {
-            return _ROOT_URL + '/' + path;
+        if (path.startsWith('/')) {
+            path = path.substring(1);
 
         }
         return _ROOT_URL + path;

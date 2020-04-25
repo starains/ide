@@ -3,6 +3,9 @@
     source.server = {
         post(action, data) {
             return new Promise((resolve, reject) => {
+                if (action.startsWith('/')) {
+                    action = action.substring(1);
+                }
                 data = data || {};
                 let url = _SERVER_URL + action;
                 $.ajax({
@@ -29,7 +32,11 @@
                 if (SPACE_PATH.indexOf('#') > 0) {
                     SPACE_PATH = SPACE_PATH.split('#')[0];
                 }
-                SPACE_PATH = SPACE_PATH.substring(_ROOT_URL.length);
+                if (_ROOT_URL.startsWith('http')) {
+                    SPACE_PATH = SPACE_PATH.substring(_ROOT_URL.length);
+                } else {
+                    SPACE_PATH = SPACE_PATH.substring((location.origin + _ROOT_URL).length);
+                }
                 source.server.post(action, { SPACE_PATH: SPACE_PATH }).then((status) => {
                     let value = status.value || {};
 

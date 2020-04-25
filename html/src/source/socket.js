@@ -36,7 +36,12 @@
                 source.websocket.opening = true;
 
                 if ('WebSocket' in window) {
-                    let url = window._SERVER_URL.replace('http', 'ws') + '/websocket/' + source.token;
+                    let url = null;
+                    if (window._SERVER_URL.startsWith('http')) {
+                        url = window._SERVER_URL.replace('http', 'ws') + 'websocket/' + source.token;
+                    } else {
+                        url = location.origin.replace('http', 'ws') + window._SERVER_URL + 'websocket/' + source.token;
+                    }
                     websocket = new WebSocket(url);
                 } else {
                     $('.app-loading-text').empty();

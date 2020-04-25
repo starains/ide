@@ -42,5 +42,5 @@ window.ide_main = function () {
   });
 };
 
-document.writeln('<script type="text/javascript" src="' + _SERVER_URL + '/resources/ide.resources.js"></script>');
-document.writeln('<script type="text/javascript" src="' + _SERVER_URL + '/resources/ide.main.js"></script>');
+document.writeln('<script type="text/javascript" src="' + _SERVER_URL + 'resources/ide.resources.js"></script>');
+document.writeln('<script type="text/javascript" src="' + _SERVER_URL + 'resources/ide.main.js"></script>');
