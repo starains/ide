@@ -38,8 +38,11 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 			branch = DEFAULT_BRANCH;
 		}
 		this.branch = branch;
-
 		this.branchsFolder = new File(this.getSpaceFolder(), "branchs");
+		File defaultBranchSourceFolder = new File(this.branchsFolder, DEFAULT_BRANCH + "/source");
+		if (!defaultBranchSourceFolder.exists()) {
+			defaultBranchSourceFolder.mkdirs();
+		}
 		this.branchFolder = new File(this.branchsFolder, branch);
 		this.sourceFolder = new File(this.branchFolder, "source");
 		this.sourcePath = sourceFolder.toURI().getPath();

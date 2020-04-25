@@ -57,13 +57,7 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 
 		}
 		space = SpaceHandler.get(space.getId());
-		SpaceFormatParam spaceFormat = SpaceHandler.getFormat(space, session);
-		File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
-		SpaceProcessorParam param = new SpaceProcessorParam(session, spaceRootFolder, spaceFormat);
-		if (!param.getSpaceFolder().exists()) {
-			param.getSpaceFolder().mkdirs();
-		}
-		return SpaceHandler.get(space.getId());
+		return space;
 	}
 
 	public void validateName(SpaceBean space) throws Exception {
