@@ -40,8 +40,18 @@ public class ResourcesHandler {
 			List<String> css = new ArrayList<String>();
 
 			StringBuffer content = new StringBuffer();
-			content.append("var _ROOT_URL = \"" + RequestUtil.getServerUrl(request) + "\";\n");
-			content.append("var _SERVER_URL = \"" + RequestUtil.getServerUrl(request) + "\";\n");
+			String contextPath = request.getContextPath();
+			if (StringUtil.isEmpty(contextPath)) {
+				contextPath = "/";
+			}
+			if (!contextPath.startsWith("/")) {
+				contextPath = "/" + contextPath;
+			}
+			if (!contextPath.startsWith("/")) {
+				contextPath = contextPath + "/";
+			}
+			content.append("var _ROOT_URL = \"" + contextPath + "\";\n");
+			content.append("var _SERVER_URL = \"" + contextPath + "\";\n");
 
 			writelnCSS(request, content, css);
 			writelnJS(request, content, js);
