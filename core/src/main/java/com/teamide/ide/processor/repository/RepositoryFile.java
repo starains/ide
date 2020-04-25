@@ -425,7 +425,7 @@ public class RepositoryFile extends RepositoryBase {
 		if (fileItems.size() > 0) {
 			FileItem fileItem = fileItems.get(0);
 			File file = null;
-			if (StringUtil.isEmpty(fullPath) || !"undefined".equals(fullPath)) {
+			if (StringUtil.isEmpty(fullPath) || "undefined".equals(fullPath)) {
 				file = param.getFile(fileItem.getName());
 				if (StringUtil.isNotEmpty(parent)) {
 					file = param.getFile(parent + "/" + fileItem.getName());
