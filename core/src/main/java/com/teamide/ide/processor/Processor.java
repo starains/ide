@@ -212,13 +212,13 @@ public class Processor extends ProcessorLoad {
 			break;
 		case USER_INSERT:
 			checkPermission(processorType);
-			
+
 			user = data.toJavaObject(UserBean.class);
 			new UserService().save(param.getSession(), user);
 			break;
 		case USER_UPDATE:
 			checkPermission(processorType);
-			
+
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = data.toJavaObject(UserBean.class);
@@ -227,7 +227,7 @@ public class Processor extends ProcessorLoad {
 			break;
 		case USER_ACTIVE:
 			checkPermission(processorType);
-			
+
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = new UserBean();
@@ -239,7 +239,7 @@ public class Processor extends ProcessorLoad {
 			break;
 		case USER_DISABLE:
 			checkPermission(processorType);
-			
+
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = new UserBean();
@@ -251,7 +251,7 @@ public class Processor extends ProcessorLoad {
 			break;
 		case USER_ENABLE:
 			checkPermission(processorType);
-			
+
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = new UserBean();
@@ -263,7 +263,7 @@ public class Processor extends ProcessorLoad {
 			break;
 		case USER_LOCK:
 			checkPermission(processorType);
-			
+
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = new UserBean();
@@ -275,7 +275,7 @@ public class Processor extends ProcessorLoad {
 			break;
 		case USER_UNLOCK:
 			checkPermission(processorType);
-			
+
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				user = new UserBean();
@@ -371,5 +371,6 @@ public class Processor extends ProcessorLoad {
 	private void doLogout(JSONObject data) throws Exception {
 		ClientSession session = this.param.getSession();
 		session.doLogout();
+		session.getCache().clear();
 	}
 }
