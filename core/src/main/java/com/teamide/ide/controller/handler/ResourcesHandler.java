@@ -67,6 +67,8 @@ public class ResourcesHandler {
 			js.add("resources/plugins/vue/vue.min.js");
 			js.add("resources/plugins/element-ui/2.12.0/index.js");
 
+			js.add("resources/plugins/axios/axios.min.js");
+
 			js.add("resources/plugins/jquery/jquery.js");
 			css.add("resources/plugins/jquery/jquery-ui.css");
 			js.add("resources/plugins/jquery/jquery-ui.js");

@@ -84,6 +84,21 @@
             <el-switch type="text" v-model="repository.prohibitstarter"></el-switch>
           </el-form-item>
         </el-form>
+
+        <h4 class="pd-10 color-grey">Nginx设置</h4>
+        <el-form
+          class="coos-row"
+          :model="nginx"
+          status-icon
+          :rules="rules"
+          ref="nginx"
+          label-width="150px"
+          size="mini"
+        >
+          <el-form-item class label="重启命令" prop>
+            <el-input type="text" v-model="nginx.reloadcommand"></el-input>
+          </el-form-item>
+        </el-form>
         <div class="pd-10">
           <a class="coos-btn bg-green" @click="doSave()">保存</a>
         </div>
@@ -106,6 +121,8 @@ export default {
     Object.assign(space, source.CONFIGURE.space);
     let repository = {};
     Object.assign(repository, source.CONFIGURE.repository);
+    let nginx = {};
+    Object.assign(nginx, source.CONFIGURE.nginx);
     return {
       source,
       account,
@@ -113,6 +130,7 @@ export default {
       mailbox,
       space,
       repository,
+      nginx,
       rules: {
         defaultpassword: [
           { required: true, message: "请输入默认密码！", trigger: "blur" }
@@ -130,6 +148,7 @@ export default {
           data.mailbox = this.mailbox;
           data.space = this.space;
           data.repository = this.repository;
+          data.nginx = this.nginx;
           source.do("CONFIGURE_UPDATE", data).then(res => {
             if (res.errcode == 0) {
               coos.success("修改成功！");

@@ -10,6 +10,7 @@ import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.configure.IDEConfigureAccount;
 import com.teamide.ide.configure.IDEConfigureLogin;
 import com.teamide.ide.configure.IDEConfigureMailbox;
+import com.teamide.ide.configure.IDEConfigureNginx;
 import com.teamide.ide.configure.IDEConfigureRepository;
 import com.teamide.ide.configure.IDEConfigureSpace;
 import com.teamide.ide.service.IConfigureService;
@@ -42,6 +43,9 @@ public class ConfigureService extends BaseService<ConfigureBean> implements ICon
 					configure.setRepository(
 							JSONObject.parseObject(bean.getRepositoryconfigure(), IDEConfigureRepository.class));
 				}
+				if (StringUtil.isNotEmpty(bean.getNginxconfigure())) {
+					configure.setNginx(JSONObject.parseObject(bean.getNginxconfigure(), IDEConfigureNginx.class));
+				}
 
 				return configure;
 			}
@@ -70,6 +74,9 @@ public class ConfigureService extends BaseService<ConfigureBean> implements ICon
 			}
 			if (configure.getRepository() != null) {
 				t.setRepositoryconfigure(JSON.toJSONString(configure.getRepository()));
+			}
+			if (configure.getNginx() != null) {
+				t.setNginxconfigure(JSON.toJSONString(configure.getNginx()));
 			}
 		}
 		super.save(session, t);

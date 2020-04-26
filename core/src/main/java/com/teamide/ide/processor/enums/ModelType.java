@@ -18,6 +18,8 @@ public enum ModelType {
 
 	ENVIRONMENTS("ENVIRONMENTS", "环境", ModelDataType.LIST),
 
+	NGINX_CONFIGS("NGINX_CONFIGS", "Nginx配置", ModelDataType.LIST),
+
 	PLUGINS("PLUGINS", "插件", ModelDataType.LIST),
 
 	MASTER_SPACES("MASTER_SPACES", "管理的空间", ModelDataType.PAGE),

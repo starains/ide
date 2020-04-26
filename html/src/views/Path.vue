@@ -59,6 +59,9 @@
       <template v-else-if="$route.params.page == 'user'">
         <ManageUserIndex></ManageUserIndex>
       </template>
+      <template v-else-if="$route.params.page == 'nginx'">
+        <ManageNginxConfigIndex></ManageNginxConfigIndex>
+      </template>
       <template v-else>
         <Error404></Error404>
       </template>
@@ -87,6 +90,7 @@ import ManageEnvironmentIndex from "@/views/manage/environment/Index";
 import ManageRemoteIndex from "@/views/manage/remote/Index";
 import ManagePluginIndex from "@/views/manage/plugin/Index";
 import ManageUserIndex from "@/views/manage/user/Index";
+import ManageNginxConfigIndex from "@/views/manage/nginx/Index";
 
 import UserCenter from "@/views/user/Center";
 
@@ -108,6 +112,7 @@ export default {
     ManageRemoteIndex,
     ManagePluginIndex,
     ManageUserIndex,
+    ManageNginxConfigIndex,
     UserCenter
   },
   data() {

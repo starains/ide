@@ -14,6 +14,12 @@ public class IDEConstant {
 
 	public static final String PLUGINS_FOLDER = HOME + "plugins/";
 
+	public static final String NGINX_CONFIG_FOLDER = HOME + "nginx/conf.d/";
+
+	public static final String NGINX_SERVER_CONFIG_FOLDER = HOME + "nginx/server.d/";
+
+	public static final String NGINX_SERVER_ROUTE_CONFIG_FOLDER = HOME + "nginx/server.route.d/";
+
 	public static final String PLUGINS_TOMCAT_FOLDER = PLUGINS_FOLDER + "tomcat/";
 
 	public static final String WORKSPACES_FOLDER = HOME + "workspaces/";

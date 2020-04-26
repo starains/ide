@@ -18,11 +18,13 @@ import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.processor.enums.ModelType;
 import com.teamide.ide.service.IRemoteService;
 import com.teamide.ide.service.IInstallService;
+import com.teamide.ide.service.INginxConfigService;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.ide.service.IUserService;
 import com.teamide.ide.service.impl.RemoteService;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.service.impl.InstallService;
+import com.teamide.ide.service.impl.NginxConfigService;
 import com.teamide.ide.service.impl.SpaceService;
 import com.teamide.ide.service.impl.SpaceTeamService;
 import com.teamide.ide.service.impl.UserPreferenceService;
@@ -103,6 +105,10 @@ public class ProcessorLoad extends ProcessorBase {
 		case ENVIRONMENTS:
 			EnvironmentService environmentService = new EnvironmentService();
 			value = environmentService.queryList(param);
+			break;
+		case NGINX_CONFIGS:
+			INginxConfigService nginxConfigService = new NginxConfigService();
+			value = nginxConfigService.queryList(param);
 			break;
 		case REMOTES:
 			IRemoteService remoteService = new RemoteService();

@@ -10,6 +10,8 @@ public class TableInfoConstant {
 
 	public static final String CONFIGURE_INFO = "CONFIGURE_INFO";
 
+	public static final String NGINX_CONFIG_INFO = "NGINX_CONFIG_INFO";
+
 	public static final String ENVIRONMENT_INFO = "ENVIRONMENT_INFO";
 
 	public static final String PERMISSION_INFO = "PERMISSION_INFO";

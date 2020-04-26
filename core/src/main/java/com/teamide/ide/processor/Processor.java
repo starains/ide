@@ -10,6 +10,7 @@ import com.teamide.util.StringUtil;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.IDEShare;
 import com.teamide.ide.bean.EnvironmentBean;
+import com.teamide.ide.bean.NginxConfigBean;
 import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.UserBean;
@@ -27,6 +28,7 @@ import com.teamide.ide.service.IRemoteService;
 import com.teamide.ide.service.IEnvironmentService;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.ILoginService;
+import com.teamide.ide.service.INginxConfigService;
 import com.teamide.ide.service.IUserService;
 import com.teamide.ide.service.impl.BaseService;
 import com.teamide.ide.service.impl.ConfigureService;
@@ -34,6 +36,7 @@ import com.teamide.ide.service.impl.RemoteService;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.service.impl.InstallService;
 import com.teamide.ide.service.impl.LoginService;
+import com.teamide.ide.service.impl.NginxConfigService;
 import com.teamide.ide.service.impl.UserPreferenceService;
 import com.teamide.ide.service.impl.UserService;
 
@@ -158,6 +161,31 @@ public class Processor extends ProcessorLoad {
 			environmentService = new EnvironmentService();
 			environment = data.toJavaObject(EnvironmentBean.class);
 			environmentService.update(this.param.getSession(), environment);
+
+			break;
+
+		case NGINX_CONFIG_CREATE:
+			checkPermission(processorType);
+
+			INginxConfigService nginxConfigService = new NginxConfigService();
+			NginxConfigBean nginxConfig = data.toJavaObject(NginxConfigBean.class);
+			nginxConfigService.insert(this.param.getSession(), nginxConfig);
+
+			break;
+		case NGINX_CONFIG_DELETE:
+			checkPermission(processorType);
+
+			nginxConfigService = new NginxConfigService();
+			nginxConfig = data.toJavaObject(NginxConfigBean.class);
+			nginxConfigService.delete(this.param.getSession(), nginxConfig);
+
+			break;
+		case NGINX_CONFIG_UPDATE:
+			checkPermission(processorType);
+
+			nginxConfigService = new NginxConfigService();
+			nginxConfig = data.toJavaObject(NginxConfigBean.class);
+			nginxConfigService.update(this.param.getSession(), nginxConfig);
 
 			break;
 

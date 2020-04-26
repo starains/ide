@@ -30,6 +30,16 @@ public class IDEConfigure {
 
 	private IDEConfigureRepository repository = new IDEConfigureRepository();
 
+	private IDEConfigureNginx nginx = new IDEConfigureNginx();
+
+	public IDEConfigureNginx getNginx() {
+		return nginx;
+	}
+
+	public void setNginx(IDEConfigureNginx nginx) {
+		this.nginx = nginx;
+	}
+
 	public IDEConfigureAccount getAccount() {
 		return account;
 	}

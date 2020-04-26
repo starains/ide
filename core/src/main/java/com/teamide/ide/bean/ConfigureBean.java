@@ -8,20 +8,31 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.CONFIGURE_INFO)
 public class ConfigureBean extends BaseBean {
 
-	@Column(name = "accountconfigure", length = 3000)
+	@Column(name = "accountconfigure", length = 1000)
 	private String accountconfigure;
 
-	@Column(name = "mailboxconfigure", length = 3000)
+	@Column(name = "mailboxconfigure", length = 1000)
 	private String mailboxconfigure;
 
-	@Column(name = "loginconfigure", length = 3000)
+	@Column(name = "loginconfigure", length = 1000)
 	private String loginconfigure;
 
-	@Column(name = "spaceconfigure", length = 3000)
+	@Column(name = "spaceconfigure", length = 1000)
 	private String spaceconfigure;
 
-	@Column(name = "repositoryconfigure", length = 3000)
+	@Column(name = "repositoryconfigure", length = 1000)
 	private String repositoryconfigure;
+
+	@Column(name = "nginxconfigure", length = 1000)
+	private String nginxconfigure;
+
+	public String getNginxconfigure() {
+		return nginxconfigure;
+	}
+
+	public void setNginxconfigure(String nginxconfigure) {
+		this.nginxconfigure = nginxconfigure;
+	}
 
 	public String getAccountconfigure() {
 		return accountconfigure;
