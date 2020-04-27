@@ -17,4 +17,6 @@ import source from "@/source/source";
 
 import plugin from "@/source/plugin";
 
+import load from "@/source/load";
+
 export default base;

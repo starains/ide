@@ -70,61 +70,8 @@ public class ResourcesHandler {
 			js.add("resources/plugins/axios/axios.min.js");
 
 			js.add("resources/plugins/jquery/jquery.js");
-			css.add("resources/plugins/jquery/jquery-ui.css");
-			js.add("resources/plugins/jquery/jquery-ui.js");
-
-			js.add("resources/plugins/jsplumb/jsplumb.min.js");
-
-			css.add("resources/plugins/dropzone/basic.min.css");
-			css.add("resources/plugins/dropzone/dropzone.min.css");
-			js.add("resources/plugins/dropzone/dropzone.min.js");
-			js.add("resources/plugins/dropzone/dropzone-amd-module.min.js");
 
 			js.add("resources/plugins/coos/js/coos.min.js?v=" + VERSION);
-
-			// codemirror
-			css.add("resources/plugins/codemirror/lib/codemirror.css");
-			css.add("resources/plugins/codemirror/theme/lesser-dark.css");
-
-			// keymap
-			js.add("resources/plugins/codemirror/lib/codemirror.js");
-			js.add("resources/plugins/codemirror/keymap/sublime.js");
-			// js.add("resources/plugins/codemirror/keymap/vim.js");
-			// js.add("resources/plugins/codemirror/keymap/emacs.js");
-
-			// addon
-			css.add("resources/plugins/codemirror/addon/hint/show-hint.css");
-			js.add("resources/plugins/codemirror/addon/hint/show-hint.js");
-			js.add("resources/plugins/codemirror/addon/hint/anyword-hint.js");
-			js.add("resources/plugins/codemirror/addon/hint/css-hint.js");
-			js.add("resources/plugins/codemirror/addon/hint/html-hint.js");
-			js.add("resources/plugins/codemirror/addon/hint/javascript-hint.js");
-			js.add("resources/plugins/codemirror/addon/hint/sql-hint.js");
-			js.add("resources/plugins/codemirror/addon/hint/xml-hint.js");
-			js.add("resources/plugins/codemirror/addon/comment/comment.js");
-			js.add("resources/plugins/codemirror/addon/mode/overlay.js");
-			js.add("resources/plugins/codemirror/addon/mode/simple.js");
-			js.add("resources/plugins/codemirror/addon/selection/selection-pointer.js");
-			// mode
-			js.add("resources/plugins/codemirror/mode/css/css.js");
-			js.add("resources/plugins/codemirror/mode/javascript/javascript.js");
-			js.add("resources/plugins/codemirror/mode/htmlmixed/htmlmixed.js");
-			js.add("resources/plugins/codemirror/mode/xml/xml.js");
-			js.add("resources/plugins/codemirror/mode/clike/clike.js");
-			js.add("resources/plugins/codemirror/mode/properties/properties.js");
-			js.add("resources/plugins/codemirror/mode/markdown/markdown.js");
-			js.add("resources/plugins/codemirror/mode/yaml/yaml.js");
-			js.add("resources/plugins/codemirror/mode/vue/vue.js");
-			js.add("resources/plugins/codemirror/mode/sql/sql.js");
-			js.add("resources/plugins/codemirror/mode/shell/shell.js");
-			js.add("resources/plugins/codemirror/mode/sass/sass.js");
-			js.add("resources/plugins/codemirror/mode/python/python.js");
-			js.add("resources/plugins/codemirror/mode/powershell/powershell.js");
-			js.add("resources/plugins/codemirror/mode/php/php.js");
-			js.add("resources/plugins/codemirror/mode/nginx/nginx.js");
-			js.add("resources/plugins/codemirror/mode/http/http.js");
-			js.add("resources/plugins/codemirror/mode/nginx/nginx.js");
-			js.add("resources/plugins/codemirror/mode/go/go.js");
 
 			List<IDEPlugin> plugins = PluginHandler.getPlugins();
 

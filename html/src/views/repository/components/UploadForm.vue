@@ -79,18 +79,21 @@ export default {
         );
         let action = "/api/upload/" + source.token + "?";
         let url = _SERVER_URL + action;
-        $box.find(".dropzone").dropzone({
-          url: url,
-          addRemoveLinks: true,
-          method: "post",
-          filesizeBase: 1024,
-          sending: function(file, xhr, formData) {
-            formData.append("fullPath", file.fullPath);
-            formData.append("filesize", file.size);
-            formData.append("repeat", form.repeat);
-            formData.append("parent", form.parent);
-          },
-          success: function(file, response, e) {}
+
+        source.loadDropzoneRely(res => {
+          $box.find(".dropzone").dropzone({
+            url: url,
+            addRemoveLinks: true,
+            method: "post",
+            filesizeBase: 1024,
+            sending: function(file, xhr, formData) {
+              formData.append("fullPath", file.fullPath);
+              formData.append("filesize", file.size);
+              formData.append("repeat", form.repeat);
+              formData.append("parent", form.parent);
+            },
+            success: function(file, response, e) {}
+          });
         });
       });
 

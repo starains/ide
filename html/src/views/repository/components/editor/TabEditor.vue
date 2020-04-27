@@ -86,7 +86,12 @@ export default {
             this.initing = true;
             this.$nextTick(res => {
               delete this.need_reload;
-              this.init();
+              this.loading = true;
+              this.loading_text = "编辑器依赖组件加载中...";
+              source.loadEditorRely(res => {
+                this.loading = false;
+                this.init();
+              });
             });
           }
         }
