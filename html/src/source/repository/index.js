@@ -109,7 +109,7 @@ source.NOT_FOUND_REPOSITORY_BRANCH = null;
                 source.openFileByPath(one.path, openTab);
             });
         }
-        source.onLoadGit(value.git);
+        source.loadGitStatus();
     };
 })();
 

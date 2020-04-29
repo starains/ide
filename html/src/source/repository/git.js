@@ -1,5 +1,4 @@
-source.repository.tabs = [];
-source.repository.activeTab = null;
+source.repository.git = null;
 
 let git_nav = {
     title: 'Git', icon: 'coos-icon-git', value: 0, disabled: true, dot: true, type: 'success', onClick() {

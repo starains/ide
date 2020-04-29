@@ -67,8 +67,6 @@ public class RepositoryLoad extends RepositoryBase {
 
 		result.put("branchs", loadBranchs());
 
-		result.put("git", new RepositoryGit(param).load());
-
 		SpaceRepositoryOpenService spaceRepositoryOpenService = new SpaceRepositoryOpenService();
 
 		String userid = null;
