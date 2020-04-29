@@ -78,6 +78,9 @@ export default {
           '<div class="dropzone"><div class="am-text-success dz-message">将文件拖拽到此处<br />或点此打开文件管理器选择文件</div></div>'
         );
         let action = "/api/upload/" + source.token + "?";
+        if (action.startsWith("/")) {
+          action = action.substring(1);
+        }
         let url = _SERVER_URL + action;
 
         source.loadDropzoneRely(res => {

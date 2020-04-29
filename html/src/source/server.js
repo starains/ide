@@ -77,6 +77,9 @@
             if (data.path) {
                 action += '&path=' + data.path;
             }
+            if (action.startsWith('/')) {
+                action = action.substring(1);
+            }
             let url = _SERVER_URL + action;
             window.open(url);
         },
