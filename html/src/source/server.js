@@ -135,7 +135,7 @@
         status() {
             return new Promise((resolve, reject) => {
                 $.ajax({
-                    url: _SERVER_URL + "/api/validate",
+                    url: _SERVER_URL + "api/validate",
                     data: {},
                     type: "post",
                     beforeSend: function () { },
@@ -198,7 +198,7 @@
     let listen_error_count = 0;
     let listen = function () {
         $.ajax({
-            url: _SERVER_URL + "/api/listen",
+            url: _SERVER_URL + "api/listen",
             data: {},
             type: "post",
             beforeSend: function () { },
