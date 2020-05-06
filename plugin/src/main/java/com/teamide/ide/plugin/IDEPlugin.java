@@ -12,8 +12,6 @@ public interface IDEPlugin {
 
 	public String getVersion();
 
-	public String getOptionType();
-
 	public String getScriptClassName();
 
 	public List<IDEInput> getOptionInputs();

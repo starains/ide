@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceRepositoryOpenBean;
+import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.handler.SpacePermissionHandler;
 import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.processor.enums.ProjectModelType;
@@ -199,9 +200,9 @@ public class ProjectProcessor extends RepositoryProcessor {
 			break;
 
 		case SET_PLUGIN_OPTION:
-			String type = data.getString("type");
+			name = data.getString("name");
 			JSONObject option = data.getJSONObject("option");
-			value = new ProjectOption(this.param).saveOption(null, type, option);
+			value = new ProjectOption(this.param).saveOption(name, OptionType.PLUGIN, option);
 
 			spaceEventBean.set("option", option);
 			appendEvent(spaceEventBean);
@@ -209,8 +210,8 @@ public class ProjectProcessor extends RepositoryProcessor {
 			break;
 
 		case DELETE_PLUGIN_OPTION:
-			type = data.getString("type");
-			new ProjectOption(this.param).deleteOption(null, type);
+			name = data.getString("name");
+			new ProjectOption(this.param).deleteOption(name, OptionType.PLUGIN);
 
 			appendEvent(spaceEventBean);
 
@@ -253,8 +254,8 @@ public class ProjectProcessor extends RepositoryProcessor {
 			break;
 
 		case PLUGIN_OPTION:
-			String type = data.getString("type");
-			value = new ProjectOption(this.param).getOptionByType(type);
+			String name = data.getString("name");
+			value = new ProjectOption(this.param).getPluginOption(name);
 
 			break;
 		}

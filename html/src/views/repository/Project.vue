@@ -295,7 +295,7 @@ export default {
             one.plugin.optionInputs.length > 0
           ) {
             source
-              .load("PLUGIN_OPTION", { type: one.plugin.optionType }, data)
+              .load("PLUGIN_OPTION", { name: one.plugin.name }, data)
               .then(res => {
                 let option = res.value || {};
 
@@ -314,7 +314,7 @@ export default {
 
                         let param = {
                           option: option,
-                          type: one.plugin.optionType
+                          name: one.plugin.name
                         };
                         source
                           .do("SET_PLUGIN_OPTION", param, project)

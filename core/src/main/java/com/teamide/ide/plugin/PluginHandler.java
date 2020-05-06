@@ -142,9 +142,9 @@ public class PluginHandler {
 	public static PluginParam getParam(ProjectProcessorParam param, IDEPlugin plugin) {
 		ProjectOption projectOption = new ProjectOption(param);
 		JSONObject option = new JSONObject();
-		if (StringUtil.isNotEmpty(plugin.getOptionType())) {
+		if (StringUtil.isNotEmpty(plugin.getName())) {
 			try {
-				option = projectOption.getOptionByType(plugin.getOptionType());
+				option = projectOption.getPluginOption(plugin.getName());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

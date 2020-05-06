@@ -122,7 +122,6 @@ export default {
             }
             isNew = false;
           }
-          data.needclean = true;
 
           if (isChange) {
             let msg = "";

@@ -37,9 +37,9 @@ public class ProjectOption {
 		return options;
 	}
 
-	public JSONObject getOptionByType(String type) throws Exception {
+	public JSONObject getPluginOption(String name) throws Exception {
 
-		List<SpaceRepositoryOptionBean> options = queryOptions(null, type);
+		List<SpaceRepositoryOptionBean> options = queryOptions(null, OptionType.PLUGIN);
 		if (options.size() > 0) {
 			for (SpaceRepositoryOptionBean option : options) {
 				if (StringUtil.isEmpty(param.getProjectPath()) && StringUtil.isEmpty(option.getPath())) {
