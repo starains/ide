@@ -145,11 +145,13 @@ public class ProcessorLoad extends ProcessorBase {
 			break;
 		case CERTIFICATES:
 			type = data.getString("type");
-			List<CertificateBean> certificates = new CertificateService().query(session.getUser().getId(), type);
-			for (CertificateBean certificate : certificates) {
-				certificate.setPassword(null);
+			if (session.getUser() != null) {
+				List<CertificateBean> certificates = new CertificateService().query(session.getUser().getId(), type);
+				for (CertificateBean certificate : certificates) {
+					certificate.setPassword(null);
+				}
+				value = certificates;
 			}
-			value = certificates;
 			break;
 		}
 		return value;

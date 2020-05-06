@@ -111,7 +111,7 @@ export default {
     },
     doImport(table) {
       table.find = true;
-      source.plugin.app
+      source.plugin["app.designer"]
         .event(
           "toText",
           {
@@ -160,21 +160,23 @@ export default {
       data.name = this.databasename;
       this.loading = true;
       coos.trimArray(this.tables);
-      source.plugin.app.event("doTest", data, this.project).then(result => {
-        var value = result.value || [];
-        value.forEach(table => {
-          table.find = false;
-          if (this.app.context.TABLE) {
-            this.app.context.TABLE.forEach(one => {
-              if (one.name == table.name) {
-                table.find = true;
-              }
-            });
-          }
-          this.tables.push(table);
+      source.plugin["app.designer"]
+        .event("doTest", data, this.project)
+        .then(result => {
+          var value = result.value || [];
+          value.forEach(table => {
+            table.find = false;
+            if (this.app.context.TABLE) {
+              this.app.context.TABLE.forEach(one => {
+                if (one.name == table.name) {
+                  table.find = true;
+                }
+              });
+            }
+            this.tables.push(table);
+          });
+          this.loading = false;
         });
-        this.loading = false;
-      });
     }
   },
   mounted() {},
