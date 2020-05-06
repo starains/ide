@@ -57,8 +57,8 @@ public class RepositoryCreate extends RepositoryBase {
 						}
 					});
 					SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-					List<SpaceRepositoryOptionBean> options = service.query(this.param.getSession(),
-							this.param.getSpaceid(), null, null, null, "");
+					List<SpaceRepositoryOptionBean> options = service.query(this.param.getSpaceid(), copybranch, null,
+							null, "");
 
 					for (SpaceRepositoryOptionBean option : options) {
 						option.setBranch(branch);

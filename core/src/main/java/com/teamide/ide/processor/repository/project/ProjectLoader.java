@@ -11,9 +11,12 @@ import java.util.Map;
 
 import org.apache.maven.model.Model;
 
+import com.teamide.ide.bean.SpaceRepositoryOptionBean;
+import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.plugin.PluginHandler;
+import com.teamide.ide.processor.param.RepositoryOption;
 import com.teamide.ide.processor.repository.hanlder.RepositoryHanlder;
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
@@ -31,46 +34,40 @@ public class ProjectLoader {
 		init();
 	}
 
-	public void appendProjects(File folder) {
-
-		if (folder == null || folder.isFile()) {
-			return;
-		}
-		if (folder.getName().equals(".git") || folder.getName().equals("target")
-				|| folder.getName().equals("node_modules")) {
-			return;
-		}
-		File pomFile = new File(folder, "pom.xml");
-		if (pomFile.exists()) {
-			String path = param.getPath(folder);
-
-			if (project_map.get(path) == null) {
-				ProjectBean project = createProject(path);
-				if (project != null) {
-					project_map.put(path, project);
-					project_caches.add(project);
-				}
-			}
-		}
-
-		File[] files = folder.listFiles();
-		for (File file : files) {
-			if (file.isDirectory()) {
-				appendProjects(file);
-			}
-		}
-	}
-
 	public void init() {
 		project_caches.clear();
 		project_map.clear();
-
-		ProjectBean project = createProject("");
-		if (project != null) {
-			project_caches.add(project);
-			project_map.put("", project);
+		List<SpaceRepositoryOptionBean> repositoryOptions = new ArrayList<SpaceRepositoryOptionBean>();
+		try {
+			repositoryOptions = new RepositoryOption(param).queryOptions(null, OptionType.PROJECT);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		appendProjects(param.getSourceFolder());
+
+		boolean findRootProject = false;
+		for (SpaceRepositoryOptionBean repositoryOption : repositoryOptions) {
+			if (StringUtil.isEmpty(repositoryOption.getPath())) {
+				findRootProject = true;
+			}
+		}
+		if (!findRootProject) {
+			ProjectBean project = createProject("");
+			if (project != null) {
+				project_caches.add(project);
+				project_map.put("", project);
+			}
+		}
+		for (SpaceRepositoryOptionBean repositoryOption : repositoryOptions) {
+			String path = repositoryOption.getPath();
+			if (StringUtil.isEmpty(path)) {
+				path = "";
+			}
+			ProjectBean project = createProject(path);
+			if (project != null) {
+				project_caches.add(project);
+				project_map.put(path, project);
+			}
+		}
 
 	}
 
@@ -179,7 +176,7 @@ public class ProjectLoader {
 
 	}
 
-	static long MAX_LENGTH = 1024 * 1024 * 5;
+	static long MAX_LENGTH = 1024 * 1024 * 10;
 
 	public static boolean isBinary(File file) {
 		boolean isBinary = false;

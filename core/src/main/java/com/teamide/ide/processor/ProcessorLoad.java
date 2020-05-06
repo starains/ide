@@ -5,6 +5,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.client.ClientSession;
+import com.teamide.ide.bean.CertificateBean;
 import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.bean.UserPreferenceBean;
@@ -22,6 +23,7 @@ import com.teamide.ide.service.INginxConfigService;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.ide.service.IUserService;
 import com.teamide.ide.service.impl.RemoteService;
+import com.teamide.ide.service.impl.CertificateService;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.service.impl.InstallService;
 import com.teamide.ide.service.impl.NginxConfigService;
@@ -140,6 +142,14 @@ public class ProcessorLoad extends ProcessorBase {
 			break;
 		case PLUGINS:
 			value = PluginHandler.getPlugins();
+			break;
+		case CERTIFICATES:
+			type = data.getString("type");
+			List<CertificateBean> certificates = new CertificateService().query(session.getUser().getId(), type);
+			for (CertificateBean certificate : certificates) {
+				certificate.setPassword(null);
+			}
+			value = certificates;
 			break;
 		}
 		return value;

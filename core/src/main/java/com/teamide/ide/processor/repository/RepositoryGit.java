@@ -21,11 +21,14 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.ide.bean.CertificateBean;
 import com.teamide.ide.enums.GitWorkStatus;
 import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.git.JGitWorker;
 import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.param.RepositoryOption;
+import com.teamide.ide.service.impl.CertificateService;
+import com.teamide.ide.util.AESTool;
 import com.teamide.util.StringUtil;
 
 public class RepositoryGit extends RepositoryBase {
@@ -76,19 +79,6 @@ public class RepositoryGit extends RepositoryBase {
 		}
 	}
 
-	public JSONObject loadCertificateOption() throws Exception {
-
-		return new RepositoryOption(this.param).getOption(null, OptionType.GIT_CERTIFICATE);
-	}
-
-	public void saveCertificateOption(String username, String password) throws Exception {
-		JSONObject json = new JSONObject();
-		json.put("username", username);
-		json.put("password", password);
-
-		new RepositoryOption(this.param).saveOption(null, OptionType.GIT_CERTIFICATE, json);
-	}
-
 	public void checkLocalBranch() throws Exception {
 		if (!findGit()) {
 			return;
@@ -114,7 +104,6 @@ public class RepositoryGit extends RepositoryBase {
 		this.getLog().info("git load");
 
 		JSONObject result = new JSONObject();
-		result.put("certificate", loadCertificateOption());
 		result.put("option", new RepositoryOption(this.param).getOption(null, OptionType.GIT));
 		if (!findGit()) {
 			result.put("findGit", false);
@@ -214,13 +203,12 @@ public class RepositoryGit extends RepositoryBase {
 		}
 	}
 
-	public JSONObject clone(String uri, String branch, String remote, String username, String password)
-			throws Exception {
+	public JSONObject clone(String uri, String branch, String remote, String certificateid) throws Exception {
 
 		this.getLog().info("git clone");
 
 		JSONObject result = new JSONObject();
-		worker.clone(uri, branch, remote, getCredentialsProvider(username, password));
+		worker.clone(uri, branch, remote, getCredentialsProvider(certificateid));
 		return result;
 	}
 
@@ -488,7 +476,7 @@ public class RepositoryGit extends RepositoryBase {
 		return json;
 	}
 
-	public JSONObject pull(String remote, String remoteBranchName, String username, String password) throws Exception {
+	public JSONObject pull(String remote, String remoteBranchName, String certificateid) throws Exception {
 
 		this.getLog().info("git pull,  remote:" + remote + ",  remoteBranchName:" + remoteBranchName);
 		JSONObject result = new JSONObject();
@@ -506,7 +494,7 @@ public class RepositoryGit extends RepositoryBase {
 			public void run() {
 				try {
 
-					worker.pull(remote, remoteBranchName, getCredentialsProvider(username, password));
+					worker.pull(remote, remoteBranchName, getCredentialsProvider(certificateid));
 					setGitWorkStatus(GitWorkStatus.PULLED);
 					setGitWorkMessage(null);
 				} catch (Exception e) {
@@ -521,7 +509,7 @@ public class RepositoryGit extends RepositoryBase {
 	}
 
 	public JSONObject push(JSONArray paths, String message, String remote, String branchName, String remoteBranchName,
-			String username, String password) throws Exception {
+			String certificateid) throws Exception {
 		this.getLog().info("git push,  remote:" + remote + ",  remoteBranchName:" + remoteBranchName);
 
 		JSONObject result = new JSONObject();
@@ -539,7 +527,7 @@ public class RepositoryGit extends RepositoryBase {
 			public void run() {
 				try {
 					// 检查最新版本
-					FetchResult fetchResult = worker.fetch(remote, getCredentialsProvider(username, password));
+					FetchResult fetchResult = worker.fetch(remote, getCredentialsProvider(certificateid));
 					Collection<TrackingRefUpdate> updates = fetchResult.getTrackingRefUpdates();
 					if (updates != null && updates.size() > 0) {
 						throw new Exception("有最新代码需要更新，请先更新代码。");
@@ -557,7 +545,7 @@ public class RepositoryGit extends RepositoryBase {
 
 					commit(message);
 
-					worker.push(remote, branchName, remoteBranchName, getCredentialsProvider(username, password));
+					worker.push(remote, branchName, remoteBranchName, getCredentialsProvider(certificateid));
 					setGitWorkStatus(GitWorkStatus.PUSHED);
 					setGitWorkMessage(null);
 				} catch (Exception e) {
@@ -683,12 +671,18 @@ public class RepositoryGit extends RepositoryBase {
 		return result;
 	}
 
-	public UsernamePasswordCredentialsProvider getCredentialsProvider(String username, String password)
-			throws Exception {
-
-		saveCertificateOption(username, password);
-		if (StringUtil.isNotEmpty(username) && StringUtil.isNotEmpty(password)) {
-			return new UsernamePasswordCredentialsProvider(username, password);
+	public UsernamePasswordCredentialsProvider getCredentialsProvider(String certificateid) throws Exception {
+		if (StringUtil.isNotEmpty(certificateid)) {
+			CertificateService certificateService = new CertificateService();
+			CertificateBean certificate = certificateService.get(certificateid);
+			if (certificate != null) {
+				String username = certificate.getUsername();
+				String password = certificate.getPassword();
+				if (StringUtil.isNotEmpty(username) && StringUtil.isNotEmpty(password)) {
+					password = AESTool.decode(password);
+					return new UsernamePasswordCredentialsProvider(username, password);
+				}
+			}
 		}
 		return null;
 	}

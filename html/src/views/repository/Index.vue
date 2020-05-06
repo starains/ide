@@ -38,7 +38,7 @@
 
       <Starter :repository="repository"></Starter>
 
-      <GitCertificate ref="git-certificate"></GitCertificate>
+      <CertificateChoose ref="certificate-choose"></CertificateChoose>
       <GitRemote ref="git-remote"></GitRemote>
       <GitPlus ref="git-plus"></GitPlus>
       <GitPush ref="git-push"></GitPush>
@@ -57,7 +57,7 @@ import Tabs from "@/views/repository/Tabs";
 import Starter from "@/views/repository/Starter";
 import Contextmenu from "@/views/components/Contextmenu";
 
-import GitCertificate from "@/views/repository/components/git/GitCertificate";
+import CertificateChoose from "@/views/components/CertificateChoose";
 import GitRemote from "@/views/repository/components/git/GitRemote";
 import GitPlus from "@/views/repository/components/git/GitPlus";
 import GitPush from "@/views/repository/components/git/GitPush";
@@ -74,7 +74,7 @@ export default {
     Tabs,
     Starter,
     Contextmenu,
-    GitCertificate,
+    CertificateChoose,
     GitRemote,
     GitPlus,
     GitPush,
@@ -92,7 +92,7 @@ export default {
   methods: {},
   mounted() {
     source.gitRemoteForm = this.$refs["git-remote"];
-    source.gitCertificateForm = this.$refs["git-certificate"];
+    source.certificateChoose = this.$refs["certificate-choose"];
     source.gitPlusForm = this.$refs["git-plus"];
     source.gitPushForm = this.$refs["git-push"];
     source.gitRevertForm = this.$refs["git-revert"];

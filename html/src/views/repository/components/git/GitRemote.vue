@@ -143,8 +143,8 @@ export default {
                 "]版本，切换操作将清空仓库文件，是否切换？";
             }
 
-            source.gitCertificateForm.show().then(certificate => {
-              data.certificate = certificate;
+            source.certificateChoose.show().then(certificateid => {
+              data.certificateid = certificateid;
               coos.confirm(msg).then(
                 res => {
                   source.do("GIT_REMOTE_ADD", data).then(res => {

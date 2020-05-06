@@ -3,12 +3,14 @@ package com.teamide.ide.processor;
 import java.util.Date;
 
 import com.alibaba.fastjson.JSONObject;
+import com.teamide.ide.util.AESTool;
 import com.teamide.ide.util.PasswordMD5Tool;
 import com.teamide.ide.util.TokenUtil;
 import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.IDEShare;
+import com.teamide.ide.bean.CertificateBean;
 import com.teamide.ide.bean.EnvironmentBean;
 import com.teamide.ide.bean.NginxConfigBean;
 import com.teamide.ide.bean.RemoteBean;
@@ -31,6 +33,7 @@ import com.teamide.ide.service.ILoginService;
 import com.teamide.ide.service.INginxConfigService;
 import com.teamide.ide.service.IUserService;
 import com.teamide.ide.service.impl.BaseService;
+import com.teamide.ide.service.impl.CertificateService;
 import com.teamide.ide.service.impl.ConfigureService;
 import com.teamide.ide.service.impl.RemoteService;
 import com.teamide.ide.service.impl.EnvironmentService;
@@ -311,6 +314,34 @@ public class Processor extends ProcessorLoad {
 				user.setStatus(UserStatus.OK.getValue());
 				user.setUnlocktime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
 				new UserService().update(param.getSession(), user);
+			}
+			break;
+
+		case CERTIFICATE_CREATE:
+
+			CertificateBean certificate = data.toJavaObject(CertificateBean.class);
+			certificate.setUserid(param.getSession().getUser().getId());
+			if (StringUtil.isNotEmpty(certificate.getPassword())) {
+				certificate.setPassword(AESTool.encode(certificate.getPassword()));
+			}
+			new CertificateService().save(param.getSession(), certificate);
+			break;
+		case CERTIFICATE_UPDATE:
+
+			id = data.getString("id");
+			if (StringUtil.isNotEmpty(id)) {
+				certificate = data.toJavaObject(CertificateBean.class);
+				if (StringUtil.isNotEmpty(certificate.getPassword())) {
+					certificate.setPassword(AESTool.encode(certificate.getPassword()));
+				}
+				new CertificateService().save(param.getSession(), certificate);
+			}
+			break;
+		case CERTIFICATE_DELETE:
+			id = data.getString("id");
+			if (StringUtil.isNotEmpty(id)) {
+				certificate = data.toJavaObject(CertificateBean.class);
+				new CertificateService().delete(param.getSession(), certificate);
 			}
 			break;
 		}

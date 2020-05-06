@@ -30,6 +30,8 @@ public enum ModelType {
 
 	SEARCH_SPACES("SEARCH_SPACES", "搜索空间", ModelDataType.PAGE),
 
+	CERTIFICATES("CERTIFICATES", "密钥", ModelDataType.LIST),
+
 	;
 
 	public static ModelType get(String value) {

@@ -20,8 +20,8 @@ public class RepositoryOption {
 	public void deleteOption(String name, OptionType type) throws Exception {
 
 		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-		List<SpaceRepositoryOptionBean> options = service.query(param.getSession(), param.getSpaceid(),
-				param.getBranch(), null, name, type);
+		List<SpaceRepositoryOptionBean> options = service.query(param.getSpaceid(), param.getBranch(), null, name,
+				type);
 		for (SpaceRepositoryOptionBean option : options) {
 			service.delete(option.getId());
 		}
@@ -44,12 +44,12 @@ public class RepositoryOption {
 
 	public List<SpaceRepositoryOptionBean> queryOptions(String name, OptionType type) throws Exception {
 		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-		return service.query(param.getSession(), param.getSpaceid(), param.getBranch(), null, name, type);
+		return service.query(param.getSpaceid(), param.getBranch(), null, name, type);
 	}
 
 	public List<SpaceRepositoryOptionBean> queryOptions(String name, String type) throws Exception {
 		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-		return service.query(param.getSession(), param.getSpaceid(), param.getBranch(), null, name, type);
+		return service.query(param.getSpaceid(), param.getBranch(), null, name, type);
 	}
 
 	public JSONObject saveOption(String name, OptionType type, JSONObject json) throws Exception {
@@ -66,9 +66,6 @@ public class RepositoryOption {
 		}
 		if (option == null) {
 			option = new SpaceRepositoryOptionBean();
-		}
-		if (param.getSession() != null && param.getSession().getUser() != null) {
-			option.setUserid(param.getSession().getUser().getId());
 		}
 		option.setName(name);
 		option.setPath(null);

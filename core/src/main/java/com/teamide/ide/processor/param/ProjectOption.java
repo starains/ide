@@ -24,8 +24,8 @@ public class ProjectOption {
 	public void deleteOption(String name, String type) throws Exception {
 
 		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-		List<SpaceRepositoryOptionBean> options = service.query(param.getSession(), param.getSpaceid(),
-				param.getBranch(), param.getProjectPath(), name, type);
+		List<SpaceRepositoryOptionBean> options = service.query(param.getSpaceid(), param.getBranch(),
+				param.getProjectPath(), name, type);
 		for (SpaceRepositoryOptionBean option : options) {
 			service.delete(option.getId());
 		}
@@ -39,7 +39,7 @@ public class ProjectOption {
 
 	public JSONObject getOptionByType(String type) throws Exception {
 
-		List<SpaceRepositoryOptionBean> options = queryOptions(null, OptionType.APP);
+		List<SpaceRepositoryOptionBean> options = queryOptions(null, type);
 		if (options.size() > 0) {
 			for (SpaceRepositoryOptionBean option : options) {
 				if (StringUtil.isEmpty(param.getProjectPath()) && StringUtil.isEmpty(option.getPath())) {
@@ -62,14 +62,12 @@ public class ProjectOption {
 
 	public List<SpaceRepositoryOptionBean> queryOptions(String name, OptionType type) throws Exception {
 		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-		return service.query(param.getSession(), param.getSpaceid(), param.getBranch(), param.getProjectPath(), name,
-				type);
+		return service.query(param.getSpaceid(), param.getBranch(), param.getProjectPath(), name, type);
 	}
 
 	public List<SpaceRepositoryOptionBean> queryOptions(String name, String type) throws Exception {
 		SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-		return service.query(param.getSession(), param.getSpaceid(), param.getBranch(), param.getProjectPath(), name,
-				type);
+		return service.query(param.getSpaceid(), param.getBranch(), param.getProjectPath(), name, type);
 	}
 
 	public JSONObject saveOption(String name, OptionType type, JSONObject json) throws Exception {
@@ -90,9 +88,6 @@ public class ProjectOption {
 		}
 		if (option == null) {
 			option = new SpaceRepositoryOptionBean();
-		}
-		if (param.getSession() != null && param.getSession().getUser() != null) {
-			option.setUserid(param.getSession().getUser().getId());
 		}
 		option.setName(name);
 		option.setPath(param.getProjectPath());

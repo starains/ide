@@ -62,6 +62,12 @@ public enum ProcessorType {
 
 	PLUGIN_DELETE("PLUGIN_DELETE", "插件删除"),
 
+	CERTIFICATE_CREATE("CERTIFICATE_CREATE", "密钥创建"),
+
+	CERTIFICATE_UPDATE("CERTIFICATE_UPDATE", "密钥修改"),
+
+	CERTIFICATE_DELETE("CERTIFICATE_DELETE", "密钥删除"),
+
 	;
 
 	private ProcessorType(String value, String text) {

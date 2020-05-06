@@ -17,6 +17,12 @@ public class ProjectBean {
 
 	private final JSONObject attribute = new JSONObject();
 
+	private final JSONObject option = new JSONObject();
+
+	public JSONObject getOption() {
+		return option;
+	}
+
 	public void setAttribute(String key, Object value) {
 		this.attribute.put(key, value);
 	}

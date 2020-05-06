@@ -4,13 +4,9 @@ public enum OptionType {
 
 	GIT,
 
-	GIT_CERTIFICATE,
-
 	STARTER,
 
-	DEPLOYER,
-
-	APP,
+	PROJECT,
 
 	;
 }

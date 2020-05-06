@@ -7,34 +7,26 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.constant.TableInfoConstant;
 import com.teamide.util.StringUtil;
 
-@Table(name = TableInfoConstant.SPACE_REPOSITORY_OPTION)
-public class SpaceRepositoryOptionBean extends BaseBean {
+@Table(name = TableInfoConstant.CERTIFICATE_INFO)
+public class CertificateBean extends BaseBean {
 
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "spaceid")
-	private String spaceid;
+	@Column(name = "username")
+	private String username;
 
-	@Column(name = "branch")
-	private String branch;
+	@Column(name = "password")
+	private String password;
+
+	@Column(name = "userid")
+	private String userid;
 
 	@Column(name = "type")
 	private String type;
 
-	@Column(name = "path")
-	private String path;
-
 	@Column(name = "option", length = 5000)
 	private String option;
-
-	public String getBranch() {
-		return branch;
-	}
-
-	public void setBranch(String branch) {
-		this.branch = branch;
-	}
 
 	public String getName() {
 		return name;
@@ -44,12 +36,28 @@ public class SpaceRepositoryOptionBean extends BaseBean {
 		this.name = name;
 	}
 
-	public String getSpaceid() {
-		return spaceid;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setSpaceid(String spaceid) {
-		this.spaceid = spaceid;
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
 	}
 
 	public String getType() {
@@ -58,14 +66,6 @@ public class SpaceRepositoryOptionBean extends BaseBean {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
 	}
 
 	public String getOption() {

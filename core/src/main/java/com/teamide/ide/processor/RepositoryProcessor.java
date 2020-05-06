@@ -101,14 +101,8 @@ public class RepositoryProcessor extends SpaceProcessor {
 			String url = data.getString("url");
 			gitBranch = data.getString("gitBranch");
 			String gitRemoteName = data.getString("gitRemoteName");
-			String username = null;
-			String password = null;
-			JSONObject certificate = data.getJSONObject("certificate");
-			if (certificate != null) {
-				username = certificate.getString("username");
-				password = certificate.getString("password");
-			}
-			value = new RepositoryGit(param).clone(url, gitBranch, gitRemoteName, username, password);
+			String certificateid = data.getString("certificateid");
+			value = new RepositoryGit(param).clone(url, gitBranch, gitRemoteName, certificateid);
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
@@ -125,15 +119,9 @@ public class RepositoryProcessor extends SpaceProcessor {
 			gitRemoteName = data.getString("gitRemoteName");
 			String gitRemoteBranch = data.getString("gitRemoteBranch");
 
-			certificate = data.getJSONObject("certificate");
-			username = null;
-			password = null;
-			if (certificate != null) {
-				username = certificate.getString("username");
-				password = certificate.getString("password");
-			}
+			certificateid = data.getString("certificateid");
 
-			new RepositoryGit(param).pull(gitRemoteName, gitRemoteBranch, username, password);
+			new RepositoryGit(param).pull(gitRemoteName, gitRemoteBranch, certificateid);
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
@@ -170,16 +158,8 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 			paths = data.getJSONArray("paths");
 
-			certificate = data.getJSONObject("certificate");
-			username = null;
-			password = null;
-			if (certificate != null) {
-				username = certificate.getString("username");
-				password = certificate.getString("password");
-			}
-
-			new RepositoryGit(param).push(paths, message, gitRemoteName, branchName, gitRemoteBranch, username,
-					password);
+			certificateid = data.getString("certificateid");
+			new RepositoryGit(param).push(paths, message, gitRemoteName, branchName, gitRemoteBranch, certificateid);
 			data.remove("paths");
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);

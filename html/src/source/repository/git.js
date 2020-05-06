@@ -176,8 +176,8 @@ source.repository.navs.push(git_branche_nav);
         let data = {};
         data.gitRemoteName = source.repository.git.option.gitRemoteName;
         data.gitRemoteBranch = source.repository.git.option.gitRemoteBranch;
-        source.gitCertificateForm.show().then(certificate => {
-            data.certificate = certificate;
+        source.certificateChoose.show().then(certificateid => {
+            data.certificateid = certificateid;
             source.do("GIT_PULL", data).then(res => {
                 if (res.errcode == 0) {
                     source.loadGitWorkStatus();
