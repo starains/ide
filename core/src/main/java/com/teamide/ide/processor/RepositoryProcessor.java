@@ -181,8 +181,15 @@ public class RepositoryProcessor extends SpaceProcessor {
 			break;
 		case GIT_REMOTE_ADD:
 			gitRemoteName = data.getString("gitRemoteName");
+			gitRemoteBranch = data.getString("gitRemoteBranch");
 			url = data.getString("url");
-			new RepositoryOption(this.param).saveOption(null, OptionType.GIT, data);
+
+			JSONObject option = new JSONObject();
+			option.put("gitRemoteName", gitRemoteName);
+			option.put("gitRemoteBranch", gitRemoteBranch);
+			option.put("url", url);
+
+			new RepositoryOption(this.param).saveOption(null, OptionType.GIT, option);
 
 			if (data.getBooleanValue("needclean")) {
 				File sourceFolder = param.getSourceFolder();
@@ -219,7 +226,12 @@ public class RepositoryProcessor extends SpaceProcessor {
 			url = data.getString("url");
 			gitRemoteBranch = data.getString("gitRemoteBranch");
 
-			new RepositoryOption(this.param).saveOption(null, OptionType.GIT, data);
+			option = new JSONObject();
+			option.put("gitRemoteName", gitRemoteName);
+			option.put("gitRemoteBranch", gitRemoteBranch);
+			option.put("url", url);
+
+			new RepositoryOption(this.param).saveOption(null, OptionType.GIT, option);
 
 			value = new RepositoryGit(param).remoteSetUrl(gitRemoteName, url);
 
@@ -233,7 +245,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 				new RepositoryStarter(param).deploy(token);
 			} else {
 				String path = data.getString("path");
-				JSONObject option = data.getJSONObject("option");
+				option = data.getJSONObject("option");
 				new RepositoryStarter(param).deploy(path, option);
 
 				spaceEventBean.set("path", path);
@@ -282,7 +294,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 			break;
 		case SET_STARTER_OPTION:
-			JSONObject option = data.getJSONObject("option");
+			option = data.getJSONObject("option");
 			String name = option.getString("name");
 			value = new RepositoryOption(this.param).saveOption(name, OptionType.STARTER, option);
 

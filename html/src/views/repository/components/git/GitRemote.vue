@@ -124,6 +124,7 @@ export default {
           }
 
           if (isChange) {
+            data.needclean = true;
             let msg = "";
 
             if (isNew) {
