@@ -65,12 +65,6 @@ public class JavaShell extends Shell {
 			}
 		}
 
-		if (!StringUtil.isEmpty(java_envp)) {
-			run.append(" ");
-			run.append(java_envp);
-			run.append(" ");
-		}
-
 		if ((lib_folders != null && lib_folders.size() > 0) || (class_folders != null && class_folders.size() > 0)) {
 			run.append(" -classpath ");
 			if (lib_folders != null) {
@@ -106,6 +100,12 @@ public class JavaShell extends Shell {
 		// run.append(" > " + logFile.getAbsolutePath());
 		// }
 		run.append(" ");
+
+		if (!StringUtil.isEmpty(java_envp)) {
+			run.append(" ");
+			run.append(java_envp);
+			run.append(" ");
+		}
 
 		shell.add(run.toString());
 
@@ -145,12 +145,6 @@ public class JavaShell extends Shell {
 			}
 		}
 
-		if (!StringUtil.isEmpty(java_envp)) {
-			run.append(" ");
-			run.append(java_envp);
-			run.append(" ");
-		}
-
 		if ((lib_folders != null && lib_folders.size() > 0) || (class_folders != null && class_folders.size() > 0)) {
 			run.append(" -classpath ");
 			if (lib_folders != null) {
@@ -179,6 +173,12 @@ public class JavaShell extends Shell {
 		if (!StringUtil.isEmpty(main)) {
 			run.append(" ");
 			run.append(main);
+			run.append(" ");
+		}
+
+		if (!StringUtil.isEmpty(java_envp)) {
+			run.append(" ");
+			run.append(java_envp);
 			run.append(" ");
 		}
 

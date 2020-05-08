@@ -226,18 +226,30 @@ public class StarterEventProcessor extends StarterParam {
 		if (StringUtil.isEmpty(pid)) {
 			return;
 		}
-		getLog().info("kill pid " + pid);
 		TerminalProcess process = new TerminalProcess();
 		String command = null;
 		if (Platform.isWindows()) {
 			command = "taskkill /PID " + pid + " /F /T";
 		} else {
-
+			getLog().info("pkill pid " + pid);
 			// 根据父进程编号杀死子进程
-			process.process("pkill -9 -P " + pid, null, null);
-			command = "kill -9 " + pid;
+			process.process("pkill -9 -P " + pid, null, new TerminalProcessListener() {
+				@Override
+				public void onStop() {
+				}
 
+				@Override
+				public void onStart(long pid) {
+				}
+
+				@Override
+				public void onLog(String line) {
+					getLog().info(line);
+				}
+			});
+			command = "kill -9 " + pid;
 		}
+		getLog().info("kill pid " + pid);
 		process.process(command, null, listener);
 	}
 
