@@ -232,7 +232,11 @@ public class StarterEventProcessor extends StarterParam {
 		if (Platform.isWindows()) {
 			command = "taskkill /PID " + pid + " /F /T";
 		} else {
+
+			// 根据父进程编号杀死子进程
+			process.process("pkill -9 -P " + pid, null, null);
 			command = "kill -9 " + pid;
+
 		}
 		process.process(command, null, listener);
 	}
