@@ -11,13 +11,19 @@ import App from './App'
 import router from './router'
 import store from './store'
 
+import { PopupManager } from 'element-ui/lib/utils/popup'
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
+window.ElementUI = ElementUI;
 /* eslint-disable no-new */
 window.ide_main = function () {
-  coos.startZIndex = 2000;
+
+  coos.getNextZIndex = function () {
+    return PopupManager.nextZIndex();
+  };
+
   Vue.prototype.coos = coos;
   Vue.prototype.app = app;
   Vue.prototype.source = source;
