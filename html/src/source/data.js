@@ -74,25 +74,8 @@
                 if (res.errcode == 0) {
                     if (type == 'FILE_CREATE' || type == 'FILE_SAVE' || type == 'FILE_RENAME' || type == 'FILE_DELETE' || type == 'FILE_MOVE') {
                         source.loadGitStatus();
+                        source.plugin.onFileEvent({ type: type, data: data, project: project });
 
-                        if (project != null) {
-                            let needLoadApp = false;
-                            let app = source.getProjectApp(project);
-                            if (app && app.path_model_type) {
-                                Object.keys(app.path_model_type).forEach(key => {
-                                    if (data.path && data.path.startsWith(key)) {
-                                        needLoadApp = true;
-                                    }
-                                    if (data.parentPath && data.parentPath.startsWith(key)) {
-                                        needLoadApp = true;
-                                    }
-                                });
-                            }
-
-                            if (needLoadApp) {
-                                source.loadApp(project);
-                            }
-                        }
                     }
                 } else if (res.errcode == '10001000') {
                     source.toLogin();

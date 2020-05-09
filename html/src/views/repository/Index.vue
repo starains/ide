@@ -45,7 +45,6 @@
       <GitRevert ref="git-revert"></GitRevert>
       <StarterForm ref="starter-form"></StarterForm>
       <BranchCreate ref="branch-create"></BranchCreate>
-      <TableImport ref="table-import"></TableImport>
       <UploadForm ref="upload-form"></UploadForm>
     </div>
   </div>
@@ -64,7 +63,6 @@ import GitPush from "@/views/repository/components/git/GitPush";
 import GitRevert from "@/views/repository/components/git/GitRevert";
 import StarterForm from "@/views/repository/components/starter/StarterForm";
 import BranchCreate from "@/views/repository/components/branch/BranchCreate";
-import TableImport from "@/views/repository/components/table/TableImport";
 import UploadForm from "@/views/repository/components/UploadForm";
 
 export default {
@@ -81,8 +79,7 @@ export default {
     GitRevert,
     StarterForm,
     BranchCreate,
-    UploadForm,
-    TableImport
+    UploadForm
   },
   data() {
     return { source: source };
@@ -98,7 +95,6 @@ export default {
     source.gitRevertForm = this.$refs["git-revert"];
     source.starterForm = this.$refs["starter-form"];
     source.branchCreateForm = this.$refs["branch-create"];
-    source.tableImportForm = this.$refs["table-import"];
     source.uploadForm = this.$refs["upload-form"];
 
     this.repository.contextmenu.callShow = this.$refs["context-menu"].callShow;
