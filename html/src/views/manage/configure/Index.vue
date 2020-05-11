@@ -4,7 +4,7 @@
       <div class="coos-row">
         <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange">系统设置</h3>
 
-        <h4 class="pd-10 color-grey">账号设置</h4>
+        <h4 class="color-grey">账号设置</h4>
         <el-form
           class="coos-row"
           :model="account"
@@ -25,7 +25,7 @@
           </el-form-item>
         </el-form>
 
-        <h4 class="pd-10 color-grey">登录设置</h4>
+        <h4 class="color-grey">登录设置</h4>
         <el-form
           class="coos-row"
           :model="login"
@@ -52,7 +52,7 @@
           </el-form-item>
         </el-form>
 
-        <h4 class="pd-10 color-grey">空间设置</h4>
+        <h4 class="color-grey">空间设置</h4>
         <el-form
           class="coos-row"
           :model="space"
@@ -70,7 +70,7 @@
           </el-form-item>
         </el-form>
 
-        <h4 class="pd-10 color-grey">仓库设置</h4>
+        <h4 class="color-grey">仓库设置</h4>
         <el-form
           class="coos-row"
           :model="repository"
@@ -85,7 +85,7 @@
           </el-form-item>
         </el-form>
 
-        <h4 class="pd-10 color-grey">Nginx设置</h4>
+        <h4 class="color-grey">Nginx设置</h4>
         <el-form
           class="coos-row"
           :model="nginx"

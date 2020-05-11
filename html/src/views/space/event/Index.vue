@@ -21,9 +21,9 @@
                 :key="index + '-' + index_"
                 class="mgb-10"
               >
-                <h4 class="pdb-5">
+                <div class="pdb-5">
                   <span class="color-orange">{{one.name}}</span>
-                </h4>
+                </div>
                 <p class="font-xs">
                   <template
                     v-if="one.type == 'SPACE_CREATE' || one.type == 'SPACE_UPDATE' || one.type == 'SPACE_DELETE'"
@@ -259,5 +259,8 @@ export default {
   background: #efefef;
   padding: 10px;
   border-radius: 5px;
+}
+.space-event-page .el-card__body{
+  padding: 10px 10px 0px 10px;
 }
 </style>

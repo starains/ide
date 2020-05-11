@@ -1,5 +1,5 @@
 <template>
-  <div class="app-min-page" style="width: 1024px;">
+  <div class="app-min-page" style="width: 1200px;">
     <div class="coos-row">
       <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange">NginxConfig管理</h3>
       <div class="coos-row pd-10">
@@ -14,8 +14,8 @@
           <el-table-column prop="content" label="内容"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <a class="coos-btn coos-btn-xs bg-blue" @click="toUpdate(scope.row)">修改</a>
-              <a class="coos-btn coos-btn-xs bg-red" @click="doDelete(scope.row)">删除</a>
+              <a class="coos-btn bg-blue" @click="toUpdate(scope.row)">修改</a>
+              <a class="coos-btn bg-red" @click="doDelete(scope.row)">删除</a>
             </template>
           </el-table-column>
         </el-table>

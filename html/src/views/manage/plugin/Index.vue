@@ -1,5 +1,5 @@
 <template>
-  <div class="app-min-page">
+  <div class="app-min-page" style="width: 1200px;">
     <div class="coos-row">
       <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange">插件管理</h3>
       <div class="coos-row pd-10">

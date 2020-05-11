@@ -4,6 +4,8 @@ import Vue from 'vue'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
+import 'prismjs/themes/prism.css';
+
 import app from "@/common/js/app";
 import source from "@/source/index";
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-min-page" style="width: 1024px;">
+  <div class="app-min-page" style="width: 1200px;">
     <div class="coos-row">
       <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange">用户管理</h3>
       <div class="coos-row pd-10">
@@ -102,7 +102,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item>
+        <el-form-item width="200px">
           <el-button type="primary" @click="formSave()" :size="size">确定</el-button>
           <el-button @click="formCancel()" :size="size">取消</el-button>
         </el-form-item>

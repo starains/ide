@@ -3,7 +3,10 @@
   <div class="app">
     <Header></Header>
     <template v-if="source.installed">
-      <template v-if="source.space == null">
+      <template v-if="$route.path == '/doc' || $route.path.startsWith('/doc/')">
+        <Doc></Doc>
+      </template>
+      <template v-else-if="source.space == null">
         <template v-if="source.SPACE_TYPE == null">
           <router-view></router-view>
         </template>
@@ -43,6 +46,7 @@ import Toolbar from "@/views/components/Toolbar";
 import PreferenceForm from "@/views/components/PreferenceForm";
 import Rpository from "@/views/repository/Index";
 import IndexIndex from "@/views/index/IndexIndex";
+import Doc from "@/views/Doc";
 
 export default {
   name: "App",
@@ -54,7 +58,8 @@ export default {
     Install,
     Rpository,
     PreferenceForm,
-    IndexIndex
+    IndexIndex,
+    Doc
   },
   data() {
     return { source: source };

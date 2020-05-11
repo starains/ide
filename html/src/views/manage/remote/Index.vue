@@ -1,5 +1,5 @@
 <template>
-  <div class="app-min-page">
+  <div class="app-min-page" style="width: 1200px;">
     <div class="coos-row">
       <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange">部署服务器配置</h3>
       <div class="coos-row pd-10">
@@ -12,10 +12,10 @@
           <el-table-column prop="name" label="名称" width="100"></el-table-column>
           <el-table-column prop="token" label="令牌" width="100"></el-table-column>
           <el-table-column prop="mode" label="模式" width="100"></el-table-column>
-          <el-table-column prop="server" label="地址" width="100"></el-table-column>
+          <el-table-column prop="server" label="地址"></el-table-column>
           <el-table-column prop="status" label="连接状态" width="100"></el-table-column>
 
-          <el-table-column prop="errmsg" label="错误信息" width="100"></el-table-column>
+          <el-table-column prop="errmsg" label="错误信息"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <a class="coos-btn bg-green" @click="toUpdate(scope.row)">修改</a>

@@ -1,9 +1,4 @@
 
-
-* {
-    padding: 0px;
-    margin: 0px;
-  }
   a{
       color: inherit;
   }
@@ -12,9 +7,6 @@
   }
   a:checked{
     color: none;
-  }
-  ul,li{
-      list-style: none;
   }
 
   .coos-icon {
@@ -564,3 +556,15 @@
   .el-dialog__body{
 	  padding: 10px !important;
   }
+
+.coos-list , .coos-list ul ,.coos-list li{
+	list-style: none;
+	padding: 0px;margin: 0px;
+}
+
+.editor-designer ,
+.editor-designer ul,
+.editor-designer li{
+	list-style: none;
+	padding: 0px;margin: 0px;
+}

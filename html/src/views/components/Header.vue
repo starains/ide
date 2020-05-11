@@ -24,6 +24,9 @@
         <li>
           <a target="_blank" :href="_SERVER_URL + 'resources/font/demo_index.html'">IconFont</a>
         </li>
+        <li>
+          <a target="_blank" :href="_ROOT_URL + '#doc'">文档</a>
+        </li>
         <li class="app-nav-left" v-if="source.isManager">
           <a>系统管理</a>
           <ul class="app-nav-ul">

@@ -49,4 +49,8 @@ export default {
   line-height: 30px;
   font-size: 19px;
 }
+.coos-jumbotron > * {
+  margin: 0px;
+  padding: 0px;
+}
 </style>

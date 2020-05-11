@@ -1,5 +1,5 @@
 <template>
-  <div class="app-min-page">
+  <div class="app-min-page" style="width: 1200px;">
     <div class="coos-row pd-20">
       <div class="coos-row pd-10 upgrade-body text-center">
         <template v-if="source.UPGRADE_STATUS == null || source.UPGRADE_STATUS=='NONE'">
