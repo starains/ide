@@ -68,6 +68,15 @@ export default {
 };
 </script>
 
+<style >
+.contextmenu-box,
+.contextmenu-box ul,
+.contextmenu-box li {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+</style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  scoped>
 .contextmenu-box {
