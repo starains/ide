@@ -1,50 +1,52 @@
 <template>
   <div class="doc-frame">
     <div class="doc-frame-body">
-      <div class="doc-frame-left" :style="{minHeight:window.innerHeight - 40 +'px'}">
+      <div class="doc-frame-left coos-scrollbar">
         <el-menu class="doc-frame-menu" :default-openeds="['0','1','2','3','4','5']" :router="true">
           <el-submenu index="0">
             <template slot="title">
               <span slot="title">
-                <h3>TeamIDE</h3>
+                <div class="ft-20">TeamIDE</div>
               </span>
             </template>
             <el-menu-item index="/doc">说明</el-menu-item>
             <el-menu-item index="/doc/install">安装</el-menu-item>
             <el-menu-item index="/doc/code">源码</el-menu-item>
-            <el-menu-item index="/doc/plugin">插件</el-menu-item>
+            <el-menu-item index="/doc/account">账号</el-menu-item>
+            <el-menu-item index="/doc/space">空间</el-menu-item>
+            <el-menu-item index="/doc/space/team">空间成员</el-menu-item>
+            <el-menu-item index="/doc/repository">仓库</el-menu-item>
+            <el-menu-item index="/doc/repository/git">Git</el-menu-item>
+            <el-menu-item index="/doc/repository/project">仓库项目</el-menu-item>
           </el-submenu>
           <el-submenu index="1">
             <template slot="title">
               <span slot="title">
-                <h3>概要</h3>
+                <div class="ft-20">App Designer</div>
               </span>
             </template>
-            <el-menu-item index="/doc/account">账号</el-menu-item>
-            <el-menu-item index="/doc/space">空间</el-menu-item>
-            <el-menu-item index="/doc/repository">仓库</el-menu-item>
-          </el-submenu>
-          <el-submenu index="2">
-            <template slot="title">
-              <span slot="title">
-                <h3>空间</h3>
-              </span>
-            </template>
-            <el-menu-item index="/doc/space/create">新建空间</el-menu-item>
-            <el-menu-item index="/doc/space/team">空间成员</el-menu-item>
-          </el-submenu>
-          <el-submenu index="3">
-            <template slot="title">
-              <span slot="title">
-                <h3>仓库</h3>
-              </span>
-            </template>
-            <el-menu-item index="/doc/repository/create">新建仓库</el-menu-item>
-            <el-menu-item index="/doc/repository/git">Git</el-menu-item>
+            <el-menu-item index="/doc/app">说明</el-menu-item>
+            <el-menu-item index="/doc/app/app">应用设置</el-menu-item>
+            <el-menu-item index="/doc/app/jdbc">JDBC</el-menu-item>
+            <el-menu-item index="/doc/app/database">Database</el-menu-item>
+            <el-menu-item index="/doc/app/table">Table</el-menu-item>
+            <el-menu-item index="/doc/app/dao">Dao</el-menu-item>
+            <el-menu-item index="/doc/app/service">Service</el-menu-item>
+            <el-menu-item index="/doc/app/control">Control</el-menu-item>
+            <el-menu-item index="/doc/app/bean">Bean</el-menu-item>
+            <el-menu-item index="/doc/app/dictionary">Dictionary</el-menu-item>
+
+            <el-menu-item index="/doc/app/java">生成Java源码</el-menu-item>
+
+            <el-menu-item index="/doc/app/html">HTML</el-menu-item>
+            <el-menu-item index="/doc/app/html/frame">HTML Frame</el-menu-item>
+            <el-menu-item index="/doc/app/html/page">HTML Page</el-menu-item>
+
+            <el-menu-item index="/doc/app/html/vue">生成Vue源码</el-menu-item>
           </el-submenu>
         </el-menu>
       </div>
-      <div class="doc-frame-right">
+      <div class="doc-frame-right coos-scrollbar">
         <router-view></router-view>
       </div>
     </div>
@@ -76,13 +78,38 @@ export default {
   flex-direction: row;
   flex-basis: auto;
 }
+.doc-frame-left {
+  overflow: auto;
+  position: fixed;
+  top: 40px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
 .doc-frame-right {
   flex: 1;
+  position: fixed;
+  overflow: auto;
+  top: 40px;
+  left: 250px;
+  right: 0px;
+  bottom: 0px;
 }
 .doc-frame-menu {
   width: 250px;
 }
-
+.doc-frame .el-submenu__title {
+  height: 45px;
+  line-height: 45px;
+  pointer-events: none;
+}
+.doc-frame .el-submenu__title > i:last-child {
+  display: none;
+}
+.doc-frame .el-submenu .el-menu-item {
+  height: 35px;
+  line-height: 35px;
+}
 .doc-page {
   padding: 0px;
 }
@@ -171,7 +198,7 @@ export default {
   line-height: 1.5em;
 }
 
-.markdown h3 {
+.markdown div {
   font-size: 1.5em;
   line-height: 1.25em;
 }
@@ -203,13 +230,13 @@ export default {
 
 .markdown h1,
 .markdown h2,
-.markdown h3 {
+.markdown div {
   margin: 1.5em 0 0;
 }
 
 .markdown h1 + .widget-codetool + pre,
 .markdown h2 + .widget-codetool + pre,
-.markdown h3 + .widget-codetool + pre {
+.markdown div + .widget-codetool + pre {
   margin-top: 1.5em !important;
 }
 
@@ -222,7 +249,7 @@ export default {
 .markdown > h1:first-child,
 .markdown blockquote:first-child,
 .markdown h2:first-child,
-.markdown h3:first-child,
+.markdown div:first-child,
 .markdown h4:first-child,
 .markdown ol:first-child,
 .markdown p:first-child,

@@ -283,11 +283,11 @@ export default {
     };
   },
   methods: {
-    show(path, data) {
-      this.showForm(path, data);
+    show(projectPath, data) {
+      this.showForm(projectPath, data);
     },
-    showForm(path, data) {
-      this.path = path;
+    showForm(projectPath, data) {
+      this.projectPath = projectPath;
       data = data || {};
       this.show_form = true;
       for (var key in this.form) {
@@ -317,7 +317,11 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           var option = this.form;
-          let data = { path: this.path, option: option };
+          let data = {
+            projectPath: this.projectPath,
+            name: option.name,
+            option: option
+          };
           this.hideForm();
 
           source.do("SET_STARTER_OPTION", data).then(res => {

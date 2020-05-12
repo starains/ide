@@ -36,6 +36,4 @@ public class TableInfoConstant {
 
 	public static final String SPACE_REPOSITORY_OPEN = "SPACE_REPOSITORY_OPEN";
 
-	public static final String SPACE_REPOSITORY_OPTION = "SPACE_REPOSITORY_OPTION";
-
 }

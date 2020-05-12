@@ -14,6 +14,8 @@ import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.ReflogEntry;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.PushResult;
@@ -62,6 +64,24 @@ public class JGitWorker {
 
 		try {
 			return JGitUtil.status(open());
+		} finally {
+			close();
+		}
+	}
+
+	public Repository getRepository() throws Exception {
+
+		try {
+			return open().getRepository();
+		} finally {
+			close();
+		}
+	}
+
+	public StoredConfig getConfig() throws Exception {
+
+		try {
+			return open().getRepository().getConfig();
 		} finally {
 			close();
 		}

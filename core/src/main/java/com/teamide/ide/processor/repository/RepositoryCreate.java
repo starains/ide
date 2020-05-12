@@ -2,15 +2,12 @@ package com.teamide.ide.processor.repository;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
-import com.teamide.ide.bean.SpaceRepositoryOptionBean;
 import com.teamide.ide.param.RepositoryProcessorParam;
-import com.teamide.ide.service.impl.SpaceRepositoryOptionService;
 
 public class RepositoryCreate extends RepositoryBase {
 
@@ -56,15 +53,6 @@ public class RepositoryCreate extends RepositoryBase {
 							return true;
 						}
 					});
-					SpaceRepositoryOptionService service = new SpaceRepositoryOptionService();
-					List<SpaceRepositoryOptionBean> options = service.query(this.param.getSpaceid(), copybranch, null,
-							null, "");
-
-					for (SpaceRepositoryOptionBean option : options) {
-						option.setBranch(branch);
-						option.setId(null);
-						service.save(this.param.getSession(), option);
-					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -46,6 +46,7 @@
       <StarterForm ref="starter-form"></StarterForm>
       <BranchCreate ref="branch-create"></BranchCreate>
       <UploadForm ref="upload-form"></UploadForm>
+      <ProjectForm ref="project-form"></ProjectForm>
     </div>
   </div>
 </template>
@@ -64,6 +65,7 @@ import GitRevert from "@/views/repository/components/git/GitRevert";
 import StarterForm from "@/views/repository/components/starter/StarterForm";
 import BranchCreate from "@/views/repository/components/branch/BranchCreate";
 import UploadForm from "@/views/repository/components/UploadForm";
+import ProjectForm from "@/views/repository/components/Project";
 
 export default {
   props: ["repository"],
@@ -79,7 +81,8 @@ export default {
     GitRevert,
     StarterForm,
     BranchCreate,
-    UploadForm
+    UploadForm,
+    ProjectForm
   },
   data() {
     return { source: source };
@@ -96,6 +99,7 @@ export default {
     source.starterForm = this.$refs["starter-form"];
     source.branchCreateForm = this.$refs["branch-create"];
     source.uploadForm = this.$refs["upload-form"];
+    source.projectForm = this.$refs["project-form"];
 
     this.repository.contextmenu.callShow = this.$refs["context-menu"].callShow;
   }

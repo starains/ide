@@ -7,8 +7,8 @@ source.repository.starterActive = "0";
 (function () {
 
 
-    source.starterDeploy = function (path, option) {
-        source.do('STARTER_DEPLOY', { path: path, option: option }).then((res) => {
+    source.starterDeploy = function (projectPath, option) {
+        source.do('STARTER_DEPLOY', { projectPath: projectPath, option: option }).then((res) => {
             if (res.errcode == 0) {
                 coos.success('部署命令提交成功，正在部署！');
                 source.load('STARTERS');

@@ -51,6 +51,8 @@ public enum RepositoryProcessorType {
 
 	STARTER_LOG_CLEAN("STARTER_LOG_CLEAN", "Starter Log Clean"),
 
+	SET_PROJECT("SET_PROJECT", "Set Project"),
+
 	;
 
 	public static List<RepositoryProcessorType> getList() {

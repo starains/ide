@@ -19,6 +19,16 @@ public class ProjectBean {
 
 	private final JSONObject option = new JSONObject();
 
+	private ProjectSetting setting;
+
+	public ProjectSetting getSetting() {
+		return setting;
+	}
+
+	public void setSetting(ProjectSetting setting) {
+		this.setting = setting;
+	}
+
 	public JSONObject getOption() {
 		return option;
 	}

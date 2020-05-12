@@ -9,19 +9,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.deployer.Deploy;
-import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.handler.DeployHandler;
 import com.teamide.ide.handler.SpacePermissionHandler;
 import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.processor.enums.RepositoryModelType;
 import com.teamide.ide.processor.enums.RepositoryProcessorType;
-import com.teamide.ide.processor.param.RepositoryOption;
 import com.teamide.ide.processor.repository.RepositoryBase;
 import com.teamide.ide.processor.repository.RepositoryCreate;
 import com.teamide.ide.processor.repository.RepositoryGit;
 import com.teamide.ide.processor.repository.RepositoryLoad;
+import com.teamide.ide.processor.repository.RepositoryProject;
 import com.teamide.ide.processor.repository.RepositoryStarter;
 import com.teamide.ide.processor.repository.project.ProjectLoader;
+import com.teamide.ide.processor.repository.project.ProjectSetting;
 
 public class RepositoryProcessor extends SpaceProcessor {
 	protected final RepositoryProcessorParam param;
@@ -50,7 +50,6 @@ public class RepositoryProcessor extends SpaceProcessor {
 		spaceEventBean.setSpaceid(param.getSpaceid());
 		Object value = null;
 		switch (processorType) {
-
 		case BRANCH_CREATE:
 			String branch = data.getString("branch");
 			String frombranch = data.getString("frombranch");
@@ -189,7 +188,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			option.put("gitRemoteBranch", gitRemoteBranch);
 			option.put("url", url);
 
-			new RepositoryOption(this.param).saveOption(null, OptionType.GIT, option);
+			new RepositoryProject(param).saveGit(option);
 
 			if (data.getBooleanValue("needclean")) {
 				File sourceFolder = param.getSourceFolder();
@@ -231,7 +230,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 			option.put("gitRemoteBranch", gitRemoteBranch);
 			option.put("url", url);
 
-			new RepositoryOption(this.param).saveOption(null, OptionType.GIT, option);
+			new RepositoryProject(param).saveGit(option);
 
 			value = new RepositoryGit(param).remoteSetUrl(gitRemoteName, url);
 
@@ -244,11 +243,11 @@ public class RepositoryProcessor extends SpaceProcessor {
 			if (!StringUtil.isEmpty(token)) {
 				new RepositoryStarter(param).deploy(token);
 			} else {
-				String path = data.getString("path");
+				String projectPath = data.getString("projectPath");
 				option = data.getJSONObject("option");
-				new RepositoryStarter(param).deploy(path, option);
+				new RepositoryStarter(param).deploy(projectPath, option);
 
-				spaceEventBean.set("path", path);
+				spaceEventBean.set("projectPath", projectPath);
 				spaceEventBean.set("option", option);
 			}
 
@@ -294,22 +293,32 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 			break;
 		case SET_STARTER_OPTION:
+			String projectPath = data.getString("projectPath");
+			String name = data.getString("name");
 			option = data.getJSONObject("option");
-			String name = option.getString("name");
-			value = new RepositoryOption(this.param).saveOption(name, OptionType.STARTER, option);
+			new RepositoryProject(this.param).saveStarter(projectPath, name, option);
 
 			spaceEventBean.set("option", option);
 			appendEvent(spaceEventBean);
 
 			break;
 		case DELETE_STARTER_OPTION:
-			option = data.getJSONObject("option");
-			name = option.getString("name");
-			new RepositoryOption(this.param).deleteOption(name, OptionType.STARTER);
+			projectPath = data.getString("projectPath");
+			name = data.getString("name");
+			new RepositoryProject(this.param).saveStarter(projectPath, name, null);
 
-			spaceEventBean.set("option", option);
+			spaceEventBean.set("option", data);
 			appendEvent(spaceEventBean);
 
+			break;
+		case SET_PROJECT:
+			projectPath = data.getString("projectPath");
+			ProjectSetting setting = data.toJavaObject(ProjectSetting.class);
+
+			new RepositoryProject(param).saveSetting(projectPath, setting);
+
+			spaceEventBean.set("setting", setting);
+			appendEvent(spaceEventBean);
 			break;
 		}
 
@@ -378,7 +387,8 @@ public class RepositoryProcessor extends SpaceProcessor {
 			value = new RepositoryLoad(param).loadStarters();
 			break;
 		case STARTER_OPTIONS:
-			value = new RepositoryOption(this.param).getOptions(OptionType.STARTER);
+			String projectPath = data.getString("projectPath");
+			value = new RepositoryProject(this.param).getStarters(projectPath);
 			break;
 		case STARTER_STATUS:
 			String token = data.getString("token");

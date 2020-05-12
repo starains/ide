@@ -14,10 +14,9 @@ import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.deployer.Deploy;
 import com.teamide.ide.deployer.LocalDeploy;
 import com.teamide.ide.deployer.RemoteDeploy;
-import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.param.RepositoryProcessorParam;
-import com.teamide.ide.processor.param.ProjectOption;
+import com.teamide.ide.processor.repository.RepositoryProject;
 import com.teamide.starter.StarterServer;
 import com.teamide.starter.bean.JavaOptionBean;
 
@@ -113,7 +112,7 @@ public class DeployHandler {
 	public static final String deploy(RepositoryProcessorParam param, String projectPath, String runName)
 			throws Exception {
 		ProjectProcessorParam projectParam = new ProjectProcessorParam(param, projectPath);
-		JSONObject option = new ProjectOption(projectParam).getOption(runName, OptionType.STARTER);
+		JSONObject option = new RepositoryProject(projectParam).readStarter(projectPath, runName);
 		if (option == null) {
 			throw new Exception("path [" + projectPath + "] run [" + runName + "] option is null.");
 		}

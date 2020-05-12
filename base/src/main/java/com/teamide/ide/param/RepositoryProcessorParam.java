@@ -20,6 +20,8 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 
 	private final File sourceFolder;
 
+	private final File teamideFolder;
+
 	protected final String sourcePath;
 
 	private final File pomFile;
@@ -47,6 +49,7 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		this.sourceFolder = new File(this.branchFolder, "source");
 		this.sourcePath = sourceFolder.toURI().getPath();
 		this.pomFile = new File(this.sourceFolder, "pom.xml");
+		this.teamideFolder = new File(this.sourceFolder, ".teamide");
 	}
 
 	public String getMavenHome(String path) {
@@ -229,5 +232,9 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		File file = getFile(path);
 		File folder = getResourcesFolder(projectPath);
 		return file.getAbsolutePath().indexOf(folder.getAbsolutePath()) == 0;
+	}
+
+	public File getTeamideFolder() {
+		return teamideFolder;
 	}
 }

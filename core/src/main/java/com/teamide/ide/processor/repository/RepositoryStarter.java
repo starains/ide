@@ -12,11 +12,11 @@ public class RepositoryStarter extends RepositoryBase {
 		super(param);
 	}
 
-	public JSONObject deploy(String path, JSONObject option) throws Exception {
+	public JSONObject deploy(String projectPath, JSONObject option) throws Exception {
 
-		this.getLog().info("starter deploy,  path:" + path);
+		this.getLog().info("starter deploy,  projectPath:" + projectPath);
 
-		String token = DeployHandler.deploy(this.param, path, option.getString("name"));
+		String token = DeployHandler.deploy(this.param, projectPath, option.getString("name"));
 		JSONObject result = new JSONObject();
 		result.put("token", token);
 		return result;

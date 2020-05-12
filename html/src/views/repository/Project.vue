@@ -169,24 +169,20 @@ export default {
           header: "项目部署运行"
         });
 
-        source.repository.starter_options.forEach(one => {
+        source.repository.starter_options.forEach(option => {
           if (
-            (coos.isEmpty(one.path) && coos.isEmpty(data.path)) ||
-            one.path == data.path
+            (coos.isEmpty(option.path) && coos.isEmpty(option.path)) ||
+            option.path == data.path
           ) {
-            let option = {};
-            if (!coos.isEmpty(one.option)) {
-              option = JSON.parse(one.option);
-            }
             let oMenu = {
-              text: one.name,
+              text: option.name,
               menus: []
             };
             starterMenu.menus.push(oMenu);
 
             let startting = false;
             source.repository.starters.forEach(s => {
-              if (s && s.option && s.option.name == one.name) {
+              if (s && s.option && s.option.name == option.name) {
                 startting = true;
               }
             });
@@ -219,7 +215,7 @@ export default {
               onClick() {
                 source
                   .do("DELETE_STARTER_OPTION", {
-                    path: data.path,
+                    projectPath: data.path,
                     option: option
                   })
                   .then(res => {
@@ -329,6 +325,20 @@ export default {
         });
       }
       source.plugin.onContextmenu(data, menus);
+      if (!data.isProject && data.isDirectory) {
+        menus.push({
+          text: "设为项目",
+          disabled: !source.hasPermission("SET_PROJECT"),
+          onClick() {
+            source.projectForm.show({
+              projectPath: data.path,
+              path: data.path,
+              name: data.name,
+              project: data.name
+            });
+          }
+        });
+      }
       menus.push({
         header: "文件"
       });

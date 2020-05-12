@@ -23,10 +23,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.bean.CertificateBean;
 import com.teamide.ide.enums.GitWorkStatus;
-import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.git.JGitWorker;
 import com.teamide.ide.param.RepositoryProcessorParam;
-import com.teamide.ide.processor.param.RepositoryOption;
 import com.teamide.ide.service.impl.CertificateService;
 import com.teamide.ide.util.AESTool;
 import com.teamide.util.StringUtil;
@@ -104,12 +102,13 @@ public class RepositoryGit extends RepositoryBase {
 		this.getLog().info("git load");
 
 		JSONObject result = new JSONObject();
-		result.put("option", new RepositoryOption(this.param).getOption(null, OptionType.GIT));
+		result.put("option", new RepositoryProject(this.param).readGit());
 		if (!findGit()) {
 			result.put("findGit", false);
 			return result;
 		}
 		result.put("findGit", true);
+
 		checkLocalBranch();
 		List<RemoteConfig> remoteList = worker.remoteList();
 
@@ -165,6 +164,9 @@ public class RepositoryGit extends RepositoryBase {
 	public JSONObject toJSON(RemoteConfig remoteConfig) {
 		JSONObject json = new JSONObject();
 		json.put("name", remoteConfig.getName());
+		if (remoteConfig.getURIs() != null && remoteConfig.getURIs().size() > 0) {
+			json.put("uri", remoteConfig.getURIs().get(0).toString());
+		}
 		return json;
 	}
 

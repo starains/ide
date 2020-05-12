@@ -11,12 +11,10 @@ import java.util.Map;
 
 import org.apache.maven.model.Model;
 
-import com.teamide.ide.bean.SpaceRepositoryOptionBean;
-import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.param.RepositoryProcessorParam;
 import com.teamide.ide.plugin.PluginHandler;
-import com.teamide.ide.processor.param.RepositoryOption;
+import com.teamide.ide.processor.repository.RepositoryProject;
 import com.teamide.ide.processor.repository.hanlder.RepositoryHanlder;
 import com.teamide.util.FileUtil;
 import com.teamide.util.StringUtil;
@@ -37,41 +35,34 @@ public class ProjectLoader {
 	public void init() {
 		project_caches.clear();
 		project_map.clear();
-		List<SpaceRepositoryOptionBean> repositoryOptions = new ArrayList<SpaceRepositoryOptionBean>();
-		try {
-			repositoryOptions = new RepositoryOption(param).queryOptions(null, OptionType.PROJECT);
-		} catch (Exception e) {
-			e.printStackTrace();
+		RepositoryProject repositoryProject = new RepositoryProject(param);
+		ProjectSetting setting = repositoryProject.readSettingByName("");
+		ProjectBean project = createProject("", setting);
+		if (project != null) {
+			project_caches.add(project);
+			project_map.put("", project);
 		}
 
-		boolean findRootProject = false;
-		for (SpaceRepositoryOptionBean repositoryOption : repositoryOptions) {
-			if (StringUtil.isEmpty(repositoryOption.getPath())) {
-				findRootProject = true;
+		File projectsFolder = new File(param.getTeamideFolder(), "projects");
+		if (projectsFolder.exists()) {
+			File[] folders = projectsFolder.listFiles();
+			for (File folder : folders) {
+				setting = repositoryProject.readSettingByName(folder.getName());
+				if (setting != null && StringUtil.isNotEmpty(setting.getPath())) {
+					project = createProject(setting.getPath(), setting);
+					if (project != null) {
+						project_caches.add(project);
+						project_map.put(setting.getPath(), project);
+					}
+				}
 			}
 		}
-		if (!findRootProject) {
-			ProjectBean project = createProject("");
-			if (project != null) {
-				project_caches.add(project);
-				project_map.put("", project);
-			}
-		}
-		for (SpaceRepositoryOptionBean repositoryOption : repositoryOptions) {
-			String path = repositoryOption.getPath();
-			if (StringUtil.isEmpty(path)) {
-				path = "";
-			}
-			ProjectBean project = createProject(path);
-			if (project != null) {
-				project_caches.add(project);
-				project_map.put(path, project);
-			}
-		}
-
 	}
 
-	public ProjectBean createProject(final String path) {
+	public ProjectBean createProject(final String path, ProjectSetting setting) {
+		if (setting == null) {
+			return null;
+		}
 		File projectFolder = new File(this.param.getSourceFolder(), path);
 		if (!projectFolder.exists()) {
 			return null;
@@ -81,11 +72,8 @@ public class ProjectLoader {
 		}
 		String projectPath = this.param.getPath(projectFolder);
 		ProjectBean project = new ProjectBean();
-		if (StringUtil.isEmpty(projectPath)) {
-			project.setName(this.param.getSpaceName());
-		} else {
-			project.setName(projectFolder.getName());
-		}
+		project.setSetting(setting);
+		project.setName(setting.getName());
 		project.setPath(projectPath);
 		if (StringUtil.isEmpty(projectPath)) {
 			project.setRoot(true);
@@ -299,4 +287,5 @@ public class ProjectLoader {
 	public List<ProjectBean> getProjects() {
 		return project_caches;
 	}
+
 }

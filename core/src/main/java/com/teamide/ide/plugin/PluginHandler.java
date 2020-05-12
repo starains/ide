@@ -9,7 +9,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.constant.IDEConstant;
 import com.teamide.ide.param.ProjectProcessorParam;
-import com.teamide.ide.processor.param.ProjectOption;
+import com.teamide.ide.processor.repository.RepositoryProject;
 import com.teamide.ide.processor.repository.project.FileBean;
 import com.teamide.ide.processor.repository.project.ProjectBean;
 import com.teamide.util.FileUtil;
@@ -140,11 +140,10 @@ public class PluginHandler {
 	}
 
 	public static PluginParam getParam(ProjectProcessorParam param, IDEPlugin plugin) {
-		ProjectOption projectOption = new ProjectOption(param);
 		JSONObject option = new JSONObject();
 		if (StringUtil.isNotEmpty(plugin.getName())) {
 			try {
-				option = projectOption.getPluginOption(plugin.getName());
+				option = new RepositoryProject(param).readPlugin(param.getProjectPath(), plugin.getName());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

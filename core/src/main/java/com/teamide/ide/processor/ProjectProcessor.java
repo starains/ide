@@ -9,14 +9,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.SpaceRepositoryOpenBean;
-import com.teamide.ide.enums.OptionType;
 import com.teamide.ide.handler.SpacePermissionHandler;
 import com.teamide.ide.param.ProjectProcessorParam;
 import com.teamide.ide.processor.enums.ProjectModelType;
 import com.teamide.ide.processor.enums.ProjectProcessorType;
-import com.teamide.ide.processor.param.ProjectOption;
 import com.teamide.ide.processor.repository.RepositoryFile;
 import com.teamide.ide.processor.repository.RepositoryMaven;
+import com.teamide.ide.processor.repository.RepositoryProject;
 import com.teamide.ide.processor.repository.project.ProjectLoader;
 import com.teamide.ide.service.impl.SpaceRepositoryOpenService;
 
@@ -201,8 +200,9 @@ public class ProjectProcessor extends RepositoryProcessor {
 
 		case SET_PLUGIN_OPTION:
 			name = data.getString("name");
+			String projectPath = data.getString("projectPath");
 			JSONObject option = data.getJSONObject("option");
-			value = new ProjectOption(this.param).saveOption(name, OptionType.PLUGIN, option);
+			new RepositoryProject(this.param).savePlugin(projectPath, name, option);
 
 			spaceEventBean.set("option", option);
 			appendEvent(spaceEventBean);
@@ -210,8 +210,9 @@ public class ProjectProcessor extends RepositoryProcessor {
 			break;
 
 		case DELETE_PLUGIN_OPTION:
+			projectPath = data.getString("projectPath");
 			name = data.getString("name");
-			new ProjectOption(this.param).deleteOption(name, OptionType.PLUGIN);
+			new RepositoryProject(this.param).savePlugin(projectPath, name, null);
 
 			appendEvent(spaceEventBean);
 
@@ -254,8 +255,9 @@ public class ProjectProcessor extends RepositoryProcessor {
 			break;
 
 		case PLUGIN_OPTION:
+			String projectPath = data.getString("projectPath");
 			String name = data.getString("name");
-			value = new ProjectOption(this.param).getPluginOption(name);
+			value = new RepositoryProject(this.param).readPlugin(projectPath, name);
 
 			break;
 		}
