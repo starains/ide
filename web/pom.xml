@@ -158,7 +158,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>copy-config</id>
+						<id>copy-cmd</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -169,6 +169,22 @@
 							<resources>
 								<resource>
 									<directory>bin</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-plugins</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${release.root}/plugins</outputDirectory>
+							<resources>
+								<resource>
+									<directory>plugins</directory>
 								</resource>
 							</resources>
 						</configuration>

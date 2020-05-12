@@ -100,8 +100,6 @@
               :prop="(form.mode == 'TOMCAT'|| form.mode == 'WAR')?'internaltomcat':''"
               label="内置Tomcat"
             >
-              <el-radio v-model="form.internaltomcat" label="tomcat-7.0.94">tomcat-7.0.94</el-radio>
-              <el-radio v-model="form.internaltomcat" label="tomcat-8.0.53">tomcat-8.0.53</el-radio>
               <el-radio v-model="form.internaltomcat" label="tomcat-8.5.41">tomcat-8.5.41</el-radio>
             </el-form-item>
 

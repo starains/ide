@@ -2,14 +2,6 @@
   <div class="doc-page">
     <div class="doc-header">插件说明</div>
     <div class="doc-body">
-      <div class="pdtb-10">
-        源码托管与gitee上，点击
-        <a
-          class="coos-link color-green pdlr-5"
-          target="blank_"
-          href="https://gitee.com/teamide/ide"
-        >Team IDE</a>即可下载源码
-      </div>
     </div>
   </div>
 </template>
