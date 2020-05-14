@@ -62,16 +62,16 @@ public class ResourcesHandler {
 			List<String> css = new ArrayList<String>();
 
 			css.add("resources/font/iconfont.css");
-			css.add("resources/plugins/element-ui/2.12.0/index.css");
+			css.add("resources/plugins/element-ui/index.css");
 
 			js.add("resources/plugins/vue/vue.min.js");
-			js.add("resources/plugins/element-ui/2.12.0/index.js");
+			js.add("resources/plugins/element-ui/index.js");
 
 			js.add("resources/plugins/axios/axios.min.js");
 
 			js.add("resources/plugins/jquery/jquery.js");
 
-			js.add("resources/plugins/coos/js/coos.min.js?v=" + VERSION);
+			js.add("resources/plugins/coos/coos.min.js?v=" + VERSION);
 
 			List<IDEPlugin> plugins = PluginHandler.getPlugins();
 

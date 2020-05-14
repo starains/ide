@@ -87,7 +87,9 @@ CodeEditor.prototype.build = function ($box) {
     } else if (file.type == "json") {
         mode = "application/json";
     } else {
-        if (this.editor.isYaml) {
+        if (this.editor.isVue) {
+            mode = "vue";
+        } else if (this.editor.isYaml) {
             mode = "yaml";
         } else {
             mode = "htmlmixed";

@@ -36,19 +36,19 @@ export default {
   methods: {
     callShow(event) {
       event = event || window.event;
-      let pageX = event.pageX;
-      let pageY = event.pageY;
+      let clientX = event.clientX;
+      let clientY = event.clientY;
       this.contextmenu.show = true;
-      this.contextmenu.left = pageX + "px";
-      this.contextmenu.top = pageY + "px";
+      this.contextmenu.left = clientX + "px";
+      this.contextmenu.top = clientY + "px";
       this.showbottom = false;
 
       this.$nextTick(() => {
-        let bottomHeight = $(window).height() - pageY;
+        let bottomHeight = $(window).height() - clientY;
         let menuHeight = $(this.$el).outerHeight();
         if (bottomHeight < menuHeight + 30) {
           this.showbottom = true;
-          this.contextmenu.top = pageY - menuHeight + "px";
+          this.contextmenu.top = clientY - menuHeight + "px";
         }
       });
     }
