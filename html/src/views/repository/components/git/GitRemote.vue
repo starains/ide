@@ -20,7 +20,10 @@
         <el-form-item label="检出远程分支" prop="gitRemoteBranch">
           <el-input v-model="form.gitRemoteBranch" type="text" autocomplete="off"></el-input>
         </el-form-item>
-
+        <el-form-item label="清理目录" prop="clean">
+          <el-switch v-model="form.clean"></el-switch>
+          <span class="color-grey">清理目录将删除该库所有文件，重新拉去Git</span>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="formSave()" :size="size">确定</el-button>
           <el-button @click="formCancel()" :size="size">取消</el-button>
@@ -43,7 +46,8 @@ export default {
       form: {
         gitRemoteName: "",
         url: "",
-        gitRemoteBranch: ""
+        gitRemoteBranch: "",
+        clean: false
       },
       form_rules: {
         gitRemoteName: [
@@ -88,6 +92,7 @@ export default {
       for (var key in data) {
         this.form[key] = data[key];
       }
+      this.form.clean = false;
       if (coos.isEmpty(this.form.gitRemoteName)) {
         this.form.gitRemoteName = "origin";
       }
@@ -110,7 +115,6 @@ export default {
           this.hideForm();
 
           let isChange = true;
-          let isNew = true;
           if (source.repository.git && source.repository.git.option) {
             let option = source.repository.git.option;
             if (
@@ -120,27 +124,25 @@ export default {
             ) {
               isChange = false;
             }
-            isNew = false;
           }
 
-          if (isChange) {
-            data.needclean = true;
+          if (isChange || data.clean) {
             let msg = "";
 
-            if (isNew) {
+            if (data.clean) {
               msg =
-                "设置远程仓库[" +
+                "设置为远程仓库[" +
                 data.gitRemoteName +
                 "]下[" +
                 data.gitRemoteBranch +
-                "]版本，设置后将清空仓库文件，是否设置？";
+                "]版本，并将清空仓库文件，是否设置？";
             } else {
               msg =
-                "切换至远程仓库[" +
+                "设置为远程仓库[" +
                 data.gitRemoteName +
                 "]下[" +
                 data.gitRemoteBranch +
-                "]版本，切换操作将清空仓库文件，是否切换？";
+                "]版本？";
             }
 
             source.certificateChoose.show().then(certificateid => {

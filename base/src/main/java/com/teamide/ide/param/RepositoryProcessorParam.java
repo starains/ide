@@ -20,6 +20,8 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 
 	private final File sourceFolder;
 
+	private final File optionFolder;
+
 	private final File teamideFolder;
 
 	protected final String sourcePath;
@@ -47,6 +49,7 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 		}
 		this.branchFolder = new File(this.branchsFolder, branch);
 		this.sourceFolder = new File(this.branchFolder, "source");
+		this.optionFolder = new File(this.branchFolder, "option");
 		this.sourcePath = sourceFolder.toURI().getPath();
 		this.pomFile = new File(this.sourceFolder, "pom.xml");
 		this.teamideFolder = new File(this.sourceFolder, ".teamide");
@@ -236,5 +239,9 @@ public class RepositoryProcessorParam extends SpaceProcessorParam {
 
 	public File getTeamideFolder() {
 		return teamideFolder;
+	}
+
+	public File getOptionFolder() {
+		return optionFolder;
 	}
 }

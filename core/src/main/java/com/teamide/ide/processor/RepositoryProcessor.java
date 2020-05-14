@@ -190,7 +190,7 @@ public class RepositoryProcessor extends SpaceProcessor {
 
 			new RepositoryProject(param).saveGit(option);
 
-			if (data.getBooleanValue("needclean")) {
+			if (data.getBooleanValue("clean")) {
 				File sourceFolder = param.getSourceFolder();
 				if (sourceFolder.exists()) {
 					File[] fs = sourceFolder.listFiles();

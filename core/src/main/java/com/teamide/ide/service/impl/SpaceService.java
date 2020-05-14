@@ -72,6 +72,11 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 
 		sql += " ) ";
 		sql += " AND name = :name ";
+		if (StringUtil.isEmpty(space.getParentid())) {
+			if (StringUtil.isNotEmpty(space.getType())) {
+				sql += " AND type = :type ";
+			}
+		}
 		if (!StringUtil.isEmpty(space.getId())) {
 			sql += " AND id != :id ";
 		}
@@ -79,6 +84,7 @@ public class SpaceService extends BaseService<SpaceBean> implements ISpaceServic
 		param.put("id", space.getId());
 		param.put("parentid", space.getParentid());
 		param.put("name", space.getName());
+		param.put("type", space.getType());
 		if (super.queryCount(sql, param) > 0) {
 			throw new Exception("名称为“" + space.getName() + "”的库已存在！");
 		}

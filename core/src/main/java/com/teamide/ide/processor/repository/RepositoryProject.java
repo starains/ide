@@ -23,7 +23,7 @@ public class RepositoryProject extends RepositoryBase {
 	}
 
 	static String setting = "project.setting";
-	static String git = "project.git";
+	static String git = "git";
 	static String starter = "starter";
 	static String plugin = "plugin";
 
@@ -176,7 +176,7 @@ public class RepositoryProject extends RepositoryBase {
 	}
 
 	public File getGitFile() {
-		File folder = param.getTeamideFolder();
+		File folder = param.getOptionFolder();
 		return new File(folder, git);
 	}
 
