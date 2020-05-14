@@ -222,20 +222,38 @@ public class StarterEventProcessor extends StarterParam {
 		}
 	}
 
-	public void kill(String pid, TerminalProcessListener listener) throws Exception {
-		if (StringUtil.isEmpty(pid)) {
+	public void kill(String pidStr, TerminalProcessListener listener) throws Exception {
+		if (StringUtil.isEmpty(pidStr)) {
 			return;
 		}
+		pidStr = pidStr.replaceAll("\n", " ");
+		pidStr = pidStr.trim();
+		if (StringUtil.isEmpty(pidStr)) {
+			return;
+		}
+		if (Integer.valueOf(pidStr) < 300) {
+			return;
+		}
+		String pid = pidStr;
 		TerminalProcess process = new TerminalProcess();
 		String command = null;
 		if (Platform.isWindows()) {
 			command = "taskkill /PID " + pid + " /F /T";
+			getLog().info("kill pid " + pid);
+			process.process(command, null, listener);
 		} else {
 			getLog().info("pkill pid " + pid);
 			// 根据父进程编号杀死子进程
 			process.process("pkill -9 -P " + pid, null, new TerminalProcessListener() {
 				@Override
 				public void onStop() {
+					String command = "kill -9 " + pid;
+					getLog().info("kill pid " + pid);
+					try {
+						process.process(command, null, listener);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 
 				@Override
@@ -247,10 +265,7 @@ public class StarterEventProcessor extends StarterParam {
 					getLog().info(line);
 				}
 			});
-			command = "kill -9 " + pid;
 		}
-		getLog().info("kill pid " + pid);
-		process.process(command, null, listener);
 	}
 
 	protected String getStartShell() throws Exception {
