@@ -11,7 +11,6 @@ import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.bean.DatabaseBean;
 import com.teamide.ide.bean.UserPreferenceBean;
 import com.teamide.ide.configure.IDEConfigure;
-import com.teamide.ide.configure.IDEOptions;
 import com.teamide.ide.handler.RemoteHandler;
 import com.teamide.ide.handler.SpaceHandler;
 import com.teamide.ide.handler.UserHandler;
@@ -99,9 +98,6 @@ public class ProcessorLoad extends ProcessorBase {
 		case INSTALLED:
 			IInstallService installService = new InstallService();
 			value = installService.installed();
-			break;
-		case JDBC:
-			value = IDEOptions.get().jdbc;
 			break;
 		case CONFIGURE:
 			value = IDEConfigure.get();

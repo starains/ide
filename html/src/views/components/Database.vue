@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="coos-row pd-10">
-          <el-table :data="source.data.DATABASES" style="width: 100%">
+          <el-table :data="list" style="width: 100%">
             <el-table-column prop="name" label="名称" width="200"></el-table-column>
             <el-table-column prop="type" label="类型" width="100"></el-table-column>
             <el-table-column label="配置">
@@ -86,6 +86,7 @@ export default {
       form_title: "用户数据库资源设置",
       labelWidth: "120px",
       size: "mini",
+      list: [],
       source: source,
       show_choose: false,
       show_form: false,
@@ -200,6 +201,7 @@ export default {
       this.show_choose = true;
     },
     load() {
+      coos.trimList(this.list);
       source.load("DATABASES", {}).then(res => {
         res.value = res.value || [];
         res.value.forEach(one => {
@@ -207,6 +209,7 @@ export default {
           if (coos.isNotEmpty(one.option)) {
             one.option_json = JSON.parse(one.option);
           }
+          this.list.push(one);
         });
       });
     }

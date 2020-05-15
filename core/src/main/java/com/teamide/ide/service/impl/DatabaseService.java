@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.DatabaseBean;
+import com.teamide.ide.configure.IDEOptions;
 import com.teamide.ide.enums.DatabaseType;
 import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.util.TokenUtil;
@@ -71,7 +72,7 @@ public class DatabaseService extends BaseService<DatabaseBean> {
 			sqlParams.add(sqlParam);
 
 			IDEFactory.getService().execute(sqlParams);
-			String url = IDEFactory.getDatabase().getUrl();
+			String url = IDEOptions.get().getJdbc().getUrl();
 
 			String start = "jdbc:mysql://";
 			if (url.indexOf("/", start.length()) > 0) {

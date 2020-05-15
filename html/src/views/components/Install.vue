@@ -222,17 +222,7 @@ export default {
         }
       });
     },
-    init() {
-      source.load("JDBC", {}).then(res => {
-        res = res || {};
-        let jdbc = res.value || {};
-        if (jdbc && Object.keys(jdbc).length > 0) {
-          for (let key in this.database.form) {
-            this.database.form[key] = jdbc[key];
-          }
-        }
-      });
-    }
+    init() {}
   },
   mounted() {
     this.init();

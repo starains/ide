@@ -12,8 +12,6 @@ public enum ModelType {
 
 	CONFIGURE("CONFIGURE", "配置", ModelDataType.ONE),
 
-	JDBC("JDBC", "驱动", ModelDataType.ONE),
-
 	REMOTES("REMOTES", "远端服务器", ModelDataType.LIST),
 
 	ENVIRONMENTS("ENVIRONMENTS", "环境", ModelDataType.LIST),

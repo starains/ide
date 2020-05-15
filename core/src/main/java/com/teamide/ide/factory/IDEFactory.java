@@ -9,7 +9,6 @@ import javax.websocket.Session;
 
 import com.teamide.client.ClientSession;
 import com.teamide.db.TableUtil;
-import com.teamide.db.bean.Database;
 import com.teamide.service.IService;
 import com.teamide.service.impl.Service;
 import com.teamide.util.StringUtil;
@@ -78,11 +77,6 @@ public class IDEFactory {
 		return password;
 	}
 
-	public static Database getDatabase() {
-
-		return IDEOptions.get().jdbc;
-	}
-
 	public static final String getRealtablename(Class<?> clazz, Map<String, Object> data) throws Exception {
 
 		return TableUtil.getRealtablename(clazz, data, getService().getDBDataSource());
@@ -91,8 +85,8 @@ public class IDEFactory {
 	public static IService getService() {
 
 		try {
-			if (getDatabase() != null) {
-				return new Service(DataSourceFactory.getDBDataSource(getDatabase()));
+			if (IDEOptions.get().getJdbc() != null) {
+				return new Service(DataSourceFactory.getDBDataSource(IDEOptions.get().getJdbc()));
 			}
 		} catch (Exception e) {
 		}

@@ -30,7 +30,7 @@ public class InstallService implements IInstallService {
 
 	public boolean installed() {
 
-		if (IDEOptions.get().jdbc == null) {
+		if (IDEOptions.get().getJdbc() == null) {
 			return false;
 		}
 		return IDEConfigure.get() != null;
@@ -50,7 +50,7 @@ public class InstallService implements IInstallService {
 		if (json.get("configure") == null) {
 			throw new Exception("配置数据为空！");
 		}
-		Database old_database = IDEOptions.get().jdbc;
+		Database old_database = IDEOptions.get().getJdbc();
 		JSONObject database = json.getJSONObject("database");
 		saveDatabase(database);
 		IDEOptions.loadOptions();

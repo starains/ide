@@ -72,7 +72,7 @@ public class IDEOptions {
 		return props;
 	}
 
-	public Database jdbc;
+	private Database jdbc;
 
 	public Database getJdbc() {
 
