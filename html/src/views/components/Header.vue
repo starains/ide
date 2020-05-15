@@ -67,12 +67,15 @@
               <router-link to="/user/center">个人中心</router-link>
             </li>
             <li class>
+              <a @click="source.toPreference()">偏好设置</a>
+            </li>
+            <li class>
+              <a @click="source.databaseWindow.show()">数据库资源</a>
+            </li>
+            <li class>
               <a @click="doLogout()">退出</a>
             </li>
           </ul>
-        </li>
-        <li class="app-nav-left" v-if="source.LOGIN_USER != null">
-          <a @click="source.toPreference()">偏好设置</a>
         </li>
         <li class="app-nav-left" v-if="source.LOGIN_USER == null">
           <a @click="source.toLogin()">登录</a>

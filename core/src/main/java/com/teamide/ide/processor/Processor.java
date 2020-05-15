@@ -16,6 +16,7 @@ import com.teamide.ide.bean.NginxConfigBean;
 import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.UserBean;
+import com.teamide.ide.bean.DatabaseBean;
 import com.teamide.ide.bean.UserPreferenceBean;
 import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.enums.UserActiveStatus;
@@ -36,6 +37,7 @@ import com.teamide.ide.service.impl.BaseService;
 import com.teamide.ide.service.impl.CertificateService;
 import com.teamide.ide.service.impl.ConfigureService;
 import com.teamide.ide.service.impl.RemoteService;
+import com.teamide.ide.service.impl.DatabaseService;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.service.impl.InstallService;
 import com.teamide.ide.service.impl.LoginService;
@@ -342,6 +344,27 @@ public class Processor extends ProcessorLoad {
 			if (StringUtil.isNotEmpty(id)) {
 				certificate = data.toJavaObject(CertificateBean.class);
 				new CertificateService().delete(param.getSession(), certificate);
+			}
+			break;
+
+		case DATABASE_CREATE:
+
+			DatabaseBean database = data.toJavaObject(DatabaseBean.class);
+			database.setUserid(param.getSession().getUser().getId());
+			new DatabaseService().save(param.getSession(), database);
+			break;
+		case DATABASE_UPDATE:
+			id = data.getString("id");
+			if (StringUtil.isNotEmpty(id)) {
+				database = data.toJavaObject(DatabaseBean.class);
+				new DatabaseService().save(param.getSession(), database);
+			}
+			break;
+		case DATABASE_DELETE:
+			id = data.getString("id");
+			if (StringUtil.isNotEmpty(id)) {
+				database = data.toJavaObject(DatabaseBean.class);
+				new DatabaseService().delete(param.getSession(), database);
 			}
 			break;
 		}

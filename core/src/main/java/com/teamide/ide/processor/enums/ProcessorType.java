@@ -68,6 +68,12 @@ public enum ProcessorType {
 
 	CERTIFICATE_DELETE("CERTIFICATE_DELETE", "密钥删除"),
 
+	DATABASE_CREATE("DATABASE_CREATE", "数据库创建"),
+
+	DATABASE_UPDATE("DATABASE_UPDATE", "数据库修改"),
+
+	DATABASE_DELETE("DATABASE_DELETE", "数据库删除"),
+
 	;
 
 	private ProcessorType(String value, String text) {

@@ -8,6 +8,7 @@ import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.CertificateBean;
 import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.bean.UserBean;
+import com.teamide.ide.bean.DatabaseBean;
 import com.teamide.ide.bean.UserPreferenceBean;
 import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.configure.IDEOptions;
@@ -29,6 +30,7 @@ import com.teamide.ide.service.impl.InstallService;
 import com.teamide.ide.service.impl.NginxConfigService;
 import com.teamide.ide.service.impl.SpaceService;
 import com.teamide.ide.service.impl.SpaceTeamService;
+import com.teamide.ide.service.impl.DatabaseService;
 import com.teamide.ide.service.impl.UserPreferenceService;
 import com.teamide.ide.service.impl.UserService;
 
@@ -151,6 +153,14 @@ public class ProcessorLoad extends ProcessorBase {
 					certificate.setPassword(null);
 				}
 				value = certificates;
+			}
+			break;
+		case DATABASES:
+			type = data.getString("type");
+			if (session.getUser() != null) {
+				List<DatabaseBean> databases = new DatabaseService().query(session.getUser().getId(), type);
+
+				value = databases;
 			}
 			break;
 		}

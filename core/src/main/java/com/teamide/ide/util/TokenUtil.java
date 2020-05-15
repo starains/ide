@@ -1,6 +1,7 @@
 package com.teamide.ide.util;
 
 import java.util.Base64;
+import java.util.Random;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -8,6 +9,17 @@ public class TokenUtil {
 
 	static final Base64.Decoder decoder = Base64.getUrlDecoder();
 	static final Base64.Encoder encoder = Base64.getUrlEncoder();
+
+	public static String getRandom(int length) {
+		String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		Random random = new Random();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < length; i++) {
+			int number = random.nextInt(62);
+			sb.append(str.charAt(number));
+		}
+		return sb.toString();
+	}
 
 	public static String getToken(JSONObject json) {
 		try {

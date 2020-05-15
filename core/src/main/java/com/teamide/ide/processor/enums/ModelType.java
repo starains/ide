@@ -32,6 +32,8 @@ public enum ModelType {
 
 	CERTIFICATES("CERTIFICATES", "密钥", ModelDataType.LIST),
 
+	DATABASES("DATABASES", "数据库", ModelDataType.LIST),
+
 	;
 
 	public static ModelType get(String value) {
