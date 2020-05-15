@@ -1,0 +1,26 @@
+package com.java.demo.component;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TransactionComponent extends DataSourceTransactionManager {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Resource
+	DataSource dataSource;
+
+	@Override
+	public void afterPropertiesSet() {
+		this.setDataSource(this.dataSource);
+		super.afterPropertiesSet();
+	}
+
+}

@@ -1,0 +1,117 @@
+package com.java.demo.component;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.ConnectionHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import com.java.demo.dao.IDao;
+import com.java.demo.dao.impl.Dao;
+import com.java.demo.factory.AppFactory;
+import com.teamide.param.SqlValuesList;
+import com.teamide.util.LogUtil;
+
+@Component
+public class DaoComponent extends Dao implements IDao {
+
+	Logger logger = LogUtil.get();
+
+	@Autowired
+	DataSource dataSource;
+
+	@Autowired
+	AppFactory factory;
+
+	public DaoComponent() {
+
+	}
+
+	public DaoComponent(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	@Override
+	public AppFactory getFactory() {
+		if (this.factory == null) {
+			this.factory = AppFactory.factory;
+		}
+		return factory;
+	}
+
+	/**
+	 * 获取线程中的事务Connection，spring 托管事务
+	 * 
+	 * @return
+	 */
+	public Connection getThreadTransactionConnection() {
+
+		if (this.dataSource == null) {
+			return null;
+		}
+		Object resource = TransactionSynchronizationManager.getResource(this.dataSource);
+		if (resource != null && resource instanceof ConnectionHolder) {
+			ConnectionHolder conHolder = (ConnectionHolder) resource;
+			if (conHolder.getConnectionHandle() != null) {
+				return conHolder.getConnection();
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public DataSource getDataSource() {
+		return this.dataSource;
+	}
+
+	@Override
+	public Connection getConnection() throws SQLException {
+		return getDataSource().getConnection();
+	}
+
+	@Override
+	public int batchExecute(List<String> sqls) throws SQLException {
+
+		Connection conn = getThreadTransactionConnection();
+		if (conn == null) {
+			return super.batchExecute(sqls);
+		}
+		logger.info("find transaction connection.");
+		return super.batchExecute(conn, sqls);
+	}
+
+	protected int execute(String sql, List<Object> values, List<Object> keyValues) throws SQLException {
+		Connection conn = getThreadTransactionConnection();
+		if (conn == null) {
+			return super.execute(sql, values, keyValues);
+		}
+		logger.info("find transaction connection.");
+		return super.execute(conn, sql, values, keyValues);
+	}
+
+	public int batchExecute(String sql, List<List<Object>> valuesList) throws SQLException {
+		Connection conn = getThreadTransactionConnection();
+		if (conn == null) {
+			return super.batchExecute(sql, valuesList);
+		}
+		logger.info("find transaction connection.");
+		return super.batchExecute(conn, sql, valuesList);
+	}
+
+	public int batchExecute(SqlValuesList sqlValuesList, List<List<Object>> keyValuesList) throws SQLException {
+		Connection conn = getThreadTransactionConnection();
+		if (conn == null) {
+			return super.batchExecute(sqlValuesList, keyValuesList);
+		}
+		logger.info("find transaction connection.");
+		return super.batchExecute(conn, sqlValuesList, keyValuesList);
+	}
+
+}

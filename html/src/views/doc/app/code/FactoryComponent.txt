@@ -1,0 +1,42 @@
+package com.java.demo.component;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSONObject;
+import com.java.demo.dao.IDao;
+
+@Component
+public class FactoryComponent implements com.java.demo.factory.DatabaseFactory {
+
+	@Resource
+	private DaoComponent dao;
+
+	@Override
+	public IDao getDao(JSONObject json) throws Exception {
+		return dao;
+	}
+
+	@Override
+	public DataSource getDataSource(JSONObject json) throws Exception {
+		return dao.getDataSource();
+	}
+
+	@Override
+	public IDao getDao(String databaseName, JSONObject json) throws Exception {
+		return dao;
+	}
+
+	@Override
+	public DataSource getDataSource(String databaseName, JSONObject json) throws Exception {
+		return dao.getDataSource();
+	}
+
+	@Override
+	public String wrapTableName(String tableName, JSONObject json) throws Exception {
+		return tableName;
+	}
+
+}

@@ -1,0 +1,40 @@
+package com.java.demo;
+
+import javax.sql.DataSource;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+
+import com.alibaba.druid.pool.DruidDataSource;
+
+@SpringBootApplication
+@ServletComponentScan
+@EnableAutoConfiguration
+@ComponentScan
+@EnableCaching
+public class ApplicationMain {
+
+	public static void main(String[] args) throws Exception {
+		run(args);
+	}
+
+	public static ConfigurableApplicationContext run(String[] args) throws Exception {
+		SpringApplication application = new SpringApplication(ApplicationMain.class);
+		return application.run(args);
+	}
+
+	// 加载Druid配置
+	@ConfigurationProperties(prefix = "spring.datasource")
+	@Bean
+	public DataSource druid() {
+		return new DruidDataSource();
+	}
+
+}
