@@ -2,6 +2,12 @@
   <div class="doc-page">
     <div class="doc-header">Java</div>
     <div class="doc-body">
+      <div class="pdtb-10">
+        首先
+        <router-link :to="{path:'/doc/app/app'}">
+          <a class="coos-link color-green pdlr-5">设置模型</a>
+        </router-link>
+      </div>
       <div class="pdtb-10">打开已配置的模型目录，右击创建文件，文件名定义为java，打开java文件设置</div>
       <div class="pdtb-10">
         Java项目，可以参照
