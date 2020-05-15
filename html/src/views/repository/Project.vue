@@ -279,52 +279,60 @@ export default {
           });
         }
       }
-      if (data.isProject) {
+      source.plugins.forEach(plugin => {
         menus.push({
-          header: "插件配置"
+          header: plugin.text + "（插件）"
         });
-        source.plugins.forEach(one => {
-          let pluginMenu = { text: one.text, menus: [] };
-          menus.push(pluginMenu);
-          if (
-            one.plugin.optionInputs != null &&
-            one.plugin.optionInputs.length > 0
-          ) {
-            source
-              .load("PLUGIN_OPTION", { name: one.plugin.name }, data)
-              .then(res => {
-                let option = res.value || {};
+        let ms = [];
+        if (
+          data.isProject &&
+          plugin.plugin.optionInputs != null &&
+          plugin.plugin.optionInputs.length > 0
+        ) {
+          ms.push({
+            text: plugin.text + " 配置",
+            disabled: !source.hasPermission("SET_PLUGIN_OPTION"),
+            onClick() {
+              source
+                .load("PLUGIN_OPTION", { name: plugin.plugin.name }, data)
+                .then(res => {
+                  let option = res.value || {};
+                  app
+                    .formDialog({
+                      title: plugin.text + "插件配置",
+                      items: plugin.plugin.optionInputs,
+                      data: option
+                    })
+                    .then(res => {
+                      let project = source.getProjectByPath(data.path);
 
-                pluginMenu.menus.push({
-                  text: "配置",
-                  disabled: !source.hasPermission("SET_PLUGIN_OPTION"),
-                  onClick() {
-                    app
-                      .formDialog({
-                        title: "插件配置",
-                        items: one.plugin.optionInputs,
-                        data: option
-                      })
-                      .then(res => {
-                        let project = source.getProjectByPath(data.path);
-
-                        let param = {
-                          option: option,
-                          name: one.plugin.name
-                        };
-                        source
-                          .do("SET_PLUGIN_OPTION", param, project)
-                          .then(res => {
-                            source.reloadProject(project);
-                          });
-                      });
-                  }
+                      let param = {
+                        option: option,
+                        name: one.plugin.name
+                      };
+                      source
+                        .do("SET_PLUGIN_OPTION", param, project)
+                        .then(res => {
+                          source.reloadProject(project);
+                        });
+                    });
                 });
-              });
+            }
+          });
+        }
+        if (plugin.customPlugin && plugin.customPlugin.onContextmenu) {
+          try {
+            plugin.customPlugin.onContextmenu(data, ms);
+          } catch (e) {
+            console.error(e);
           }
+        }
+
+        ms.forEach(one => {
+          menus.push(one);
         });
-      }
-      source.plugin.onContextmenu(data, menus);
+      });
+
       if (!data.isProject && data.isDirectory) {
         menus.push({
           text: "设为项目",
