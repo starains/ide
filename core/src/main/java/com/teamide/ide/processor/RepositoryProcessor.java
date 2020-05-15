@@ -180,8 +180,28 @@ public class RepositoryProcessor extends SpaceProcessor {
 			break;
 		case GIT_REMOTE_ADD:
 			gitRemoteName = data.getString("gitRemoteName");
-			gitRemoteBranch = data.getString("gitRemoteBranch");
 			url = data.getString("url");
+
+			value = new RepositoryGit(param).remoteAdd(gitRemoteName, url);
+
+			spaceEventBean.set("remote", gitRemoteName);
+			appendEvent(spaceEventBean);
+
+			break;
+		case GIT_REMOTE_REMOVE:
+			gitRemoteName = data.getString("gitRemoteName");
+			value = new RepositoryGit(param).remoteRemove(gitRemoteName);
+
+			spaceEventBean.set("remote", gitRemoteName);
+			appendEvent(spaceEventBean);
+
+			break;
+		case GIT_REMOTE_SETURL:
+			gitRemoteName = data.getString("gitRemoteName");
+			url = data.getString("url");
+			gitRemoteBranch = data.getString("gitRemoteBranch");
+
+			String oldGitRemoteName = data.getString("oldGitRemoteName");
 
 			JSONObject option = new JSONObject();
 			option.put("gitRemoteName", gitRemoteName);
@@ -205,38 +225,17 @@ public class RepositoryProcessor extends SpaceProcessor {
 				}
 			}
 
-			value = new RepositoryGit(param).remoteAdd(gitRemoteName, url);
-
-			spaceEventBean.set("remote", gitRemoteName);
-			appendEvent(spaceEventBean);
-
-			onDo(RepositoryProcessorType.GIT_PULL.getValue(), data);
-			break;
-		case GIT_REMOTE_REMOVE:
-			gitRemoteName = data.getString("gitRemoteName");
-			value = new RepositoryGit(param).remoteRemove(gitRemoteName);
-
-			spaceEventBean.set("remote", gitRemoteName);
-			appendEvent(spaceEventBean);
-
-			break;
-		case GIT_REMOTE_SETURL:
-			gitRemoteName = data.getString("gitRemoteName");
-			url = data.getString("url");
-			gitRemoteBranch = data.getString("gitRemoteBranch");
-
-			option = new JSONObject();
-			option.put("gitRemoteName", gitRemoteName);
-			option.put("gitRemoteBranch", gitRemoteBranch);
-			option.put("url", url);
-
-			new RepositoryProject(param).saveGit(option);
-
-			value = new RepositoryGit(param).remoteSetUrl(gitRemoteName, url);
+			if (data.getBooleanValue("clean") || new RepositoryGit(param).findGit()
+					|| !gitRemoteName.equals(oldGitRemoteName)) {
+				value = new RepositoryGit(param).remoteAdd(gitRemoteName, url);
+			} else {
+				value = new RepositoryGit(param).remoteSetUrl(gitRemoteName, url);
+			}
 
 			spaceEventBean.set(data);
 			appendEvent(spaceEventBean);
 
+			onDo(RepositoryProcessorType.GIT_PULL.getValue(), data);
 			break;
 		case STARTER_DEPLOY:
 			String token = data.getString("token");

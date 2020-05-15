@@ -99,6 +99,7 @@ export default {
       if (coos.isEmpty(this.form.gitRemoteBranch)) {
         this.form.gitRemoteBranch = "master";
       }
+      this.oldGitRemoteName = data.gitRemoteName;
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
         this.reject = reject;
@@ -147,9 +148,10 @@ export default {
 
             source.certificateChoose.show().then(certificateid => {
               data.certificateid = certificateid;
+              data.oldGitRemoteName = this.oldGitRemoteName;
               coos.confirm(msg).then(
                 res => {
-                  source.do("GIT_REMOTE_ADD", data).then(res => {
+                  source.do("GIT_REMOTE_SETURL", data).then(res => {
                     if (res.errcode == 0) {
                       source.loadGitWorkStatus();
                     } else {
