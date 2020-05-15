@@ -308,7 +308,7 @@ export default {
 
                       let param = {
                         option: option,
-                        name: one.plugin.name
+                        name: plugin.plugin.name
                       };
                       source
                         .do("SET_PLUGIN_OPTION", param, project)
