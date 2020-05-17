@@ -1,4 +1,4 @@
-# Team IDE
+# [Team IDE](https://ide.teamide.com)
 
 **介绍**
 
