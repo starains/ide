@@ -20,14 +20,13 @@ import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.processor.enums.ModelType;
 import com.teamide.ide.service.IRemoteService;
 import com.teamide.ide.service.IInstallService;
-import com.teamide.ide.service.INginxConfigService;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.ide.service.IUserService;
 import com.teamide.ide.service.impl.RemoteService;
 import com.teamide.ide.service.impl.CertificateService;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.service.impl.InstallService;
-import com.teamide.ide.service.impl.NginxConfigService;
+import com.teamide.ide.service.impl.NginxService;
 import com.teamide.ide.service.impl.SpaceService;
 import com.teamide.ide.service.impl.SpaceTeamService;
 import com.teamide.ide.service.impl.DatabaseService;
@@ -107,9 +106,13 @@ public class ProcessorLoad extends ProcessorBase {
 			EnvironmentService environmentService = new EnvironmentService();
 			value = environmentService.queryList(param);
 			break;
-		case NGINX_CONFIGS:
-			INginxConfigService nginxConfigService = new NginxConfigService();
-			value = nginxConfigService.queryList(param);
+		case NGINXS:
+			if (session.getUser() != null) {
+				value = new NginxService().query(session.getUser().getId());
+			}
+			break;
+		case MANAGE_NGINXS:
+			value = new NginxService().queryList(data);
 			break;
 		case REMOTES:
 			IRemoteService remoteService = new RemoteService();
@@ -163,6 +166,10 @@ public class ProcessorLoad extends ProcessorBase {
 
 				value = databases;
 			}
+			break;
+		case MANAGE_DATABASES:
+			List<DatabaseBean> databases = new DatabaseService().queryList(data);
+			value = databases;
 			break;
 		}
 		return value;

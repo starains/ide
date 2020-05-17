@@ -18,6 +18,7 @@
             <el-menu-item index="/doc/repository">仓库</el-menu-item>
             <el-menu-item index="/doc/repository/git">Git</el-menu-item>
             <el-menu-item index="/doc/repository/project">仓库项目</el-menu-item>
+            <el-menu-item index="/doc/repository/project/starter">启动项目</el-menu-item>
           </el-submenu>
           <el-submenu index="1">
             <template slot="title">

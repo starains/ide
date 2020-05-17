@@ -33,6 +33,9 @@
       <Install></Install>
     </template>
     <PreferenceForm ref="preference-form"></PreferenceForm>
+    <CertificateChoose ref="certificate-choose"></CertificateChoose>
+    <Database ref="database"></Database>
+    <Nginx ref="nginx"></Nginx>
     <Login></Login>
     <Register></Register>
   </div>
@@ -48,6 +51,9 @@ import Rpository from "@/views/repository/Index";
 import IndexIndex from "@/views/index/IndexIndex";
 import Doc from "@/views/Doc";
 
+import Database from "@/views/components/Database";
+import Nginx from "@/views/components/Nginx";
+import CertificateChoose from "@/views/components/CertificateChoose";
 export default {
   name: "App",
   components: {
@@ -59,7 +65,10 @@ export default {
     Rpository,
     PreferenceForm,
     IndexIndex,
-    Doc
+    Doc,
+    Database,
+    Nginx,
+    CertificateChoose
   },
   data() {
     return { source: source };
@@ -81,6 +90,9 @@ export default {
     }
   },
   mounted() {
+    source.certificateChoose = this.$refs["certificate-choose"];
+    source.databaseWindow = this.$refs["database"];
+    source.nginxWindow = this.$refs["nginx"];
     source.preferenceForm = this.$refs["preference-form"];
     $(".app").css("min-height", $(window).height());
     $(window).resize(function() {

@@ -93,7 +93,6 @@ import ManageUserIndex from "@/views/manage/user/Index";
 import ManageNginxConfigIndex from "@/views/manage/nginx/Index";
 
 import UserCenter from "@/views/user/Center";
-
 export default {
   name: "PathPage",
   components: {
@@ -117,7 +116,8 @@ export default {
   },
   data() {
     return { source: source };
-  }
+  },
+  mounted() {}
 };
 </script>
 

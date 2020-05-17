@@ -12,11 +12,11 @@ public class TableInfoConstant {
 
 	public static final String DATABASE_INFO = "DATABASE_INFO";
 
+	public static final String NGINX_INFO = "NGINX_INFO";
+
 	public static final String ROLE_INFO = "ROLE_INFO";
 
 	public static final String CONFIGURE_INFO = "CONFIGURE_INFO";
-
-	public static final String NGINX_CONFIG_INFO = "NGINX_CONFIG_INFO";
 
 	public static final String ENVIRONMENT_INFO = "ENVIRONMENT_INFO";
 

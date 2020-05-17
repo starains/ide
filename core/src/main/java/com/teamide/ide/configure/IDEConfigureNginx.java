@@ -9,6 +9,8 @@ public class IDEConfigureNginx implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private String wildcarddomain;
+
 	private String folder;
 
 	private String stopcommand;
@@ -16,6 +18,14 @@ public class IDEConfigureNginx implements Serializable {
 	private String startcommand;
 
 	private String reloadcommand;
+
+	public String getWildcarddomain() {
+		return wildcarddomain;
+	}
+
+	public void setWildcarddomain(String wildcarddomain) {
+		this.wildcarddomain = wildcarddomain;
+	}
 
 	public String getFolder() {
 		return folder;

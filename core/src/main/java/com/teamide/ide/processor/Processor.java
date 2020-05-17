@@ -1,6 +1,9 @@
 package com.teamide.ide.processor;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.ide.util.AESTool;
@@ -12,7 +15,7 @@ import com.teamide.client.ClientSession;
 import com.teamide.ide.IDEShare;
 import com.teamide.ide.bean.CertificateBean;
 import com.teamide.ide.bean.EnvironmentBean;
-import com.teamide.ide.bean.NginxConfigBean;
+import com.teamide.ide.bean.NginxBean;
 import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.UserBean;
@@ -31,7 +34,6 @@ import com.teamide.ide.service.IRemoteService;
 import com.teamide.ide.service.IEnvironmentService;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.ILoginService;
-import com.teamide.ide.service.INginxConfigService;
 import com.teamide.ide.service.IUserService;
 import com.teamide.ide.service.impl.BaseService;
 import com.teamide.ide.service.impl.CertificateService;
@@ -41,7 +43,7 @@ import com.teamide.ide.service.impl.DatabaseService;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.service.impl.InstallService;
 import com.teamide.ide.service.impl.LoginService;
-import com.teamide.ide.service.impl.NginxConfigService;
+import com.teamide.ide.service.impl.NginxService;
 import com.teamide.ide.service.impl.UserPreferenceService;
 import com.teamide.ide.service.impl.UserService;
 
@@ -169,28 +171,57 @@ public class Processor extends ProcessorLoad {
 
 			break;
 
-		case NGINX_CONFIG_CREATE:
-			checkPermission(processorType);
+		case NGINX_APPLY:
+			NginxService nginxService = new NginxService();
+			if (param.getSession().getUser() != null) {
+				NginxBean root = null;
 
-			INginxConfigService nginxConfigService = new NginxConfigService();
-			NginxConfigBean nginxConfig = data.toJavaObject(NginxConfigBean.class);
-			nginxConfigService.insert(this.param.getSession(), nginxConfig);
+				Map<String, Object> queryParam = new HashMap<String, Object>();
+				queryParam.put("userid", param.getSession().getUser().getId());
+				queryParam.put("type", "SERVER");
+				List<NginxBean> nginxs = nginxService.queryList(queryParam);
+				if (nginxs.size() == 0) {
+					String domainprefix = TokenUtil.getRandom(20);
+					root = new NginxBean();
+					root.setName("ROOT");
+					root.setType("SERVER");
+					root.setDomainprefix(domainprefix);
+					root.setUserid(param.getSession().getUser().getId());
+					root = nginxService.insert(param.getSession(), root);
+				} else {
+					root = nginxs.get(0);
+				}
+
+				NginxBean nginx = data.toJavaObject(NginxBean.class);
+				nginx.setParentid(root.getId());
+				nginx.setUserid(param.getSession().getUser().getId());
+
+				nginxService.insert(this.param.getSession(), nginx);
+			}
 
 			break;
-		case NGINX_CONFIG_DELETE:
+		case NGINX_CREATE:
 			checkPermission(processorType);
 
-			nginxConfigService = new NginxConfigService();
-			nginxConfig = data.toJavaObject(NginxConfigBean.class);
-			nginxConfigService.delete(this.param.getSession(), nginxConfig);
+			nginxService = new NginxService();
+			NginxBean nginx = data.toJavaObject(NginxBean.class);
+			nginxService.insert(this.param.getSession(), nginx);
 
 			break;
-		case NGINX_CONFIG_UPDATE:
+		case NGINX_DELETE:
 			checkPermission(processorType);
 
-			nginxConfigService = new NginxConfigService();
-			nginxConfig = data.toJavaObject(NginxConfigBean.class);
-			nginxConfigService.update(this.param.getSession(), nginxConfig);
+			nginxService = new NginxService();
+			nginx = data.toJavaObject(NginxBean.class);
+			nginxService.delete(this.param.getSession(), nginx);
+
+			break;
+		case NGINX_UPDATE:
+			checkPermission(processorType);
+
+			nginxService = new NginxService();
+			nginx = data.toJavaObject(NginxBean.class);
+			nginxService.update(this.param.getSession(), nginx);
 
 			break;
 
@@ -346,14 +377,23 @@ public class Processor extends ProcessorLoad {
 				new CertificateService().delete(param.getSession(), certificate);
 			}
 			break;
-
-		case DATABASE_CREATE:
+		case DATABASE_APPLY:
 
 			DatabaseBean database = data.toJavaObject(DatabaseBean.class);
 			database.setUserid(param.getSession().getUser().getId());
 			new DatabaseService().save(param.getSession(), database);
 			break;
+
+		case DATABASE_CREATE:
+			checkPermission(processorType);
+
+			database = data.toJavaObject(DatabaseBean.class);
+			database.setUserid(param.getSession().getUser().getId());
+			new DatabaseService().save(param.getSession(), database);
+			break;
 		case DATABASE_UPDATE:
+			checkPermission(processorType);
+
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				database = data.toJavaObject(DatabaseBean.class);
@@ -361,6 +401,8 @@ public class Processor extends ProcessorLoad {
 			}
 			break;
 		case DATABASE_DELETE:
+			checkPermission(processorType);
+
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
 				database = data.toJavaObject(DatabaseBean.class);

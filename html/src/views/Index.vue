@@ -31,8 +31,6 @@
         </template>
       </template>
     </template>
-    <CertificateChoose ref="certificate-choose"></CertificateChoose>
-    <Database ref="database"></Database>
   </div>
 </template>
 
@@ -40,25 +38,18 @@
 import IndexIndex from "@/views/index/IndexIndex";
 import SpaceIndex from "@/views/index/SpaceIndex";
 import RepositoryIndex from "@/views/index/RepositoryIndex";
-import CertificateChoose from "@/views/components/CertificateChoose";
-import Database from "@/views/components/Database";
 
 export default {
   name: "Index",
   components: {
     IndexIndex,
     SpaceIndex,
-    RepositoryIndex,
-    CertificateChoose,
-    Database
+    RepositoryIndex
   },
   data() {
     return { source: source };
   },
-  mounted() {
-    source.certificateChoose = this.$refs["certificate-choose"];
-    source.databaseWindow = this.$refs["database"];
-  }
+  mounted() {}
 };
 </script>
 

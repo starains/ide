@@ -15,6 +15,7 @@ import DocRepository from '@/views/doc/repository/Index'
 import DocRepositoryCreate from '@/views/doc/repository/Create'
 import DocRepositoryGit from '@/views/doc/repository/Git'
 import DocRepositoryProject from '@/views/doc/repository/Project'
+import DocRepositoryProjectStarter from '@/views/doc/repository/ProjectStarter'
 
 
 import DocApp from '@/views/doc/app/Index'
@@ -58,6 +59,7 @@ export default new Router({
     { path: '/doc/repository/create', component: DocRepositoryCreate },
     { path: '/doc/repository/git', component: DocRepositoryGit },
     { path: '/doc/repository/project', component: DocRepositoryProject },
+    { path: '/doc/repository/project/starter', component: DocRepositoryProjectStarter },
 
     { path: '/doc/app', component: DocApp },
     { path: '/doc/app/app', component: DocAppApp },

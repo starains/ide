@@ -42,11 +42,13 @@ public enum ProcessorType {
 
 	ENVIRONMENT_DELETE("ENVIRONMENT_DELETE", "环境删除"),
 
-	NGINX_CONFIG_CREATE("NGINX_CONFIG_CREATE", "Nginx配置创建"),
+	NGINX_CREATE("NGINX_CREATE", "Nginx配置创建"),
 
-	NGINX_CONFIG_UPDATE("NGINX_CONFIG_UPDATE", "Nginx配置修改"),
+	NGINX_UPDATE("NGINX_UPDATE", "Nginx配置修改"),
 
-	NGINX_CONFIG_DELETE("NGINX_CONFIG_DELETE", "Nginx配置删除"),
+	NGINX_DELETE("NGINX_DELETE", "Nginx配置删除"),
+
+	NGINX_APPLY("NGINX_APPLY", "Nginx配置申请"),
 
 	PREFERENCE("PREFERENCE", "偏好"),
 
@@ -73,6 +75,8 @@ public enum ProcessorType {
 	DATABASE_UPDATE("DATABASE_UPDATE", "数据库修改"),
 
 	DATABASE_DELETE("DATABASE_DELETE", "数据库删除"),
+
+	DATABASE_APPLY("DATABASE_APPLY", "数据库申请"),
 
 	;
 

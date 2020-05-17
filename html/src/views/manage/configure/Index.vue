@@ -98,6 +98,9 @@
           <el-form-item class label="重启命令" prop>
             <el-input type="text" v-model="nginx.reloadcommand"></el-input>
           </el-form-item>
+          <el-form-item class label="通配域名" prop>
+            <el-input type="text" v-model="nginx.wildcarddomain"></el-input>
+          </el-form-item>
         </el-form>
         <div class="pd-10">
           <a class="coos-btn bg-green" @click="doSave()">保存</a>
