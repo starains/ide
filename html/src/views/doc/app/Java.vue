@@ -13,12 +13,12 @@
         Java项目，可以参照
         <a
           class="coos-link color-green pdlr-5"
-          target="blank_"
+          target="_blank"
           href="https://gitee.com/teamide/demo.java"
         >demo.java Git地址</a>，
         <a
           class="coos-link color-green pdlr-5"
-          target="blank_"
+          target="_blank"
           href="https://ide.teamide.com/demo/java"
         >demo.java Team IDE地址</a>，此工程使用App Designer设计一套简单的增删改查业务服务
       </div>

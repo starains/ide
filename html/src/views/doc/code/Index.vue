@@ -6,7 +6,7 @@
         源码托管与gitee上，点击
         <a
           class="coos-link color-green pdlr-5"
-          target="blank_"
+          target="_blank"
           href="https://gitee.com/teamide/ide"
         >Team IDE</a>即可下载源码
       </div>

@@ -17,7 +17,7 @@
             <el-table-column prop="name" label="名称" width="200"></el-table-column>
             <el-table-column label="访问地址" width="300">
               <template slot-scope="scope">
-                <a class="color-green white-space" :href="scope.row.server" target="blank_">{{scope.row.server}}</a>
+                <a class="color-green white-space" :href="scope.row.server" target="_blank">{{scope.row.server}}</a>
               </template>
             </el-table-column>
             <el-table-column label="配置">

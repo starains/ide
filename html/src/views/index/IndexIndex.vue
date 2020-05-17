@@ -1,8 +1,10 @@
 <template>
   <div class="coos-jumbotron">
-    <h1 class="color-lime pdb-20">TeamIDE 团队在线开发平台</h1>
-    <p>开发者可以在线建库、建表、可视化编辑页面、编辑服务、在线预览、导出工程的</p>
-    <p>TeamIDE开发平台，致力于项目在线开发，可视化开发，最大程度减少开发者编码，提高应用开发效率</p>
+    <h1 class="color-lime pdb-20">Team IDE 团队在线开发平台</h1>
+    <p>Team IDE 是团队在线项目开发平台，项目成员无需在自己电脑安装开发环境，直接在Team IDE上进行源码编辑，使用Git管理源码版本，在线运行测试，部署项目等</p>
+    <p>Team IDE 提供App Designer插件，在线可视化编辑Database，Table，Dao，Server，Bean，Controller等</p>
+    <p>在线设计的App模型可以一键生成Java源码，服务端生成Spring Boot工程源码，如果有页面模型，则生成静态html源码</p>
+    <p>页面可视化页面设计器，在线编辑页面，生成可以生成Vue源码</p>
     <p v-if="!source.isLogin">
       现在
       <a @click="toLogin()" class="coos-link color-green pdlr-10">登录</a>

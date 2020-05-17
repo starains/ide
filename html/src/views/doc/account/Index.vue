@@ -11,7 +11,7 @@
         <a
           class="pdlr-10 color-green coos-link"
           :href="_ROOT_URL + 'demo'"
-          target="blank_"
+          target="_blank"
         >demo（{{_ROOT_URL}}demo）</a>
       </div>
     </div>

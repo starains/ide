@@ -6,12 +6,12 @@
         进入
         <a
           class="coos-link color-green pdlr-5"
-          target="blank_"
+          target="_blank"
           href="https://gitee.com/teamide/ide"
         >Team IDE</a>下载最新源码，源码为Java语言，使用
         <a
           class="coos-link color-green pdlr-5"
-          target="blank_"
+          target="_blank"
           href="https://maven.apache.org/"
         >Maven</a>管理依赖包。
       </div>
