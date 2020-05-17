@@ -203,33 +203,23 @@
             type: "post",
             beforeSend: function () { },
             success: function (o) {
-                console.log(o);
                 listen_error_count = 0;
                 listen();
             },
             complete: function (XMLHttpRequest, textStatus) { },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                let second = 3;
-                if (listen_error_count >= 3) {
-                    second = 5;
-                }
-                if (listen_error_count >= 5) {
-                    second = 10;
-                }
-                if (listen_error_count >= 10) {
-                    second = 30;
-                }
-                if (listen_error_count >= 20) {
-                    // source.screen.error('服务器连接异常，请联系管理员！');
-                    second = 60;
-                }
-                listen_error_count++;
-                window.setTimeout(() => {
-                    listen();
-                }, second * 1000);
+                source.server.status().then((res) => {
+                    if (res) {
+                        listen();
+                    } else {
+                        source.server.wait().then(() => {
+                            listen();
+                        });
+                    }
+                });
             }
         });
     };
-    //listen();
+    listen();
 })();
 export default source;

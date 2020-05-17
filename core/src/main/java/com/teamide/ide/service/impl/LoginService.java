@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.RoleBean;
 import com.teamide.ide.bean.UserBean;
+import com.teamide.ide.bean.UserLoginBean;
 import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.enums.UserActiveStatus;
 import com.teamide.ide.enums.UserStatus;
@@ -58,7 +59,13 @@ public class LoginService implements ILoginService {
 			json.put("loginname", user.getLoginname());
 			json.put("name", user.getName());
 			json.put("timestamp", System.currentTimeMillis());
-			session.setCache("LOGIN_USER_TOKEN", TokenUtil.getToken(json));
+			String LOGIN_USER_TOKEN = TokenUtil.getToken(json);
+			session.setCache("LOGIN_USER_TOKEN", LOGIN_USER_TOKEN);
+			UserLoginBean loginBean = new UserLoginBean();
+			loginBean.setToken(LOGIN_USER_TOKEN);
+			loginBean.setStarttime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
+			loginBean = new UserLoginService().insert(session, loginBean);
+			session.setCache("USER_LOGIN_ID", loginBean.getId());
 			for (RoleBean role : roles) {
 				if (role.isForsuper()) {
 					session.setCache("isManager", true);

@@ -13,7 +13,7 @@ import source from "./data";
                 resolve && resolve();
             } else {
                 source.server.session().then(() => {
-                    source.websocket.open();
+                    //source.websocket.open();
                     source.loadSession().then(res => {
                         source.readyed = true;
                         resolve && resolve();

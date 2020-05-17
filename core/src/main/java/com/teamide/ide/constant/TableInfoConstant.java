@@ -4,6 +4,8 @@ public class TableInfoConstant {
 
 	public static final String USER_INFO = "USER_INFO";
 
+	public static final String USER_LOGIN = "USER_LOGIN";
+
 	public static final String USER_PREFERENCE = "USER_PREFERENCE";
 
 	public static final String CERTIFICATE_INFO = "CERTIFICATE_INFO";
