@@ -14,7 +14,7 @@
           <el-table :data="list" style="width: 100%">
             <el-table-column prop="username" label="用户名" width="120"></el-table-column>
             <el-table-column prop="loginname" label="登录名" width="120"></el-table-column>
-            <el-table-column prop="ip" label="IP" width="120"></el-table-column>
+            <el-table-column prop="ip" label="IP" width="150"></el-table-column>
             <el-table-column prop="starttime" label="开始时间" width="180"></el-table-column>
             <el-table-column prop="endtime" label="结束时间" width="180"></el-table-column>
             <el-table-column label="地址">
