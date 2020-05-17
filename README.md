@@ -1,34 +1,25 @@
-# 欢迎使用在线开发工具 TeamIDE
+# Team IDE
 
 **介绍**
 
-TeamIDE是团队在线开发工具，用户可以在线编辑、运行项目，可以通过Git管理代码库。
+Team IDE 是团队在线项目开发平台，项目成员无需在自己电脑安装开发环境，直接在Team IDE上进行源码编辑，使用Git管理源码版本，在线运行测试，部署项目等
 
+**App Designer**
 
-**环境变量**
+Team IDE提供App Designer插件，在线可视化编辑Database，Table，Dao，Server，Bean，Controller等
 
-系统需要配置环境变量TEAMIDE_HOME
-启动后将会生成目录
-- `$TEAMIDE_HOME/conf          //配置文件，端口，访问路径，JDBC等都在这个目录`
-- `$TEAMIDE_HOME/conf/ide.conf`
-- `$TEAMIDE_HOME/log           //日志目录`
-- `$TEAMIDE_HOME/conf/ide.log`
-- `$TEAMIDE_HOME/plugins       //插件`
-- `$TEAMIDE_HOME/workspaces     //工作区`
-- `$TEAMIDE_HOME/spaces         //空间，这个很重要，源码将会存储在这个目录`
+在线设计的App模型可以一键生成Java源码，服务端生成Spring Boot工程源码，如果有页面模型，则生成静态html源码
 
-**启动**
+页面可视化页面设计器，在线编辑页面，生成可以生成Vue源码
 
-` java -jar ide.jar`
+## 使用
 
+点击 [Team IDE](https://ide.teamide.com) 进入Team IDE在线平台体验使用
 
-` java -jar ide.jar --TEAMIDE_HOME=/data/ide --port=8080`
+## 使用说明
 
-- TEAMIDE_HOME //不配置环境变量则需要指定目录
-- port=8080    //可以指定启动端口
+点击 [Team IDE Doc](https://ide.teamide.com/#/doc) 
 
+## 部署私人Team IDE服务器
 
-**后台启动**
-
-` nohup java -Dfile.encoding=UTF-8 -jar $TEAMIDE_HOME/ide.jar >$TEAMIDE_HOME/logs/start.log 2>&1 & echo $! > $TEAMIDE_HOME/ide.pid`
-
+请阅读 [部署说明](https://gitee.com/teamide/ide/blob/master/%E9%83%A8%E7%BD%B2%E8%AF%B4%E6%98%8E.md) 
