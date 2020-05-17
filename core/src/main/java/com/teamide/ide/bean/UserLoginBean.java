@@ -8,6 +8,15 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.USER_LOGIN)
 public class UserLoginBean extends BaseBean {
 
+	@Column(name = "userid", length = 20)
+	private String userid;
+
+	@Column(name = "username", length = 100)
+	private String username;
+
+	@Column(name = "loginname", length = 100)
+	private String loginname;
+
 	@Column(name = "token", length = 200)
 	private String token;
 
@@ -19,6 +28,85 @@ public class UserLoginBean extends BaseBean {
 
 	@Column(name = "endtime", length = 20)
 	private String endtime;
+
+	@Column(name = "ip", length = 100)
+	private String ip;
+
+	@Column(name = "province", length = 100)
+	private String province;
+
+	@Column(name = "city", length = 100)
+	private String city;
+
+	@Column(name = "district", length = 100)
+	private String district;
+
+	@Column(name = "street", length = 200)
+	private String street;
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getLoginname() {
+		return loginname;
+	}
+
+	public void setLoginname(String loginname) {
+		this.loginname = loginname;
+	}
+
+	public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
 
 	public String getToken() {
 		return token;

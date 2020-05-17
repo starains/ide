@@ -35,6 +35,7 @@
     <PreferenceForm ref="preference-form"></PreferenceForm>
     <CertificateChoose ref="certificate-choose"></CertificateChoose>
     <Database ref="database"></Database>
+    <UserLogin ref="user-login"></UserLogin>
     <Nginx ref="nginx"></Nginx>
     <Login></Login>
     <Register></Register>
@@ -54,6 +55,8 @@ import Doc from "@/views/Doc";
 import Database from "@/views/components/Database";
 import Nginx from "@/views/components/Nginx";
 import CertificateChoose from "@/views/components/CertificateChoose";
+import UserLogin from "@/views/components/UserLogin";
+
 export default {
   name: "App",
   components: {
@@ -68,7 +71,8 @@ export default {
     Doc,
     Database,
     Nginx,
-    CertificateChoose
+    CertificateChoose,
+    UserLogin
   },
   data() {
     return { source: source };
@@ -91,6 +95,7 @@ export default {
   },
   mounted() {
     source.certificateChoose = this.$refs["certificate-choose"];
+    source.userLoginWindow = this.$refs["user-login"];
     source.databaseWindow = this.$refs["database"];
     source.nginxWindow = this.$refs["nginx"];
     source.preferenceForm = this.$refs["preference-form"];

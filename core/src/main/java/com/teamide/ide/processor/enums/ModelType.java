@@ -22,6 +22,8 @@ public enum ModelType {
 
 	USERS("USERS", "人员", ModelDataType.PAGE),
 
+	USER_LOGINS("USER_LOGINS", "用户登录", ModelDataType.PAGE),
+
 	SEARCH_USERS("SEARCH_USERS", "搜索人员", ModelDataType.PAGE),
 
 	SEARCH_SPACES("SEARCH_SPACES", "搜索空间", ModelDataType.PAGE),

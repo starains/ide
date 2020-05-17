@@ -63,7 +63,11 @@ public class LoginService implements ILoginService {
 			session.setCache("LOGIN_USER_TOKEN", LOGIN_USER_TOKEN);
 			UserLoginBean loginBean = new UserLoginBean();
 			loginBean.setToken(LOGIN_USER_TOKEN);
+			loginBean.setUserid(user.getId());
+			loginBean.setUsername(user.getName());
+			loginBean.setLoginname(user.getLoginname());
 			loginBean.setStarttime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
+			loginBean.setEndtime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
 			loginBean = new UserLoginService().insert(session, loginBean);
 			session.setCache("USER_LOGIN_ID", loginBean.getId());
 			for (RoleBean role : roles) {

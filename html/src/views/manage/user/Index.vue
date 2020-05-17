@@ -12,15 +12,15 @@
           <el-table-column prop="photo" label="照片" width="100"></el-table-column>
           <el-table-column prop="name" label="名称" width="100"></el-table-column>
           <el-table-column prop="loginname" label="登录名称" width="100"></el-table-column>
-          <el-table-column prop="email" label="邮箱"></el-table-column>
-          <el-table-column label="状态">
+          <el-table-column prop="email" label="邮箱" width="100"></el-table-column>
+          <el-table-column label="状态" width="100">
             <template slot-scope="scope">
               <template v-for="one in source.ENUM_MAP.USER_STATUS">
                 <div :key="one.value" v-if="scope.row.status == one.value">{{one.text}}</div>
               </template>
             </template>
           </el-table-column>
-          <el-table-column prop="activestatus" label="激活状态">
+          <el-table-column prop="activestatus" label="激活状态" width="100">
             <template slot-scope="scope">
               <template v-for="one in source.ENUM_MAP.USER_ACTIVE_STATUS">
                 <div :key="one.value" v-if="scope.row.activestatus == one.value">{{one.text}}</div>
@@ -55,6 +55,10 @@
                 class="coos-btn coos-btn-xs bg-green"
                 @click="doActive(scope.row)"
               >激活</a>
+              <a
+                class="coos-btn coos-btn-xs bg-grey"
+                @click="source.userLoginWindow.show({userid:scope.row.id})"
+              >登录记录</a>
             </template>
           </el-table-column>
         </el-table>

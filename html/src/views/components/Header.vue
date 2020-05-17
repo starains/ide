@@ -56,6 +56,9 @@
             <li class>
               <router-link to="/manage/user">用户管理</router-link>
             </li>
+            <li class>
+              <a @click="source.userLoginWindow.show()">登录记录</a>
+            </li>
           </ul>
         </li>
       </ul>

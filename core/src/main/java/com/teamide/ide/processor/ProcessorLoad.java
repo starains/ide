@@ -9,6 +9,7 @@ import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.CertificateBean;
 import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.bean.UserBean;
+import com.teamide.ide.bean.UserLoginBean;
 import com.teamide.ide.bean.DatabaseBean;
 import com.teamide.ide.bean.UserPreferenceBean;
 import com.teamide.ide.configure.IDEConfigure;
@@ -29,6 +30,7 @@ import com.teamide.ide.service.impl.InstallService;
 import com.teamide.ide.service.impl.NginxService;
 import com.teamide.ide.service.impl.SpaceService;
 import com.teamide.ide.service.impl.SpaceTeamService;
+import com.teamide.ide.service.impl.UserLoginService;
 import com.teamide.ide.service.impl.DatabaseService;
 import com.teamide.ide.service.impl.UserPreferenceService;
 import com.teamide.ide.service.impl.UserService;
@@ -139,11 +141,19 @@ public class ProcessorLoad extends ProcessorBase {
 			break;
 		case USERS:
 			userService = new UserService();
-			PageResultBean<UserBean> page = userService.queryPage(param, pageindex, pagesize);
-			for (UserBean user : page.getValue()) {
+			PageResultBean<UserBean> userPage = userService.queryPage(param, pageindex, pagesize);
+			for (UserBean user : userPage.getValue()) {
 				user.setPassword(null);
 			}
-			value = page;
+			value = userPage;
+
+			break;
+		case USER_LOGINS:
+			userService = new UserService();
+			param.put("userid", data.getString("userid"));
+			PageResultBean<UserLoginBean> userLoginPage = new UserLoginService().queryPage(param, pageindex, pagesize);
+
+			value = userLoginPage;
 
 			break;
 		case PLUGINS:

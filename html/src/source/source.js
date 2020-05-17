@@ -26,6 +26,9 @@ import source from "./data";
     source.validate = function () {
         source.do('VALIDATE', {});
     };
+    source.formatByStr = function (str) {
+        return coos.formatDate(str);
+    };
     source.onValidate = function () {
         window.setTimeout(() => {
             source.validate();

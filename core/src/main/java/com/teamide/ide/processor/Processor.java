@@ -180,16 +180,20 @@ public class Processor extends ProcessorLoad {
 				queryParam.put("userid", param.getSession().getUser().getId());
 				queryParam.put("type", "SERVER");
 				List<NginxBean> nginxs = nginxService.queryList(queryParam);
-				if (nginxs.size() == 0) {
-					String domainprefix = TokenUtil.getRandom(20);
+				for (NginxBean nginx : nginxs) {
+					if (StringUtil.isNotEmpty(nginx.getDomainprefix())) {
+						root = nginx;
+						break;
+					}
+				}
+				if (root == null) {
+					String domainprefix = TokenUtil.getRandom(10).toLowerCase();
 					root = new NginxBean();
 					root.setName("ROOT");
 					root.setType("SERVER");
 					root.setDomainprefix(domainprefix);
 					root.setUserid(param.getSession().getUser().getId());
 					root = nginxService.insert(param.getSession(), root);
-				} else {
-					root = nginxs.get(0);
 				}
 
 				NginxBean nginx = data.toJavaObject(NginxBean.class);

@@ -187,7 +187,7 @@ export default {
       if (time == null || time == "") {
         return time;
       }
-      return coos.date.formatByStr(time, "yyyy/MM/dd hh:mm");
+      return source.formatByStr(time, "yyyy/MM/dd hh:mm");
     },
     load() {
       if (this.loading) {
@@ -260,7 +260,7 @@ export default {
   padding: 10px;
   border-radius: 5px;
 }
-.space-event-page .el-card__body{
+.space-event-page .el-card__body {
   padding: 10px 10px 0px 10px;
 }
 </style>
