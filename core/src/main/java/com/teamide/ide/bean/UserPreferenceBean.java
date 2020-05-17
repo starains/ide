@@ -8,7 +8,7 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.USER_PREFERENCE)
 public class UserPreferenceBean extends BaseBean {
 
-	@Column(name = "option")
+	@Column(name = "option", length = 2000)
 	private String option;
 
 	public String getOption() {

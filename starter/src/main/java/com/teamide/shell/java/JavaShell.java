@@ -24,9 +24,9 @@ public class JavaShell extends Shell {
 
 	private File jar_file;
 
-	private String xms = "128m";
+	private String xms = "64m";
 
-	private String xmx = "256m";
+	private String xmx = "128m";
 
 	private String encoding = "UTF-8";
 

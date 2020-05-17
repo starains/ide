@@ -8,7 +8,7 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.ROLE_INFO)
 public class RoleBean extends BaseBean {
 
-	@Column(name = "name")
+	@Column(name = "name", length = 100)
 	private String name;
 
 	@Column(name = "forsuper")
@@ -17,10 +17,10 @@ public class RoleBean extends BaseBean {
 	@Column(name = "fordefault")
 	private Boolean fordefault;
 
-	@Column(name = "status")
+	@Column(name = "status", length = 10)
 	private Integer status;
 
-	@Column(name = "sequence")
+	@Column(name = "sequence", length = 10)
 	private Integer sequence;
 
 	public Integer getSequence() {

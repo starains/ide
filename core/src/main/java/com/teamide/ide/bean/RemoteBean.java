@@ -9,22 +9,22 @@ import com.teamide.ide.enums.DeployServerStatus;
 @Table(name = TableInfoConstant.REMOTE)
 public class RemoteBean extends BaseBean {
 
-	@Column(name = "name")
+	@Column(name = "name", length = 100)
 	private String name;
 
-	@Column(name = "token")
+	@Column(name = "token", length = 100)
 	private String token;
 
-	@Column(name = "mode")
+	@Column(name = "mode", length = 20)
 	private String mode;
 
-	@Column(name = "timestamp")
+	@Column(name = "timestamp", length = 20)
 	private String timestamp;
 
-	@Column(name = "server")
+	@Column(name = "server", length = 200)
 	private String server;
 
-	@Column(name = "version")
+	@Column(name = "version", length = 100)
 	private String version;
 
 	private DeployServerStatus status;

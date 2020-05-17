@@ -6,19 +6,19 @@ import javax.persistence.Id;
 public class BaseBean {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "id", length = 20)
 	private String id;
 
-	@Column(name = "createuserid")
+	@Column(name = "createuserid", length = 20)
 	private String createuserid;
 
-	@Column(name = "createtime")
+	@Column(name = "createtime", length = 20)
 	private String createtime;
 
-	@Column(name = "updateuserid")
+	@Column(name = "updateuserid", length = 20)
 	private String updateuserid;
 
-	@Column(name = "updatetime")
+	@Column(name = "updatetime", length = 20)
 	private String updatetime;
 
 	public String getId() {

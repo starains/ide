@@ -8,19 +8,19 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.SPACE_REPOSITORY_OPEN)
 public class SpaceRepositoryOpenBean extends BaseBean {
 
-	@Column(name = "spaceid")
+	@Column(name = "spaceid", length = 20)
 	private String spaceid;
 
-	@Column(name = "branch")
+	@Column(name = "branch", length = 200)
 	private String branch;
 
-	@Column(name = "path")
+	@Column(name = "path", length = 300)
 	private String path;
 
-	@Column(name = "userid")
+	@Column(name = "userid", length = 20)
 	private String userid;
 
-	@Column(name = "opentime")
+	@Column(name = "opentime", length = 20)
 	private Long opentime;
 
 	public String getSpaceid() {

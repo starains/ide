@@ -8,16 +8,16 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.SPACE_TEAM)
 public class SpaceTeamBean extends BaseBean {
 
-	@Column(name = "spaceid")
+	@Column(name = "spaceid", length = 20)
 	private String spaceid;
 
-	@Column(name = "type")
+	@Column(name = "type", length = 100)
 	private String type;
 
-	@Column(name = "recordid")
+	@Column(name = "recordid", length = 20)
 	private String recordid;
 
-	@Column(name = "permission")
+	@Column(name = "permission", length = 100)
 	private String permission;
 
 	public String getSpaceid() {

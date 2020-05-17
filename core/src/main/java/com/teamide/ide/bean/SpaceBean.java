@@ -8,19 +8,19 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.SPACE)
 public class SpaceBean extends BaseBean {
 
-	@Column(name = "name")
+	@Column(name = "name", length = 200)
 	private String name;
 
-	@Column(name = "type")
+	@Column(name = "type", length = 100)
 	private String type;
 
-	@Column(name = "parentid")
+	@Column(name = "parentid", length = 20)
 	private String parentid;
 
-	@Column(name = "publictype")
+	@Column(name = "publictype", length = 100)
 	private String publictype;
 
-	@Column(name = "comment", length = 5000)
+	@Column(name = "comment", length = 1000)
 	private String comment;
 
 	public String getComment() {

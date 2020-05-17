@@ -9,13 +9,13 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.SPACE_EVENT)
 public class SpaceEventBean extends BaseBean {
 
-	@Column(name = "spaceid")
+	@Column(name = "spaceid", length = 20)
 	private String spaceid;
 
-	@Column(name = "name")
+	@Column(name = "name", length = 200)
 	private String name;
 
-	@Column(name = "type")
+	@Column(name = "type", length = 200)
 	private String type;
 
 	@Column(name = "data", length = 5000)

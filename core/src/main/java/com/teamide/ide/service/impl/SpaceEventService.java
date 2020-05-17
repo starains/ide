@@ -3,22 +3,12 @@ package com.teamide.ide.service.impl;
 import javax.annotation.Resource;
 
 import com.teamide.bean.PageResultBean;
-import com.teamide.client.ClientSession;
-import com.teamide.ide.bean.SpaceBean;
 import com.teamide.ide.bean.SpaceEventBean;
-import com.teamide.ide.enums.WorkspaceControl;
 import com.teamide.ide.service.ISpaceEventService;
 import com.teamide.param.PageSqlParam;
 
 @Resource
 public class SpaceEventService extends BaseService<SpaceEventBean> implements ISpaceEventService {
-
-	@Override
-	public SpaceEventBean append(ClientSession client, WorkspaceControl control, String name, SpaceBean space)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public <T> PageResultBean<T> queryPageResult(Class<T> clazz, PageSqlParam pageSqlParam) throws Exception {

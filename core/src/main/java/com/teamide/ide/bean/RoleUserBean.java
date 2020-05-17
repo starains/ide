@@ -8,16 +8,16 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.ROLE_USER)
 public class RoleUserBean extends BaseBean {
 
-	@Column(name = "roleid")
+	@Column(name = "roleid", length = 20)
 	private String roleid;
 
-	@Column(name = "userid")
+	@Column(name = "userid", length = 20)
 	private String userid;
 
-	@Column(name = "status")
+	@Column(name = "status", length = 10)
 	private Integer status;
 
-	@Column(name = "sequence")
+	@Column(name = "sequence", length = 10)
 	private Integer sequence;
 
 	public Integer getStatus() {

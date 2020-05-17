@@ -8,46 +8,46 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.USER_INFO)
 public class UserBean extends BaseBean {
 
-	@Column(name = "name")
+	@Column(name = "name", length = 100)
 	private String name;
 
-	@Column(name = "loginname")
+	@Column(name = "loginname", length = 100)
 	private String loginname;
 
-	@Column(name = "photo")
+	@Column(name = "photo", length = 20)
 	private String photo;
 
-	@Column(name = "phone")
+	@Column(name = "phone", length = 200)
 	private String phone;
 
-	@Column(name = "email")
+	@Column(name = "email", length = 200)
 	private String email;
 
-	@Column(name = "password")
+	@Column(name = "password", length = 200)
 	private String password;
 
-	@Column(name = "spaceid")
+	@Column(name = "spaceid", length = 20)
 	private String spaceid;
 
-	@Column(name = "status")
+	@Column(name = "status", length = 10)
 	private Integer status;
 
-	@Column(name = "disabletime")
+	@Column(name = "disabletime", length = 20)
 	private String disabletime;
 
-	@Column(name = "enabletime")
+	@Column(name = "enabletime", length = 20)
 	private String enabletime;
 
-	@Column(name = "locktime")
+	@Column(name = "locktime", length = 20)
 	private String locktime;
 
-	@Column(name = "unlocktime")
+	@Column(name = "unlocktime", length = 20)
 	private String unlocktime;
 
-	@Column(name = "activestatus")
+	@Column(name = "activestatus", length = 10)
 	private Integer activestatus;
 
-	@Column(name = "activetime")
+	@Column(name = "activetime", length = 20)
 	private String activetime;
 
 	public String getDisabletime() {

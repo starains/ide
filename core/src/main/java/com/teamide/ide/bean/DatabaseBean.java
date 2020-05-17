@@ -10,16 +10,16 @@ import com.teamide.util.StringUtil;
 @Table(name = TableInfoConstant.DATABASE_INFO)
 public class DatabaseBean extends BaseBean {
 
-	@Column(name = "name")
+	@Column(name = "name", length = 100)
 	private String name;
 
-	@Column(name = "userid")
+	@Column(name = "userid", length = 20)
 	private String userid;
 
-	@Column(name = "type")
+	@Column(name = "type", length = 10)
 	private String type;
 
-	@Column(name = "option", length = 5000)
+	@Column(name = "option", length = 1000)
 	private String option;
 
 	public String getName() {

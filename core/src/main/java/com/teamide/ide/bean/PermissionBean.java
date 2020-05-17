@@ -8,10 +8,10 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.PERMISSION_INFO)
 public class PermissionBean extends BaseBean {
 
-	@Column(name = "name")
+	@Column(name = "name", length = 100)
 	private String name;
 
-	@Column(name = "url")
+	@Column(name = "url", length = 200)
 	private String url;
 
 	@Column(name = "shouldlogin")
@@ -20,16 +20,16 @@ public class PermissionBean extends BaseBean {
 	@Column(name = "shouldauthorize")
 	private Boolean shouldauthorize;
 
-	@Column(name = "parentid")
+	@Column(name = "parentid", length = 20)
 	private String parentid;
 
-	@Column(name = "fonticon")
+	@Column(name = "fonticon", length = 100)
 	private String fonticon;
 
-	@Column(name = "sequence")
+	@Column(name = "sequence", length = 10)
 	private Integer sequence;
 
-	@Column(name = "status")
+	@Column(name = "status", length = 10)
 	private Integer status;
 
 	public String getUrl() {

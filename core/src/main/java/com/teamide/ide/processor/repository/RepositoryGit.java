@@ -494,14 +494,19 @@ public class RepositoryGit extends RepositoryBase {
 
 			@Override
 			public void run() {
+				GitWorkStatus status = GitWorkStatus.PULLERR;
+				String message = "error";
 				try {
 
 					worker.pull(remote, remoteBranchName, getCredentialsProvider(certificateid));
-					setGitWorkStatus(GitWorkStatus.PULLED);
-					setGitWorkMessage(null);
-				} catch (Exception e) {
-					setGitWorkStatus(GitWorkStatus.PULLERR);
-					setGitWorkMessage(e.getMessage());
+					status = GitWorkStatus.PULLED;
+					message = null;
+				} catch (Throwable e) {
+					status = GitWorkStatus.PULLERR;
+					message = e.getMessage();
+				} finally {
+					setGitWorkStatus(status);
+					setGitWorkMessage(message);
 				}
 			}
 
@@ -527,6 +532,8 @@ public class RepositoryGit extends RepositoryBase {
 
 			@Override
 			public void run() {
+				GitWorkStatus status = GitWorkStatus.PUSHERR;
+				String message = "error";
 				try {
 					// 检查最新版本
 					FetchResult fetchResult = worker.fetch(remote, getCredentialsProvider(certificateid));
@@ -548,11 +555,14 @@ public class RepositoryGit extends RepositoryBase {
 					commit(message);
 
 					worker.push(remote, branchName, remoteBranchName, getCredentialsProvider(certificateid));
-					setGitWorkStatus(GitWorkStatus.PUSHED);
-					setGitWorkMessage(null);
+					status = GitWorkStatus.PUSHED;
+					message = null;
 				} catch (Exception e) {
-					setGitWorkStatus(GitWorkStatus.PUSHERR);
-					setGitWorkMessage(e.getMessage());
+					status = GitWorkStatus.PUSHERR;
+					message = e.getMessage();
+				} finally {
+					setGitWorkStatus(status);
+					setGitWorkMessage(message);
 				}
 			}
 

@@ -8,16 +8,16 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.ENVIRONMENT_INFO)
 public class EnvironmentBean extends BaseBean {
 
-	@Column(name = "name")
+	@Column(name = "name", length = 100)
 	private String name;
 
-	@Column(name = "type")
+	@Column(name = "type", length = 10)
 	private String type;
 
-	@Column(name = "version")
+	@Column(name = "version", length = 100)
 	private String version;
 
-	@Column(name = "path")
+	@Column(name = "path", length = 200)
 	private String path;
 
 	public String getName() {

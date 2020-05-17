@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.util.StringUtil;
+import com.teamide.bean.PageResultBean;
 import com.teamide.client.ClientSession;
 import com.teamide.ide.bean.CertificateBean;
 import com.teamide.ide.bean.RemoteBean;
@@ -135,7 +136,11 @@ public class ProcessorLoad extends ProcessorBase {
 			break;
 		case USERS:
 			userService = new UserService();
-			value = userService.queryPage(param, pageindex, pagesize);
+			PageResultBean<UserBean> page = userService.queryPage(param, pageindex, pagesize);
+			for (UserBean user : page.getValue()) {
+				user.setPassword(null);
+			}
+			value = page;
 
 			break;
 		case PLUGINS:

@@ -8,10 +8,10 @@ import com.teamide.ide.constant.TableInfoConstant;
 @Table(name = TableInfoConstant.NGINX_CONFIG_INFO)
 public class NginxConfigBean extends BaseBean {
 
-	@Column(name = "name")
+	@Column(name = "name", length = 100)
 	private String name;
 
-	@Column(name = "type")
+	@Column(name = "type", length = 100)
 	private String type;
 
 	@Column(name = "content", length = 3000)
