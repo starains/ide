@@ -1,4 +1,4 @@
-# [Team IDE](https://ide.teamide.com)
+# [Team IDE](https://ide.teamide.com?_blank)
 
 **介绍**
 
@@ -14,12 +14,12 @@ Team IDE提供App Designer插件，在线可视化编辑Database，Table，Dao�
 
 ## 使用
 
-点击 [Team IDE](https://ide.teamide.com) 进入Team IDE在线平台体验使用
+点击 [Team IDE](https://ide.teamide.com?_blank) 进入Team IDE在线平台体验使用
 
 ## 使用说明
 
-点击 [Team IDE Doc](https://ide.teamide.com/#/doc) 
+点击 [Team IDE Doc](https://ide.teamide.com/#/doc?_blank) 
 
 ## 部署私人Team IDE服务器
 
-请阅读 [部署说明](https://gitee.com/teamide/ide/blob/master/%E9%83%A8%E7%BD%B2%E8%AF%B4%E6%98%8E.md) 
+请阅读 [部署说明](https://gitee.com/teamide/ide/blob/master/%E9%83%A8%E7%BD%B2%E8%AF%B4%E6%98%8E.md?_blank) 
