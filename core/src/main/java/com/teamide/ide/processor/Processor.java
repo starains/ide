@@ -201,7 +201,6 @@ public class Processor extends ProcessorLoad {
 
 			break;
 		case NGINX_CREATE:
-			checkPermission(processorType);
 
 			nginxService = new NginxService();
 			NginxBean nginx = data.toJavaObject(NginxBean.class);
@@ -209,7 +208,6 @@ public class Processor extends ProcessorLoad {
 
 			break;
 		case NGINX_DELETE:
-			checkPermission(processorType);
 
 			nginxService = new NginxService();
 			nginx = data.toJavaObject(NginxBean.class);
@@ -217,7 +215,6 @@ public class Processor extends ProcessorLoad {
 
 			break;
 		case NGINX_UPDATE:
-			checkPermission(processorType);
 
 			nginxService = new NginxService();
 			nginx = data.toJavaObject(NginxBean.class);
@@ -385,14 +382,12 @@ public class Processor extends ProcessorLoad {
 			break;
 
 		case DATABASE_CREATE:
-			checkPermission(processorType);
 
 			database = data.toJavaObject(DatabaseBean.class);
 			database.setUserid(param.getSession().getUser().getId());
 			new DatabaseService().save(param.getSession(), database);
 			break;
 		case DATABASE_UPDATE:
-			checkPermission(processorType);
 
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {
@@ -401,7 +396,6 @@ public class Processor extends ProcessorLoad {
 			}
 			break;
 		case DATABASE_DELETE:
-			checkPermission(processorType);
 
 			id = data.getString("id");
 			if (StringUtil.isNotEmpty(id)) {

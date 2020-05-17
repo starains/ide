@@ -115,7 +115,7 @@ export default {
         form: {
           driver: "com.mysql.jdbc.Driver",
           url:
-            "jdbc:mysql://127.0.0.1:3306/COOS?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT",
+            "jdbc:mysql://127.0.0.1:3306/COOS?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT&useSSL=false",
           username: "root",
           password: "123456"
         },

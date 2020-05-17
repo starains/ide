@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Path from '@/views/Path'
 
 import Doc from '@/views/doc/Index'
+import DocNginx from '@/views/doc/Nginx'
 import DocInstall from '@/views/doc/install/Index'
 import DocCode from '@/views/doc/code/Index'
 import DocPlugin from '@/views/doc/plugin/Index'
@@ -48,6 +49,7 @@ export default new Router({
     { path: '/', component: Path },
 
     { path: '/doc', component: Doc },
+    { path: '/doc/nginx', component: DocNginx },
     { path: '/doc/account', component: DocAccount },
     { path: '/doc/install', component: DocInstall },
     { path: '/doc/code', component: DocCode },

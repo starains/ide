@@ -22,9 +22,12 @@
         <span class="color-red">Team IDE暂时可以直接配置Java项目启动</span>，其它项目可以自己命令进行启动
       </div>
       <div class="pdtb-10">
-        <span
-          class="color-red"
-        >如果在teamide.com服务器启动项目，因服务器未开放端口，所有如需访问，请打开服务器映射申请，Team IDE管理员将后台进行审批，通过后即可通过外网访问</span>
+        <span class="color-red">
+          如果在teamide.com服务器启动项目，因服务器未开放端口，所有如需访问，请打开
+          <router-link :to="{path:'/doc/nginx'}">
+            <a class="coos-link color-green pdlr-5">Nginx申请</a>
+          </router-link>，Team IDE管理员将后台进行审批，通过后即可通过外网访问
+        </span>
       </div>
 
       <div class="pdtb-10">

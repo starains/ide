@@ -22,10 +22,18 @@ public class ApplicationInitializer implements ServletContextListener {
 		boolean installed = installService.installed();
 
 		if (installed) {
+			System.out.println("plugin load start");
 			PluginHandler.load();
+			System.out.println("plugin load end");
+			System.out.println("remote load start");
 			RemoteHandler.loadRemotes();
+			System.out.println("remote load end");
+			System.out.println("space load start");
 			SpaceHandler.loadSpaces();
+			System.out.println("space load end");
+			System.out.println("starter load start");
 			DeployHandler.loadStarters();
+			System.out.println("starter load end");
 		}
 
 	}

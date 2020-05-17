@@ -1,7 +1,7 @@
 <template>
   <div class="app-min-page" style="width: 1200px;">
     <div class="coos-row">
-      <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange">NginxConfig管理</h3>
+      <h3 class="bd-0 bdb bdb-orange bdb-3 pd-10 color-orange">Nginx管理</h3>
       <div class="coos-row pd-10">
         <div class="float-right">
           <a class="coos-btn bg-green" @click="toInsert()">新增</a>
@@ -55,7 +55,7 @@
 
 <script>
 export default {
-  name: "NginxConfigIndex",
+  name: "NginxIndex",
   data() {
     return {
       source: source,
@@ -114,7 +114,7 @@ export default {
           this.hideForm();
 
           if (coos.isEmpty(data.id)) {
-            source.do("NGINX_CONFIG_CREATE", data).then(res => {
+            source.do("NGINX_CREATE", data).then(res => {
               if (res.errcode == 0) {
                 coos.success("新增成功！");
                 this.initData();
@@ -123,7 +123,7 @@ export default {
               }
             });
           } else {
-            source.do("NGINX_CONFIG_UPDATE", data).then(res => {
+            source.do("NGINX_UPDATE", data).then(res => {
               if (res.errcode == 0) {
                 coos.success("修改成功！");
                 this.initData();
@@ -148,7 +148,7 @@ export default {
     },
     initData() {
       let data = {};
-      source.load("NGINX_CONFIGS", data).then(res => {
+      source.load("MANAGE_NGINXS", data).then(res => {
         coos.trimList(this.list);
         if (res.value) {
           res.value.forEach(one => {
@@ -161,7 +161,7 @@ export default {
       coos
         .confirm("确定删除该配置？")
         .then(res => {
-          source.do("NGINX_CONFIG_DELETE", { id: data.id }).then(res => {
+          source.do("NGINX_DELETE", { id: data.id }).then(res => {
             if (res.errcode == 0) {
               coos.success("删除成功！");
               this.initData();
