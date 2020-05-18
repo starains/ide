@@ -35,22 +35,39 @@
 
         <el-form-item label="类型" prop="type">
           <el-radio-group v-model="form.type" @change="typeChange($event)">
-            <el-radio
+            <div
+              class="mgb-10"
               v-for="one in source.ENUM_MAP.SPACE_TYPE"
               :key="one.value"
-              :label="one.value"
-              v-show="one.value !='USERS' "
-            >{{one.text}}</el-radio>
+              v-show="one.value =='REPOSITORYS' || one.value =='PRODUCTS'"
+            >
+              <el-radio :label="one.value">
+                {{one.text}}
+                <span
+                  v-if=" one.value =='REPOSITORYS'"
+                  class="color-orange"
+                >（库作为源码空间，可以存放源码，可以使用Git管理）</span>
+                <span v-if=" one.value =='PRODUCTS'" class="color-orange">（产品作为空间目录，该空间下可以创建子库或子产品）</span>
+              </el-radio>
+            </div>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item label="开放类型" prop="publictype">
           <el-radio-group v-model="form.publictype">
-            <el-radio
-              v-for="one in source.ENUM_MAP.PUBLIC_TYPE"
-              :key="one.value"
-              :label="one.value"
-            >{{one.text}}</el-radio>
+            <div class="mgb-10" v-for="one in source.ENUM_MAP.PUBLIC_TYPE" :key="one.value">
+              <el-radio :label="one.value">
+                {{one.text}}
+                <span
+                  v-if=" one.value =='OPEN'"
+                  class="color-orange"
+                >（开放的空间或库，所有人都可以只读访问）</span>
+                <span
+                  v-if=" one.value =='PRIVATE'"
+                  class="color-orange"
+                >（私有的空间或库，别人无法访问，需要授权）</span>
+              </el-radio>
+            </div>
           </el-radio-group>
         </el-form-item>
 
