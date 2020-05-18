@@ -29,7 +29,7 @@ public class DeployHandler {
 	static {
 		File starterRootFolder = new File(IDEConstant.WORKSPACES_STARTER_FOLDER);
 
-		StarterServer starterServer = new StarterServer(starterRootFolder);
+		StarterServer starterServer = new StarterServer(starterRootFolder, IDEConstant.CONF.getStarter().getUser());
 		new Thread(starterServer).start();
 	}
 

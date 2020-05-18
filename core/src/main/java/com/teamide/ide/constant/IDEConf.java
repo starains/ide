@@ -10,10 +10,28 @@ import java.util.Map;
 
 public class IDEConf {
 
+	private final Starter starter = new Starter();
+
 	private final Server server = new Server();
 
 	private IDEConf() {
 
+	}
+
+	public Starter getStarter() {
+		return starter;
+	}
+
+	public class Starter {
+		private String user;
+
+		public String getUser() {
+			return user;
+		}
+
+		public void setUser(String user) {
+			this.user = user;
+		}
 	}
 
 	public Server getServer() {
@@ -64,6 +82,9 @@ public class IDEConf {
 		IDEConf ideConf = new IDEConf();
 		Map<String, String> map = readConf(conf);
 
+		if (map.get("starter.user") != null && map.get("starter.user").length() > 0) {
+			ideConf.getStarter().setUser(map.get("starter.user"));
+		}
 		if (map.get("server.hostname") != null && map.get("server.hostname").length() > 0) {
 			ideConf.getServer().setHostname(map.get("server.hostname"));
 		}

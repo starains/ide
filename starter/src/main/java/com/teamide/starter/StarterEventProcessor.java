@@ -24,8 +24,11 @@ public class StarterEventProcessor extends StarterParam {
 
 	public final File starterLockFile;
 
-	public StarterEventProcessor(File starterFolder) {
+	public final String user;
+
+	public StarterEventProcessor(File starterFolder, String user) {
 		super(starterFolder);
+		this.user = user;
 		this.starterLockFile = new File(starterFolder, "starter.lock");
 		this.starterShell = createStarterShell();
 	}
@@ -71,7 +74,7 @@ public class StarterEventProcessor extends StarterParam {
 
 			String command = getStartShell();
 			if (StringUtil.isNotEmpty(command)) {
-				TerminalProcess process = new TerminalProcess();
+				TerminalProcess process = new TerminalProcess(user);
 
 				getLog().info("start shell command:" + command);
 				process.process(command, workFolder, new TerminalProcessListener() {
@@ -147,7 +150,7 @@ public class StarterEventProcessor extends StarterParam {
 		try {
 			String command = getStopShell();
 			if (StringUtil.isNotEmpty(command)) {
-				TerminalProcess process = new TerminalProcess();
+				TerminalProcess process = new TerminalProcess(user);
 				File workFolder = starterShell.getWorkFolder();
 
 				getLog().info("stop shell command:" + command);
@@ -235,7 +238,7 @@ public class StarterEventProcessor extends StarterParam {
 			return;
 		}
 		String pid = pidStr;
-		TerminalProcess process = new TerminalProcess();
+		TerminalProcess process = new TerminalProcess(user);
 		String command = null;
 		if (Platform.isWindows()) {
 			command = "taskkill /PID " + pid + " /F /T";
