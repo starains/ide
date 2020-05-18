@@ -64,6 +64,7 @@ public class ListenHandler {
 			url += "&coor=bd09ll";
 			url += "&ip=" + ip;
 			HttpRequest request = HttpRequest.get(url);
+			request.timeout(1000 * 5);
 			HttpResponse response = request.execute();
 			String body = response.body();
 			JSONObject json = JSONObject.parseObject(body);
