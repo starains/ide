@@ -12,6 +12,7 @@ public class ProjectBean {
 	private String path;
 	private boolean isRoot;
 	private boolean isMaven;
+	private boolean isNode;
 	private String packaging;
 	private List<FileBean> files = new ArrayList<FileBean>();
 
@@ -20,6 +21,14 @@ public class ProjectBean {
 	private final JSONObject option = new JSONObject();
 
 	private ProjectSetting setting;
+
+	public boolean isNode() {
+		return isNode;
+	}
+
+	public void setNode(boolean isNode) {
+		this.isNode = isNode;
+	}
 
 	public ProjectSetting getSetting() {
 		return setting;

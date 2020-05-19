@@ -88,6 +88,10 @@ public class ProjectLoader {
 				project.setPackaging(model.getPackaging());
 			}
 		}
+		File packageFile = new File(projectFolder, "package.json");
+		if (packageFile.exists()) {
+			project.setNode(true);
+		}
 		return project;
 	}
 

@@ -4,6 +4,7 @@ import project from "@/source/repository/project";
 import file from "@/source/repository/file";
 import git from "@/source/repository/git";
 import maven from "@/source/repository/maven";
+import node from "@/source/repository/node";
 import starter from "@/source/repository/starter";
 
 source.repository.branchs = [];

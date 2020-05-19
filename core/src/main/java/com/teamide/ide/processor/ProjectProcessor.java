@@ -15,6 +15,7 @@ import com.teamide.ide.processor.enums.ProjectModelType;
 import com.teamide.ide.processor.enums.ProjectProcessorType;
 import com.teamide.ide.processor.repository.RepositoryFile;
 import com.teamide.ide.processor.repository.RepositoryMaven;
+import com.teamide.ide.processor.repository.RepositoryNode;
 import com.teamide.ide.processor.repository.RepositoryProject;
 import com.teamide.ide.processor.repository.project.ProjectLoader;
 import com.teamide.ide.service.impl.SpaceRepositoryOpenService;
@@ -193,6 +194,13 @@ public class ProjectProcessor extends RepositoryProcessor {
 		case MAVEN_COMPILE:
 			path = data.getString("path");
 			new RepositoryMaven(param).doCompile(path);
+
+			spaceEventBean.set("path", path);
+			appendEvent(spaceEventBean);
+			break;
+		case NODE_INSTALL:
+			path = data.getString("path");
+			new RepositoryNode(param).install(path);
 
 			spaceEventBean.set("path", path);
 			appendEvent(spaceEventBean);

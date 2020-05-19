@@ -123,6 +123,7 @@ source.repository.file_data_map = {};
             file.isProject = false;
             file.isRoot = false;
             file.isMaven = false;
+            file.isNode = false;
             file.isDirectory = false;
             file.isFile = false;
             file.changed = false;
@@ -137,6 +138,7 @@ source.repository.file_data_map = {};
         file.isFile = file.file;
         file.isRoot = file.root;
         file.isMaven = file.maven;
+        file.isNode = file.node;
 
         if (parent && !file.isNew) {
 

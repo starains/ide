@@ -37,6 +37,8 @@ public enum ProjectProcessorType {
 
 	MAVEN_DEPLOY("MAVEN_DEPLOY", "Maven Deploy"),
 
+	NODE_INSTALL("NODE_INSTALL", "Node Install"),
+
 	SET_PLUGIN_OPTION("SET_PLUGIN_OPTION", "Starter Log Clean"),
 
 	DELETE_PLUGIN_OPTION("DELETE_PLUGIN_OPTION", "Starter Log Clean"),

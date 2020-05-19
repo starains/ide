@@ -216,6 +216,7 @@ export default {
                 source
                   .do("DELETE_STARTER_OPTION", {
                     projectPath: data.path,
+                    name: option.name,
                     option: option
                   })
                   .then(res => {
@@ -275,6 +276,20 @@ export default {
             disabled: !source.hasPermission("MAVEN_DEPLOY"),
             onClick: function() {
               source.mavenDeploy(data);
+            }
+          });
+        }
+        if (data.isNode) {
+          let nodeSubs = [];
+          menus.push({
+            text: "NODE",
+            menus: nodeSubs
+          });
+          nodeSubs.push({
+            text: "install",
+            disabled: !source.hasPermission("NODE_INSTALL"),
+            onClick: function() {
+              source.nodeInstall(data);
             }
           });
         }
