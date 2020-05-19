@@ -226,6 +226,7 @@ public class RepositoryGit extends RepositoryBase {
 
 		RemoteConfig remoteConfig = worker.remoteSetUrl(name, uri);
 		result.put("remoteConfig", toJSON(remoteConfig));
+		worker.setSslVerifyFalse();
 		return result;
 	}
 
@@ -241,6 +242,7 @@ public class RepositoryGit extends RepositoryBase {
 
 		RemoteConfig remoteConfig = worker.remoteAdd(name, uri);
 		result.put("remoteConfig", toJSON(remoteConfig));
+		worker.setSslVerifyFalse();
 		return result;
 	}
 

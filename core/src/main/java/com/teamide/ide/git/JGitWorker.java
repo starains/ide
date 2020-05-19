@@ -125,6 +125,17 @@ public class JGitWorker {
 		}
 	}
 
+	public void setSslVerifyFalse() throws Exception {
+
+		try {
+			StoredConfig config = open().getRepository().getConfig();
+			config.setBoolean("http", null, "sslVerify", false);
+			config.save();
+		} finally {
+			close();
+		}
+	}
+
 	public RemoteConfig remoteRemove(String name) throws Exception {
 
 		try {
