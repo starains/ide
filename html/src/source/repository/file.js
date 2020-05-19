@@ -262,26 +262,33 @@ source.repository.file_data_map = {};
         file.untracked = false;
         file.conflicting = false;
         source.repository.change_files.forEach(change_file => {
-            if (file.isProject) {
-                if (change_file.key.startsWith(file.path)) {
-                    file.modified = change_file.status == 'modified';
-                    file.untracked = change_file.status == 'untracked';
-                    file.conflicting = change_file.status == 'conflicting';
-                }
-            } else if (file.isDirectory) {
-                if (change_file.key.startsWith(file.path)) {
-                    file.modified = change_file.status == 'modified';
-                    file.untracked = change_file.status == 'untracked';
-                    file.conflicting = change_file.status == 'conflicting';
-                }
-            } else if (file.isFile) {
+            if (file.isFile) {
                 if (change_file.key == file.path) {
-                    file.modified = change_file.status == 'modified';
-                    file.untracked = change_file.status == 'untracked';
-                    file.conflicting = change_file.status == 'conflicting';
+                    if (!file.modified) {
+                        file.modified = change_file.status == 'modified';
+                    }
+                    if (!file.untracked) {
+                        file.untracked = change_file.status == 'untracked';
+                    }
+                    if (!file.conflicting) {
+                        file.conflicting = change_file.status == 'conflicting';
+                    }
+                }
+            } else {
+                if (change_file.key.startsWith(file.path + '/') || coos.isEmpty(file.path)) {
+                    if (!file.modified) {
+                        file.modified = change_file.status == 'modified';
+                    }
+                    if (!file.untracked) {
+                        file.untracked = change_file.status == 'untracked';
+                    }
+                    if (!file.conflicting) {
+                        file.conflicting = change_file.status == 'conflicting';
+                    }
                 }
             }
         });
+
 
         if (file.files && file.files.length > 0) {
             file.files.forEach(one => {

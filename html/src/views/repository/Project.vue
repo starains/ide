@@ -565,7 +565,7 @@ export default {
     doRename(file, new_name) {},
     changeInput(file) {},
     blurInput(file) {
-      let $input = $(this.$el).find("[id='input-" + file.path + "']");
+      let $input = $(this.$el).find('[id="input-' + file.path + '"]');
       let new_name = $input.val();
       if (new_name != null) {
         new_name = new_name.trim();
@@ -581,7 +581,13 @@ export default {
         $input.focus();
         return;
       }
-
+      new_name = new_name.trim();
+      var pattern = new RegExp('[?*:"<>\\/|]');
+      if (pattern.test(new_name)) {
+        coos.error("文件名称不能包含特殊字符！");
+        $input.focus();
+        return;
+      }
       if (file.name == new_name) {
         file.toRename = false;
         this.toRename = false;
@@ -678,6 +684,7 @@ export default {
                 value={data.name}
                 id={"input-" + data.path}
                 on-click={() => this.clickInput(data)}
+                on-dblclick={() => this.clickInput(data)}
                 on-blur={() => this.blurInput(data)}
                 on-change={() => this.changeInput(data)}
                 on-keyup={() => this.keyup(data, event)}
@@ -735,6 +742,7 @@ export default {
                 value={data.name}
                 id={"input-" + data.path}
                 on-click={() => this.clickInput(data)}
+                on-dblclick={() => this.clickInput(data)}
                 on-blur={() => this.blurInput(data)}
                 on-change={() => this.changeInput(data)}
                 on-keyup={() => this.keyup(data, event)}
@@ -779,6 +787,7 @@ export default {
               value={data.name}
               id={"input-" + data.path}
               on-click={() => this.clickInput(data)}
+              on-dblclick={() => this.clickInput(data)}
               on-blur={() => this.blurInput(data)}
               on-change={() => this.changeInput(data)}
               on-keyup={() => this.keyup(data, event)}
