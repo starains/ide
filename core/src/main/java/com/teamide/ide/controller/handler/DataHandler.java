@@ -1,14 +1,8 @@
 package com.teamide.ide.controller.handler;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.bean.Status;
@@ -25,14 +19,10 @@ import com.teamide.ide.enums.UserActiveStatus;
 import com.teamide.ide.enums.UserStatus;
 import com.teamide.ide.factory.IDEFactory;
 import com.teamide.ide.filter.IDEFilter;
-import com.teamide.ide.handler.SpaceHandler;
-import com.teamide.ide.param.RepositoryProcessorParam;
-import com.teamide.ide.param.SpaceFormatParam;
 import com.teamide.ide.plugin.PluginHandler;
 import com.teamide.ide.processor.enums.ModelType;
 import com.teamide.ide.processor.enums.RepositoryModelType;
 import com.teamide.ide.processor.enums.SpaceModelType;
-import com.teamide.ide.processor.repository.RepositoryProject;
 import com.teamide.ide.service.IInstallService;
 import com.teamide.ide.service.ISpaceService;
 import com.teamide.ide.service.impl.InstallService;
@@ -47,54 +37,6 @@ public class DataHandler {
 	public void handle(String path, HttpServletRequest request, HttpServletResponse response) {
 		if (path.endsWith("/session")) {
 			session(request, response);
-		} else if (path.endsWith("/init")) {
-
-			String sql = "SELECT * FROM SPACE_REPOSITORY_OPTION";
-			Map<String, Object> param = new HashMap<String, Object>();
-
-			try {
-				List<Map<String, Object>> list = IDEFactory.getService().queryList(sql, param);
-				for (Map<String, Object> one : list) {
-					JSONObject json = (JSONObject) JSON.toJSON(one);
-
-					if (StringUtil.isEmpty(json.getString("type")) || StringUtil.isEmpty(json.getString("branch"))
-							|| StringUtil.isNotEmpty(json.getString("path")) || json.getString("option") == null) {
-						continue;
-					}
-
-					String name = json.getString("name");
-					String type = json.getString("type");
-					String spaceid = json.getString("spaceid");
-					String branch = json.getString("branch");
-					JSONObject option = json.getJSONObject("option");
-
-					SpaceBean space = SpaceHandler.get(spaceid);
-					if (space == null) {
-						continue;
-					}
-					SpaceFormatParam spaceFormat = SpaceHandler.getFormat(space, null);
-					File spaceRootFolder = SpaceHandler.getSpaceRootFolder();
-					RepositoryProcessorParam processorParam = new RepositoryProcessorParam(null, spaceRootFolder,
-							spaceFormat, branch);
-
-					RepositoryProject repositoryProject = new RepositoryProject(processorParam);
-
-					switch (type) {
-					case "STARTER":
-						repositoryProject.saveStarter(null, name, option);
-						break;
-					case "PLUGIN":
-						repositoryProject.savePlugin(null, name, option);
-						break;
-					case "GIT":
-						repositoryProject.saveGit(option);
-						break;
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
 		}
 	}
 

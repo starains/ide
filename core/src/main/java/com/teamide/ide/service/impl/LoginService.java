@@ -9,19 +9,19 @@ import com.teamide.util.ObjectUtil;
 import com.teamide.util.StringUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.teamide.client.ClientSession;
+import com.teamide.http.HttpRequest;
+import com.teamide.http.HttpResponse;
 import com.teamide.ide.bean.RoleBean;
 import com.teamide.ide.bean.UserBean;
 import com.teamide.ide.bean.UserLoginBean;
 import com.teamide.ide.configure.IDEConfigure;
 import com.teamide.ide.enums.UserActiveStatus;
 import com.teamide.ide.enums.UserStatus;
-import com.teamide.ide.service.ILoginService;
 import com.teamide.ide.util.TokenUtil;
 
 @Resource
-public class LoginService implements ILoginService {
+public class LoginService {
 
-	@Override
 	public UserBean doLogin(ClientSession session, String loginname, String password) throws Exception {
 
 		if (StringUtil.isEmpty(loginname)) {
@@ -41,7 +41,55 @@ public class LoginService implements ILoginService {
 		return doLoginById(session, user.getId());
 	}
 
-	@Override
+	public void recodeLogin(ClientSession session, String ip) throws Exception {
+		if (session != null && session.getUser() != null) {
+			com.teamide.bean.UserBean user = session.getUser();
+			String LOGIN_USER_TOKEN = session.get("LOGIN_USER_TOKEN", String.class);
+			UserLoginBean loginBean = new UserLoginBean();
+			loginBean.setToken(LOGIN_USER_TOKEN);
+			loginBean.setUserid(user.getId());
+			loginBean.setUsername(user.getName());
+			loginBean.setLoginname(user.getLoginname());
+			loginBean.setStarttime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
+			loginBean.setEndtime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
+			setIP(loginBean, ip);
+			loginBean = new UserLoginService().insert(session, loginBean);
+			session.setCache("USER_LOGIN_ID", loginBean.getId());
+
+		}
+	}
+
+	private void setIP(UserLoginBean loginBean, String ip) throws Exception {
+		if (loginBean == null || StringUtil.isEmpty(ip)) {
+			return;
+		}
+		loginBean.setIp(ip);
+
+		try {
+			String url = "https://api.map.baidu.com/location/ip?ak=26a9d76323f4844c62d222de456a5d31";
+			url += "&coor=bd09ll";
+			url += "&ip=" + ip;
+			HttpRequest request = HttpRequest.get(url);
+			request.timeout(1000 * 5);
+			HttpResponse response = request.execute();
+			String body = response.body();
+			JSONObject json = JSONObject.parseObject(body);
+			if (json.get("content") != null) {
+				JSONObject content = json.getJSONObject("content");
+
+				if (content.get("address_detail") != null) {
+					JSONObject address_detail = content.getJSONObject("address_detail");
+					loginBean.setProvince(address_detail.getString("province"));
+					loginBean.setCity(address_detail.getString("city"));
+					loginBean.setDistrict(address_detail.getString("district"));
+					loginBean.setStreet(address_detail.getString("street"));
+				}
+			}
+		} catch (Exception e) {
+		}
+
+	}
+
 	public UserBean doLoginById(ClientSession session, String id) throws Exception {
 		UserBean user = new UserService().get(id);
 		if (user != null && session != null) {
@@ -61,15 +109,7 @@ public class LoginService implements ILoginService {
 			json.put("timestamp", System.currentTimeMillis());
 			String LOGIN_USER_TOKEN = TokenUtil.getToken(json);
 			session.setCache("LOGIN_USER_TOKEN", LOGIN_USER_TOKEN);
-			UserLoginBean loginBean = new UserLoginBean();
-			loginBean.setToken(LOGIN_USER_TOKEN);
-			loginBean.setUserid(user.getId());
-			loginBean.setUsername(user.getName());
-			loginBean.setLoginname(user.getLoginname());
-			loginBean.setStarttime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
-			loginBean.setEndtime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
-			loginBean = new UserLoginService().insert(session, loginBean);
-			session.setCache("USER_LOGIN_ID", loginBean.getId());
+
 			for (RoleBean role : roles) {
 				if (role.isForsuper()) {
 					session.setCache("isManager", true);

@@ -19,6 +19,7 @@ import com.teamide.ide.bean.NginxBean;
 import com.teamide.ide.bean.RemoteBean;
 import com.teamide.ide.bean.SpaceEventBean;
 import com.teamide.ide.bean.UserBean;
+import com.teamide.ide.bean.UserLoginBean;
 import com.teamide.ide.bean.DatabaseBean;
 import com.teamide.ide.bean.UserPreferenceBean;
 import com.teamide.ide.configure.IDEConfigure;
@@ -33,12 +34,12 @@ import com.teamide.ide.service.IConfigureService;
 import com.teamide.ide.service.IRemoteService;
 import com.teamide.ide.service.IEnvironmentService;
 import com.teamide.ide.service.IInstallService;
-import com.teamide.ide.service.ILoginService;
 import com.teamide.ide.service.IUserService;
 import com.teamide.ide.service.impl.BaseService;
 import com.teamide.ide.service.impl.CertificateService;
 import com.teamide.ide.service.impl.ConfigureService;
 import com.teamide.ide.service.impl.RemoteService;
+import com.teamide.ide.service.impl.UserLoginService;
 import com.teamide.ide.service.impl.DatabaseService;
 import com.teamide.ide.service.impl.EnvironmentService;
 import com.teamide.ide.service.impl.InstallService;
@@ -470,8 +471,8 @@ public class Processor extends ProcessorLoad {
 		if (StringUtil.isEmpty(password)) {
 			throw new Exception("密码不能为空.");
 		}
-		ILoginService loginService = new LoginService();
-		loginService.doLogin(session, loginname, password);
+		new LoginService().doLogin(session, loginname, password);
+		new LoginService().recodeLogin(session, data.getString("_CLIENT_IP"));
 	}
 
 	private void doAutoLogin(JSONObject data) throws Exception {
@@ -486,12 +487,19 @@ public class Processor extends ProcessorLoad {
 		if (StringUtil.isEmpty(id)) {
 			throw new Exception("登录信息丢失.");
 		}
-		ILoginService loginService = new LoginService();
-		loginService.doLoginById(session, id);
+		new LoginService().doLoginById(session, id);
+		new LoginService().recodeLogin(session, data.getString("_CLIENT_IP"));
 	}
 
 	private void doLogout(JSONObject data) throws Exception {
 		ClientSession session = this.param.getSession();
+		if (session.get("USER_LOGIN_ID") != null) {
+			String USER_LOGIN_ID = String.valueOf(session.get("USER_LOGIN_ID"));
+			UserLoginBean loginBean = new UserLoginBean();
+			loginBean.setId(USER_LOGIN_ID);
+			loginBean.setEndtime(BaseService.PURE_DATETIME_FORMAT.format(new Date()));
+			new UserLoginService().update(session, loginBean);
+		}
 		session.doLogout();
 		session.getCache().clear();
 	}
