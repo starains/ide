@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-import com.teamide.shell.Shell;
 import com.teamide.shell.java.JavaShell;
 import com.teamide.starter.StarterParam;
 import com.teamide.util.StringUtil;
@@ -18,12 +17,6 @@ public class JavaInternalTomcatStarterShell extends JavaStarterShell {
 	public JavaInternalTomcatStarterShell(StarterParam param) {
 		super(param);
 
-	}
-
-	@Override
-	public Shell getShell() {
-		JavaShell shell = new JavaShell(param.starterFolder);
-		return shell;
 	}
 
 	public File appFolder;

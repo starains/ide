@@ -2,6 +2,8 @@ package com.teamide.starter.shell.java;
 
 import java.io.File;
 
+import com.teamide.shell.Shell;
+import com.teamide.shell.java.JavaShell;
 import com.teamide.starter.StarterParam;
 import com.teamide.starter.StarterShell;
 import com.teamide.starter.bean.JavaOptionBean;
@@ -14,6 +16,19 @@ public abstract class JavaStarterShell extends StarterShell {
 	public JavaStarterShell(StarterParam param) {
 		super(param);
 		this.option = (JavaOptionBean) param.option;
+	}
+
+	@Override
+	public Shell getShell() {
+		JavaShell shell = new JavaShell(param.starterFolder);
+		if (StringUtil.isNotEmpty(option.getXms())) {
+			shell.setXms(option.getXms());
+		}
+		if (StringUtil.isNotEmpty(option.getXmx())) {
+			shell.setXmx(option.getXmx());
+		}
+
+		return shell;
 	}
 
 	public String getJavaEnvp() {

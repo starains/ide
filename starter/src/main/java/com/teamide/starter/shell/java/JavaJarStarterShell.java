@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.teamide.shell.Shell;
 import com.teamide.shell.java.JavaShell;
 import com.teamide.starter.StarterParam;
 
@@ -14,12 +13,6 @@ public class JavaJarStarterShell extends JavaStarterShell {
 
 	public JavaJarStarterShell(StarterParam param) {
 		super(param);
-	}
-
-	@Override
-	public Shell getShell() {
-		JavaShell shell = new JavaShell(param.starterFolder);
-		return shell;
 	}
 
 	@Override

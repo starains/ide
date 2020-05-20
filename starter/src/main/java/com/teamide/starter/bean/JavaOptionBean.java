@@ -22,6 +22,25 @@ public class JavaOptionBean extends StarterOptionBean {
 	private String maven_home;
 	private String internal_tomcat;
 
+	private String xms;
+	private String xmx;
+
+	public String getXms() {
+		return xms;
+	}
+
+	public void setXms(String xms) {
+		this.xms = xms;
+	}
+
+	public String getXmx() {
+		return xmx;
+	}
+
+	public void setXmx(String xmx) {
+		this.xmx = xmx;
+	}
+
 	public String getInternal_tomcat() {
 		return internal_tomcat;
 	}

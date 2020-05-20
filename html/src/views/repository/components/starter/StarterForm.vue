@@ -69,6 +69,12 @@
               :label="one.id"
             >{{one.name}}({{one.version}})</el-radio>
           </el-form-item>
+          <el-form-item label="-Xms">
+            <el-input v-model="form.xms" type="text" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="-Xmx">
+            <el-input v-model="form.xmx" type="text" autocomplete="off"></el-input>
+          </el-form-item>
 
           <el-form-item label="Maven运行变量">
             <el-input v-model="form.mavenenvp" type="text" autocomplete="off"></el-input>
@@ -198,7 +204,9 @@ export default {
         compilecommand: "",
         startcommand: "",
         stopcommand: "",
-        pidfile: ""
+        pidfile: "",
+        xms: "",
+        xmx: ""
       },
       form_rules: {
         nodecommand: [
