@@ -9,10 +9,7 @@ public class StarterServer implements Runnable {
 
 	public final File starterRootFolder;
 
-	public final String user;
-
-	public StarterServer(File starterRootFolder, String user) {
-		this.user = user;
+	public StarterServer(File starterRootFolder) {
 		this.starterRootFolder = starterRootFolder;
 	}
 
@@ -46,7 +43,7 @@ public class StarterServer implements Runnable {
 							if (StringUtil.isEmpty(content)) {
 								continue;
 							}
-							StarterEventProcessor processor = new StarterEventProcessor(folder, user);
+							StarterEventProcessor processor = new StarterEventProcessor(folder);
 
 							processor.process();
 						} catch (Exception e) {

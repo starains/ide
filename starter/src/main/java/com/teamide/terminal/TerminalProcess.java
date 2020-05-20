@@ -14,10 +14,7 @@ public class TerminalProcess {
 
 	public String charset;
 
-	public final String user;
-
-	public TerminalProcess(String user) {
-		this.user = user;
+	public TerminalProcess() {
 	}
 
 	public void process(String command, File workFolder, TerminalProcessListener listener) throws Exception {

@@ -16,19 +16,24 @@ public abstract class JavaStarterShell extends StarterShell {
 	public JavaStarterShell(StarterParam param) {
 		super(param);
 		this.option = (JavaOptionBean) param.option;
+		this.initShell();
 	}
 
 	@Override
 	public Shell getShell() {
 		JavaShell shell = new JavaShell(param.starterFolder);
+
+		return shell;
+	}
+
+	private void initShell() {
+		JavaShell shell = (JavaShell) this.shell;
 		if (StringUtil.isNotEmpty(option.getXms())) {
 			shell.setXms(option.getXms());
 		}
 		if (StringUtil.isNotEmpty(option.getXmx())) {
 			shell.setXmx(option.getXmx());
 		}
-
-		return shell;
 	}
 
 	public String getJavaEnvp() {
